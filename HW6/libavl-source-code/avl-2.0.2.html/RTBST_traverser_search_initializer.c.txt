@@ -1,0 +1,44 @@
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+rtbst_t_find (struct rtbst_traverser *trav, struct rtbst_table *tree,
+              void *item)
+{
+  struct rtbst_node *p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->rtbst_table = tree;
+  trav->rtbst_node = NULL;
+
+  p = tree->rtbst_root;
+  if (p == NULL)
+    return NULL;
+
+  for (;;)
+    {
+      int cmp = tree->rtbst_compare (item, p->rtbst_data, tree->rtbst_param);
+      if (cmp == 0)
+        {
+          trav->rtbst_node = p;
+          return p->rtbst_data;
+        }
+
+      if (cmp < 0)
+        {
+          p = p->rtbst_link[0];
+          if (p == NULL)
+            return NULL;
+        }
+      else
+        {
+          if (p->rtbst_rtag == RTBST_THREAD)
+            return NULL;
+          p = p->rtbst_link[1];
+        }
+    }
+}
+

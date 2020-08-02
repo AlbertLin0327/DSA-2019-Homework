@@ -1,0 +1,34 @@
+k = 1;
+da[0] = 0;
+pa[0] = (struct rtavl_node *) &tree->rtavl_root;
+p = tree->rtavl_root;
+if (p == NULL)
+  return NULL;
+
+for (;;)
+  {
+    int cmp, dir;
+
+    cmp = tree->rtavl_compare (item, p->rtavl_data, tree->rtavl_param);
+    if (cmp == 0)
+      break;
+
+    dir = cmp > 0;
+    if (dir == 0)
+      {
+        if (p->rtavl_link[0] == NULL)
+          return NULL;
+      }
+    else /* |dir == 1| */
+      {
+        if (p->rtavl_rtag == RTAVL_THREAD)
+          return NULL;
+      }
+
+    pa[k] = p;
+    da[k++] = dir;
+    p = p->rtavl_link[dir];
+  }
+tree->rtavl_count--;
+item = p->rtavl_data;
+

@@ -1,0 +1,8 @@
+for (q = NULL, p = tree->pbst_root; p != NULL; q = p, p = p->pbst_link[dir])
+  {
+    int cmp = tree->pbst_compare (item, p->pbst_data, tree->pbst_param);
+    if (cmp == 0)
+      return &p->pbst_data;
+    dir = cmp > 0;
+  }
+

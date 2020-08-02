@@ -1,0 +1,156 @@
+<html lang="en">
+<head>
+<title>Sequential Search with Sentinel - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Sequential-Search.html" title="3.1 Sequential Search">
+<link rel=Next href="Sequential-Search-of-Ordered-Array.html" title="3.3 Sequential Search of Ordered Array">
+<link rel=Parent href="Search-Algorithms.html" title="3 Search Algorithms">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Sequential-Search-with-Sentinel">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>3.2 Sequential Search with Sentinel</b></big></td>
+<td align=right>
+<a href="index.html#Sequential-Search-with-Sentinel.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Sequential-Search.html" title="Skip Back: 3.1 Sequential Search"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Sequential-Search-of-Ordered-Array.html" title="Skip Forward: 3.3 Sequential Search of Ordered Array"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Sequential-Search.html" title="Prev: 3.1 Sequential Search"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Search-Algorithms.html" title="Up: 3 Search Algorithms"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Sequential-Search-of-Ordered-Array.html" title="Next: 3.3 Sequential Search of Ordered Array"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Try to think of some ways to improve the speed of sequential search.  It
+should be clear that, to speed up a program, it pays to concentrate on
+the parts that use the most time to begin with.  In this case, it's the
+loop.
+
+   <p>Consider what happens each time through the loop:
+
+     <ol type=1 start=1>
+<li>The loop counter <i>i</i><!-- /@w --> is incremented and compared against <i>n</i><!-- /@w -->.
+
+     <li><i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] is compared against <i>key</i><!-- /@w -->.
+        </ol>
+
+   <p>If we could somehow eliminate one of these comparisons, the loop might
+be a lot faster.  So, let's try<small class="dots">...</small> why do we need step 1?  It's
+because, otherwise, we might run off the end of <i>array</i><!-- /@w -->[], causing
+undefined behavior, which is in turn because we aren't sure that <i>key</i><!-- /@w -->
+is in <i>array</i><!-- /@w -->[].  If we knew that <i>key</i><!-- /@w --> was in <i>array</i><!-- /@w -->[], then we could
+skip step 1.
+
+   <p>But, hey! we <em>can</em> ensure that the item we're looking for is in
+the array.  How?  By putting a copy of it at the end of the array.  This
+copy is called a <dfn>sentinel</dfn> (see <a href="Glossary.html#sentinel">sentinel</a>), and the search technique as a whole is
+called <dfn>sequential search with sentinel</dfn> (see <a href="Glossary.html#sequential%20search%20with%20sentinel">sequential search with sentinel</a>).  Here's the code:
+
+   <p><a name="index-sequentially-search-an-array-of-_0040w_007b_0040b_007bint_007d_007ds-using-a-sentinel-25"></a>
+<pre class="format"><a href="Sequentially_search_an_array_of__7cint_7cs_using_a_sentinel.c.txt">17</a>. &lt;<a name="17" href="Sequentially_search_an_array_of__7cint_7cs_using_a_sentinel.c.txt">Sequentially search an array of <b>int</b><!-- /@w -->s using a sentinel 17</a>&gt; =
+/* Returns the smallest <i>i</i><!-- /@w --> such that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[]. 
+   <i>array</i><!-- /@w -->[] must be an modifiable array of <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->with room for a (<i>n</i><!-- /@w --> + 1)th element. */
+<b>int</b><!-- /@w --> <br><i>seq_sentinel_search</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> *<i>p</i><!-- /@w -->;
+
+  <i>array</i><!-- /@w -->[<i>n</i><!-- /@w -->] = <i>key</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>array</i><!-- /@w -->; *<i>p</i><!-- /@w --> != <i>key</i><!-- /@w -->; <i>p</i><!-- /@w -->++)
+    /* Nothing to do. */;
+  <b>return</b><!-- /@w --> <i>p</i><!-- /@w --> - <i>array</i><!-- /@w --> &lt; <i>n</i><!-- /@w --> ? <i>p</i><!-- /@w --> - <i>array</i><!-- /@w --> : -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+   <p>Notice how the code above uses a pointer, <b>int</b><!-- /@w --> *<i>p</i><!-- /@w -->, rather than a
+counter <i>i</i><!-- /@w --> as in &lt;<a href="Sequential-Search.html#16">Sequentially search an array of <b>int</b><!-- /@w -->s 16</a>&gt; earlier. 
+For the most part, this is simply a style preference: for iterating
+through an array, C programmers usually prefer pointers to array
+indexes.  Under older compilers, code using pointers often compiled into
+faster code as well, but modern C compilers usually produce the same
+code whether pointers or indexes are used.
+
+   <p>The <b>return</b><!-- /@w --> statement in this function uses two somewhat advanced
+features of C: the conditional or &ldquo;ternary&rdquo; operator ?: and
+pointer arithmetic.  The former is a bit like an expression form of an
+<b>if</b><!-- /@w --> statement.  The expression <i>a</i><!-- /@w --> ? <i>b</i><!-- /@w --> : <i>c</i><!-- /@w --> first evaluates <i>a</i><!-- /@w -->. 
+Then, if <i>a</i><!-- /@w -->&nbsp;!=&nbsp;0<!-- /@w -->, <i>b</i><!-- /@w --> is evaluated and the expression takes that
+value.  Otherwise, <i>a</i><!-- /@w --> == 0, <i>c</i><!-- /@w --> is evaluated, and the result is the
+expression's value.
+
+   <p>Pointer arithmetic is used in two ways here.  First, the expression
+<i>p</i><!-- /@w -->++ acts to advance <i>p</i><!-- /@w --> to point to the next <b>int</b><!-- /@w --> in <i>array</i><!-- /@w -->.  This
+is analogous to the way that <i>i</i><!-- /@w -->++ would increase the value of an
+integer or floating point variable <i>i</i><!-- /@w --> by one.  Second, the expression
+<i>p</i><!-- /@w --> - <i>array</i><!-- /@w --> results in the &ldquo;difference&rdquo; between <i>p</i><!-- /@w --> and <i>array</i><!-- /@w -->, i.e.,
+the number of <b>int</b><!-- /@w --> elements between the locations to which they point. 
+For more information on these topics, please consult a good C reference,
+such as [<a href="References.html#Kernighan%201988">Kernighan 1988</a>].
+
+   <p>Searching with a sentinel requires that the array be modifiable and
+large enough to hold an extra element.  Sometimes these are inherently
+problematic&mdash;the array may not be modifiable or it might be too
+small&mdash;and sometimes they are problems because of external
+circumstances.  For instance, a program with more than one concurrent
+<dfn>thread</dfn> (see <a href="Glossary.html#thread">thread</a>) cannot modify a shared array for sentinel search
+without expensive locking.
+
+   <p>Sequential sentinel search is an improvement on ordinary sequential
+search, but as it turns out there's still room for
+improvement&mdash;especially in the runtime for unsuccessful searches, which
+still always take <i>n</i><!-- /@w --> comparisons.  In the next section, we'll see one
+technique that can reduce the time required for unsuccessful searches,
+at the cost of longer runtime for successful searches.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998b">Knuth 1998b</a>], algorithm 6.1Q;
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 11.2;
+[<a href="References.html#Bentley%202000">Bentley 2000</a>], section 9.2.
+
+   </body></html>
+

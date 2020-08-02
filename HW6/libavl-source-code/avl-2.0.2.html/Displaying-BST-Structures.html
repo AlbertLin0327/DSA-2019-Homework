@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>Displaying BST Structures - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="BST-Verification.html" title="4.14.1.1 BST Verification">
+<link rel=Next href="Test-Set-Generation.html" title="4.14.2 Test Set Generation">
+<link rel=Parent href="Testing-BSTs.html" title="4.14.1 Testing BSTs">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Displaying-BST-Structures">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14.1.2 Displaying BST Structures</b></big></td>
+<td align=right>
+<a href="index.html#Displaying-BST-Structures.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="BST-Verification.html" title="Skip Back: 4.14.1.1 BST Verification"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="BST-Verification.html" title="Prev: 4.14.1.1 BST Verification"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Testing-BSTs.html" title="Up: 4.14.1 Testing BSTs"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Test-Set-Generation.html" title="Next: 4.14.2 Test Set Generation"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The <i>print_tree_structure</i><!-- /@w -->() function below can be useful for debugging,
+but it is not used very much by the testing code.  It prints out the
+structure of a tree, with the root first, then its children in
+parentheses separated by a comma, and their children in inner
+parentheses, and so on.  This format is easy to print but difficult to
+visualize, so it's a good idea to have a notebook on hand to sketch out
+the shape of the tree.  Alternatively, this output is in the right
+format to feed directly into the <code>texitree</code> program used to draw
+the tree diagrams in this book, which can produce output in plain text
+or PostScript form.
+
+   <p><a name="index-BST-print-function-176"></a>
+<pre class="format"><a href="BST_print_function.c.txt">119</a>. &lt;<a name="119" href="BST_print_function.c.txt">BST print function 119</a>&gt; =
+/* Prints the structure of <i>node</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->which is <i>level</i><!-- /@w --> levels from the top of the tree. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>print_tree_structure</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>level</i><!-- /@w -->) <br>{
+  /* You can set the maximum level as high as you like.
+     Most of the time, you'll want to debug code using small trees,
+     so that a large <i>level</i><!-- /@w --> indicates a &ldquo;loop&rdquo;, which is a bug. */
+  <b>if</b><!-- /@w --> (<i>level</i><!-- /@w --> &gt; 16) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>"[...]"</tt>);
+      <b>return</b><!-- /@w -->;
+    }
+
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w -->;
+
+  <i>printf</i><!-- /@w --> (<tt>"%d"</tt>, *(<b>int</b><!-- /@w --> *) <i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w --> || <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>putchar</i><!-- /@w --> (<tt>'('</tt>);
+
+      <i>print_tree_structure</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0], <i>level</i><!-- /@w --> + 1);
+      <b>if</b><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>putchar</i><!-- /@w --> (<tt>','</tt>);
+          <i>print_tree_structure</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1], <i>level</i><!-- /@w --> + 1);
+        }
+
+      <i>putchar</i><!-- /@w --> (<tt>')'</tt>);
+    }
+}
+</pre>
+   <p class="noindent"><small>See also <a href="Displaying-BST-Structures.html#120">120</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Testing-BST-Functions.html#98">98</a>, <a href="Testing-AVL-Trees.html#186">186</a>, <a href="Testing-RB-Trees.html#238">238</a>, <a href="Testing-PBSTs.html#515">515</a>, <a href="Testing-PAVL-Trees.html#548">548</a>, and <a href="Testing-PRB-Trees.html#583">583</a>.</small></div>
+
+   <p>A function <i>print_whole_tree</i><!-- /@w -->() is also provided as a convenient wrapper
+for printing an entire BST's structure.
+
+   <p><a name="index-BST-print-function-177"></a>
+<pre class="format"><a href="BST_print_function.c.txt">120</a>. &lt;<a name="120" href="BST_print_function.c.txt">BST print function 119</a>&gt; +=
+/* Prints the entire structure of <i>tree</i><!-- /@w --> with the given <i>title</i><!-- /@w -->. */
+<b>void</b><!-- /@w --> <br><i>print_whole_tree</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>title</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bprint_005fwhole_005ftree_007d-function-178"></a>  <i>printf</i><!-- /@w --> (<tt>"%s: "</tt>, <i>title</i><!-- /@w -->);
+  <i>print_tree_structure</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, 0);
+  <i>putchar</i><!-- /@w --> (<tt>'\n'</tt>);
+}
+</pre>
+   </body></html>
+

@@ -1,0 +1,3 @@
+r->rtbst_link[1] = p->rtbst_link[1];
+r->rtbst_rtag = p->rtbst_rtag;
+q->rtbst_link[dir] = r;

@@ -1,0 +1,192 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 6 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-5.html" title="Chapter 5">
+<link rel=Next href="Answers-for-Chapter-7.html" title="Chapter 7">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-6">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 6</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-6.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-5.html" title="Skip Back: Chapter 5"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-7.html" title="Skip Forward: Chapter 7"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-5.html" title="Prev: Chapter 5"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-7.html" title="Next: Chapter 7"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 6.1</h4>
+
+<p><a name="6_002d1_00231"></a> <b>1.</b>
+It must be a <dfn>complete binary tree</dfn> (see <a href="Glossary.html#complete%20binary%20tree">complete binary tree</a>) of exactly
+<i>pow</i><!-- /@w --> (2, <i>n</i><!-- /@w -->) - 1 nodes.
+
+   <p>If a red-black tree contains only red nodes, on the other hand, it
+cannot have more than one node, because of rule 1.
+
+   <p><a name="6_002d1_00232"></a> <b>2.</b>
+If a red-black tree's root is red, then we can transform it into an
+equivalent red-black tree with a black root simply by recoloring the
+root.  This cannot violate rule 1, because it does not introduce a red
+node.  It cannot violate rule 2 because it only affects the number of
+black nodes along paths that pass through the root, and it affects all
+of those paths equally, by increasing the number of black nodes along
+them by one.
+
+   <p>If, on the other hand, a red-black tree has a black root, we cannot in
+general recolor it to red, because this causes a violation of rule 1 if
+the root has a red child.
+
+   <p><a name="6_002d1_00233"></a> <b>3.</b>
+Yes and yes:
+
+<div align="center"><a href="rbunique.txt"><img border=0 src="rbunique.png" alt="[Click here for plain-text rendering]"></a></div>
+<h4 class="subheading">Section 6.2</h4>
+
+<p><a name="6_002d2_00231"></a> <b>1.</b>
+C has a number of different namespaces.  One of these is the namespace
+that contains <b>struct</b><!-- /@w -->, <b>union</b><!-- /@w -->, and <b>enum</b><!-- /@w --> tags.  Names of structure
+members are in a namespace separate from this tag namespace, so it is
+okay to give an <b>enum</b><!-- /@w --> and a structure member the same name.  On the
+other hand, it would be an error to give, e.g., a <b>struct</b><!-- /@w --> and an <b>enum</b><!-- /@w -->
+the same name.
+
+<h4 class="subheading">Section 6.4.2</h4>
+
+<p><a name="6_002d4_002d2_00231"></a> <b>1.</b>
+Inserting a red node can sometimes be done without breaking any rules. 
+Inserting a black node will always break rule 2.
+
+<h4 class="subheading">Section 6.4.3</h4>
+
+<p><a name="6_002d4_002d3_00231"></a> <b>1.</b>
+We can't have <i>k</i><!-- /@w --> == 1, because then the new node would be the root,
+and the root doesn't have a parent that could be red.  We don't need
+to rebalance <i>k</i><!-- /@w --> == 2, because the new node is a direct child of the
+root, and the root is always black.
+
+   <p><a name="6_002d4_002d3_00232"></a> <b>2.</b>
+Yes, it would, but if <i>d</i><!-- /@w --> has a red node as its root, case 1 will be
+selected instead.
+
+<h4 class="subheading">Section 6.5.1</h4>
+
+<p><a name="6_002d5_002d1_00231"></a> <b>1.</b>
+If <i>p</i><!-- /@w --> has no left child, that is, it is a leaf, then obviously we
+cannot swap colors.  Now consider only the case where <i>p</i><!-- /@w --> does have a
+non-null left child <i>x</i><!-- /@w -->.  Clearly, <i>x</i><!-- /@w --> must be red, because otherwise
+rule 2 would be violated at <i>p</i><!-- /@w -->.  This means that <i>p</i><!-- /@w --> must be black to
+avoid a rule 1 violation.  So the deletion will eliminate a black
+node, causing a rule 2 violation.  This is exactly the sort of problem
+that the rebalancing step is designed to deal with, so we can
+rebalance starting from node <i>x</i><!-- /@w -->.
+
+   <p><a name="6_002d5_002d1_00232"></a> <b>2.</b>
+There are two cases in this algorithm, which uses a new <b>struct</b><!-- /@w --> <b>avl_node</b> * variable named <i>x</i><!-- /@w -->.  Regardless of which one is chosen,
+<i>x</i><!-- /@w --> has the same meaning afterward: it is the node that replaced one
+of the children of the node at top of stack, and may be <tt>NULL</tt><!-- /@w --> if the
+node removed was a leaf.
+
+   <p>Case 1: If one of <i>p</i><!-- /@w -->'s child pointers is <tt>NULL</tt><!-- /@w -->, then <i>p</i><!-- /@w --> can be
+replaced by the other child, or by <tt>NULL</tt><!-- /@w --> if both children are <tt>NULL</tt><!-- /@w -->:
+
+   <p><a name="catalogue_002dentry_002drb_002d3"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-delete-item-from-RB-tree_002c-alternate-version-947"></a>
+<pre class="format"><a href="Step_2_3a_Delete_item_from_RB_tree,_alternate_version.c.txt">652</a>. &lt;<a name="652" href="Step_2_3a_Delete_item_from_RB_tree,_alternate_version.c.txt">Step 2: Delete item from RB tree, alternate version 652</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w --> || <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+      <i>x</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+  }
+</pre>
+   <p class="noindent"><small>See also <a href="Answers-for-Chapter-6.html#653">653</a> and <a href="Answers-for-Chapter-6.html#654">654</a>.</small>
+
+   <p>Case 2: If both of <i>p</i><!-- /@w -->'s child pointers are non-null, then we find <i>p</i><!-- /@w -->'s
+successor and replace <i>p</i><!-- /@w -->'s data by the successor's data, then delete
+the successor instead:
+
+   <p><a name="index-delete-item-from-RB-tree_002c-alternate-version-948"></a>
+<pre class="format"><a href="Step_2_3a_Delete_item_from_RB_tree,_alternate_version.c.txt">653</a>. &lt;<a name="653" href="Step_2_3a_Delete_item_from_RB_tree,_alternate_version.c.txt">Step 2: Delete item from RB tree, alternate version 652</a>&gt; +=
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>y</i><!-- /@w -->;
+
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>p</i><!-- /@w -->;
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = 1;
+
+    <i>y</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+    <b>while</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>y</i><!-- /@w -->;
+        <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = 0;
+        <i>y</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+      }
+
+    <i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+    <i>p</i><!-- /@w -->-&gt;<i>rb_data</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rb_data</i><!-- /@w -->;
+    <i>p</i><!-- /@w --> = <i>y</i><!-- /@w -->;
+  }
+</pre>
+   <p>In either case, we need to update the node above the deleted node to
+point to <i>x</i><!-- /@w -->.
+
+   <p><a name="index-delete-item-from-RB-tree_002c-alternate-version-949"></a>
+<pre class="format"><a href="Step_2_3a_Delete_item_from_RB_tree,_alternate_version.c.txt">654</a>. &lt;<a name="654" href="Step_2_3a_Delete_item_from_RB_tree,_alternate_version.c.txt">Step 2: Delete item from RB tree, alternate version 652</a>&gt; +=
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>x</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 14.4.
+
+   </body></html>
+

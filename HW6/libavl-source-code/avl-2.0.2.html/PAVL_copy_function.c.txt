@@ -1,0 +1,129 @@
+/* Destroys |new| with |pavl_destroy (new, destroy)|,
+   first initializing right links in |new| that have
+   not yet been initialized at time of call. */
+static void
+copy_error_recovery (struct pavl_node *q,
+                     struct pavl_table *new, pavl_item_func *destroy)
+{
+  assert (q != NULL && new != NULL);
+
+  for (;;)
+    {
+      struct pavl_node *p = q;
+      q = q->pavl_parent;
+      if (q == NULL)
+        break;
+
+      if (p == q->pavl_link[0])
+        q->pavl_link[1] = NULL;
+    }
+
+  pavl_destroy (new, destroy);
+}
+
+/* Copies |org| to a newly created tree, which is returned.
+   If |copy != NULL|, each data item in |org| is first passed to |copy|,
+   and the return values are inserted into the tree;
+   |NULL| return values are taken as indications of failure.
+   On failure, destroys the partially created new tree,
+   applying |destroy|, if non-null, to each item in the new tree so far,
+   and returns |NULL|.
+   If |allocator != NULL|, it is used for allocation in the new tree.
+   Otherwise, the same allocator used for |org| is used. */
+struct pavl_table *
+pavl_copy (const struct pavl_table *org, pavl_copy_func *copy,
+           pavl_item_func *destroy, struct libavl_allocator *allocator)
+{
+  struct pavl_table *new;
+  const struct pavl_node *x;
+  struct pavl_node *y;
+
+  assert (org != NULL);
+  new = pavl_create (org->pavl_compare, org->pavl_param,
+                    allocator != NULL ? allocator : org->pavl_alloc);
+  if (new == NULL)
+    return NULL;
+  new->pavl_count = org->pavl_count;
+  if (new->pavl_count == 0)
+    return new;
+
+  x = (const struct pavl_node *) &org->pavl_root;
+  y = (struct pavl_node *) &new->pavl_root;
+  for (;;)
+    {
+      while (x->pavl_link[0] != NULL)
+        {
+          y->pavl_link[0] =
+            new->pavl_alloc->libavl_malloc (new->pavl_alloc,
+                                            sizeof *y->pavl_link[0]);
+          if (y->pavl_link[0] == NULL)
+            {
+              if (y != (struct pavl_node *) &new->pavl_root)
+                {
+                  y->pavl_data = NULL;
+                  y->pavl_link[1] = NULL;
+                }
+
+              copy_error_recovery (y, new, destroy);
+              return NULL;
+            }
+          y->pavl_link[0]->pavl_parent = y;
+
+          x = x->pavl_link[0];
+          y = y->pavl_link[0];
+        }
+      y->pavl_link[0] = NULL;
+
+      for (;;)
+        {
+          y->pavl_balance = x->pavl_balance;
+          if (copy == NULL)
+            y->pavl_data = x->pavl_data;
+          else
+            {
+              y->pavl_data = copy (x->pavl_data, org->pavl_param);
+              if (y->pavl_data == NULL)
+                {
+                  y->pavl_link[1] = NULL;
+                  copy_error_recovery (y, new, destroy);
+                  return NULL;
+                }
+            }
+
+          if (x->pavl_link[1] != NULL)
+            {
+              y->pavl_link[1] =
+                new->pavl_alloc->libavl_malloc (new->pavl_alloc,
+                                               sizeof *y->pavl_link[1]);
+              if (y->pavl_link[1] == NULL)
+                {
+                  copy_error_recovery (y, new, destroy);
+                  return NULL;
+                }
+              y->pavl_link[1]->pavl_parent = y;
+
+              x = x->pavl_link[1];
+              y = y->pavl_link[1];
+              break;
+            }
+          else
+            y->pavl_link[1] = NULL;
+
+          for (;;)
+            {
+              const struct pavl_node *w = x;
+              x = x->pavl_parent;
+              if (x == NULL)
+                {
+                  new->pavl_root->pavl_parent = NULL;
+                  return new;
+                }
+              y = y->pavl_parent;
+
+              if (w == x->pavl_link[0])
+                break;
+            }
+        }
+    }
+}
+

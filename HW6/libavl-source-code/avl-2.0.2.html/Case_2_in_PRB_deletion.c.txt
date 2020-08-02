@@ -1,0 +1,12 @@
+r->prb_link[0] = p->prb_link[0];
+q->prb_link[dir] = r;
+r->prb_parent = p->prb_parent;
+if (r->prb_link[0] != NULL)
+  r->prb_link[0]->prb_parent = r;
+
+t = p->prb_color;
+p->prb_color = r->prb_color;
+r->prb_color = t;
+
+f = r;
+dir = 1;

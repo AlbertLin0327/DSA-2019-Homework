@@ -1,0 +1,178 @@
+<html lang="en">
+<head>
+<title>Deleting an AVL Node Step 2 - Delete - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-an-AVL-Node-Step-1-_002d-Search.html" title="5.5.1 Step 1: Search">
+<link rel=Next href="Deleting-an-AVL-Node-Step-3-_002d-Update.html" title="5.5.3 Step 3: Update Balance Factors">
+<link rel=Parent href="Deleting-from-an-AVL-Tree.html" title="5.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-an-AVL-Node-Step-2-_002d-Delete">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.5.2 Step 2: Delete</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-an-AVL-Node-Step-2-_002d-Delete.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-an-AVL-Node-Step-1-_002d-Search.html" title="Skip Back: 5.5.1 Step 1: Search"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-an-AVL-Node-Step-3-_002d-Update.html" title="Skip Forward: 5.5.3 Step 3: Update Balance Factors"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-an-AVL-Node-Step-1-_002d-Search.html" title="Prev: 5.5.1 Step 1: Search"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-an-AVL-Tree.html" title="Up: 5.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-an-AVL-Node-Step-3-_002d-Update.html" title="Next: 5.5.3 Step 3: Update Balance Factors"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>At this point, we've identified <i>p</i><!-- /@w --> as the node to delete.  The node
+on the top of the stack, <i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1], is <i>p</i><!-- /@w -->'s parent node.  There are the same
+three cases we saw in deletion from an ordinary BST (see <a href="Deleting-from-a-BST.html">Deleting from a BST</a>), with the addition of code to copy balance factors and
+update the stack.
+
+   <p>The code for selecting cases is the same as for BSTs:
+
+   <p><a name="index-delete-item-from-AVL-tree-250"></a>
+<pre class="format"><a href="Step_2_3a_Delete_item_from_AVL_tree.c.txt">166</a>. &lt;<a name="166" href="Step_2_3a_Delete_item_from_AVL_tree.c.txt">Step 2: Delete item from AVL tree 166</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->)
+  { &lt;<a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html#168">Case 1 in AVL deletion 168</a>&gt; }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+    <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html#169">Case 2 in AVL deletion 169</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html#170">Case 3 in AVL deletion 170</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+</pre>
+   <p class="noindent"><small>See also <a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html#167">167</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Deleting-from-an-AVL-Tree.html#164">164</a>.</small></div>
+
+   <p>Regardless of the case, we are in the same situation after the
+deletion: node <i>p</i><!-- /@w --> has been removed from the tree and the stack
+contains <i>k</i><!-- /@w --> nodes at which rebalancing may be necessary.  Later code
+may change <i>p</i><!-- /@w --> to point elsewhere, so we free the node immediately.  A
+pointer to the item data has already been saved in <i>item</i><!-- /@w -->
+(see <a href="Deleting-an-AVL-Node-Step-1-_002d-Search.html#avldelsaveitem">avldelsaveitem</a>):
+
+   <p><a name="index-delete-item-from-AVL-tree-251"></a>
+<pre class="format"><a href="Step_2_3a_Delete_item_from_AVL_tree.c.txt">167</a>. &lt;<a name="167" href="Step_2_3a_Delete_item_from_AVL_tree.c.txt">Step 2: Delete item from AVL tree 166</a>&gt; +=
+<i>tree</i><!-- /@w -->-&gt;<i>avl_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>avl_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+</pre>
+   <h5 class="subsubheading">Case 1: <i>p</i><!-- /@w --> has no right child</h5>
+
+<p>If <i>p</i><!-- /@w --> has no right child, then we can replace it with its left child,
+the same as for BSTs (see <a href="Deleting-from-a-BST.html#bstdelcase1">bstdelcase1</a>).
+
+   <p><a name="index-case-1-in-AVL-deletion-252"></a>
+<pre class="format"><a href="Case_1_in_AVL_deletion.c.txt">168</a>. &lt;<a name="168" href="Case_1_in_AVL_deletion.c.txt">Case 1 in AVL deletion 168</a>&gt; =
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>avl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html#166">166</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>p</i><!-- /@w -->'s right child has no left child</h5>
+
+<p>If <i>p</i><!-- /@w --> has a right child <i>r</i><!-- /@w -->, which in turn has no left child, then we
+replace <i>p</i><!-- /@w --> by <i>r</i><!-- /@w -->, attaching <i>p</i><!-- /@w -->'s left child to <i>r</i><!-- /@w -->, as we would in
+an unbalanced BST (see <a href="Deleting-from-a-BST.html#bstdelcase2">bstdelcase2</a>).  In addition, <i>r</i><!-- /@w --> acquires
+<i>p</i><!-- /@w -->'s balance factor, and <i>r</i><!-- /@w --> must be added to the stack of nodes
+above the deleted node.
+
+   <p><a name="index-case-2-in-AVL-deletion-253"></a>
+<pre class="format"><a href="Case_2_in_AVL_deletion.c.txt">169</a>. &lt;<a name="169" href="Case_2_in_AVL_deletion.c.txt">Case 2 in AVL deletion 169</a>&gt; =
+<i>r</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+<i>r</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>avl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>r</i><!-- /@w -->;
+<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html#166">166</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>p</i><!-- /@w -->'s right child has a left child</h5>
+
+<p>If <i>p</i><!-- /@w -->'s right child has a left child, then this is the third and most
+complicated case.  On the other hand, as a modification from the third
+case in an ordinary BST deletion (see <a href="Deleting-from-a-BST.html#bstdelcase3">bstdelcase3</a>), it is rather
+simple.  We're deleting the inorder successor of <i>p</i><!-- /@w -->, so we push the
+nodes above it onto the stack.  The only trickery is that we do not
+know in advance the node that will replace <i>p</i><!-- /@w -->, so we reserve a spot
+on the stack for it (<i>da</i><!-- /@w -->[<i>j</i><!-- /@w -->]) and fill it in later:
+
+   <p><a name="index-case-3-in-AVL-deletion-254"></a>
+<pre class="format"><a href="Case_3_in_AVL_deletion.c.txt">170</a>. &lt;<a name="170" href="Case_3_in_AVL_deletion.c.txt">Case 3 in AVL deletion 170</a>&gt; =
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>s</i><!-- /@w -->;
+<b>int</b><!-- /@w --> <i>j</i><!-- /@w --> = <i>k</i><!-- /@w -->++;
+
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 0;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+
+<i>s</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+<i>r</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w -->;
+
+<i>pa</i><!-- /@w -->[<i>j</i><!-- /@w --> - 1]-&gt;<i>avl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>j</i><!-- /@w --> - 1]] = <i>s</i><!-- /@w -->;
+<i>da</i><!-- /@w -->[<i>j</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>j</i><!-- /@w -->] = <i>s</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html#166">166</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="avlmodifydata"></a>&nbsp;<!-- /@w -->Write an alternate version of &lt;<a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html#170">Case 3 in AVL deletion 170</a>&gt; that moves data
+instead of pointers, as in Exercise 4.8-2. 
+[<a href="Answers-for-Chapter-5.html#5%2d5%2d2%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Why is it important that the item data was saved earlier?  (Why
+couldn't we save it just before freeing the node?) 
+[<a href="Answers-for-Chapter-5.html#5%2d5%2d2%232">answer</a>]
+
+   </body></html>
+

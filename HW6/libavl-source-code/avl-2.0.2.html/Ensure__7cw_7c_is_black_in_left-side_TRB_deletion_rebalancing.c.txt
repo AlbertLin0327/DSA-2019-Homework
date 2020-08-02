@@ -1,0 +1,13 @@
+w->trb_color = TRB_BLACK;
+pa[k - 1]->trb_color = TRB_RED;
+
+pa[k - 1]->trb_link[1] = w->trb_link[0];
+w->trb_link[0] = pa[k - 1];
+pa[k - 2]->trb_link[da[k - 2]] = w;
+
+pa[k] = pa[k - 1];
+da[k] = 0;
+pa[k - 1] = w;
+k++;
+
+w = pa[k - 1]->trb_link[1];

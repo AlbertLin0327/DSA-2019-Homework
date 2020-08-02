@@ -1,0 +1,25 @@
+struct tavl_node *s = r->tavl_link[0];
+while (s->tavl_tag[0] == TAVL_CHILD)
+  {
+    r = s;
+    s = r->tavl_link[0];
+  }
+
+p->tavl_data = s->tavl_data;
+
+if (s->tavl_tag[1] == TAVL_THREAD)
+  {
+    r->tavl_tag[0] = TAVL_THREAD;
+    r->tavl_link[0] = p;
+  }
+else
+  {
+    q = r->tavl_link[0] = s->tavl_link[1];
+    while (q->tavl_tag[0] == TAVL_CHILD)
+      q = q->tavl_link[0];
+    q->tavl_link[0] = p;
+  }
+
+p = s;
+q = r;
+dir = 0;

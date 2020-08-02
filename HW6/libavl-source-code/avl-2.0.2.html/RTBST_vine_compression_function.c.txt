@@ -1,0 +1,31 @@
+/* Performs a compression transformation |count| times,
+   starting at |root|. */
+static void
+compress (struct rtbst_node *root,
+          unsigned long nonthread, unsigned long thread)
+{
+  assert (root != NULL);
+
+  while (nonthread--)
+    {
+      struct rtbst_node *red = root->rtbst_link[0];
+      struct rtbst_node *black = red->rtbst_link[0];
+
+      root->rtbst_link[0] = black;
+      red->rtbst_link[0] = black->rtbst_link[1];
+      black->rtbst_link[1] = red;
+      root = black;
+    }
+
+  while (thread--)
+    {
+      struct rtbst_node *red = root->rtbst_link[0];
+      struct rtbst_node *black = red->rtbst_link[0];
+
+      root->rtbst_link[0] = black;
+      red->rtbst_link[0] = NULL;
+      black->rtbst_rtag = RTBST_CHILD;
+      root = black;
+    }
+}
+

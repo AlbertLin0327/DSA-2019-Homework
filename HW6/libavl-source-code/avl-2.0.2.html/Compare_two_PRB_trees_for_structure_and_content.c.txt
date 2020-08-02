@@ -1,0 +1,45 @@
+/* Compares binary trees rooted at |a| and |b|,
+   making sure that they are identical. */
+static int
+compare_trees (struct prb_node *a, struct prb_node *b)
+{
+  int okay;
+
+  if (a == NULL || b == NULL)
+    {
+      assert (a == NULL && b == NULL);
+      return 1;
+    }
+
+  if (*(int *) a->prb_data != *(int *) b->prb_data
+      || ((a->prb_link[0] != NULL) != (b->prb_link[0] != NULL))
+      || ((a->prb_link[1] != NULL) != (b->prb_link[1] != NULL))
+      || a->prb_color != b->prb_color)
+    {
+      printf (" Copied nodes differ: a=%d%c b=%d%c a:",
+              *(int *) a->prb_data, a->prb_color == PRB_RED ? 'r' : 'b',
+              *(int *) b->prb_data, b->prb_color == PRB_RED ? 'r' : 'b');
+
+      if (a->prb_link[0] != NULL)
+        printf ("l");
+      if (a->prb_link[1] != NULL)
+        printf ("r");
+
+      printf (" b:");
+      if (b->prb_link[0] != NULL)
+        printf ("l");
+      if (b->prb_link[1] != NULL)
+        printf ("r");
+
+      printf ("\n");
+      return 0;
+    }
+
+  okay = 1;
+  if (a->prb_link[0] != NULL)
+    okay &= compare_trees (a->prb_link[0], b->prb_link[0]);
+  if (a->prb_link[1] != NULL)
+    okay &= compare_trees (a->prb_link[1], b->prb_link[1]);
+  return okay;
+}
+

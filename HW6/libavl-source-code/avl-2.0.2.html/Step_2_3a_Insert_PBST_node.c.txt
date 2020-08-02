@@ -1,0 +1,12 @@
+n = tree->pbst_alloc->libavl_malloc (tree->pbst_alloc, sizeof *p);
+if (n == NULL)
+  return NULL;
+
+tree->pbst_count++;
+n->pbst_link[0] = n->pbst_link[1] = NULL;
+n->pbst_parent = q;
+n->pbst_data = item;
+if (q != NULL)
+  q->pbst_link[dir] = n;
+else
+  tree->pbst_root = n;

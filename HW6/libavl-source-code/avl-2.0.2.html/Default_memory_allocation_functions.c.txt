@@ -1,0 +1,24 @@
+/* Allocates |size| bytes of space using |malloc()|.
+   Returns a null pointer if allocation fails. */
+void *
+tbl_malloc (struct libavl_allocator *allocator, size_t size)
+{
+  assert (allocator != NULL && size > 0);
+  return malloc (size);
+}
+
+/* Frees |block|. */
+void
+tbl_free (struct libavl_allocator *allocator, void *block)
+{
+  assert (allocator != NULL && block != NULL);
+  free (block);
+}
+
+/* Default memory allocator that uses |malloc()| and |free()|. */
+struct libavl_allocator tbl_allocator_default =
+  {
+    tbl_malloc,
+    tbl_free
+  };
+

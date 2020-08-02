@@ -1,0 +1,23 @@
+/* Color of a red-black node. */
+enum trb_color
+  {
+    TRB_BLACK,                     /* Black. */
+    TRB_RED                        /* Red. */
+  };
+
+/* Characterizes a link as a child pointer or a thread. */
+enum trb_tag
+  {
+    TRB_CHILD,                     /* Child pointer. */
+    TRB_THREAD                     /* Thread. */
+  };
+
+/* An TRB tree node. */
+struct trb_node
+  {
+    struct trb_node *trb_link[2];  /* Subtrees. */
+    void *trb_data;                /* Pointer to data. */
+    unsigned char trb_color;       /* Color. */
+    unsigned char trb_tag[2];      /* Tag fields. */
+  };
+

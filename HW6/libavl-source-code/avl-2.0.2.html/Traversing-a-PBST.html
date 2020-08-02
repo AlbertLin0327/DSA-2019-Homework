@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Traversing a PBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-from-a-PBST.html" title="13.4 Deletion">
+<link rel=Next href="PBST-Traverser-First-Initialization.html" title="13.5.1 Starting at the First Node">
+<link rel=Parent href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Traversing-a-PBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>13.5 Traversal</b></big></td>
+<td align=right>
+<a href="index.html#Traversing-a-PBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-from-a-PBST.html" title="Skip Back: 13.4 Deletion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Copying-a-PBST.html" title="Skip Forward: 13.6 Copying"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-from-a-PBST.html" title="Prev: 13.4 Deletion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="BSTs-with-Parent-Pointers.html" title="Up: 13 BSTs with Parent Pointers"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="PBST-Traverser-First-Initialization.html" title="Next: 13.5.1 Starting at the First Node"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The traverser for a PBST is just like that for a TBST, so we can reuse
+a couple of the TBST functions.  Besides that and a couple of
+completely generic functions, we have to reimplement the traversal
+functions.
+
+   <p><a name="index-PBST-traversal-functions-694"></a>
+<pre class="format"><a href="PBST_traversal_functions.c.txt">502</a>. &lt;<a name="502" href="PBST_traversal_functions.c.txt">PBST traversal functions 502</a>&gt; =
+&lt;<a href="TBST-Traverser-Null-Initialization.html#269">TBST traverser null initializer; tbst =&gt; pbst 269</a>&gt;
+&lt;<a href="PBST-Traverser-First-Initialization.html#503">PBST traverser first initializer 503</a>&gt;
+&lt;<a href="PBST-Traverser-Last-Initialization.html#504">PBST traverser last initializer 504</a>&gt;
+&lt;<a href="PBST-Traverser-Find-Initialization.html#505">PBST traverser search initializer 505</a>&gt;
+&lt;<a href="PBST-Traverser-Insert-Initialization.html#506">PBST traverser insertion initializer 506</a>&gt;
+&lt;<a href="TBST-Traverser-Copying.html#274">TBST traverser copy initializer; tbst =&gt; pbst 274</a>&gt;
+&lt;<a href="PBST-Traverser-Advancing.html#507">PBST traverser advance function 507</a>&gt;
+&lt;<a href="PBST-Traverser-Retreating.html#508">PBST traverser back up function 508</a>&gt;
+&lt;<a href="BST-Traversal-Current-Item.html#74">BST traverser current item function; bst =&gt; pbst 74</a>&gt;
+&lt;<a href="BST-Traversal-Replacing-the-Current-Item.html#75">BST traverser replacement function; bst =&gt; pbst 75</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="PBST-Operations.html#489">489</a>.</small>
+
+<ul class="menu">
+<li><a accesskey="1" href="PBST-Traverser-First-Initialization.html">PBST Traverser First Initialization</a>
+<li><a accesskey="2" href="PBST-Traverser-Last-Initialization.html">PBST Traverser Last Initialization</a>
+<li><a accesskey="3" href="PBST-Traverser-Find-Initialization.html">PBST Traverser Find Initialization</a>
+<li><a accesskey="4" href="PBST-Traverser-Insert-Initialization.html">PBST Traverser Insert Initialization</a>
+<li><a accesskey="5" href="PBST-Traverser-Advancing.html">PBST Traverser Advancing</a>
+<li><a accesskey="6" href="PBST-Traverser-Retreating.html">PBST Traverser Retreating</a>
+</ul>
+
+   </body></html>
+

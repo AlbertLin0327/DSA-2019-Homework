@@ -1,0 +1,121 @@
+<html lang="en">
+<head>
+<title>Inserting into a PBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="PBST-Operations.html" title="13.2 Operations">
+<link rel=Next href="Deleting-from-a-PBST.html" title="13.4 Deletion">
+<link rel=Parent href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Inserting-into-a-PBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>13.3 Insertion</b></big></td>
+<td align=right>
+<a href="index.html#Inserting-into-a-PBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="PBST-Operations.html" title="Skip Back: 13.2 Operations"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-from-a-PBST.html" title="Skip Forward: 13.4 Deletion"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="PBST-Operations.html" title="Prev: 13.2 Operations"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="BSTs-with-Parent-Pointers.html" title="Up: 13 BSTs with Parent Pointers"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-from-a-PBST.html" title="Next: 13.4 Deletion"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The only difference between this code and &lt;<a href="Inserting-into-a-BST.html#32">BST item insertion function 32</a>&gt; is that we set <i>n</i><!-- /@w -->'s parent pointer after insertion.
+
+   <p><a name="catalogue_002dentry_002dpbst_002d0"></a>
+<a name="index-PBST-item-insertion-function-680"></a>
+<pre class="format"><a href="PBST_item_insertion_function.c.txt">490</a>. &lt;<a name="490" href="PBST_item_insertion_function.c.txt">PBST item insertion function 490</a>&gt; =
+<b>void</b><!-- /@w --> **<br><i>pbst_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpbst_005fprobe_007d-function-681"></a>  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>p</i><!-- /@w -->, *<i>q</i><!-- /@w -->; /* Current node in search and its parent. */
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;                 /* Side of <i>q</i><!-- /@w --> on which <i>p</i><!-- /@w --> is located. */
+  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>n</i><!-- /@w -->;     /* Newly inserted node. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Inserting-into-a-PBST.html#491">Step 1: Search PBST tree for insertion point 491</a>&gt;
+  &lt;<a href="Inserting-into-a-PBST.html#492">Step 2: Insert PBST node 492</a>&gt;
+
+  <b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>pbst_data</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="PBST-Operations.html#489">489</a>.</small>
+
+   <p><a name="index-search-PBST-tree-for-insertion-point-682"></a>
+<pre class="format"><a href="Step_1_3a_Search_PBST_tree_for_insertion_point.c.txt">491</a>. &lt;<a name="491" href="Step_1_3a_Search_PBST_tree_for_insertion_point.c.txt">Step 1: Search PBST tree for insertion point 491</a>&gt; =
+<b>for</b><!-- /@w --> (<i>q</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->, <i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w -->; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->, <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>pbst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>pbst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>pbst_param</i><!-- /@w -->);
+    <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> == 0)
+      <b>return</b><!-- /@w --> &amp;<i>p</i><!-- /@w -->-&gt;<i>pbst_data</i><!-- /@w -->;
+    <i>dir</i><!-- /@w --> = <i>cmp</i><!-- /@w --> &gt; 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-a-PBST.html#490">490</a> and <a href="Inserting-into-a-PRB-Tree.html#555">555</a>.</small>
+
+   <p><a name="index-insert-PBST-node-683"></a>
+<pre class="format"><a href="Step_2_3a_Insert_PBST_node.c.txt">492</a>. &lt;<a name="492" href="Step_2_3a_Insert_PBST_node.c.txt">Step 2: Insert PBST node 492</a>&gt; =
+<i>n</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>pbst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>pbst_alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>p</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>n</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+<i>tree</i><!-- /@w -->-&gt;<i>pbst_count</i><!-- /@w -->++;
+<i>n</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] = <i>n</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+<i>n</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>q</i><!-- /@w -->;
+<i>n</i><!-- /@w -->-&gt;<i>pbst_data</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>q</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+  <i>q</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>n</i><!-- /@w -->;
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w --> = <i>n</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-a-PBST.html#490">490</a>, <a href="Steps-1-and-2-in-PAVL-Insertion.html#525">525</a>, and <a href="Step-2-in-PRB-Insertion.html#556">556</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 13.3.
+
+   </body></html>
+

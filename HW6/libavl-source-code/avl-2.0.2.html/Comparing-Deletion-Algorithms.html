@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+<title>Comparing Deletion Algorithms - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Left_002dLooking-Deletion-in-an-RTBST.html" title="10.5.2 Left-Looking Deletion">
+<link rel=Next href="Traversing-an-RTBST.html" title="10.6 Traversal">
+<link rel=Parent href="Deleting-from-an-RTBST.html" title="10.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Comparing-Deletion-Algorithms">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>10.5.3 Aside: Comparison of Deletion Algorithms</b></big></td>
+<td align=right>
+<a href="index.html#Comparing-Deletion-Algorithms.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Left_002dLooking-Deletion-in-an-RTBST.html" title="Skip Back: 10.5.2 Left-Looking Deletion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Left_002dLooking-Deletion-in-an-RTBST.html" title="Prev: 10.5.2 Left-Looking Deletion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-an-RTBST.html" title="Up: 10.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Traversing-an-RTBST.html" title="Next: 10.6 Traversal"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>This book has presented algorithms for deletion from BSTs, TBSTs, and
+RTBSTs.  In fact, we implemented two algorithms for RTBSTs.  Each of
+these four algorithms has slightly different performance
+characteristics.  The following table summarizes the behavior of all
+of the cases in these algorithms.  Each cell describes the actions
+that take place: &ldquo;link&rdquo; is the number of link fields set, &ldquo;tag&rdquo;
+the number of tag fields set, and &ldquo;succ/pred&rdquo; the number of general
+successor or predecessors found during the case.
+
+   <p><table summary=""><tr align="left"><td valign="top" width="5%"></td><td valign="top" width="15%">
+</td><td valign="top" width="20%">BST*
+</td><td valign="top" width="20%">TBST
+</td><td valign="top" width="20%">Right-Looking <br> TBST
+</td><td valign="top" width="20%">Left-Looking <br> TBST <br> &nbsp;<!-- /@w -->
+
+<p><br></td></tr><tr align="left"><td valign="top" width="5%"></td><td valign="top" width="15%">Case 1
+</td><td valign="top" width="20%">1 link
+</td><td valign="top" width="20%">2 links <br> 1 succ/pred <br> &nbsp;<!-- /@w -->
+</td><td valign="top" width="20%">2 links <br> 1 succ/pred
+</td><td valign="top" width="20%">1 link
+
+<p><br></td></tr><tr align="left"><td valign="top" width="5%"></td><td valign="top" width="15%">Case 2
+</td><td valign="top" width="20%">1 link
+</td><td valign="top" width="20%">1 link <br> 1 tag <br> &nbsp;<!-- /@w -->
+</td><td valign="top" width="20%">1 link <br> 1 tag
+</td><td valign="top" width="20%">1 link <br> 1 tag
+
+<p><br></td></tr><tr align="left"><td valign="top" width="5%"></td><td valign="top" width="15%">Case 3
+</td><td valign="top" width="20%">2 links
+</td><td valign="top" width="20%">3 links <br> 1 tag <br> 1 succ/pred <br> &nbsp;<!-- /@w -->
+</td><td valign="top" width="20%">3 links <br> &nbsp;<!-- /@w --> <br> 1 succ/pred
+</td><td valign="top" width="20%">2 links <br> 1 tag
+
+<p><br></td></tr><tr align="left"><td valign="top" width="5%"></td><td valign="top" width="15%">Case 4 <br> subcase 1
+</td><td valign="top" width="20%">4 links <br> &nbsp;<!-- /@w --> <br> 1 succ/pred
+</td><td valign="top" width="20%">5 links <br> 2 tags <br> 2 succ/pred <br> &nbsp;<!-- /@w -->
+</td><td valign="top" width="20%">5 links <br> 1 tag <br> 2 succ/pred
+</td><td valign="top" width="20%">4 links <br> 1 tag <br> 1 succ/pred
+
+<p><br></td></tr><tr align="left"><td valign="top" width="5%"></td><td valign="top" width="15%">Case 4 <br> subcase 2
+</td><td valign="top" width="20%">4 links <br> &nbsp;<!-- /@w --> <br> 1 succ/pred
+</td><td valign="top" width="20%">5 links <br> 2 tags <br> 2 succ/pred <br> &nbsp;<!-- /@w -->
+</td><td valign="top" width="20%">5 links <br> 1 tag <br> 2 succ/pred
+</td><td valign="top" width="20%">4 links <br> 1 tag <br> 1 succ/pred
+   <br></td></tr></table>
+
+   <blockquote>
+<small>* Listed cases 1 and 2 both correspond to BST deletion case 1,
+and listed cases 3 and 4 to BST deletion cases 2 and 3, respectively. 
+BST deletion does not have any subcases in its case 3 (listed case 4),
+so it also saves a test to distinguish subcases.</small>
+
+   </blockquote>
+
+   <p>As you can see, the penalty for left-looking deletion from a RTBST,
+compared to a plain BST, is at most one tag assignment in any given
+case, except for the need to distinguish subcases of case 4.  In this
+sense at least, left-looking deletion from an RTBST is considerably
+faster than deletion from a TBST or right-looking deletion from a
+RTBST.  This means that it can indeed be worthwhile to implement
+right-threaded trees instead of BSTs or TBSTs.
+
+   </body></html>
+

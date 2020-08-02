@@ -1,0 +1,84 @@
+if (p->tavl_tag[1] == TAVL_THREAD)
+  {
+    if (p->tavl_tag[0] == TAVL_CHILD)
+      {
+        struct tavl_node *r = p->tavl_link[0];
+        while (r->tavl_tag[1] == TAVL_CHILD)
+          r = r->tavl_link[1];
+        r->tavl_link[1] = p->tavl_link[1];
+        pa[k - 1]->tavl_link[da[k - 1]] = p->tavl_link[0];
+      }
+    else
+      {
+        pa[k - 1]->tavl_link[da[k - 1]] = p->tavl_link[da[k - 1]];
+        if (pa[k - 1] != (struct tavl_node *) &tree->tavl_root)
+          pa[k - 1]->tavl_tag[da[k - 1]] = TAVL_THREAD;
+      }
+  }
+else
+  {
+    struct tavl_node *r = p->tavl_link[1];
+    if (r->tavl_tag[0] == TAVL_THREAD)
+      {
+        r->tavl_link[0] = p->tavl_link[0];
+        r->tavl_tag[0] = p->tavl_tag[0];
+        r->tavl_balance = p->tavl_balance;
+        if (r->tavl_tag[0] == TAVL_CHILD)
+          {
+            struct tavl_node *x = r->tavl_link[0];
+            while (x->tavl_tag[1] == TAVL_CHILD)
+              x = x->tavl_link[1];
+            x->tavl_link[1] = r;
+          }
+        pa[k - 1]->tavl_link[da[k - 1]] = r;
+        da[k] = 1;
+        pa[k++] = r;
+      }
+    else
+      {
+        struct tavl_node *s;
+        int j = k++;
+
+        for (;;)
+          {
+            da[k] = 0;
+            pa[k++] = r;
+            s = r->tavl_link[0];
+            if (s->tavl_tag[0] == TAVL_THREAD)
+              break;
+
+            r = s;
+          }
+
+        da[j] = 1;
+        pa[j] = pa[j - 1]->tavl_link[da[j - 1]] = s;
+
+        if (s->tavl_tag[1] == TAVL_CHILD)
+          r->tavl_link[0] = s->tavl_link[1];
+        else
+          {
+            r->tavl_link[0] = s;
+            r->tavl_tag[0] = TAVL_THREAD;
+          }
+
+        s->tavl_balance = p->tavl_balance;
+
+        s->tavl_link[0] = p->tavl_link[0];
+        if (p->tavl_tag[0] == TAVL_CHILD)
+          {
+            struct tavl_node *x = p->tavl_link[0];
+            while (x->tavl_tag[1] == TAVL_CHILD)
+              x = x->tavl_link[1];
+            x->tavl_link[1] = s;
+
+            s->tavl_tag[0] = TAVL_CHILD;
+          }
+
+        s->tavl_link[1] = p->tavl_link[1];
+        s->tavl_tag[1] = TAVL_CHILD;
+      }
+  }
+
+tree->tavl_count--;
+tree->tavl_alloc->libavl_free (tree->tavl_alloc, p);
+

@@ -1,0 +1,2 @@
+for (q = NULL, p = tree->pbst_root; p != NULL; q = p, p = p->pbst_link[0])
+  p->pbst_parent = q;

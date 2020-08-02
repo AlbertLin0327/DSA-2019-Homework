@@ -1,0 +1,6 @@
+struct rb_node *y = w->rb_link[0];
+y->rb_color = RB_BLACK;
+w->rb_color = RB_RED;
+w->rb_link[0] = y->rb_link[1];
+y->rb_link[1] = w;
+w = pa[k - 1]->rb_link[1] = y;

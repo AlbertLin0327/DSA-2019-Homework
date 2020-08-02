@@ -1,0 +1,5 @@
+r->avl_link[0] = p->avl_link[0];
+r->avl_balance = p->avl_balance;
+pa[k - 1]->avl_link[da[k - 1]] = r;
+da[k] = 1;
+pa[k++] = r;

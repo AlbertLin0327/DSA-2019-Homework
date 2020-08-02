@@ -1,0 +1,23 @@
+/* Description of a search function. */
+struct search_func
+  {
+    const char *name;
+    int (*search) (int array[], int n, int key);
+  };
+
+/* Array of all the search functions we know. */
+struct search_func search_func_tab[] =
+  {
+    {"seq_search()", seq_search},
+    {"seq_sentinel_search()", seq_sentinel_search},
+    {"seq_sorted_search()", seq_sorted_search},
+    {"seq_sorted_sentinel_search()", seq_sorted_sentinel_search},
+    {"seq_sorted_sentinel_search_2()", seq_sorted_sentinel_search_2},
+    {"binary_search()", binary_search},
+    {"uniform_binary_search()", uniform_binary_search},
+    {"binary_search_bsearch()", binary_search_bsearch},
+    {"cheat_search()", cheat_search},
+  };
+
+/* Number of search functions. */
+const size_t n_search_func = sizeof search_func_tab / sizeof *search_func_tab;

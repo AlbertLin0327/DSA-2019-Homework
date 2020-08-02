@@ -1,0 +1,2 @@
+compress ((struct bst_node *) &tree->bst_root, leaves);
+

@@ -1,0 +1,5 @@
+struct rtbst_node *t = p->rtbst_link[0];
+while (t->rtbst_rtag == RTBST_CHILD)
+  t = t->rtbst_link[1];
+t->rtbst_link[1] = p->rtbst_link[1];
+q->rtbst_link[dir] = p->rtbst_link[0];

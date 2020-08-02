@@ -1,0 +1,274 @@
+<html lang="en">
+<head>
+<title>Deleting an RB Node Step 3 - Rebalance - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-an-RB-Node-Step-2-_002d-Delete.html" title="6.5.1 Step 2: Delete">
+<link rel=Next href="Deleting-an-RB-Node-Step-4-_002d-Finish-Up.html" title="6.5.3 Step 4: Finish Up">
+<link rel=Parent href="Deleting-from-an-RB-Tree.html" title="6.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-an-RB-Node-Step-3-_002d-Rebalance">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6.5.2 Step 3: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-an-RB-Node-Step-3-_002d-Rebalance.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html" title="Skip Back: 6.5.1 Step 2: Delete"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-an-RB-Node-Step-4-_002d-Finish-Up.html" title="Skip Forward: 6.5.3 Step 4: Finish Up"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html" title="Prev: 6.5.1 Step 2: Delete"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-an-RB-Tree.html" title="Up: 6.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-an-RB-Node-Step-4-_002d-Finish-Up.html" title="Next: 6.5.3 Step 4: Finish Up"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>At this point, node <i>p</i><!-- /@w --> has been removed from <i>tree</i><!-- /@w --> and <i>p</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w -->
+indicates the color of the node that was removed from the tree.  Our
+first step is to handle one common special case: if we deleted a red
+node, no rebalancing is necessary, because deletion of a red node
+cannot violate either rule.  Here is the code to avoid rebalancing in
+this special case:
+
+   <p><a name="index-rebalance-tree-after-RB-deletion-326"></a>
+<pre class="format"><a href="Step_3_3a_Rebalance_tree_after_RB_deletion.c.txt">225</a>. &lt;<a name="225" href="Step_3_3a_Rebalance_tree_after_RB_deletion.c.txt">Step 3: Rebalance tree after RB deletion 225</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_BLACK</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#226">Rebalance after RB deletion 226</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-an-RB-Tree.html#220">220</a>.</small>
+
+   <p>On the other hand, if a black node was deleted, then we have more work
+to do.  At the least, we have a violation of rule 2.  If the deletion
+brought together two red nodes, as happened in the example in the
+previous section, there is also a violation of rule 1.
+
+   <p>We must now fix both of these problems by rebalancing.  This time, the
+rebalancing loop invariant is that the black-height of <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]'s
+subtree on side <i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] is 1 less than the black-height of its
+other subtree, a rule 2 violation.
+
+   <p>There may also be a rule 2 violation, such <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] and its child
+on side <i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1], which we will call <i>x</i><!-- /@w -->, are both red.  (In the
+first iteration of the rebalancing loop, node <i>x</i><!-- /@w --> is the node labeled
+as such in the diagrams in the previous section.)  If this is the
+case, then the fix for rule 2 is simple: just recolor <i>x</i><!-- /@w --> black.  This
+increases the black-height and fixes any rule 1 violation as well.  If
+we can do this, we're all done.  Otherwise, we have more work to do.
+
+   <p>Here's the rebalancing loop:
+
+   <p><a name="index-rebalance-after-RB-deletion-327"></a>
+<pre class="format"><a href="Rebalance_after_RB_deletion.c.txt">226</a>. &lt;<a name="226" href="Rebalance_after_RB_deletion.c.txt">Rebalance after RB deletion 226</a>&gt; =
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>x</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]];
+    <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>x</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>x</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+        <b>break</b><!-- /@w -->;
+      }
+    <b>if</b><!-- /@w --> (<i>k</i><!-- /@w --> &lt; 2)
+      <b>break</b><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 0)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#227">Left-side rebalancing after RB deletion 227</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="RB-Deletion-Symmetric-Case.html#233">Right-side rebalancing after RB deletion 233</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    <i>k</i><!-- /@w -->&ndash;;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#225">225</a>.</small>
+
+   <p>Now we'll take a detailed look at the rebalancing algorithm.  As
+before, we'll only examine the case where the deleted node was in its
+parent's left subtree, that is, where <i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] is 0.  The other
+case is similar.
+
+   <p>Recall that <i>x</i><!-- /@w --> is <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] and that it may be
+a null pointer.  In the left-side deletion case, <i>x</i><!-- /@w --> is <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]'s
+left child.  We now designate <i>x</i><!-- /@w -->'s &ldquo;sibling&rdquo;, the right child of
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1], as <i>w</i><!-- /@w -->.  Jumping right in, here's an outline of the
+rebalancing code:
+
+   <p><a name="index-left_002dside-rebalancing-after-RB-deletion-328"></a>
+<pre class="format"><a href="Left-side_rebalancing_after_RB_deletion.c.txt">227</a>. &lt;<a name="227" href="Left-side_rebalancing_after_RB_deletion.c.txt">Left-side rebalancing after RB deletion 227</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>w</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[1];
+
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_RED</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#228">Ensure <i>w</i><!-- /@w --> is black in left-side RB deletion rebalancing 228</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+<b>if</b><!-- /@w --> ((<i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->|| <i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0]-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_BLACK</tt><!-- /@w -->)
+    &amp;&amp; (<i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->|| <i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1]-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_BLACK</tt><!-- /@w -->))
+  { &lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#229">Case 1 in left-side RB deletion rebalancing 229</a>&gt; }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->|| <i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1]-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_BLACK</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#231">Transform left-side RB deletion rebalancing case 3 into case 2 231</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#230">Case 2 in left-side RB deletion rebalancing 230</a>&gt;
+    <b>break</b><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#226">226</a>.</small>
+
+<h5 class="subsubheading">Case Reduction: Ensure <i>w</i><!-- /@w --> is black</h5>
+
+<p><a name="rbdcr"></a>
+
+   <p>We know, at this point, that <i>x</i><!-- /@w --> is a black node or an empty tree. 
+Node <i>w</i><!-- /@w --> may be red or black.  If <i>w</i><!-- /@w --> is red, we perform a left
+rotation at the common parent of <i>x</i><!-- /@w --> and <i>w</i><!-- /@w -->, labeled <i>A</i> in the
+diagram below, and recolor <i>A</i> and its own newly acquired parent
+<i>C</i>.  Then we reassign <i>w</i><!-- /@w --> as the new sibling of <i>x</i><!-- /@w -->.  The effect is
+to ensure that <i>w</i><!-- /@w --> is also black, in order to reduce the number of
+cases:
+
+<div align="center"><a href="rbdel1.txt"><img border=0 src="rbdel1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">Node <i>w</i><!-- /@w --> must have children because <i>x</i><!-- /@w --> is black, in order to
+satisfy rule 2, and <i>w</i><!-- /@w -->'s children must be black because of rule 1.
+
+   <p>Here is the code corresponding to this transformation.  Because the
+ancestors of node <i>x</i><!-- /@w --> change, <i>pa</i><!-- /@w -->[] and <i>da</i><!-- /@w -->[] are updated as well as
+<i>w</i><!-- /@w -->.
+
+   <p><a name="index-ensure-_0040w_007b_0040i_007bw_007d_007d-is-black-in-left_002dside-RB-deletion-rebalancing-329"></a>
+<pre class="format"><a href="Ensure__7cw_7c_is_black_in_left-side_RB_deletion_rebalancing.c.txt">228</a>. &lt;<a name="228" href="Ensure__7cw_7c_is_black_in_left-side_RB_deletion_rebalancing.c.txt">Ensure <i>w</i><!-- /@w --> is black in left-side RB deletion rebalancing 228</a>&gt; =
+<i>w</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+<i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]] = <i>w</i><!-- /@w -->;
+
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 0;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] = <i>w</i><!-- /@w -->;
+<i>k</i><!-- /@w -->++;
+
+<i>w</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[1];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#227">227</a>, <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#358">358</a>, and <a href="Deleting-an-RTRB-Node-Step-3-_002d-Rebalance.html#475">475</a>.</small>
+
+   <p>Now we can take care of the three rebalancing cases one by one. 
+Remember that the situation is a deleted black node in the subtree
+designated <i>x</i><!-- /@w --> and the goal is to correct a rule 2 violation. 
+Although subtree <i>x</i><!-- /@w --> may be an empty tree, the diagrams below show it
+as a black node.  That's okay because the code itself never refers to
+<i>x</i><!-- /@w -->.  The label is supplied for the reader's benefit only.
+
+<h5 class="subsubheading">Case 1: <i>w</i><!-- /@w --> has no red children</h5>
+
+<p><a name="rbdelcase1"></a>
+
+   <p>If <i>w</i><!-- /@w --> doesn't have any red children, then it can be recolored red. 
+When we do that, the black-height of the subtree rooted at <i>w</i><!-- /@w --> has
+decreased, so we must move up the tree, with <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] becoming the
+new <i>x</i><!-- /@w -->, to rebalance at <i>w</i><!-- /@w --> and <i>x</i><!-- /@w -->'s parent.
+
+   <p>The parent, labeled <i>B</i> in the diagram below, may be red or black. 
+Its color is not changed within the code for this case.  If it is red,
+then the next iteration of the rebalancing loop will recolor it as red
+immediately and exit.  In particular, <i>B</i> will be red if the
+transformation to make <i>x</i><!-- /@w --> black was performed earlier.  If, on the
+other hand, <i>B</i> is black, the loop will continue as usual.
+
+<div align="center"><a href="rbdel2.txt"><img border=0 src="rbdel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-1-in-left_002dside-RB-deletion-rebalancing-330"></a>
+<pre class="format"><a href="Case_1_in_left-side_RB_deletion_rebalancing.c.txt">229</a>. &lt;<a name="229" href="Case_1_in_left-side_RB_deletion_rebalancing.c.txt">Case 1 in left-side RB deletion rebalancing 229</a>&gt; =
+<i>w</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#227">227</a>, <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#359">359</a>, <a href="Deleting-an-RTRB-Node-Step-3-_002d-Rebalance.html#475">475</a>, and <a href="Deleting-a-PRB-Node-Step-3-_002d-Rebalance.html#574">574</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>w</i><!-- /@w -->'s right child is red</h5>
+
+<p><a name="rbdelcase2"></a>
+
+   <p>If <i>w</i><!-- /@w -->'s right child is red, we can perform a left rotation at <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] and recolor some nodes, and thereby satisfy both of the red-black
+rules.  The loop is then complete.  The transformation looks like
+this:
+
+<div align="center"><a href="rbdel3.txt"><img border=0 src="rbdel3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The corresponding code is below.  The <b>break</b><!-- /@w --> is supplied by the
+enclosing code segment &lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#227">Left-side rebalancing after RB deletion 227</a>&gt;:
+
+   <p><a name="index-case-2-in-left_002dside-RB-deletion-rebalancing-331"></a>
+<pre class="format"><a href="Case_2_in_left-side_RB_deletion_rebalancing.c.txt">230</a>. &lt;<a name="230" href="Case_2_in_left-side_RB_deletion_rebalancing.c.txt">Case 2 in left-side RB deletion rebalancing 230</a>&gt; =
+<i>w</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_color</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+<i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1]-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+<i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]] = <i>w</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#227">227</a>, <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#360">360</a>, and <a href="Deleting-an-RTRB-Node-Step-3-_002d-Rebalance.html#477">477</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>w</i><!-- /@w -->'s left child is red</h5>
+
+<p><a name="rbdelcase3"></a>
+
+   <p>Because the conditions for neither case 1 nor case 2 apply, the only
+remaining possibility is that <i>w</i><!-- /@w --> has a red left child.  When this is
+the case, we can transform it into case 2 by rotating right at <i>w</i><!-- /@w -->. 
+This causes <i>w</i><!-- /@w --> to move to the node that was previously <i>w</i><!-- /@w -->'s left
+child, in this way:
+
+<div align="center"><a href="rbdel4.txt"><img border=0 src="rbdel4.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-transform-left_002dside-RB-deletion-rebalancing-case-3-into-case-2-332"></a>
+<pre class="format"><a href="Transform_left-side_RB_deletion_rebalancing_case_3_into_case_2.c.txt">231</a>. &lt;<a name="231" href="Transform_left-side_RB_deletion_rebalancing_case_3_into_case_2.c.txt">Transform left-side RB deletion rebalancing case 3 into case 2 231</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>y</i><!-- /@w --> = <i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+<i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+<i>w</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+<i>w</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+<i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->;
+<i>w</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#227">227</a>, <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#361">361</a>, and <a href="Deleting-an-RTRB-Node-Step-3-_002d-Rebalance.html#479">479</a>.</small>
+
+   </body></html>
+

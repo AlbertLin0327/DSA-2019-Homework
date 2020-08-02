@@ -1,0 +1,4 @@
+trav->rtbst_node = trav->rtbst_node->rtbst_link[0];
+while (trav->rtbst_node->rtbst_rtag == RTBST_CHILD)
+  trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+return trav->rtbst_node->rtbst_data;

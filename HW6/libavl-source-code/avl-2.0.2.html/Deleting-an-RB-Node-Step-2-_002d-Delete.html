@@ -1,0 +1,228 @@
+<html lang="en">
+<head>
+<title>Deleting an RB Node Step 2 - Delete - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-from-an-RB-Tree.html" title="6.5 Deletion">
+<link rel=Next href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html" title="6.5.2 Step 3: Rebalance">
+<link rel=Parent href="Deleting-from-an-RB-Tree.html" title="6.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-an-RB-Node-Step-2-_002d-Delete">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6.5.1 Step 2: Delete</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-an-RB-Node-Step-2-_002d-Delete.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html" title="Skip Forward: 6.5.2 Step 3: Rebalance"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-from-an-RB-Tree.html" title="Prev: 6.5 Deletion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-an-RB-Tree.html" title="Up: 6.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html" title="Next: 6.5.2 Step 3: Rebalance"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>At this point, <i>p</i><!-- /@w --> is the node to be deleted and the stack contains
+all of the nodes on the simple path from the tree's root down to <i>p</i><!-- /@w -->. 
+The immediate task is to delete <i>p</i><!-- /@w -->.  We break deletion down into the
+familiar three cases (see <a href="Deleting-from-a-BST.html">Deleting from a BST</a>), but before we dive
+into the code, let's think about the situation.
+
+   <p>In red-black insertion, we were able to limit the kinds of violation
+that could occur to rule 1 or rule 2, at our option, by choosing the
+new node's color.  No such luxury is available in deletion, because
+colors have already been assigned to all of the nodes.  In fact, a
+naive approach to deletion can lead to multiple violations in widely
+separated parts of a tree.  Consider the effects of deletion of node 3
+from the following red-black tree tree, supposing that it is a subtree
+of some larger tree:
+
+<div align="center"><a href="rbdeln1.txt"><img border=0 src="rbdeln1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>If we performed this deletion in a literal-minded fashion, we would
+end up with the tree below, with the following violations: rule 1,
+between node 6 and its child; rule 2, at node 6; rule 2, at node 4, because
+the black-height of the subtree as a whole has increased (ignoring the
+rule 2 violation at node 6); and rule 1, at node 4, only if the
+subtree's parent is red.  The result is difficult to rebalance in
+general because we have two problem areas to deal with, one at node 4,
+one at node 6.
+
+<div align="center"><a href="rbdeln2.txt"><img border=0 src="rbdeln2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Fortunately, we can make things easier for ourselves.  We can
+eliminate the problem area at node 4 simply by recoloring it red, the
+same color as the node it replaced, as shown below.  Then all we have
+to deal with are the violations at node 6:
+
+<div align="center"><a href="rbdeln3.txt"><img border=0 src="rbdeln3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="rbcolorswap"></a>
+This idea holds in general.  So, when we replace the deleted node <i>p</i><!-- /@w -->
+by a different node <i>q</i><!-- /@w -->, we set <i>q</i><!-- /@w -->'s color to <i>p</i><!-- /@w -->'s.  Besides that,
+as an implementation detail, we need to keep track of the color of the
+node that was moved, i.e., node <i>q</i><!-- /@w -->'s former color.  We do this here
+by saving it temporarily in <i>p</i><!-- /@w -->.  In other words, when we replace one
+node by another during deletion, we swap their colors.
+
+   <p>Now we know enough to begin the implementation.  While reading this
+code, keep in mind that after deletion, regardless of the case
+selected, the stack contains a list of the nodes where rebalancing may
+be required, and <i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] indicates the side of <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] from
+which a node of color <i>p</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> was deleted.  Here's an outline of
+the meat of the code:
+
+   <p><a name="index-delete-item-from-RB-tree-322"></a>
+<pre class="format"><a href="Step_2_3a_Delete_item_from_RB_tree.c.txt">221</a>. &lt;<a name="221" href="Step_2_3a_Delete_item_from_RB_tree.c.txt">Step 2: Delete item from RB tree 221</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->)
+  { &lt;<a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html#222">Case 1 in RB deletion 222</a>&gt; }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>enum</b><!-- /@w --> <b>rb_color</b> <i>t</i><!-- /@w -->;
+    <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+
+    <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html#223">Case 2 in RB deletion 223</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html#224">Case 3 in RB deletion 224</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-an-RB-Tree.html#220">220</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>p</i><!-- /@w --> has no right child</h5>
+
+<p><a name="rbdel1"></a>
+
+   <p>In case 1, <i>p</i><!-- /@w --> has no right child, so we replace it by its left
+subtree.  As a very special case, there is no need to do any swapping
+of colors (see Exercise 1 for details).
+
+   <p><a name="index-case-1-in-RB-deletion-323"></a>
+<pre class="format"><a href="Case_1_in_RB_deletion.c.txt">222</a>. &lt;<a name="222" href="Case_1_in_RB_deletion.c.txt">Case 1 in RB deletion 222</a>&gt; =
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html#221">221</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>p</i><!-- /@w -->'s right child has no left child</h5>
+
+<p><a name="rbdel2"></a>
+
+   <p>In this case, <i>p</i><!-- /@w --> has a right child <i>r</i><!-- /@w -->, which in turn has no left
+child.  We replace <i>p</i><!-- /@w --> by <i>r</i><!-- /@w -->, swap the colors of nodes <i>p</i><!-- /@w --> and <i>r</i><!-- /@w -->,
+and add <i>r</i><!-- /@w --> to the stack because we may need to rebalance there. 
+Here's a pre- and post-deletion diagram that shows one possible set of
+colors out of the possibilities.  Node <i>p</i><!-- /@w --> is shown detached after
+deletion to make it clear that the colors are swapped:
+
+<div align="center"><a href="rbdelcase2.txt"><img border=0 src="rbdelcase2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-2-in-RB-deletion-324"></a>
+<pre class="format"><a href="Case_2_in_RB_deletion.c.txt">223</a>. &lt;<a name="223" href="Case_2_in_RB_deletion.c.txt">Case 2 in RB deletion 223</a>&gt; =
+<i>r</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+<i>t</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w -->;
+<i>r</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w -->;
+<i>p</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <i>t</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>r</i><!-- /@w -->;
+<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html#221">221</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>p</i><!-- /@w -->'s right child has a left child</h5>
+
+<p><a name="rbdel3"></a>
+
+   <p>In this case, <i>p</i><!-- /@w -->'s right child has a left child.  The code here is
+basically the same as for AVL deletion.  We replace <i>p</i><!-- /@w --> by its inorder
+successor <i>s</i><!-- /@w --> and swap their node colors.  Because they may require
+rebalancing, we also add all of the nodes we visit to the stack. 
+Here's a diagram to clear up matters, again with arbitrary colors:
+
+<div align="center"><a href="rbdelcase3.txt"><img border=0 src="rbdelcase3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-3-in-RB-deletion-325"></a>
+<pre class="format"><a href="Case_3_in_RB_deletion.c.txt">224</a>. &lt;<a name="224" href="Case_3_in_RB_deletion.c.txt">Case 3 in RB deletion 224</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>s</i><!-- /@w -->;
+<b>int</b><!-- /@w --> <i>j</i><!-- /@w --> = <i>k</i><!-- /@w -->++;
+
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 0;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+
+<i>da</i><!-- /@w -->[<i>j</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>j</i><!-- /@w -->] = <i>s</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>j</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>j</i><!-- /@w --> - 1]] = <i>s</i><!-- /@w -->;
+
+<i>s</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+<i>r</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+
+<i>t</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w -->;
+<i>s</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w -->;
+<i>p</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <i>t</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html#221">221</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>*1.</b><a name="noswapcolors"></a>&nbsp;<!-- /@w -->In case 1, why is it unnecessary to swap the colors of <i>p</i><!-- /@w --> and the
+node that replaces it? 
+[<a href="Answers-for-Chapter-6.html#6%2d5%2d1%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Rewrite &lt;<a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html#221">Step 2: Delete item from RB tree 221</a>&gt; to replace the deleted
+node's <i>rb_data</i><!-- /@w --> by its successor, then delete the successor, instead of
+shuffling pointers.  (Refer back to Exercise 4.8-3 for an
+explanation of why this approach cannot be used in libavl.) 
+[<a href="Answers-for-Chapter-6.html#6%2d5%2d1%232">answer</a>]
+
+   </body></html>
+

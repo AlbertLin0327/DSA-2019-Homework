@@ -1,0 +1,34 @@
+/* Tests BSTS functions.
+   |insert| and |delete| must contain some permutation of values
+   |0|@dots{}|n - 1|. */
+int
+test_correctness (struct libavl_allocator *alloc, int *insert,
+                  int *delete, int n, int verbosity)
+{
+  struct bsts_tree tree;
+  int okay = 1;
+  int i;
+
+  tree.root = &tree.sentinel;
+  tree.alloc = alloc;
+
+  for (i = 0; i < n; i++)
+    bsts_insert (&tree, insert[i]);
+
+  for (i = 0; i < n; i++)
+    if (!bsts_find (&tree, i))
+      {
+        printf ("%d should be in tree, but isn't\n", i);
+        okay = 0;
+      }
+
+  return okay;
+}
+
+/* Not supported. */
+int
+test_overflow (struct libavl_allocator *alloc, int order[], int n,
+               int verbosity)
+{
+  return 0;
+}

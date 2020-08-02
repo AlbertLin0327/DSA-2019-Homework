@@ -1,0 +1,168 @@
+<html lang="en">
+<head>
+<title>Finding the Parent of a TBST Node - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="TAVL-Deletion-Symmetric-Case.html" title="8.5.5 Symmetric Case">
+<link rel=Next href="Copying-a-TAVL-Tree.html" title="8.6 Copying">
+<link rel=Parent href="Deleting-from-a-TAVL-Tree.html" title="8.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Finding-the-Parent-of-a-TBST-Node">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>8.5.6 Finding the Parent of a Node</b></big></td>
+<td align=right>
+<a href="index.html#Finding-the-Parent-of-a-TBST-Node.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="TAVL-Deletion-Symmetric-Case.html" title="Skip Back: 8.5.5 Symmetric Case"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="TAVL-Deletion-Symmetric-Case.html" title="Prev: 8.5.5 Symmetric Case"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-a-TAVL-Tree.html" title="Up: 8.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Copying-a-TAVL-Tree.html" title="Next: 8.6 Copying"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The last component of <i>tavl_delete</i><!-- /@w -->() left undiscussed is the
+implementation of its helper function <i>find_parent</i><!-- /@w -->(), which requires
+an algorithm for finding the parent of an arbitrary node in a TAVL
+tree.  If there were no efficient algorithm for this purpose, we would
+have to keep a stack of parent nodes as we did for unthreaded AVL
+trees.  (This is still an option, as shown in
+Exercise 3.)  We are fortunate that such an algorithm
+does exist.  Let's discover it.
+
+   <p>Because child pointers always lead downward in a BST, the only way
+that we're going to get from one node to another one above it is by
+following a thread.  Almost directly from our definition of threads,
+we know that if a node <i>q</i><!-- /@w --> has a right child <i>p</i><!-- /@w -->, then there is a left
+thread in the subtree rooted at <i>p</i><!-- /@w --> that points back to <i>q</i><!-- /@w -->.  Because
+a left thread points from a node to its predecessor, this left thread
+to <i>q</i><!-- /@w --> must come from <i>q</i><!-- /@w -->'s successor, which we'll call <i>s</i><!-- /@w -->.  The
+situation looks like this:
+
+<div align="center"><a href="tbstparent.txt"><img border=0 src="tbstparent.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>This leads immediately to an algorithm to find <i>q</i><!-- /@w --> given <i>p</i><!-- /@w -->, if <i>p</i><!-- /@w -->
+is <i>q</i><!-- /@w -->'s right child.  We simply follow left links starting at <i>p</i><!-- /@w -->
+until we we reach a thread, then we follow that thread.  On the other
+hand, it doesn't help if <i>p</i><!-- /@w --> is <i>q</i><!-- /@w -->'s left child, but there's an
+analogous situation with <i>q</i><!-- /@w -->'s predecessor in that case.
+
+   <p>Will this algorithm work for any node in a TBST?  It won't work for the
+root node, because no thread points above the root (see
+Exercise 2).  It will work for any other node, because
+any node other than the root has its successor or predecessor as its
+parent.
+
+   <p>Here is the actual code, which finds and returns the parent of <i>node</i><!-- /@w -->. 
+It traverses both the left and right subtrees of <i>node</i><!-- /@w --> at once, using
+<i>x</i><!-- /@w --> to move down to the left and <i>y</i><!-- /@w --> to move down to the right.  When
+it hits a thread on one side, it checks whether it leads to <i>node</i><!-- /@w -->'s
+parent.  If it does, then we're done.  If it doesn't, then we continue
+traversing along the other side, which is guaranteed to lead to
+<i>node</i><!-- /@w -->'s parent.
+
+   <p><a name="catalogue_002dentry_002dtbst_002d19"></a>
+<a name="index-find-parent-of-a-TBST-node-467"></a>
+<pre class="format"><a href="Find_parent_of_a_TBST_node.c.txt">327</a>. &lt;<a name="327" href="Find_parent_of_a_TBST_node.c.txt">Find parent of a TBST node 327</a>&gt; =
+/* Returns the parent of <i>node</i><!-- /@w --> within <i>tree</i><!-- /@w -->,
+   or a pointer to <i>tbst_root</i><!-- /@w --> if <i>s</i><!-- /@w --> is the root of the tree. */
+<b>static</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>tbst_node</b> *<br><i>find_parent</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>tree</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>node</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bfind_005fparent_007d-function-468"></a>  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> != <i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>x</i><!-- /@w -->, *<i>y</i><!-- /@w -->;
+
+      <b>for</b><!-- /@w --> (<i>x</i><!-- /@w --> = <i>y</i><!-- /@w --> = <i>node</i><!-- /@w -->; ; <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0], <i>y</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1])
+        <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>p</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+            <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] != <i>node</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->)
+                  <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+                <i>p</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+              }
+            <b>return</b><!-- /@w --> <i>p</i><!-- /@w -->;
+          }
+        <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>p</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+            <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] != <i>node</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                <b>while</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_CHILD</tt><!-- /@w -->)
+                  <i>y</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+                <i>p</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+              }
+            <b>return</b><!-- /@w --> <i>p</i><!-- /@w -->;
+          }
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-TAVL-Tree.html#311">311</a>, <a href="Answers-for-Chapter-9.html#668">668</a>, and <a href="Answers-for-Chapter-9.html#670">670</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201997">Knuth 1997</a>], exercise 2.3.1-19.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>*1.</b>&nbsp;<!-- /@w -->Show that finding the parent of a given node using this algorithm,
+averaged over all the node within a TBST, requires only a constant
+number of links to be followed. 
+[<a href="Answers-for-Chapter-8.html#8%2d5%2d6%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="tbstrootparent"></a>&nbsp;<!-- /@w -->The structure of threads in our TBSTs force finding the parent of the
+root node to be special-cased.  Suggest a modification to the tree
+structure to avoid this. 
+[<a href="Answers-for-Chapter-8.html#8%2d5%2d6%232">answer</a>]
+
+<p class="noindent"><b>3.</b><a name="tbstdelstack"></a>&nbsp;<!-- /@w -->It can take several steps to find the parent of an arbitrary node in a
+TBST, even though the operation is &ldquo;efficient&rdquo; in the sense of
+Exercise 7.7-4.  On the other hand, finding the parent of a
+node is very fast with a stack, but it costs time to construct the
+stack.  Rewrite <i>tavl_delete</i><!-- /@w -->() to use a stack instead of the parent
+node algorithm. 
+[<a href="Answers-for-Chapter-8.html#8%2d5%2d6%233">answer</a>]
+
+   </body></html>
+

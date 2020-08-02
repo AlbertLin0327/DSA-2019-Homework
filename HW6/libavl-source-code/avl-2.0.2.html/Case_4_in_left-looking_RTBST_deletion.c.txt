@@ -1,0 +1,24 @@
+struct rtbst_node *s;
+
+for (;;)
+  {
+    s = r->rtbst_link[1];
+    if (s->rtbst_rtag == RTBST_THREAD)
+      break;
+
+    r = s;
+  }
+
+if (s->rtbst_link[0] != NULL)
+  r->rtbst_link[1] = s->rtbst_link[0];
+else
+  {
+    r->rtbst_link[1] = s;
+    r->rtbst_rtag = RTBST_THREAD;
+  }
+
+s->rtbst_link[0] = p->rtbst_link[0];
+s->rtbst_link[1] = p->rtbst_link[1];
+s->rtbst_rtag = p->rtbst_rtag;
+
+q->rtbst_link[dir] = s;

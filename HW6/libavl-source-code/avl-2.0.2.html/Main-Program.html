@@ -1,0 +1,225 @@
+<html lang="en">
+<head>
+<title>Main Program - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Utility-Functions.html" title="4.14.6 Utility Functions">
+<link rel=Next href="Additional-Exercises-for-BSTs.html" title="4.15 Additional Exercises">
+<link rel=Parent href="Testing-BST-Functions.html" title="4.14 Testing">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Main-Program">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14.7 Main Program</b></big></td>
+<td align=right>
+<a href="index.html#Main-Program.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Utility-Functions.html" title="Skip Back: 4.14.6 Utility Functions"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Utility-Functions.html" title="Prev: 4.14.6 Utility Functions"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Testing-BST-Functions.html" title="Up: 4.14 Testing"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Additional-Exercises-for-BSTs.html" title="Next: 4.15 Additional Exercises"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Everything comes together in the main program.  The test itself
+(default or overflow) is selected with <b>enum</b><!-- /@w --> <b>test</b>:
+
+   <p><a name="index-test-declarations-213"></a>
+<pre class="format"><a href="Test_declarations.c.txt">138</a>. &lt;<a name="138" href="Test_declarations.c.txt">Test declarations 121</a>&gt; +=
+/* Test to perform. */
+<b>enum</b><!-- /@w --> <b>test</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007btest_007d-enumeration-214"></a>    <tt>TST_CORRECTNESS</tt><!-- /@w -->,		/* Default tests. */
+    <tt>TST_OVERFLOW</tt><!-- /@w -->,		/* Stack overflow test. */
+    <tt>TST_NULL</tt><!-- /@w -->                    /* No test, just overhead. */
+  };
+</pre>
+   <p>The program's entire behavior is controlled by <b>struct</b><!-- /@w --> <b>test_options</b>,
+defined as follows:
+
+   <p><a name="index-test-declarations-215"></a>
+<pre class="format"><a href="Test_declarations.c.txt">139</a>. &lt;<a name="139" href="Test_declarations.c.txt">Test declarations 121</a>&gt; +=
+/* Program options. */
+<b>struct</b><!-- /@w --> <b>test_options</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007btest_005foptions_007d-enumeration-216"></a>    <b>enum</b><!-- /@w --> <b>test</b> <i>test</i><!-- /@w -->;                     /* Test to perform. */
+    <b>enum</b><!-- /@w --> <b>insert_order</b> <i>insert_order</i><!-- /@w -->;     /* Insertion order. */
+    <b>enum</b><!-- /@w --> <b>delete_order</b> <i>delete_order</i><!-- /@w -->;     /* Deletion order. */
+
+    <b>enum</b><!-- /@w --> <b>mt_policy</b> <i>alloc_policy</i><!-- /@w -->;        /* Allocation policy. */
+    <b>int</b><!-- /@w --> <i>alloc_arg</i><!-- /@w -->[2];                   /* Policy arguments. */
+    <b>int</b><!-- /@w --> <i>alloc_incr</i><!-- /@w -->; /* Amount to increment <i>alloc_arg</i><!-- /@w --> each iteration. */
+
+    <b>int</b><!-- /@w --> <i>node_cnt</i><!-- /@w -->;                       /* Number of nodes in tree. */
+    <b>int</b><!-- /@w --> <i>iter_cnt</i><!-- /@w -->;                       /* Number of runs. */
+
+    <b>int</b><!-- /@w --> <i>seed_given</i><!-- /@w -->;                     /* Seed provided on command line? */
+    <b>unsigned</b><!-- /@w --> <i>seed</i><!-- /@w -->;                      /* Random number seed. */
+
+    <b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->;                      /* Verbosity level, 0=default. */
+    <b>int</b><!-- /@w --> <i>nonstop</i><!-- /@w -->;                        /* Don't stop after one error? */
+  };
+</pre>
+   <p>The <i>main</i><!-- /@w -->() function for the test program is perhaps a bit long, but
+simple.  It begins by parsing the command line and allocating memory,
+then repeats a loop once for each repetition of the test.  Within the
+loop, an insertion and a deletion order are selected, the memory tracker
+is set up, and test function (either <i>test</i><!-- /@w -->() or <i>test_overflow</i><!-- /@w -->()) is
+called.
+
+   <p><a name="index-test-main-program-217"></a>
+<pre class="format"><a href="Test_main_program.c.txt">140</a>. &lt;<a name="140" href="Test_main_program.c.txt">Test main program 140</a>&gt; =
+<b>int</b><!-- /@w --> <br><i>main</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>argc</i><!-- /@w -->, <b>char</b><!-- /@w --> *<i>argv</i><!-- /@w -->[]) <br>{
+<a name="index-_0040i_007bmain_007d-function-218"></a>  <b>struct</b><!-- /@w --> <b>test_options</b> <i>opts</i><!-- /@w -->;	/* Command-line options. */
+  <b>int</b><!-- /@w --> *<i>insert</i><!-- /@w -->, *<i>delete</i><!-- /@w -->;		/* Insertion and deletion orders. */
+  <b>int</b><!-- /@w --> <i>success</i><!-- /@w -->;                  /* Everything okay so far? */
+
+  /* Initialize <i>pgm_name</i><!-- /@w -->, using <i>argv</i><!-- /@w -->[0] if sensible. */
+  <i>pgm_name</i><!-- /@w --> = <i>argv</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>argv</i><!-- /@w -->[0][0] != <tt>'\0'</tt> ? <i>argv</i><!-- /@w -->[0] : <tt>"bsttest"</tt>;
+
+  /* Parse command line into <i>options</i><!-- /@w -->. */
+  <i>parse_command_line</i><!-- /@w --> (<i>argv</i><!-- /@w -->, &amp;<i>opts</i><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>verbosity</i><!-- /@w --> &gt;= 0)
+    <i>fputs</i><!-- /@w --> (<tt>"bsttest for GNU libavl 2.0.2; use -help to get help.\n"</tt>, <i>stdout</i><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (!<i>opts</i><!-- /@w -->.<i>seed_given</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>opts</i><!-- /@w -->.<i>seed</i><!-- /@w --> = <i>time_seed</i><!-- /@w --> () % 32768<i>u</i><!-- /@w -->;
+
+  <i>insert</i><!-- /@w --> = <i>xmalloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> *<i>insert</i><!-- /@w --> * <i>opts</i><!-- /@w -->.<i>node_cnt</i><!-- /@w -->);
+  <i>delete</i><!-- /@w --> = <i>xmalloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> *<i>delete</i><!-- /@w --> * <i>opts</i><!-- /@w -->.<i>node_cnt</i><!-- /@w -->);
+
+  /* Run the tests. */
+  <i>success</i><!-- /@w --> = 1;
+  <b>while</b><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>iter_cnt</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>mt_allocator</b> *<i>alloc</i><!-- /@w -->;
+
+      <b>if</b><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>verbosity</i><!-- /@w --> &gt;= 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>printf</i><!-- /@w --> (<tt>"Testing seed=%u"</tt>, <i>opts</i><!-- /@w -->.<i>seed</i><!-- /@w -->);
+          <b>if</b><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>alloc_incr</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>", alloc arg=%d"</tt>, <i>opts</i><!-- /@w -->.<i>alloc_arg</i><!-- /@w -->[0]);
+          <i>printf</i><!-- /@w --> (<tt>"...\n"</tt>);
+          <i>fflush</i><!-- /@w --> (<i>stdout</i><!-- /@w -->);
+        }
+
+      /* Generate insertion and deletion order.
+         Seed them separately to ensure deletion order is
+         independent of insertion order. */
+      <i>srand</i><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>seed</i><!-- /@w -->);
+      <i>gen_insertions</i><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>node_cnt</i><!-- /@w -->, <i>opts</i><!-- /@w -->.<i>insert_order</i><!-- /@w -->, <i>insert</i><!-- /@w -->);
+
+      <i>srand</i><!-- /@w --> (++<i>opts</i><!-- /@w -->.<i>seed</i><!-- /@w -->);
+      <i>gen_deletions</i><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>node_cnt</i><!-- /@w -->, <i>opts</i><!-- /@w -->.<i>delete_order</i><!-- /@w -->, <i>insert</i><!-- /@w -->, <i>delete</i><!-- /@w -->);
+
+      <b>if</b><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>verbosity</i><!-- /@w --> &gt;= 1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+          <i>printf</i><!-- /@w --> (<tt>"  Insertion order:"</tt>);
+          <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>opts</i><!-- /@w -->.<i>node_cnt</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+            <i>printf</i><!-- /@w --> (<tt>" %d"</tt>, <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+          <i>printf</i><!-- /@w --> (<tt>".\n"</tt>);
+
+          <b>if</b><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>test</i><!-- /@w --> == <tt>TST_CORRECTNESS</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>printf</i><!-- /@w --> (<tt>"Deletion order:"</tt>);
+              <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>opts</i><!-- /@w -->.<i>node_cnt</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+                <i>printf</i><!-- /@w --> (<tt>" %d"</tt>, <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+              <i>printf</i><!-- /@w --> (<tt>".\n"</tt>);
+            }
+        }
+
+      <i>alloc</i><!-- /@w --> = <i>mt_create</i><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>alloc_policy</i><!-- /@w -->, <i>opts</i><!-- /@w -->.<i>alloc_arg</i><!-- /@w -->, <i>opts</i><!-- /@w -->.<i>verbosity</i><!-- /@w -->);
+
+      {
+        <b>int</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+        <b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>a</i><!-- /@w --> = <i>mt_allocator</i><!-- /@w --> (<i>alloc</i><!-- /@w -->);
+
+        <b>switch</b><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>test</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>case</b><!-- /@w --> <tt>TST_CORRECTNESS</tt><!-- /@w -->:
+            <i>okay</i><!-- /@w --> = <i>test_correctness</i><!-- /@w --> (<i>a</i><!-- /@w -->, <i>insert</i><!-- /@w -->, <i>delete</i><!-- /@w -->, <i>opts</i><!-- /@w -->.<i>node_cnt</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>opts</i><!-- /@w -->.<i>verbosity</i><!-- /@w -->);
+            <b>break</b><!-- /@w -->;
+
+          <b>case</b><!-- /@w --> <tt>TST_OVERFLOW</tt><!-- /@w -->:
+            <i>okay</i><!-- /@w --> = <i>test_overflow</i><!-- /@w --> (<i>a</i><!-- /@w -->, <i>insert</i><!-- /@w -->, <i>opts</i><!-- /@w -->.<i>node_cnt</i><!-- /@w -->, <i>opts</i><!-- /@w -->.<i>verbosity</i><!-- /@w -->);
+            <b>break</b><!-- /@w -->;
+
+          <b>case</b><!-- /@w --> <tt>TST_NULL</tt><!-- /@w -->: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>okay</i><!-- /@w --> = 1; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>break</b><!-- /@w -->;
+
+          <b>default</b><!-- /@w -->: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>assert</i><!-- /@w --> (0);
+          }
+
+        <b>if</b><!-- /@w --> (<i>okay</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <b>if</b><!-- /@w --> (<i>opts</i><!-- /@w -->.<i>verbosity</i><!-- /@w --> &gt;= 1)
+              <i>printf</i><!-- /@w --> (<tt>"  No errors.\n"</tt>);
+          } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>success</i><!-- /@w --> = 0;
+            <i>printf</i><!-- /@w --> (<tt>"  Error!\n"</tt>);
+          }
+      }
+
+      <i>mt_destroy</i><!-- /@w --> (<i>alloc</i><!-- /@w -->);
+      <i>opts</i><!-- /@w -->.<i>alloc_arg</i><!-- /@w -->[0] += <i>opts</i><!-- /@w -->.<i>alloc_incr</i><!-- /@w -->;
+
+      <b>if</b><!-- /@w --> (!<i>success</i><!-- /@w --> &amp;&amp; !<i>opts</i><!-- /@w -->.<i>nonstop</i><!-- /@w -->)
+        <b>break</b><!-- /@w -->;
+    }
+
+  <i>free</i><!-- /@w --> (<i>delete</i><!-- /@w -->);
+  <i>free</i><!-- /@w --> (<i>insert</i><!-- /@w -->);
+
+  <b>return</b><!-- /@w --> <i>success</i><!-- /@w --> ? <tt>EXIT_SUCCESS</tt><!-- /@w --> : <tt>EXIT_FAILURE</tt><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#97">97</a>.</small>
+
+   <p>The main program initializes our single global variable, <i>pgm_name</i><!-- /@w -->,
+which receives the name of the program at start of execution:
+
+   <p><a name="index-test-declarations-219"></a>
+<pre class="format"><a href="Test_declarations.c.txt">141</a>. &lt;<a name="141" href="Test_declarations.c.txt">Test declarations 121</a>&gt; +=
+/* Program name. */
+<a name="index-_0040i_007bpgm_005fname_007d-variable-220"></a><b>char</b><!-- /@w --> *<i>pgm_name</i><!-- /@w -->;
+</pre>
+   </body></html>
+

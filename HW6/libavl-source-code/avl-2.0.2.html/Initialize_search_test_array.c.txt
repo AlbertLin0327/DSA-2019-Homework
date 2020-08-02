@@ -1,0 +1,15 @@
+array = malloc ((n + 2) * sizeof *array);
+if (array == NULL)
+  {
+    fprintf (stderr, "out of memory\n");
+    exit (EXIT_FAILURE);
+  }
+array++;
+
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    array[i] = i;
+}
+

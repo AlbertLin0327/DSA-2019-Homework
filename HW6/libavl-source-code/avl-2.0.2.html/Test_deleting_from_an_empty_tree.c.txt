@@ -1,0 +1,6 @@
+if (bst_delete (tree, &insert[0]) != NULL)
+  {
+    printf (" Deletion from empty tree succeeded.\n");
+    okay = 0;
+  }
+

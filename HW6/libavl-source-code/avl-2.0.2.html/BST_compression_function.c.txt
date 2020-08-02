@@ -1,0 +1,18 @@
+/* Performs a compression transformation |count| times,
+   starting at |root|. */
+static void
+compress (struct bst_node *root, unsigned long count)
+{
+  assert (root != NULL);
+
+  while (count--)
+    {
+      struct bst_node *red = root->bst_link[0];
+      struct bst_node *black = red->bst_link[0];
+
+      root->bst_link[0] = black;
+      red->bst_link[0] = black->bst_link[1];
+      black->bst_link[1] = red;
+      root = black;
+    }
+}

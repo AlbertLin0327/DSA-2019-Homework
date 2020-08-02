@@ -1,0 +1,152 @@
+/* Inserts item |**data| at or below |*p| in |tree|.
+   If the item is inserted, sets |*data| to a pointer to the new item.
+   If an item matching |**data| already exists,
+   no change is made and sets |*data| to a pointer to the existing item.
+   If a memory allocation error occurs, sets |*data| to |NULL|.
+   If the height of the tree rooted at |*p| increases, returns 1.
+   Otherwise, returns 0. */
+static int
+probe (struct avl_table *tree, struct avl_node **p, void ***data)
+{
+  struct avl_node *y; /* The current node; shorthand for |*p|. */
+
+  assert (tree != NULL && p != NULL && data != NULL);
+
+  y = *p;
+  if (y == NULL)
+    {
+      y = *p = tree->avl_alloc->libavl_malloc (tree->avl_alloc, sizeof *y);
+      if (y == NULL)
+        {
+          *data = NULL;
+          return 0;
+        }
+
+      y->avl_data = **data;
+      *data = &y->avl_data;
+      y->avl_link[0] = y->avl_link[1] = NULL;
+      y->avl_balance = 0;
+
+      tree->avl_count++;
+      tree->avl_generation++;
+
+      return 1;
+    }
+  else /* |y != NULL| */
+    {
+      struct avl_node *w; /* New root of this subtree; replaces |*p|. */
+      int cmp;
+
+      cmp = tree->avl_compare (**data, y->avl_data, tree->avl_param);
+      if (cmp < 0)
+        {
+          if (probe (tree, &y->avl_link[0], data) == 0)
+            return 0;
+
+          if (y->avl_balance == +1)
+            {
+              y->avl_balance = 0;
+              return 0;
+            }
+          else if (y->avl_balance == 0)
+            {
+              y->avl_balance = -1;
+              return 1;
+            }
+          else
+            {
+              struct avl_node *x = y->avl_link[0];
+              if (x->avl_balance == -1)
+                {
+                  w = x;
+                  y->avl_link[0] = x->avl_link[1];
+                  x->avl_link[1] = y;
+                  x->avl_balance = y->avl_balance = 0;
+                }
+              else
+                {
+                  assert (x->avl_balance == +1);
+                  w = x->avl_link[1];
+                  x->avl_link[1] = w->avl_link[0];
+                  w->avl_link[0] = x;
+                  y->avl_link[0] = w->avl_link[1];
+                  w->avl_link[1] = y;
+                  if (w->avl_balance == -1)
+                    x->avl_balance = 0, y->avl_balance = +1;
+                  else if (w->avl_balance == 0)
+                    x->avl_balance = y->avl_balance = 0;
+                  else /* |w->avl_balance == +1| */
+                    x->avl_balance = -1, y->avl_balance = 0;
+                  w->avl_balance = 0;
+                }
+            }
+        }
+      else if (cmp > 0)
+        {
+          struct avl_node *r; /* Right child of |y|, for rebalancing. */
+
+          if (probe (tree, &y->avl_link[1], data) == 0)
+            return 0;
+
+          if (y->avl_balance == -1)
+            {
+              y->avl_balance = 0;
+              return 0;
+            }
+          else if (y->avl_balance == 0)
+            {
+              y->avl_balance = +1;
+              return 1;
+            }
+          else
+            {
+              struct avl_node *x = y->avl_link[1];
+              if (x->avl_balance == +1)
+                {
+                  w = x;
+                  y->avl_link[1] = x->avl_link[0];
+                  x->avl_link[0] = y;
+                  x->avl_balance = y->avl_balance = 0;
+                }
+              else
+                {
+                  assert (x->avl_balance == -1);
+                  w = x->avl_link[0];
+                  x->avl_link[0] = w->avl_link[1];
+                  w->avl_link[1] = x;
+                  y->avl_link[1] = w->avl_link[0];
+                  w->avl_link[0] = y;
+                  if (w->avl_balance == +1)
+                    x->avl_balance = 0, y->avl_balance = -1;
+                  else if (w->avl_balance == 0)
+                    x->avl_balance = y->avl_balance = 0;
+                  else /* |w->avl_balance == -1| */
+                    x->avl_balance = +1, y->avl_balance = 0;
+                  w->avl_balance = 0;
+                }
+            }
+        }
+      else /* |cmp == 0| */
+        {
+          *data = &y->avl_data;
+          return 0;
+        }
+
+      *p = w;
+      return 0;
+    }
+}
+
+/* Inserts |item| into |tree| and returns a pointer to |item|'s address.
+   If a duplicate item is found in the tree,
+   returns a pointer to the duplicate without inserting |item|.
+   Returns |NULL| in case of memory allocation failure. */
+void **
+avl_probe (struct avl_table *tree, void *item)
+{
+  void **ret = &item;
+
+  probe (tree, &tree->avl_root, &ret);
+
+  return ret;
+}

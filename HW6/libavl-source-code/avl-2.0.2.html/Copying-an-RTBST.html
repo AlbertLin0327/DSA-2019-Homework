@@ -1,0 +1,203 @@
+<html lang="en">
+<head>
+<title>Copying an RTBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="RTBST-Traverser-Retreating.html" title="10.6.5 Backing Up to the Previous Node">
+<link rel=Next href="Destroying-an-RTBST.html" title="10.8 Destruction">
+<link rel=Parent href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Copying-an-RTBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>10.7 Copying</b></big></td>
+<td align=right>
+<a href="index.html#Copying-an-RTBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Traversing-an-RTBST.html" title="Skip Back: 10.6 Traversal"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Destroying-an-RTBST.html" title="Skip Forward: 10.8 Destruction"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="RTBST-Traverser-Retreating.html" title="Prev: 10.6.5 Backing Up to the Previous Node"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Right_002dThreaded-Binary-Search-Trees.html" title="Up: 10 Right-Threaded Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Destroying-an-RTBST.html" title="Next: 10.8 Destruction"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The algorithm that we used for copying a TBST makes use of threads, but
+only right threads, so we can apply this algorithm essentially
+unmodified to RTBSTs.
+
+   <p>We will make one change that superficially simplifies and improves the
+elegance of the algorithm.  Function <i>tbst_copy</i><!-- /@w -->() in &lt;<a href="Copying-a-TBST.html#279">TBST main copy function 279</a>&gt; uses a pair of local variables <i>rp</i><!-- /@w --> and <i>rq</i><!-- /@w --> to store
+pointers to the original and new tree's root, because accessing the tag
+field of a cast &ldquo;pseudo-root&rdquo; pointer produces undefined behavior. 
+However, in an RTBST there is no tag for a node's left subtree.  During
+a TBST copy, only the left tags of the root nodes are accessed, so this
+means that we can use the pseudo-roots in the RTBST copy, with no need
+for <i>rp</i><!-- /@w --> or <i>rq</i><!-- /@w -->.
+
+   <p><a name="index-RTBST-main-copy-function-566"></a>
+<pre class="format"><a href="RTBST_main_copy_function.c.txt">403</a>. &lt;<a name="403" href="RTBST_main_copy_function.c.txt">RTBST main copy function 403</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtbst_table</b> *<br><i>rtbst_copy</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>rtbst_table</b> *<i>org</i><!-- /@w -->, <b>rtbst_copy_func</b><!-- /@w --> *<i>copy</i><!-- /@w -->,
+            <b>rtbst_item_func</b><!-- /@w --> *<i>destroy</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->)
+{
+<a name="index-_0040i_007brtbst_005fcopy_007d-function-567"></a>  <b>struct</b><!-- /@w --> <b>rtbst_table</b> *<i>new</i><!-- /@w -->;
+
+  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>p</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>q</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>org</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>new</i><!-- /@w --> = <i>rtbst_create</i><!-- /@w --> (<i>org</i><!-- /@w -->-&gt;<i>rtbst_compare</i><!-- /@w -->, <i>org</i><!-- /@w -->-&gt;<i>rtbst_param</i><!-- /@w -->,
+                     <i>allocator</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? <i>allocator</i><!-- /@w --> : <i>org</i><!-- /@w -->-&gt;<i>rtbst_alloc</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  <i>new</i><!-- /@w -->-&gt;<i>rtbst_count</i><!-- /@w --> = <i>org</i><!-- /@w -->-&gt;<i>rtbst_count</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w -->-&gt;<i>rtbst_count</i><!-- /@w --> == 0)
+    <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->;
+
+  <i>p</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>rtbst_node</b> *) &amp;<i>org</i><!-- /@w -->-&gt;<i>rtbst_root</i><!-- /@w -->;
+  <i>q</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>rtbst_node</b> *) &amp;<i>new</i><!-- /@w -->-&gt;<i>rtbst_root</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (!<i>copy_node</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>q</i><!-- /@w -->, 0, <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0], <i>copy</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>copy_error_recovery</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+              <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+            }
+
+          <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0];
+          <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0];
+        } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>while</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+              <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>q</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+                  <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->;
+                }
+
+              <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+            }
+
+          <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+          <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+        }
+
+      <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_CHILD</tt><!-- /@w -->)
+        <b>if</b><!-- /@w --> (!<i>copy_node</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>q</i><!-- /@w -->, 1, <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1], <i>copy</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>copy_error_recovery</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+            <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+          }
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Copying-an-RTBST.html#406">406</a> and <a href="Copying-an-RTAVL-Tree.html#447">447</a>.</small>
+
+   <p>The code to copy a node must be modified to deal with the asymmetrical
+nature of insertion in an RTBST:
+
+   <p><a name="catalogue_002dentry_002drtbst_002d9"></a>
+<a name="index-RTBST-node-copy-function-568"></a>
+<pre class="format"><a href="RTBST_node_copy_function.c.txt">404</a>. &lt;<a name="404" href="RTBST_node_copy_function.c.txt">RTBST node copy function 404</a>&gt; =
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>copy_node</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rtbst_table</b> *<i>tree</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>dst</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->,
+           <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>src</i><!-- /@w -->, <b>rtbst_copy_func</b><!-- /@w --> *<i>copy</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcopy_005fnode_007d-function-569"></a>  <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>new</i><!-- /@w --> = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tree</i><!-- /@w -->-&gt;<i>rtbst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>rtbst_alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>new</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> 0;
+
+  <i>new</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+  <i>new</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> = <tt>RTBST_THREAD</tt><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>dir</i><!-- /@w --> == 0)
+    <i>new</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>dst</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>new</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>dst</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+      <i>dst</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> = <tt>RTBST_CHILD</tt><!-- /@w -->;
+    }
+  <i>dst</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>new</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>copy</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <i>new</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w --> = <i>src</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>new</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w --> = <i>copy</i><!-- /@w --> (<i>src</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>rtbst_param</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>new</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+        <b>return</b><!-- /@w --> 0;
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Copying-an-RTBST.html#406">406</a>.</small>
+
+   <p>The error recovery function for copying is a bit simpler now, because
+the use of the pseudo-root means that no assignment to the new tree's
+root need take place, eliminating the need for one of the function's
+parameters:
+
+   <p><a name="index-RTBST-copy-error-helper-function-570"></a>
+<pre class="format"><a href="RTBST_copy_error_helper_function.c.txt">405</a>. &lt;<a name="405" href="RTBST_copy_error_helper_function.c.txt">RTBST copy error helper function 405</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>copy_error_recovery</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rtbst_table</b> *<i>new</i><!-- /@w -->, <b>rtbst_item_func</b><!-- /@w --> *<i>destroy</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcopy_005ferror_005frecovery_007d-function-571"></a>  <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>p</i><!-- /@w --> = <i>new</i><!-- /@w -->-&gt;<i>rtbst_root</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>while</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_CHILD</tt><!-- /@w -->)
+        <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+      <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+    }
+  <i>rtbst_destroy</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Copying-an-RTBST.html#406">406</a> and <a href="Copying-an-RTAVL-Tree.html#447">447</a>.</small>
+
+   <p><a name="catalogue_002dentry_002drtbst_002d10"></a>
+<a name="index-RTBST-copy-function-572"></a>
+<pre class="format"><a href="RTBST_copy_function.c.txt">406</a>. &lt;<a name="406" href="RTBST_copy_function.c.txt">RTBST copy function 406</a>&gt; =
+&lt;<a href="Copying-an-RTBST.html#404">RTBST node copy function 404</a>&gt;
+&lt;<a href="Copying-an-RTBST.html#405">RTBST copy error helper function 405</a>&gt;
+&lt;<a href="Copying-an-RTBST.html#403">RTBST main copy function 403</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="RTBST-Operations.html#375">375</a>.</small>
+
+   </body></html>
+

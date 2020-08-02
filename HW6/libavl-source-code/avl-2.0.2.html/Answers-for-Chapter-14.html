@@ -1,0 +1,156 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 14 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-13.html" title="Chapter 13">
+<link rel=Next href="Catalogue-of-Algorithms.html" title="Appendix E Catalogue of Algorithms">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-14">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 14</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-14.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-13.html" title="Skip Back: Chapter 13"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-13.html" title="Prev: Chapter 13"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Catalogue-of-Algorithms.html" title="Next: Appendix E Catalogue of Algorithms"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 14.2</h4>
+
+<p><a name="14_002d2_00231"></a> <b>1.</b>
+<a name="catalogue_002dentry_002dpbst_002d15"></a>
+<pre class="format">/* Rotates right at *<i>yp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>rotate_right</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_node</b> **<i>yp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brotate_005fright_007d-function-993"></a>  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>y</i><!-- /@w --> = *<i>yp</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+  <i>y</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1];
+  <i>x</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+  *<i>yp</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+  <i>x</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->;
+  <i>y</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+    <i>y</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>y</i><!-- /@w -->;
+}
+</pre>
+   <p><a name="catalogue_002dentry_002dpbst_002d16"></a>
+<pre class="format">/* Rotates left at *<i>xp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>rotate_left</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_node</b> **<i>xp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brotate_005fleft_007d-function-994"></a>  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>x</i><!-- /@w --> = *<i>xp</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1];
+  <i>x</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+  <i>y</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+  *<i>xp</i><!-- /@w --> = <i>y</i><!-- /@w -->;
+  <i>y</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->;
+  <i>x</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>y</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->)
+    <i>x</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+}
+</pre>
+   <h4 class="subheading">Section 14.4.2</h4>
+
+<p><a name="14_002d4_002d2_00231"></a> <b>1.</b>
+Yes.  Both code segments update the nodes along the direct path from
+<i>y</i><!-- /@w --> down to <i>n</i><!-- /@w -->, including node <i>y</i><!-- /@w --> but not node <i>n</i><!-- /@w -->.  The plain AVL
+code excluded node <i>n</i><!-- /@w --> by updating nodes as it moved down to them and
+making arrival at node <i>n</i><!-- /@w --> the loop's termination condition.  The PAVL
+code excludes node <i>n</i><!-- /@w --> by starting at it but updating the parent of
+each visited node instead of the node itself.
+
+   <p>There still could be a problem at the edge case where no nodes'
+balance factors were to be updated, but there is no such case.  There
+is always at least one balance factor to update, because every
+inserted node has a parent whose balance factor is affected by its
+insertion.  The one exception would be the first node inserted into an
+empty tree, but that was already handled as a special case.
+
+   <p><a name="14_002d4_002d2_00232"></a> <b>2.</b>
+Sure.  There is no parallel to Exercise 5.4.4-4 because <i>q</i><!-- /@w --> is never
+the pseudo-root.
+
+<!-- *-texinfo-*- -->
+<!-- GNU libavl - library for manipulation of binary trees. -->
+<!-- Copyright (C) 1998-2002, 2004 Free Software Foundation, Inc. -->
+<!-- This program is free software; you can redistribute it and/or -->
+<!-- modify it under the terms of the GNU General Public License as -->
+<!-- published by the Free Software Foundation; either version 2 of -->
+<!-- the License, or (at your option) any later version. -->
+<!-- This program is distributed in the hope that it will be useful, -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU -->
+<!-- General Public License for more details. -->
+<!-- You should have received a copy of the GNU General Public License -->
+<!-- along with this program; if not, write to: Free Software -->
+<!-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA -->
+<!-- 02111-1307, USA. -->
+<!-- The author may be contacted as blp@gnu.org on the Internet, or -->
+<!-- write to Ben Pfaff, Stanford University, Computer Science Dept., -->
+<!-- 353 Serra Mall, Stanford CA 94305, USA. -->
+</p>
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr valign=middle>
+<td align=left width="33%">
+<a href="Answers-for-Chapter-13.html"><img src="prev.png" border=0 alt="Prev:" align=middle></a>
+Chapter 13
+</td>
+<td align=center width="33%">
+<a href="Answers-to-All-the-Exercises.html"><img src="up.png" border=0 alt="Up:" align=middle></a>
+Appendix D Answers to All the Exercises
+</td>
+<td align=right width="33%">
+Appendix E Catalogue of Algorithms
+<a href="Catalogue-of-Algorithms.html"><img src="next.png" border=0 alt="Next" align=middle></a>
+</td>
+</tr></table>
+</body></html>
+

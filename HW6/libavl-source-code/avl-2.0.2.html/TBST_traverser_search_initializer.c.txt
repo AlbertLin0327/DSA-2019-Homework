@@ -1,0 +1,38 @@
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+tbst_t_find (struct tbst_traverser *trav, struct tbst_table *tree, void *item)
+{
+  struct tbst_node *p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->tbst_table = tree;
+  trav->tbst_node = NULL;
+
+  p = tree->tbst_root;
+  if (p == NULL)
+    return NULL;
+
+  for (;;)
+    {
+      int cmp, dir;
+
+      cmp = tree->tbst_compare (item, p->tbst_data, tree->tbst_param);
+      if (cmp == 0)
+        {
+          trav->tbst_node = p;
+          return p->tbst_data;
+        }
+
+      dir = cmp > 0;
+      if (p->tbst_tag[dir] == TBST_CHILD)
+        p = p->tbst_link[dir];
+      else
+        return NULL;
+    }
+}
+

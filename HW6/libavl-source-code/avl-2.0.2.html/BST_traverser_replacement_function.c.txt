@@ -1,0 +1,14 @@
+/* Replaces the current item in |trav| by |new| and returns the item replaced.
+   |trav| must not have the null item selected.
+   The new item must not upset the ordering of the tree. */
+void *
+bst_t_replace (struct bst_traverser *trav, void *new)
+{
+  void *old;
+
+  assert (trav != NULL && trav->bst_node != NULL && new != NULL);
+  old = trav->bst_node->bst_data;
+  trav->bst_node->bst_data = new;
+  return old;
+}
+

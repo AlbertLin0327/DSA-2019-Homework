@@ -1,0 +1,179 @@
+<html lang="en">
+<head>
+<title>Inserting into an AVL Tree - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="AVL-Operations.html" title="5.3 Operations">
+<link rel=Next href="Step-1-in-AVL-Insertion.html" title="5.4.1 Step 1: Search">
+<link rel=Parent href="AVL-Trees.html" title="5 AVL Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Inserting-into-an-AVL-Tree">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.4 Insertion</b></big></td>
+<td align=right>
+<a href="index.html#Inserting-into-an-AVL-Tree.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="AVL-Operations.html" title="Skip Back: 5.3 Operations"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-from-an-AVL-Tree.html" title="Skip Forward: 5.5 Deletion"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="AVL-Operations.html" title="Prev: 5.3 Operations"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="AVL-Trees.html" title="Up: 5 AVL Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Step-1-in-AVL-Insertion.html" title="Next: 5.4.1 Step 1: Search"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The insertion function for unbalanced BSTs does not maintain the AVL
+balancing rule, so we have to write a new insertion function.  But
+before we get into the nitty-gritty details, let's talk in generalities. 
+This is time well spent because we will be able to apply many of the
+same insights to AVL deletion and insertion and deletion in red-black
+trees.
+
+   <p>Conceptually, there are two stages to any insertion or deletion
+operation in a balanced tree.  The first stage may lead to violation
+of the tree's balancing rule.  If so, we fix it in the second stage. 
+The insertion or deletion itself is done in the first stage, in much
+the same way as in an unbalanced BST, and we may also do a bit of
+additional bookkeeping work, such as updating balance factors in an
+AVL tree, or swapping node &ldquo;colors&rdquo; in red-black trees.
+
+   <p>If the first stage of the operation does not lead to a violation of
+the tree's balancing rule, nothing further needs to be done.  But if
+it does, the second stage rearranges nodes and modifies their
+attributes to restore the tree's balance.  This process is said to
+<dfn>rebalance</dfn> (see <a href="Glossary.html#rebalance">rebalance</a>) the tree.  The kinds of rebalancing that might be
+necessary depend on the way the operation is performed and the tree's
+balancing rule.  A well-chosen balancing rule helps to minimize the
+necessity for rebalancing.
+
+   <p>When rebalancing does become necessary in an AVL or red-black tree,
+its effects are limited to the nodes along or near the direct path
+from the inserted or deleted node up to the root of the tree. 
+Usually, only one or two of these nodes are affected, but, at most,
+one simple manipulation is performed at each of the nodes along this
+path.  This property ensures that balanced tree operations are
+efficient (see Exercise 1 for details).
+
+   <p>That's enough theory for now.  Let's return to discussing the details of
+AVL insertion.  There are four steps in libavl's implementation of
+AVL insertion:
+
+     <ol type=1 start=1>
+<li><strong>Search</strong> for the location to insert the new item.
+
+     <li><strong>Insert</strong> the item as a new leaf.
+
+     <li><strong>Update</strong> balance factors in the tree that were changed by
+the insertion.
+
+     <li><strong>Rebalance</strong> the tree, if necessary.
+        </ol>
+
+   <p>Steps 1 and 2 are the same as for insertion into a BST.  Step 3
+performs the additional bookkeeping alluded to above in the general
+description of balanced tree operations.  Finally, step 4 rebalances the
+tree, if necessary, to restore the AVL balancing rule.
+
+   <p>The following sections will cover all the details of AVL insertion.  For
+now, here's an outline of <i>avl_probe</i><!-- /@w -->():
+
+   <p><a name="catalogue_002dentry_002davl_002d0"></a>
+<a name="index-AVL-item-insertion-function-227"></a>
+<pre class="format"><a href="AVL_item_insertion_function.c.txt">146</a>. &lt;<a name="146" href="AVL_item_insertion_function.c.txt">AVL item insertion function 146</a>&gt; =
+<b>void</b><!-- /@w --> **<br><i>avl_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bavl_005fprobe_007d-function-228"></a>  &lt;<a href="Inserting-into-an-AVL-Tree.html#147"><i>avl_probe</i><!-- /@w -->() local variables 147</a>&gt;
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Step-1-in-AVL-Insertion.html#148">Step 1: Search AVL tree for insertion point 148</a>&gt;
+  &lt;<a href="Step-2-in-AVL-Insertion.html#149">Step 2: Insert AVL node 149</a>&gt;
+  &lt;<a href="Step-3-in-AVL-Insertion.html#150">Step 3: Update balance factors after AVL insertion 150</a>&gt;
+  &lt;<a href="Rebalancing-AVL-Trees.html#151">Step 4: Rebalance after AVL insertion 151</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="AVL-Operations.html#145">145</a>.</small>
+
+   <p><a name="index-_0040w_007b_0040i_007bavl_005fprobe_007d_007d_0028_0029-local-variables-229"></a>
+<pre class="format"><a href="_7cavl_probe_28_29_7c_local_variables.c.txt">147</a>. &lt;<a name="147" href="_7cavl_probe_28_29_7c_local_variables.c.txt"><i>avl_probe</i><!-- /@w -->() local variables 147</a>&gt; =
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>y</i><!-- /@w -->, *<i>z</i><!-- /@w -->; /* Top node to update balance factor, and parent. */
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>p</i><!-- /@w -->, *<i>q</i><!-- /@w -->; /* Iterator, and parent. */
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>n</i><!-- /@w -->;     /* Newly inserted node. */
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>w</i><!-- /@w -->;     /* New root of rebalanced subtree. */
+<b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;                /* Direction to descend. */
+
+<b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>da</i><!-- /@w -->[<tt>AVL_MAX_HEIGHT</tt><!-- /@w -->]; /* Cached comparison results. */
+<b>int</b><!-- /@w --> <i>k</i><!-- /@w --> = 0;              /* Number of cached results. */
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-an-AVL-Tree.html#146">146</a>, <a href="Inserting-into-a-TAVL-Tree.html#301">301</a>, and <a href="Inserting-into-an-RTAVL-Tree.html#419">419</a>.</small>
+
+<ul class="menu">
+<li><a accesskey="1" href="Step-1-in-AVL-Insertion.html">Step 1 in AVL Insertion</a>
+<li><a accesskey="2" href="Step-2-in-AVL-Insertion.html">Step 2 in AVL Insertion</a>
+<li><a accesskey="3" href="Step-3-in-AVL-Insertion.html">Step 3 in AVL Insertion</a>
+<li><a accesskey="4" href="Rebalancing-AVL-Trees.html">Rebalancing AVL Trees</a>
+<li><a accesskey="5" href="AVL-Insertion-Symmetric-Case.html">AVL Insertion Symmetric Case</a>
+<li><a accesskey="6" href="AVL-Insertion-Example.html">AVL Insertion Example</a>
+<li><a accesskey="7" href="Recursive-Insertion.html">Recursive Insertion</a>
+</ul>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998b">Knuth 1998b</a>], algorithm 6.2.3A.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>*1.</b><a name="balancedspeed"></a>&nbsp;<!-- /@w -->When rebalancing manipulations are performed on the chain of nodes from
+the inserted or deleted node to the root, no manipulation takes more
+than a fixed amount of time.  In other words, individual manipulations
+do not involve any kind of iteration or loop.  What can you conclude
+about the speed of an individual insertion or deletion in a large
+balanced tree, compared to the best-case speed of an operation for
+unbalanced BSTs? 
+[<a href="Answers-for-Chapter-5.html#5%2d4%231">answer</a>]
+
+   </body></html>
+

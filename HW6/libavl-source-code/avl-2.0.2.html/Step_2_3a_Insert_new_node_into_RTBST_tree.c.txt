@@ -1,0 +1,23 @@
+n = tree->rtbst_alloc->libavl_malloc (tree->rtbst_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+tree->rtbst_count++;
+n->rtbst_data = item;
+n->rtbst_link[0] = NULL;
+if (dir == 0)
+  {
+    if (tree->rtbst_root != NULL)
+      n->rtbst_link[1] = p;
+    else
+      n->rtbst_link[1] = NULL;
+  }
+else /* |dir == 1| */
+  {
+    p->rtbst_rtag = RTBST_CHILD;
+    n->rtbst_link[1] = p->rtbst_link[1];
+  }
+n->rtbst_rtag = RTBST_THREAD;
+p->rtbst_link[dir] = n;
+
+return &n->rtbst_data;

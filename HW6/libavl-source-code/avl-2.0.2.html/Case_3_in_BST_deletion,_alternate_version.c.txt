@@ -1,0 +1,9 @@
+struct bst_node *s = r->bst_link[0];
+while (s->bst_link[0] != NULL)
+  {
+    r = s;
+    s = r->bst_link[0];
+  }
+p->bst_data = s->bst_data;
+r->bst_link[0] = s->bst_link[1];
+p = s;

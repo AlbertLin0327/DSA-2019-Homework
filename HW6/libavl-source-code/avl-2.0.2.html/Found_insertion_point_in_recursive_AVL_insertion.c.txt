@@ -1,0 +1,16 @@
+y = *p = tree->avl_alloc->libavl_malloc (tree->avl_alloc, sizeof *y);
+if (y == NULL)
+  {
+    *data = NULL;
+    return 0;
+  }
+
+y->avl_data = **data;
+*data = &y->avl_data;
+y->avl_link[0] = y->avl_link[1] = NULL;
+y->avl_balance = 0;
+
+tree->avl_count++;
+tree->avl_generation++;
+
+return 1;

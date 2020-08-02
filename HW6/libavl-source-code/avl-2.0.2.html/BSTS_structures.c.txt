@@ -1,0 +1,15 @@
+/* Node for binary search tree with sentinel. */
+struct bsts_node
+  {
+    struct bsts_node *link[2];
+    int data;
+  };
+
+/* Binary search tree with sentinel. */
+struct bsts_tree
+  {
+    struct bsts_node *root;
+    struct bsts_node sentinel;
+    struct libavl_allocator *alloc;
+  };
+

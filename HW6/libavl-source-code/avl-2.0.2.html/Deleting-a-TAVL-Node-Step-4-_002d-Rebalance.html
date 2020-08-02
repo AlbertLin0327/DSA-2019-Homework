@@ -1,0 +1,165 @@
+<html lang="en">
+<head>
+<title>Deleting a TAVL Node Step 4 - Rebalance - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-a-TAVL-Node-Step-3-_002d-Update.html" title="8.5.3 Step 3: Update Balance Factors">
+<link rel=Next href="TAVL-Deletion-Symmetric-Case.html" title="8.5.5 Symmetric Case">
+<link rel=Parent href="Deleting-from-a-TAVL-Tree.html" title="8.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>8.5.4 Step 4: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-a-TAVL-Node-Step-3-_002d-Update.html" title="Skip Back: 8.5.3 Step 3: Update Balance Factors"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="TAVL-Deletion-Symmetric-Case.html" title="Skip Forward: 8.5.5 Symmetric Case"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-a-TAVL-Node-Step-3-_002d-Update.html" title="Prev: 8.5.3 Step 3: Update Balance Factors"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-a-TAVL-Tree.html" title="Up: 8.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="TAVL-Deletion-Symmetric-Case.html" title="Next: 8.5.5 Symmetric Case"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Rebalancing after deletion in a TAVL tree divides into three cases.  The
+first of these is analogous to case 1 in unthreaded AVL deletion, the
+other two to case 2 (see <a href="Inserting-into-a-TBST.html">Inserting into a TBST</a>).  The cases are
+distinguished, as usual, based on the balance factor of right child <i>x</i><!-- /@w -->
+of the node <i>y</i><!-- /@w --> at which rebalancing occurs:
+
+   <p><a name="index-rebalance-after-TAVL-deletion-459"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_after_TAVL_deletion.c.txt">319</a>. &lt;<a name="319" href="Step_4_3a_Rebalance_after_TAVL_deletion.c.txt">Step 4: Rebalance after TAVL deletion 319</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+
+<i>assert</i><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == -1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    &lt;<a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#320">Rebalance for - balance factor after TAVL deletion in left subtree 320</a>&gt;
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>q</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>x</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#321">Rebalance for 0 balance factor after TAVL deletion in left subtree 321</a>&gt;
+        <b>break</b><!-- /@w -->;
+      } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> /* <i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == +1 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#322">Rebalance for + balance factor after TAVL deletion in left subtree 322</a>&gt;
+      }
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TAVL-Node-Step-3-_002d-Update.html#318">318</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>x</i><!-- /@w --> has - balance factor</h5>
+
+<p>This case is just like case 2 in TAVL insertion.  In fact, we can even
+reuse the code:
+
+   <p><a name="index-rebalance-for-_0040math_007b_002d_007d-balance-factor-after-TAVL-deletion-in-left-subtree-460"></a>
+<pre class="format"><a href="Rebalance_for__7c-_7c_balance_factor_after_TAVL_deletion_in_left_subtree.c.txt">320</a>. &lt;<a name="320" href="Rebalance_for__7c-_7c_balance_factor_after_TAVL_deletion_in_left_subtree.c.txt">Rebalance for - balance factor after TAVL deletion in left subtree 320</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>w</i><!-- /@w -->;
+
+&lt;<a href="TAVL-Insertion-Symmetric-Case.html#310">Rebalance for - balance factor in TAVL insertion in right subtree 310</a>&gt;
+<i>q</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>w</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#319">319</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>x</i><!-- /@w --> has 0 balance factor</h5>
+
+<p><a name="tavldelcase2"></a>
+
+   <p>If <i>x</i><!-- /@w --> has a 0 balance factor, then we perform a left rotation at <i>y</i><!-- /@w -->. 
+The transformation looks like this, with subtree heights listed under
+their labels:
+
+<div align="center"><a href="tavldel.txt"><img border=0 src="tavldel.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Subtree <i>b</i><!-- /@w --> is taller than subtree <i>a</i><!-- /@w -->, so even if <i>h</i><!-- /@w --> takes its
+minimum value of 1, then subtree <i>b</i><!-- /@w --> has height <i>h</i><!-- /@w --> == 1 and,
+therefore, it must contain at least one node and there is no need to
+do any checking for threads.  The code is simple:
+
+   <p><a name="index-rebalance-for-0-balance-factor-after-TAVL-deletion-in-left-subtree-461"></a>
+<pre class="format"><a href="Rebalance_for_0_balance_factor_after_TAVL_deletion_in_left_subtree.c.txt">321</a>. &lt;<a name="321" href="Rebalance_for_0_balance_factor_after_TAVL_deletion_in_left_subtree.c.txt">Rebalance for 0 balance factor after TAVL deletion in left subtree 321</a>&gt; =
+<i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+<i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = -1;
+<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = +1;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#319">319</a> and <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#443">443</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>x</i><!-- /@w --> has + balance factor</h5>
+
+<p><a name="tavldelcase3"></a>
+
+   <p>If <i>x</i><!-- /@w --> has a + balance factor, we perform a left rotation at <i>y</i><!-- /@w -->, same
+as for case 2, and the transformation looks like this:
+
+<div align="center"><a href="tavldel2.txt"><img border=0 src="tavldel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">One difference from case 2 is in the resulting balance factors.  The
+other is that if <i>h</i><!-- /@w --> == 1, then subtrees <i>a</i><!-- /@w --> and <i>b</i><!-- /@w --> have height <i>h</i><!-- /@w --> - 1 == 0, so <i>a</i><!-- /@w --> and <i>b</i><!-- /@w --> may actually be threads.  In that case, the
+transformation must be done this way:
+
+<div align="center"><a href="tavldel3.txt"><img border=0 src="tavldel3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">This code handles both possibilities:
+
+   <p><a name="index-rebalance-for-_0040math_007b_002b_007d-balance-factor-after-TAVL-deletion-in-left-subtree-462"></a>
+<pre class="format"><a href="Rebalance_for__7c_2b_7c_balance_factor_after_TAVL_deletion_in_left_subtree.c.txt">322</a>. &lt;<a name="322" href="Rebalance_for__7c_2b_7c_balance_factor_after_TAVL_deletion_in_left_subtree.c.txt">Rebalance for + balance factor after TAVL deletion in left subtree 322</a>&gt; =
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_CHILD</tt><!-- /@w -->)
+  <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+  }
+<i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;  
+<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#319">319</a>.</small>
+
+   </body></html>
+

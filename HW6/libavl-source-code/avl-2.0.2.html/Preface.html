@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+<title>Preface - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="index.html" title="GNU libavl 2.0.2">
+<link rel=Next href="Acknowledgements.html" title="Acknowledgements">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Preface">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Preface</b></big></td>
+<td align=right>
+<a href="index.html#Preface.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="index.html" title="Skip Back: GNU libavl 2.0.2"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Introduction.html" title="Skip Forward: 1 Introduction"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="index.html" title="Prev: GNU libavl 2.0.2"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Acknowledgements.html" title="Next: Acknowledgements"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Early in 1998, I wanted an AVL tree library for use in writing GNU
+PSPP.  At the time, few of these were available on the Internet. 
+Those that were had licenses that were not entirely satisfactory for
+inclusion in GNU software.  I resolved to write my own.  I sat down
+with Knuth's <cite>The Art of Computer Programming</cite> and did so.  The
+result was the earliest version of libavl.  As I wrote it, I
+learned valuable lessons about implementing algorithms for binary
+search trees, and covered many notebook pages with scribbled diagrams.
+
+   <p>Later, I decided that what I really wanted was a similar library for
+threaded AVL trees, so I added an implementation to libavl.  Along
+the way, I ended up having to relearn many of the lessons I'd already
+painstakingly uncovered in my earlier work.  Even later, I had much
+the same experience in writing code for right-threaded AVL trees and
+red-black trees, which was done as much for my own education as any
+intention of using the code in real software.
+
+   <p>In late 1999, I contributed a chapter on binary search trees and
+balanced trees to a book on programming in C.  This again required a
+good deal of duplication of effort as I rediscovered old techniques. 
+By now I was beginning to see the pattern, so I decided to document
+once and for all the algorithms I had chosen and the tradeoffs I had
+made.  Along the way, the project expanded in scope several times.
+
+   <p>You are looking at the results.  I hope you find that it is as useful
+for reading and reference as I found that writing it was enjoyable for
+me.  As I wrote later chapters, I referred less and less to my other
+reference books and more and more to my own earlier chapters, so I
+already know that it can come in handy for me.
+
+   <p>Please feel free to copy and distribute this book, in accordance with
+the license agreement.  If you make multiple printed copies, consider
+contacting me by email first to check whether there are any
+late-breaking corrections or new editions in the pipeline.
+
+<ul class="menu">
+<li><a accesskey="1" href="Acknowledgements.html">Acknowledgements</a>
+<li><a accesskey="2" href="Contacting-the-Author.html">Contacting the Author</a>
+</ul>
+
+   </body></html>
+

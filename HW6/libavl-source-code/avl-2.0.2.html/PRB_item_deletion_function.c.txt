@@ -1,0 +1,247 @@
+/* Deletes from |tree| and returns an item matching |item|.
+   Returns a null pointer if no matching item found. */
+void *
+prb_delete (struct prb_table *tree, const void *item)
+{
+  struct prb_node *p; /* Node to delete. */
+  struct prb_node *q; /* Parent of |p|. */
+  struct prb_node *f; /* Node at which we are rebalancing. */
+  int dir;            /* Side of |q| on which |p| is a child;
+                         side of |f| from which node was deleted. */
+
+  assert (tree != NULL && item != NULL);
+
+  if (tree->prb_root == NULL)
+    return NULL;
+
+  p = tree->prb_root;
+  for (;;)
+    {
+      int cmp = tree->prb_compare (item, p->prb_data, tree->prb_param);
+      if (cmp == 0)
+        break;
+
+      dir = cmp > 0;
+      p = p->prb_link[dir];
+      if (p == NULL)
+        return NULL;
+    }
+  item = p->prb_data;
+
+  q = p->prb_parent;
+  if (q == NULL)
+    {
+      q = (struct prb_node *) &tree->prb_root;
+      dir = 0;
+    }
+
+  if (p->prb_link[1] == NULL)
+    {
+      q->prb_link[dir] = p->prb_link[0];
+      if (q->prb_link[dir] != NULL)
+        q->prb_link[dir]->prb_parent = p->prb_parent;
+
+      f = q;
+    }
+  else
+    {
+      enum prb_color t;
+      struct prb_node *r = p->prb_link[1];
+
+      if (r->prb_link[0] == NULL)
+        {
+          r->prb_link[0] = p->prb_link[0];
+          q->prb_link[dir] = r;
+          r->prb_parent = p->prb_parent;
+          if (r->prb_link[0] != NULL)
+            r->prb_link[0]->prb_parent = r;
+
+          t = p->prb_color;
+          p->prb_color = r->prb_color;
+          r->prb_color = t;
+
+          f = r;
+          dir = 1;
+        }
+      else
+        {
+          struct prb_node *s = r->prb_link[0];
+          while (s->prb_link[0] != NULL)
+            s = s->prb_link[0];
+          r = s->prb_parent;
+          r->prb_link[0] = s->prb_link[1];
+          s->prb_link[0] = p->prb_link[0];
+          s->prb_link[1] = p->prb_link[1];
+          q->prb_link[dir] = s;
+          if (s->prb_link[0] != NULL)
+            s->prb_link[0]->prb_parent = s;
+          s->prb_link[1]->prb_parent = s;
+          s->prb_parent = p->prb_parent;
+          if (r->prb_link[0] != NULL)
+            r->prb_link[0]->prb_parent = r;
+
+          t = p->prb_color;
+          p->prb_color = s->prb_color;
+          s->prb_color = t;
+
+          f = r;
+          dir = 0;
+        }
+    }
+
+  if (p->prb_color == PRB_BLACK)
+    {
+      for (;;)
+        {
+          struct prb_node *x; /* Node we want to recolor black if possible. */
+          struct prb_node *g; /* Parent of |f|. */
+          struct prb_node *t; /* Temporary for use in finding parent. */
+
+          x = f->prb_link[dir];
+          if (x != NULL && x->prb_color == PRB_RED)
+            {
+              x->prb_color = PRB_BLACK;
+              break;
+            }
+
+          if (f == (struct prb_node *) &tree->prb_root)
+            break;
+
+          g = f->prb_parent;
+          if (g == NULL)
+            g = (struct prb_node *) &tree->prb_root;
+
+          if (dir == 0)
+            {
+              struct prb_node *w = f->prb_link[1];
+
+              if (w->prb_color == PRB_RED)
+                {
+                  w->prb_color = PRB_BLACK;
+                  f->prb_color = PRB_RED;
+
+                  f->prb_link[1] = w->prb_link[0];
+                  w->prb_link[0] = f;
+                  g->prb_link[g->prb_link[0] != f] = w;
+
+                  w->prb_parent = f->prb_parent;
+                  f->prb_parent = w;
+
+                  g = w;
+                  w = f->prb_link[1];
+
+                  w->prb_parent = f;
+                }
+
+              if ((w->prb_link[0] == NULL
+                   || w->prb_link[0]->prb_color == PRB_BLACK)
+                  && (w->prb_link[1] == NULL
+                      || w->prb_link[1]->prb_color == PRB_BLACK))
+                {
+                  w->prb_color = PRB_RED;
+                }
+              else
+                {
+                  if (w->prb_link[1] == NULL
+                      || w->prb_link[1]->prb_color == PRB_BLACK)
+                    {
+                      struct prb_node *y = w->prb_link[0];
+                      y->prb_color = PRB_BLACK;
+                      w->prb_color = PRB_RED;
+                      w->prb_link[0] = y->prb_link[1];
+                      y->prb_link[1] = w;
+                      if (w->prb_link[0] != NULL)
+                        w->prb_link[0]->prb_parent = w;
+                      w = f->prb_link[1] = y;
+                      w->prb_link[1]->prb_parent = w;
+                    }
+
+                  w->prb_color = f->prb_color;
+                  f->prb_color = PRB_BLACK;
+                  w->prb_link[1]->prb_color = PRB_BLACK;
+
+                  f->prb_link[1] = w->prb_link[0];
+                  w->prb_link[0] = f;
+                  g->prb_link[g->prb_link[0] != f] = w;
+
+                  w->prb_parent = f->prb_parent;
+                  f->prb_parent = w;
+                  if (f->prb_link[1] != NULL)
+                    f->prb_link[1]->prb_parent = f;
+                  break;
+                }
+            }
+          else
+            {
+              struct prb_node *w = f->prb_link[0];
+
+              if (w->prb_color == PRB_RED)
+                {
+                  w->prb_color = PRB_BLACK;
+                  f->prb_color = PRB_RED;
+
+                  f->prb_link[0] = w->prb_link[1];
+                  w->prb_link[1] = f;
+                  g->prb_link[g->prb_link[0] != f] = w;
+
+                  w->prb_parent = f->prb_parent;
+                  f->prb_parent = w;
+
+                  g = w;
+                  w = f->prb_link[0];
+
+                  w->prb_parent = f;
+                }
+
+              if ((w->prb_link[0] == NULL
+                   || w->prb_link[0]->prb_color == PRB_BLACK)
+                  && (w->prb_link[1] == NULL
+                      || w->prb_link[1]->prb_color == PRB_BLACK))
+                {
+                  w->prb_color = PRB_RED;
+                }
+              else
+                {
+                  if (w->prb_link[0] == NULL
+                      || w->prb_link[0]->prb_color == PRB_BLACK)
+                    {
+                      struct prb_node *y = w->prb_link[1];
+                      y->prb_color = PRB_BLACK;
+                      w->prb_color = PRB_RED;
+                      w->prb_link[1] = y->prb_link[0];
+                      y->prb_link[0] = w;
+                      if (w->prb_link[1] != NULL)
+                        w->prb_link[1]->prb_parent = w;
+                      w = f->prb_link[0] = y;
+                      w->prb_link[0]->prb_parent = w;
+                    }
+
+                  w->prb_color = f->prb_color;
+                  f->prb_color = PRB_BLACK;
+                  w->prb_link[0]->prb_color = PRB_BLACK;
+
+                  f->prb_link[0] = w->prb_link[1];
+                  w->prb_link[1] = f;
+                  g->prb_link[g->prb_link[0] != f] = w;
+
+                  w->prb_parent = f->prb_parent;
+                  f->prb_parent = w;
+                  if (f->prb_link[0] != NULL)
+                    f->prb_link[0]->prb_parent = f;
+                  break;
+                }
+            }
+
+          t = f;
+          f = f->prb_parent;
+          if (f == NULL)
+            f = (struct prb_node *) &tree->prb_root;
+          dir = f->prb_link[0] != t;
+        }
+    }
+
+  tree->prb_alloc->libavl_free (tree->prb_alloc, p);
+  tree->prb_count--;
+  return (void *) item;
+}
+

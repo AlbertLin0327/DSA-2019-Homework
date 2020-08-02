@@ -1,0 +1,27 @@
+/* Initializes |trav| for |tree|
+   and selects and returns a pointer to its least-valued item.
+   Returns |NULL| if |tree| contains no nodes. */
+void *
+avl_t_first (struct avl_traverser *trav, struct avl_table *tree)
+{
+  struct avl_node *x;
+
+  assert (tree != NULL && trav != NULL);
+
+  trav->avl_table = tree;
+  trav->avl_height = 0;
+  trav->avl_generation = tree->avl_generation;
+
+  x = tree->avl_root;
+  if (x != NULL)
+    while (x->avl_link[0] != NULL)
+      {
+        assert (trav->avl_height < AVL_MAX_HEIGHT);
+        trav->avl_stack[trav->avl_height++] = x;
+        x = x->avl_link[0];
+      }
+  trav->avl_node = x;
+
+  return x != NULL ? x->avl_data : NULL;
+}
+

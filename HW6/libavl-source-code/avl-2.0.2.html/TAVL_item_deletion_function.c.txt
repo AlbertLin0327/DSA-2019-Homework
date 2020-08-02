@@ -1,0 +1,298 @@
+/* Returns the parent of |node| within |tree|,
+   or a pointer to |tavl_root| if |s| is the root of the tree. */
+static struct tavl_node *
+find_parent (struct tavl_table *tree, struct tavl_node *node)
+{
+  if (node != tree->tavl_root)
+    {
+      struct tavl_node *x, *y;
+
+      for (x = y = node; ; x = x->tavl_link[0], y = y->tavl_link[1])
+        if (y->tavl_tag[1] == TAVL_THREAD)
+          {
+            struct tavl_node *p = y->tavl_link[1];
+            if (p == NULL || p->tavl_link[0] != node)
+              {
+                while (x->tavl_tag[0] == TAVL_CHILD)
+                  x = x->tavl_link[0];
+                p = x->tavl_link[0];
+              }
+            return p;
+          }
+        else if (x->tavl_tag[0] == TAVL_THREAD)
+          {
+            struct tavl_node *p = x->tavl_link[0];
+            if (p == NULL || p->tavl_link[1] != node)
+              {
+                while (y->tavl_tag[1] == TAVL_CHILD)
+                  y = y->tavl_link[1];
+                p = y->tavl_link[1];
+              }
+            return p;
+          }
+    }
+  else
+    return (struct tavl_node *) &tree->tavl_root;
+}
+
+/* Deletes from |tree| and returns an item matching |item|.
+   Returns a null pointer if no matching item found. */
+void *
+tavl_delete (struct tavl_table *tree, const void *item)
+{
+  struct tavl_node *p; /* Traverses tree to find node to delete. */
+  struct tavl_node *q; /* Parent of |p|. */
+  int dir;             /* Index into |q->tavl_link[]| to get |p|. */
+  int cmp;             /* Result of comparison between |item| and |p|. */
+
+  assert (tree != NULL && item != NULL);
+
+  if (tree->tavl_root == NULL)
+    return NULL;
+
+  q = (struct tavl_node *) &tree->tavl_root;
+  p = tree->tavl_root;
+  dir = 0;
+  for (;;)
+    {
+      cmp = tree->tavl_compare (item, p->tavl_data, tree->tavl_param);
+      if (cmp == 0)
+        break;
+      dir = cmp > 0;
+
+      q = p;
+      if (p->tavl_tag[dir] == TAVL_THREAD)
+        return NULL;
+      p = p->tavl_link[dir];
+    }
+  item = p->tavl_data;
+
+  if (p->tavl_tag[1] == TAVL_THREAD)
+    {
+      if (p->tavl_tag[0] == TAVL_CHILD)
+        {
+          struct tavl_node *t = p->tavl_link[0];
+          while (t->tavl_tag[1] == TAVL_CHILD)
+            t = t->tavl_link[1];
+          t->tavl_link[1] = p->tavl_link[1];
+          q->tavl_link[dir] = p->tavl_link[0];
+        }
+      else
+        {
+          q->tavl_link[dir] = p->tavl_link[dir];
+          if (q != (struct tavl_node *) &tree->tavl_root)
+            q->tavl_tag[dir] = TAVL_THREAD;
+        }
+    }
+  else
+    {
+      struct tavl_node *r = p->tavl_link[1];
+      if (r->tavl_tag[0] == TAVL_THREAD)
+        {
+          r->tavl_link[0] = p->tavl_link[0];
+          r->tavl_tag[0] = p->tavl_tag[0];
+          if (r->tavl_tag[0] == TAVL_CHILD)
+            {
+              struct tavl_node *t = r->tavl_link[0];
+              while (t->tavl_tag[1] == TAVL_CHILD)
+                t = t->tavl_link[1];
+              t->tavl_link[1] = r;
+            }
+          q->tavl_link[dir] = r;
+          r->tavl_balance = p->tavl_balance;
+          q = r;
+          dir = 1;
+        }
+      else
+        {
+          struct tavl_node *s;
+
+          for (;;)
+            {
+              s = r->tavl_link[0];
+              if (s->tavl_tag[0] == TAVL_THREAD)
+                break;
+
+              r = s;
+            }
+
+          if (s->tavl_tag[1] == TAVL_CHILD)
+            r->tavl_link[0] = s->tavl_link[1];
+          else
+            {
+              r->tavl_link[0] = s;
+              r->tavl_tag[0] = TAVL_THREAD;
+            }
+
+          s->tavl_link[0] = p->tavl_link[0];
+          if (p->tavl_tag[0] == TAVL_CHILD)
+            {
+              struct tavl_node *t = p->tavl_link[0];
+              while (t->tavl_tag[1] == TAVL_CHILD)
+                t = t->tavl_link[1];
+              t->tavl_link[1] = s;
+
+              s->tavl_tag[0] = TAVL_CHILD;
+            }
+
+          s->tavl_link[1] = p->tavl_link[1];
+          s->tavl_tag[1] = TAVL_CHILD;
+
+          q->tavl_link[dir] = s;
+          s->tavl_balance = p->tavl_balance;
+          q = r;
+          dir = 0;
+        }
+    }
+
+  tree->tavl_alloc->libavl_free (tree->tavl_alloc, p);
+
+  while (q != (struct tavl_node *) &tree->tavl_root)
+    {
+      struct tavl_node *y = q;
+
+      q = find_parent (tree, y);
+
+      if (dir == 0)
+        {
+          dir = q->tavl_link[0] != y;
+          y->tavl_balance++;
+          if (y->tavl_balance == +1)
+            break;
+          else if (y->tavl_balance == +2)
+            {
+              struct tavl_node *x = y->tavl_link[1];
+
+              assert (x != NULL);
+              if (x->tavl_balance == -1)
+                {
+                  struct tavl_node *w;
+
+                  assert (x->tavl_balance == -1);
+                  w = x->tavl_link[0];
+                  x->tavl_link[0] = w->tavl_link[1];
+                  w->tavl_link[1] = x;
+                  y->tavl_link[1] = w->tavl_link[0];
+                  w->tavl_link[0] = y;
+                  if (w->tavl_balance == +1)
+                    x->tavl_balance = 0, y->tavl_balance = -1;
+                  else if (w->tavl_balance == 0)
+                    x->tavl_balance = y->tavl_balance = 0;
+                  else /* |w->tavl_balance == -1| */
+                    x->tavl_balance = +1, y->tavl_balance = 0;
+                  w->tavl_balance = 0;
+                  if (w->tavl_tag[0] == TAVL_THREAD)
+                    {
+                      y->tavl_tag[1] = TAVL_THREAD;
+                      y->tavl_link[1] = w;
+                      w->tavl_tag[0] = TAVL_CHILD;
+                    }
+                  if (w->tavl_tag[1] == TAVL_THREAD)
+                    {
+                      x->tavl_tag[0] = TAVL_THREAD;
+                      x->tavl_link[0] = w;
+                      w->tavl_tag[1] = TAVL_CHILD;
+                    }
+                  q->tavl_link[dir] = w;
+                }
+              else
+                {
+                  q->tavl_link[dir] = x;
+
+                  if (x->tavl_balance == 0)
+                    {
+                      y->tavl_link[1] = x->tavl_link[0];
+                      x->tavl_link[0] = y;
+                      x->tavl_balance = -1;
+                      y->tavl_balance = +1;
+                      break;
+                    }
+                  else /* |x->tavl_balance == +1| */
+                    {
+                      if (x->tavl_tag[0] == TAVL_CHILD)
+                        y->tavl_link[1] = x->tavl_link[0];
+                      else
+                        {
+                          y->tavl_tag[1] = TAVL_THREAD;
+                          x->tavl_tag[0] = TAVL_CHILD;
+                        }
+                      x->tavl_link[0] = y;
+                      y->tavl_balance = x->tavl_balance = 0;
+                    }
+                }
+            }
+        }
+      else
+        {
+          dir = q->tavl_link[0] != y;
+          y->tavl_balance--;
+          if (y->tavl_balance == -1)
+            break;
+          else if (y->tavl_balance == -2)
+            {
+              struct tavl_node *x = y->tavl_link[0];
+              assert (x != NULL);
+              if (x->tavl_balance == +1)
+                {
+                  struct tavl_node *w;
+
+                  assert (x->tavl_balance == +1);
+                  w = x->tavl_link[1];
+                  x->tavl_link[1] = w->tavl_link[0];
+                  w->tavl_link[0] = x;
+                  y->tavl_link[0] = w->tavl_link[1];
+                  w->tavl_link[1] = y;
+                  if (w->tavl_balance == -1)
+                    x->tavl_balance = 0, y->tavl_balance = +1;
+                  else if (w->tavl_balance == 0)
+                    x->tavl_balance = y->tavl_balance = 0;
+                  else /* |w->tavl_balance == +1| */
+                    x->tavl_balance = -1, y->tavl_balance = 0;
+                  w->tavl_balance = 0;
+                  if (w->tavl_tag[0] == TAVL_THREAD)
+                    {
+                      x->tavl_tag[1] = TAVL_THREAD;
+                      x->tavl_link[1] = w;
+                      w->tavl_tag[0] = TAVL_CHILD;
+                    }
+                  if (w->tavl_tag[1] == TAVL_THREAD)
+                    {
+                      y->tavl_tag[0] = TAVL_THREAD;
+                      y->tavl_link[0] = w;
+                      w->tavl_tag[1] = TAVL_CHILD;
+                    }
+                  q->tavl_link[dir] = w;
+                }
+              else
+                {
+                  q->tavl_link[dir] = x;
+
+                  if (x->tavl_balance == 0)
+                    {
+                      y->tavl_link[0] = x->tavl_link[1];
+                      x->tavl_link[1] = y;
+                      x->tavl_balance = +1;
+                      y->tavl_balance = -1;
+                      break;
+                    }
+                  else /* |x->tavl_balance == -1| */
+                    {
+                      if (x->tavl_tag[1] == TAVL_CHILD)
+                        y->tavl_link[0] = x->tavl_link[1];
+                      else
+                        {
+                          y->tavl_tag[0] = TAVL_THREAD;
+                          x->tavl_tag[1] = TAVL_CHILD;
+                        }
+                      x->tavl_link[1] = y;
+                      y->tavl_balance = x->tavl_balance = 0;
+                    }
+                }
+            }
+        }
+    }
+
+  tree->tavl_count--;
+  return (void *) item;
+}
+

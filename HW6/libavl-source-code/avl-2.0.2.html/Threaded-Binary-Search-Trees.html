@@ -1,0 +1,147 @@
+<html lang="en">
+<head>
+<title>Threaded Binary Search Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Testing-RB-Trees.html" title="6.6 Testing">
+<link rel=Next href="Threads.html" title="7.1 Threads">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Threaded-Binary-Search-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>7 Threaded Binary Search Trees</b></big></td>
+<td align=right>
+<a href="index.html#Threaded-Binary-Search-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Red_002dBlack-Trees.html" title="Skip Back: 6 Red-Black Trees"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Threaded-AVL-Trees.html" title="Skip Forward: 8 Threaded AVL Trees"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-RB-Trees.html" title="Prev: 6.6 Testing"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Threads.html" title="Next: 7.1 Threads"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Traversal in inorder, as done by libavl traversers, is a common
+operation in a binary tree.  To do this efficiently in an ordinary
+binary search tree or balanced tree, we need to maintain a list of the
+nodes above the current node, or at least a list of nodes still to be
+visited.  This need leads to the stack used in <b>struct</b><!-- /@w --> <b>bst_traverser</b>
+and friends.
+
+   <p>It's really too bad that we need such stacks for traversal.  First,
+they take up space.  Second, they're fragile: if an item is inserted
+into or deleted from the tree during traversal, or if the tree is
+balanced, we have to rebuild the traverser's stack.  In addition, it
+can sometimes be difficult to know in advance how tall the stack will
+need to be, as demonstrated by the code that we wrote to handle stack
+overflow.
+
+   <p>These problems are important enough that, in this book, we'll look at
+two different solutions.  This chapter looks at the first of these,
+which adds special pointers, each called a <dfn>thread</dfn> (see <a href="Glossary.html#thread">thread</a>), to nodes,
+producing what is called a threaded binary search tree,
+<dfn>threaded tree</dfn> (see <a href="Glossary.html#threaded%20tree">threaded tree</a>), or simply a TBST.<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>  Later in the book, we'll examine an alternate and more
+general solution using a <dfn>parent pointer</dfn> (see <a href="Glossary.html#parent%20pointer">parent pointer</a>) in each node.
+
+   <p>Here's the outline of the TBST code.  We're using the prefix <i>tbst_</i><!-- /@w -->
+this time:
+
+   <p><a name="index-_0040t_007btbst_002eh_007d-351"></a>
+<pre class="format"><a href="tbst.h.txt">247</a>. &lt;<a name="247" href="tbst.h.txt"><tt>tbst.h</tt> 247</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>ifndef</b> <tt>TBST_H</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bTBST_005fH_007d_007d-macro_0040c-352"></a><tt>TBST_H</tt><!-- /@w --> 1
+
+#<b>include</b> &lt;stddef.h&gt;
+
+&lt;<a href="Table-Headers.html#14">Table types; tbl =&gt; tbst 14</a>&gt;
+&lt;<a href="TBST-Data-Types.html#250">TBST table structure 250</a>&gt;
+&lt;<a href="TBST-Data-Types.html#249">TBST node structure 249</a>&gt;
+&lt;<a href="Traversing-a-TBST.html#267">TBST traverser structure 267</a>&gt;
+&lt;<a href="Table-Headers.html#15">Table function prototypes; tbl =&gt; tbst 15</a>&gt;
+&lt;<a href="Balancing-a-BST.html#88">BST extra function prototypes; bst =&gt; tbst 88</a>&gt;
+
+#<b>endif</b> /* tbst.h */
+</pre>
+   <p><a name="index-_0040t_007btbst_002ec_007d-353"></a>
+<pre class="format"><a href="tbst.c.txt">248</a>. &lt;<a name="248" href="tbst.c.txt"><tt>tbst.c</tt> 248</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> "tbst.h"
+
+&lt;<a href="TBST-Operations.html#251">TBST functions 251</a>&gt;
+</pre>
+   <ul class="menu">
+<li><a accesskey="1" href="Threads.html">Threads</a>
+<li><a accesskey="2" href="TBST-Data-Types.html">TBST Data Types</a>
+<li><a accesskey="3" href="TBST-Operations.html">TBST Operations</a>
+<li><a accesskey="4" href="Creating-a-TBST.html">Creating a TBST</a>
+<li><a accesskey="5" href="Searching-a-TBST.html">Searching a TBST</a>
+<li><a accesskey="6" href="Inserting-into-a-TBST.html">Inserting into a TBST</a>
+<li><a accesskey="7" href="Deleting-from-a-TBST.html">Deleting from a TBST</a>
+<li><a accesskey="8" href="Traversing-a-TBST.html">Traversing a TBST</a>
+<li><a accesskey="9" href="Copying-a-TBST.html">Copying a TBST</a>
+<li><a href="Destroying-a-TBST.html">Destroying a TBST</a>
+<li><a href="Balancing-a-TBST.html">Balancing a TBST</a>
+<li><a href="Testing-TBSTs.html">Testing TBSTs</a>
+</ul>
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> This usage of
+&ldquo;thread&rdquo; has nothing to do with the idea of a program with multiple
+&ldquo;threads of excecution&rdquo;, a form of multitasking within a single
+program.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

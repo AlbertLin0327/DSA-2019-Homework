@@ -1,0 +1,22 @@
+/* Destroys |new| with |pbst_destroy (new, destroy)|,
+   first initializing right links in |new| that have
+   not yet been initialized at time of call. */
+static void
+copy_error_recovery (struct pbst_node *q,
+                     struct pbst_table *new, pbst_item_func *destroy)
+{
+  assert (q != NULL && new != NULL);
+
+  for (;;)
+    {
+      struct pbst_node *p = q;
+      q = q->pbst_parent;
+      if (q == NULL)
+        break;
+
+      if (p == q->pbst_link[0])
+        q->pbst_link[1] = NULL;
+    }
+
+  pbst_destroy (new, destroy);
+}

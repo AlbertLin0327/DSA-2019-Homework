@@ -1,0 +1,8 @@
+/* A binary search tree with parent pointers node. */
+struct pbst_node
+  {
+    struct pbst_node *pbst_link[2];   /* Subtrees. */
+    struct pbst_node *pbst_parent;    /* Parent. */
+    void *pbst_data;                  /* Pointer to data. */
+  };
+

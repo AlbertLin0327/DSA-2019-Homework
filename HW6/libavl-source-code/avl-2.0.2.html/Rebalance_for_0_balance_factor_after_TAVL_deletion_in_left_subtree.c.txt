@@ -1,0 +1,4 @@
+y->tavl_link[1] = x->tavl_link[0];
+x->tavl_link[0] = y;
+x->tavl_balance = -1;
+y->tavl_balance = +1;

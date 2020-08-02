@@ -1,0 +1,15 @@
+/* Characterizes a link as a child pointer or a thread. */
+enum rtbst_tag
+  {
+    RTBST_CHILD,                     /* Child pointer. */
+    RTBST_THREAD                     /* Thread. */
+  };
+
+/* A threaded binary search tree node. */
+struct rtbst_node
+  {
+    struct rtbst_node *rtbst_link[2]; /* Subtrees. */
+    void *rtbst_data;                 /* Pointer to data. */
+    unsigned char rtbst_rtag;         /* Tag field. */
+  };
+

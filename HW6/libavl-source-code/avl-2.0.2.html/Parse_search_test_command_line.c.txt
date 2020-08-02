@@ -1,0 +1,15 @@
+if (argc != 4)
+  usage ();
+
+{
+  long algorithm = stoi (argv[1]) - 1;
+  if (algorithm < 0 || algorithm > (long) n_search_func)
+    usage ();
+  f = &search_func_tab[algorithm];
+}
+
+n = stoi (argv[2]);
+n_iter = stoi (argv[3]);
+if (n < 1 || n_iter < 1)
+  usage ();
+

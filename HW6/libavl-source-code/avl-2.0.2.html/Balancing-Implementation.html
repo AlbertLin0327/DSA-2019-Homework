@@ -1,0 +1,242 @@
+<html lang="en">
+<head>
+<title>Balancing Implementation - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Balancing-General-Trees.html" title="4.12.2.1 General Trees">
+<link rel=Next href="Implementing-Compression.html" title="4.12.2.3 Implementing Compression">
+<link rel=Parent href="Transforming-a-Vine-into-a-Balanced-BST.html" title="4.12.2 From Vine to Balanced Tree">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Balancing-Implementation">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.12.2.2 Implementation</b></big></td>
+<td align=right>
+<a href="index.html#Balancing-Implementation.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-General-Trees.html" title="Skip Back: 4.12.2.1 General Trees"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Implementing-Compression.html" title="Skip Forward: 4.12.2.3 Implementing Compression"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-General-Trees.html" title="Prev: 4.12.2.1 General Trees"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Transforming-a-Vine-into-a-Balanced-BST.html" title="Up: 4.12.2 From Vine to Balanced Tree"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Implementing-Compression.html" title="Next: 4.12.2.3 Implementing Compression"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Implementing this algorithm is more or less straightforward.  Let's
+start from an outline:
+
+   <p><a name="catalogue_002dentry_002dbst_002d29"></a>
+<a name="index-vine-to-balanced-BST-function-142"></a>
+<pre class="format"><a href="Vine_to_balanced_BST_function.c.txt">90</a>. &lt;<a name="90" href="Vine_to_balanced_BST_function.c.txt">Vine to balanced BST function 90</a>&gt; =
+&lt;<a href="Implementing-Compression.html#95">BST compression function 95</a>&gt;
+
+/* Converts <i>tree</i><!-- /@w -->, which must be in the shape of a vine, into a balanced <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->tree. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>vine_to_tree</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+  <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>vine</i><!-- /@w -->;   /* Number of nodes in main vine. */
+  <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>leaves</i><!-- /@w -->; /* Nodes in incomplete bottom level, if any. */
+  <b>int</b><!-- /@w --> <i>height</i><!-- /@w -->;           /* Height of produced balanced tree. */
+
+  &lt;<a href="Balancing-Implementation.html#91">Calculate <i>leaves</i><!-- /@w --> 91</a>&gt;
+  &lt;<a href="Balancing-Implementation.html#92">Reduce vine general case to special case 92</a>&gt;
+  &lt;<a href="Balancing-Implementation.html#93">Make special case vine into balanced tree and count height 93</a>&gt;
+  &lt;<a href="Balancing-Implementation.html#94">Check for tree height in range 94</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-a-BST.html#87">87</a>.</small>
+
+   <p>The first step is to calculate the number of compression transformations
+necessary to reduce the general case of a tree with m nodes to
+the special case of exactly 2**n - 1 nodes, i.e.,
+calculate m - (2**n - 1), and store it in
+variable <i>leaves</i><!-- /@w -->.  We are given only the value of m, as
+<i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->.  Rewriting the calculation as the equivalent
+m + 1 - 2**n, one way to calculate it is evident
+from looking at the pattern in binary:
+
+   <p><table summary=""><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">m
+</td><td valign="top" width="6%">n
+</td><td valign="top" width="17%">&nbsp;&nbsp;<!-- /@w -->m + 1
+</td><td valign="top" width="16%">&nbsp;&nbsp;<!-- /@w -->2**n
+</td><td valign="top" width="16%">m + 1 - 2**n
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">1
+</td><td valign="top" width="6%">1
+</td><td valign="top" width="17%">&nbsp;<!-- /@w -->2 = 00010
+</td><td valign="top" width="16%">2 = 00010
+</td><td valign="top" width="16%">0 = 00000
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">2
+</td><td valign="top" width="6%">1
+</td><td valign="top" width="17%">&nbsp;<!-- /@w -->3 = 00011
+</td><td valign="top" width="16%">2 = 00010
+</td><td valign="top" width="16%">1 = 00001
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">3
+</td><td valign="top" width="6%">2
+</td><td valign="top" width="17%">&nbsp;<!-- /@w -->4 = 00100
+</td><td valign="top" width="16%">4 = 00100
+</td><td valign="top" width="16%">0 = 00000
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">4
+</td><td valign="top" width="6%">2
+</td><td valign="top" width="17%">&nbsp;<!-- /@w -->5 = 00101
+</td><td valign="top" width="16%">4 = 00100
+</td><td valign="top" width="16%">1 = 00001
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">5
+</td><td valign="top" width="6%">2
+</td><td valign="top" width="17%">&nbsp;<!-- /@w -->6 = 00110
+</td><td valign="top" width="16%">4 = 00100
+</td><td valign="top" width="16%">2 = 00010
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">6
+</td><td valign="top" width="6%">2
+</td><td valign="top" width="17%">&nbsp;<!-- /@w -->7 = 00111
+</td><td valign="top" width="16%">4 = 00100
+</td><td valign="top" width="16%">3 = 00011
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">7
+</td><td valign="top" width="6%">3
+</td><td valign="top" width="17%">&nbsp;<!-- /@w -->8 = 01000
+</td><td valign="top" width="16%">8 = 01000
+</td><td valign="top" width="16%">0 = 00000
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">8
+</td><td valign="top" width="6%">3
+</td><td valign="top" width="17%">&nbsp;<!-- /@w -->9 = 01001
+</td><td valign="top" width="16%">8 = 01000
+</td><td valign="top" width="16%">1 = 00000
+
+<p><br></td></tr><tr align="left"><td valign="top" width="19%"></td><td valign="top" width="6%">9
+</td><td valign="top" width="6%">3
+</td><td valign="top" width="17%">10 = 01001
+</td><td valign="top" width="16%">8 = 01000
+</td><td valign="top" width="16%">2 = 00000
+
+   <br></td></tr></table>
+
+   <p>See the pattern?  It's simply that m + 1 - 2**n
+is m with the leftmost 1-bit turned off.  So, if we can find the
+leftmost 1-bit in , we can figure out the number of
+leaves.
+
+   <p>In turn, there are numerous ways to find the leftmost 1-bit in a number. 
+The one used here is based on the principle that, if <i>x</i><!-- /@w --> is a positive
+integer, then <i>x</i><!-- /@w --> &amp; (<i>x</i><!-- /@w --> - 1) is <i>x</i><!-- /@w --> with its rightmost 1-bit turned off.
+
+   <p>Here's the code that calculates the number of leaves and stores it in
+<i>leaves</i><!-- /@w -->:
+
+   <p><a name="index-calculate-_0040w_007b_0040i_007bleaves_007d_007d-143"></a>
+<pre class="format"><a href="Calculate__7cleaves_7c.c.txt">91</a>. &lt;<a name="91" href="Calculate__7cleaves_7c.c.txt">Calculate <i>leaves</i><!-- /@w --> 91</a>&gt; =
+<i>leaves</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> + 1;
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>next</i><!-- /@w --> = <i>leaves</i><!-- /@w --> &amp; (<i>leaves</i><!-- /@w --> - 1);
+    <b>if</b><!-- /@w --> (<i>next</i><!-- /@w --> == 0)
+      <b>break</b><!-- /@w -->;
+    <i>leaves</i><!-- /@w --> = <i>next</i><!-- /@w -->;
+  }
+<i>leaves</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> + 1 - <i>leaves</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-Implementation.html#90">90</a>, <a href="Transforming-a-Vine-into-a-Balanced-TBST.html#285">285</a>, <a href="Balancing-a-PBST.html#512">512</a>, and <a href="Answers-for-Chapter-13.html#680">680</a>.</small>
+
+   <p>Once we have the number of leaves, we perform a compression composed of
+<i>leaves</i><!-- /@w --> compression transformations.  That's all it takes to reduce the
+general case to the 2**n - 1 special case.  We'll
+write the <i>compress</i><!-- /@w -->() function itself later:
+
+   <p><a name="index-reduce-vine-general-case-to-special-case-144"></a>
+<pre class="format"><a href="Reduce_vine_general_case_to_special_case.c.txt">92</a>. &lt;<a name="92" href="Reduce_vine_general_case_to_special_case.c.txt">Reduce vine general case to special case 92</a>&gt; =
+<i>compress</i><!-- /@w --> ((<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, <i>leaves</i><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-Implementation.html#90">90</a>, <a href="Balancing-a-PBST.html#512">512</a>, and <a href="Answers-for-Chapter-13.html#680">680</a>.</small>
+
+   <p>The heart of the function is the compression of the vine into the
+tree.  Before each compression, <i>vine</i><!-- /@w --> contains the number of nodes in
+the main vine of the tree.  The number of compression transformations
+necessary for the compression is <i>vine</i><!-- /@w --> / 2; e.g., when the main vine
+contains 7 nodes, 7 / 2 = 3 transformations are necessary.  The
+number of nodes in the vine afterward is the same number
+(see <a href="Transforming-a-Vine-into-a-Balanced-BST.html">Transforming a Vine into a Balanced BST</a>).
+
+   <p>At the same time, we keep track of the height of the balanced tree.  The
+final tree always has height at least 1.  Each compression step means
+that it is one level taller than that.  If the tree needed
+general-to-special-case transformations, that is, <i>leaves</i><!-- /@w --> &gt; 0, then
+it's one more than that.
+
+   <p><a name="index-make-special-case-vine-into-balanced-tree-and-count-height-145"></a>
+<pre class="format"><a href="Make_special_case_vine_into_balanced_tree_and_count_height.c.txt">93</a>. &lt;<a name="93" href="Make_special_case_vine_into_balanced_tree_and_count_height.c.txt">Make special case vine into balanced tree and count height 93</a>&gt; =
+<i>vine</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> - <i>leaves</i><!-- /@w -->;
+<i>height</i><!-- /@w --> = 1 + (<i>leaves</i><!-- /@w --> &gt; 0);
+<b>while</b><!-- /@w --> (<i>vine</i><!-- /@w --> &gt; 1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>compress</i><!-- /@w --> ((<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, <i>vine</i><!-- /@w --> / 2);
+    <i>vine</i><!-- /@w --> /= 2;
+    <i>height</i><!-- /@w -->++;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-Implementation.html#90">90</a>, <a href="Balancing-a-PBST.html#512">512</a>, and <a href="Answers-for-Chapter-13.html#680">680</a>.</small>
+
+   <p>Finally, we make sure that the height of the tree is within range for
+what the functions that use stacks can handle.  Otherwise, we could end
+up with an infinite loop, with <i>bst_t_next</i><!-- /@w -->() (for example) calling
+<i>bst_balance</i><!-- /@w -->() repeatedly to balance the tree in order to reduce its
+height to the acceptable range.
+
+   <p><a name="index-check-for-tree-height-in-range-146"></a>
+<pre class="format"><a href="Check_for_tree_height_in_range.c.txt">94</a>. &lt;<a name="94" href="Check_for_tree_height_in_range.c.txt">Check for tree height in range 94</a>&gt; =
+<b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt; <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"libavl: Tree too big (%lu nodes) to handle."</tt>,
+             (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->);
+    <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-Implementation.html#90">90</a>.</small>
+
+   </body></html>
+

@@ -1,0 +1,186 @@
+/* Tests tree functions.
+   |insert[]| and |delete[]| must contain some permutation of values
+   |0|@dots{}|n - 1|.
+   Uses |allocator| as the allocator for tree and node data.
+   Higher values of |verbosity| produce more debug output. */
+int
+test_correctness (struct libavl_allocator *allocator,
+                 int insert[], int delete[], int n, int verbosity)
+{
+  struct tbst_table *tree;
+  int okay = 1;
+  int i;
+
+  /* Test creating a TBST and inserting into it. */
+  tree = tbst_create (compare_ints, NULL, allocator);
+  if (tree == NULL)
+    {
+      if (verbosity >= 0)
+        printf ("  Out of memory creating tree.\n");
+      return 1;
+    }
+
+  for (i = 0; i < n; i++)
+    {
+      if (verbosity >= 2)
+        printf ("  Inserting %d...\n", insert[i]);
+
+      /* Add the |i|th element to the tree. */
+      {
+        void **p = tbst_probe (tree, &insert[i]);
+        if (p == NULL)
+          {
+            if (verbosity >= 0)
+              printf ("    Out of memory in insertion.\n");
+            tbst_destroy (tree, NULL);
+            return 1;
+          }
+        if (*p != &insert[i])
+          printf ("    Duplicate item in tree!\n");
+      }
+
+      if (verbosity >= 3)
+        print_whole_tree (tree, "    Afterward");
+
+      if (!verify_tree (tree, insert, i + 1))
+        return 0;
+    }
+
+  /* Test TBST traversal during modifications. */
+  for (i = 0; i < n; i++)
+    {
+      struct tbst_traverser x, y, z;
+      int *deleted;
+
+      if (insert[i] == delete[i])
+        continue;
+
+      if (verbosity >= 2)
+        printf ("   Checking traversal from item %d...\n", insert[i]);
+
+      if (tbst_t_find (&x, tree, &insert[i]) == NULL)
+        {
+          printf ("    Can't find item %d in tree!\n", insert[i]);
+          continue;
+        }
+
+      okay &= check_traverser (&x, insert[i], n, "Predeletion");
+
+      if (verbosity >= 3)
+        printf ("    Deleting item %d.\n", delete[i]);
+
+      deleted = tbst_delete (tree, &delete[i]);
+      if (deleted == NULL || *deleted != delete[i])
+        {
+          okay = 0;
+          if (deleted == NULL)
+            printf ("    Deletion failed.\n");
+          else
+            printf ("    Wrong node %d returned.\n", *deleted);
+        }
+
+      tbst_t_copy (&y, &x);
+
+      if (verbosity >= 3)
+        printf ("    Re-inserting item %d.\n", delete[i]);
+      if (tbst_t_insert (&z, tree, &delete[i]) == NULL)
+        {
+          if (verbosity >= 0)
+            printf ("    Out of memory re-inserting item.\n");
+          tbst_destroy (tree, NULL);
+          return 1;
+        }
+
+      okay &= check_traverser (&x, insert[i], n, "Postdeletion");
+      okay &= check_traverser (&y, insert[i], n, "Copied");
+      okay &= check_traverser (&z, delete[i], n, "Insertion");
+
+      if (!verify_tree (tree, insert, n))
+        return 0;
+    }
+
+  /* Test deleting nodes from the tree and making copies of it. */
+  for (i = 0; i < n; i++)
+    {
+      int *deleted;
+
+      if (verbosity >= 2)
+        printf ("  Deleting %d...\n", delete[i]);
+
+      deleted = tbst_delete (tree, &delete[i]);
+      if (deleted == NULL || *deleted != delete[i])
+        {
+          okay = 0;
+          if (deleted == NULL)
+            printf ("    Deletion failed.\n");
+          else
+            printf ("    Wrong node %d returned.\n", *deleted);
+        }
+
+      if (verbosity >= 3)
+        print_whole_tree (tree, "    Afterward");
+
+      if (!verify_tree (tree, delete + i + 1, n - i - 1))
+        return 0;
+
+      if (verbosity >= 2)
+        printf ("  Copying tree and comparing...\n");
+
+      /* Copy the tree and make sure it's identical. */
+      {
+        struct tbst_table *copy = tbst_copy (tree, NULL, NULL, NULL);
+        if (copy == NULL)
+          {
+            if (verbosity >= 0)
+              printf ("  Out of memory in copy\n");
+            tbst_destroy (tree, NULL);
+            return 1;
+          }
+
+        okay &= compare_trees (tree->tbst_root, copy->tbst_root);
+        tbst_destroy (copy, NULL);
+      }
+    }
+
+  /* Test destroying the tree. */
+  tbst_destroy (tree, NULL);
+
+  /* Test |tbst_balance()|. */
+  if (verbosity >= 2)
+    printf ("  Testing balancing...\n");
+
+  tree = tbst_create (compare_ints, NULL, allocator);
+  if (tree == NULL)
+    {
+      if (verbosity >= 0)
+        printf ("  Out of memory creating tree.\n");
+      return 1;
+    }
+
+  for (i = 0; i < n; i++)
+    {
+      void **p = tbst_probe (tree, &insert[i]);
+      if (p == NULL)
+        {
+          if (verbosity >= 0)
+            printf ("    Out of memory in insertion.\n");
+          tbst_destroy (tree, NULL);
+          return 1;
+        }
+      if (*p != &insert[i])
+        printf ("    Duplicate item in tree!\n");
+    }
+
+  if (verbosity >= 4)
+    print_whole_tree (tree, "    Pre-balance");
+  tbst_balance (tree);
+  if (verbosity >= 4)
+    print_whole_tree (tree, "    Post-balance");
+
+  if (!verify_tree (tree, insert, n))
+    return 0;
+
+  tbst_destroy (tree, NULL);
+
+  return okay;
+}

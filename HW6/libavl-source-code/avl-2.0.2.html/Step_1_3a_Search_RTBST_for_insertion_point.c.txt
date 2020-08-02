@@ -1,0 +1,25 @@
+if (tree->rtbst_root != NULL)
+  for (p = tree->rtbst_root; ; p = p->rtbst_link[dir])
+    {
+      int cmp = tree->rtbst_compare (item, p->rtbst_data, tree->rtbst_param);
+      if (cmp == 0)
+        return &p->rtbst_data;
+      dir = cmp > 0;
+
+      if (dir == 0)
+        {
+          if (p->rtbst_link[0] == NULL)
+            break;
+        }
+      else /* |dir == 1| */
+        {
+          if (p->rtbst_rtag == RTBST_THREAD)
+            break;
+        }
+    }
+else
+  {
+    p = (struct rtbst_node *) &tree->rtbst_root;
+    dir = 0;
+  }
+

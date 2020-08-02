@@ -1,0 +1,12 @@
+struct rtrb_node *y = w->rtrb_link[1];
+y->rtrb_color = RTRB_BLACK;
+w->rtrb_color = RTRB_RED;
+w->rtrb_link[1] = y->rtrb_link[0];
+y->rtrb_link[0] = w;
+w = pa[k - 1]->rtrb_link[0] = y;
+
+if (w->rtrb_link[0]->rtrb_link[1] == NULL)
+  {
+    w->rtrb_link[0]->rtrb_rtag = RTRB_THREAD;
+    w->rtrb_link[0]->rtrb_link[1] = w;
+  }

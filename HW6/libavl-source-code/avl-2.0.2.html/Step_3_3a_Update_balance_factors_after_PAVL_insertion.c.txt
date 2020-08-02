@@ -1,0 +1,10 @@
+for (p = n; p != y; p = q)
+  {
+    q = p->pavl_parent;
+    dir = q->pavl_link[0] != p;
+    if (dir == 0)
+      q->pavl_balance--;
+    else
+      q->pavl_balance++;
+  }
+

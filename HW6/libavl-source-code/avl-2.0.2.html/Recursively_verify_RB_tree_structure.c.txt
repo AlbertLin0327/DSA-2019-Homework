@@ -1,0 +1,78 @@
+/* Examines the binary tree rooted at |node|.
+   Zeroes |*okay| if an error occurs.
+   Otherwise, does not modify |*okay|.
+   Sets |*count| to the number of nodes in that tree,
+   including |node| itself if |node != NULL|.
+   Sets |*bh| to the tree's black-height.
+   All the nodes in the tree are verified to be at least |min|
+   but no greater than |max|. */
+static void
+recurse_verify_tree (struct rb_node *node, int *okay, size_t *count,
+                     int min, int max, int *bh)
+{
+  int d;                /* Value of this node's data. */
+  size_t subcount[2];   /* Number of nodes in subtrees. */
+  int subbh[2];         /* Black-heights of subtrees. */
+
+  if (node == NULL)
+    {
+      *count = 0;
+      *bh = 0;
+      return;
+    }
+  d = *(int *) node->rb_data;
+
+  if (min > max)
+    {
+      printf (" Parents of node %d constrain it to empty range %d...%d.\n",
+              d, min, max);
+      *okay = 0;
+    }
+  else if (d < min || d > max)
+    {
+      printf (" Node %d is not in range %d...%d implied by its parents.\n",
+              d, min, max);
+      *okay = 0;
+    }
+
+  recurse_verify_tree (node->rb_link[0], okay, &subcount[0],
+                       min, d - 1, &subbh[0]);
+  recurse_verify_tree (node->rb_link[1], okay, &subcount[1],
+                       d + 1, max, &subbh[1]);
+  *count = 1 + subcount[0] + subcount[1];
+  *bh = (node->rb_color == RB_BLACK) + subbh[0];
+
+  if (node->rb_color != RB_RED && node->rb_color != RB_BLACK)
+    {
+      printf (" Node %d is neither red nor black (%d).\n",
+              d, node->rb_color);
+      *okay = 0;
+    }
+
+  /* Verify compliance with rule 1. */
+  if (node->rb_color == RB_RED)
+    {
+      if (node->rb_link[0] != NULL && node->rb_link[0]->rb_color == RB_RED)
+        {
+          printf (" Red node %d has red left child %d\n",
+                  d, *(int *) node->rb_link[0]->rb_data);
+          *okay = 0;
+        }
+
+      if (node->rb_link[1] != NULL && node->rb_link[1]->rb_color == RB_RED)
+        {
+          printf (" Red node %d has red right child %d\n",
+                  d, *(int *) node->rb_link[1]->rb_data);
+          *okay = 0;
+        }
+    }
+
+  /* Verify compliance with rule 2. */
+  if (subbh[0] != subbh[1])
+    {
+      printf (" Node %d has two different black-heights: left bh=%d, "
+              "right bh=%d\n", d, subbh[0], subbh[1]);
+      *okay = 0;
+    }
+}
+

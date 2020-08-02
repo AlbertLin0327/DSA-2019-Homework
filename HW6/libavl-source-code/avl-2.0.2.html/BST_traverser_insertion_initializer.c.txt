@@ -1,0 +1,54 @@
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+bst_t_insert (struct bst_traverser *trav, struct bst_table *tree, void *item)
+{
+  struct bst_node **q;
+
+  assert (tree != NULL && item != NULL);
+
+  trav->bst_table = tree;
+  trav->bst_height = 0;
+
+  q = &tree->bst_root;
+  while (*q != NULL)
+    {
+      int cmp = tree->bst_compare (item, (*q)->bst_data, tree->bst_param);
+      if (cmp == 0)
+        {
+          trav->bst_node = *q;
+          trav->bst_generation = tree->bst_generation;
+          return (*q)->bst_data;
+        }
+
+      if (trav->bst_height >= BST_MAX_HEIGHT)
+        {
+          bst_balance (tree);
+          return bst_t_insert (trav, tree, item);
+        }
+      trav->bst_stack[trav->bst_height++] = *q;
+
+      q = &(*q)->bst_link[cmp > 0];
+    }
+
+  trav->bst_node = *q = tree->bst_alloc->libavl_malloc (tree->bst_alloc,
+                                                        sizeof **q);
+  if (*q == NULL)
+    {
+      trav->bst_node = NULL;
+      trav->bst_generation = tree->bst_generation;
+      return NULL;
+    }
+
+  (*q)->bst_link[0] = (*q)->bst_link[1] = NULL;
+  (*q)->bst_data = item;
+  tree->bst_count++;
+  trav->bst_generation = tree->bst_generation;
+  return (*q)->bst_data;
+}
+

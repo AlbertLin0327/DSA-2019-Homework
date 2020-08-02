@@ -1,0 +1,16 @@
+k = 0;
+p = (struct avl_node *) &tree->avl_root;
+for (cmp = -1; cmp != 0;
+     cmp = tree->avl_compare (item, p->avl_data, tree->avl_param))
+  {
+    int dir = cmp > 0;
+
+    pa[k] = p;
+    da[k++] = dir;
+
+    p = p->avl_link[dir];
+    if (p == NULL)
+      return NULL;
+  }
+item = p->avl_data;
+

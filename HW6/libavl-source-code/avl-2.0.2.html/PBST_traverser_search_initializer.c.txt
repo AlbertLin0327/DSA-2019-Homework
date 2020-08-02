@@ -1,0 +1,30 @@
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+pbst_t_find (struct pbst_traverser *trav, struct pbst_table *tree, void *item)
+{
+  struct pbst_node *p;
+  int dir;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->pbst_table = tree;
+  for (p = tree->pbst_root; p != NULL; p = p->pbst_link[dir])
+    {
+      int cmp = tree->pbst_compare (item, p->pbst_data, tree->pbst_param);
+      if (cmp == 0)
+        {
+          trav->pbst_node = p;
+          return p->pbst_data;
+        }
+
+      dir = cmp > 0;
+    }
+
+  trav->pbst_node = NULL;
+  return NULL;
+}
+

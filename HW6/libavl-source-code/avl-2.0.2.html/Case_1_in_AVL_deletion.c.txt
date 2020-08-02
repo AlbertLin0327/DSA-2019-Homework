@@ -1,0 +1,1 @@
+pa[k - 1]->avl_link[da[k - 1]] = p->avl_link[0];

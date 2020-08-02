@@ -1,0 +1,462 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 9 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-8.html" title="Chapter 8">
+<link rel=Next href="Answers-for-Chapter-10.html" title="Chapter 10">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-9">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 9</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-9.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-8.html" title="Skip Back: Chapter 8"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-10.html" title="Skip Forward: Chapter 10"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-8.html" title="Prev: Chapter 8"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-10.html" title="Next: Chapter 10"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 9.3.3</h4>
+
+<p><a name="9_002d3_002d3_00231"></a> <b>1.</b>
+For a brief explanation of an algorithm similar to the one here, see
+<a href="Inserting-into-a-PRB-Tree.html">Inserting into a PRB Tree</a>.
+
+   <p><a name="catalogue_002dentry_002dtrb_002d2"></a>
+<!-- tested 2002/1/6 -->
+<a name="index-TRB-item-insertion-function_002c-without-stack-969"></a>
+<pre class="format"><a href="TRB_item_insertion_function,_without_stack.c.txt">668</a>. &lt;<a name="668" href="TRB_item_insertion_function,_without_stack.c.txt">TRB item insertion function, without stack 668</a>&gt; =
+&lt;<a href="Finding-the-Parent-of-a-TBST-Node.html#327">Find parent of a TBST node; tbst =&gt; trb 327</a>&gt;
+
+<b>void</b><!-- /@w --> **<br><i>trb_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>trb_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btrb_005fprobe_007d-function-970"></a>  <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>p</i><!-- /@w -->; /* Traverses tree looking for insertion point. */
+  <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>n</i><!-- /@w -->; /* Newly inserted node. */
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;            /* Side of <i>p</i><!-- /@w --> on which <i>n</i><!-- /@w --> is inserted. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Inserting-into-a-TBST.html#255">Step 1: Search TBST for insertion point; tbst =&gt; trb 255</a>&gt;
+  &lt;<a href="Steps-1-and-2-in-TRB-Insertion.html#339">Step 2: Insert TRB node 339</a>&gt;
+  <i>p</i><!-- /@w --> = <i>n</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>f</i><!-- /@w -->, *<i>g</i><!-- /@w -->;
+
+      <i>f</i><!-- /@w --> = <i>find_parent</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>f</i><!-- /@w --> == (<b>struct</b><!-- /@w --> <b>trb_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->|| <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->)
+        <b>break</b><!-- /@w -->;
+
+      <i>g</i><!-- /@w --> = <i>find_parent</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>f</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>g</i><!-- /@w --> == (<b>struct</b><!-- /@w --> <b>trb_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w -->)
+        <b>break</b><!-- /@w -->;
+
+      <b>if</b><!-- /@w --> (<i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] == <i>f</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>y</i><!-- /@w --> = <i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+          <b>if</b><!-- /@w --> (<i>g</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_CHILD</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+              <i>g</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+              <i>p</i><!-- /@w --> = <i>g</i><!-- /@w -->;
+            } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>c</i><!-- /@w -->, *<i>x</i><!-- /@w -->;
+
+              <b>if</b><!-- /@w --> (<i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] == <i>p</i><!-- /@w -->)
+                <i>y</i><!-- /@w --> = <i>f</i><!-- /@w -->;
+              <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>x</i><!-- /@w --> = <i>f</i><!-- /@w -->;
+                  <i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+                  <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+                  <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+                  <i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+
+                  <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                      <i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_CHILD</tt><!-- /@w -->;
+                      <i>x</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_THREAD</tt><!-- /@w -->;
+                      <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+                    }
+                }
+
+              <i>c</i><!-- /@w --> = <i>find_parent</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>g</i><!-- /@w -->);
+              <i>c</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>c</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] != <i>g</i><!-- /@w -->] = <i>y</i><!-- /@w -->;
+
+              <i>x</i><!-- /@w --> = <i>g</i><!-- /@w -->;
+              <i>x</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+              <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+
+              <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+              <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->;
+
+              <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_CHILD</tt><!-- /@w -->;
+                  <i>x</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_THREAD</tt><!-- /@w -->;
+                  <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+                }
+              <b>break</b><!-- /@w -->;
+            }
+        } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>y</i><!-- /@w --> = <i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+          <b>if</b><!-- /@w --> (<i>g</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_CHILD</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+              <i>g</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+              <i>p</i><!-- /@w --> = <i>g</i><!-- /@w -->;
+            } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>c</i><!-- /@w -->, *<i>x</i><!-- /@w -->;
+
+              <b>if</b><!-- /@w --> (<i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] == <i>p</i><!-- /@w -->)
+                <i>y</i><!-- /@w --> = <i>f</i><!-- /@w -->;
+              <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>x</i><!-- /@w --> = <i>f</i><!-- /@w -->;
+                  <i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+                  <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+                  <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->;
+                  <i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+
+                  <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                      <i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_CHILD</tt><!-- /@w -->;
+                      <i>x</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_THREAD</tt><!-- /@w -->;
+                      <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+                    }
+                }
+
+              <i>c</i><!-- /@w --> = <i>find_parent</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>g</i><!-- /@w -->);
+              <i>c</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>c</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] != <i>g</i><!-- /@w -->] = <i>y</i><!-- /@w -->;
+
+              <i>x</i><!-- /@w --> = <i>g</i><!-- /@w -->;
+              <i>x</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+              <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+
+              <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+              <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+
+              <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_CHILD</tt><!-- /@w -->;
+                  <i>x</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_THREAD</tt><!-- /@w -->;
+                  <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+                }
+              <b>break</b><!-- /@w -->;
+            }
+        }
+    }
+  <i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>trb_data</i><!-- /@w -->;
+}
+</pre>
+   <h4 class="subheading">Section 9.4.2</h4>
+
+<p><a name="9_002d4_002d2_00231"></a> <b>1.</b>
+<a name="catalogue_002dentry_002dtrb_002d3"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-case-4-in-TRB-deletion_002c-alternate-version-971"></a>
+<pre class="format"><a href="Case_4_in_TRB_deletion,_alternate_version.c.txt">669</a>. &lt;<a name="669" href="Case_4_in_TRB_deletion,_alternate_version.c.txt">Case 4 in TRB deletion, alternate version 669</a>&gt; =
+<a name="index-_0040i_007bs_007d-variable-972"></a><b>struct</b><!-- /@w --> <b>trb_node</b> *<i>s</i><!-- /@w -->;
+
+<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>p</i><!-- /@w -->;
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 0;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+
+<i>p</i><!-- /@w -->-&gt;<i>trb_data</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>trb_data</i><!-- /@w -->;
+
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>r</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_THREAD</tt><!-- /@w -->;
+    <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->;
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>t</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+    <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_CHILD</tt><!-- /@w -->)
+      <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+    <i>t</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->;
+  }
+
+<i>p</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+</pre>
+   <h4 class="subheading">Section 9.4.5</h4>
+
+<p><a name="9_002d4_002d5_00231"></a> <b>1.</b>
+The code used in the rebalancing loop is related to &lt;<a href="Deleting-a-PRB-Node-Step-3-_002d-Rebalance.html#571">Step 3: Rebalance tree after PRB deletion 571</a>&gt;.  Variable <i>x</i><!-- /@w --> is initialized by
+step 2 here, though, because otherwise the pseudo-root node would be
+required to have a <i>trb_tag</i><!-- /@w -->[] member.
+
+   <p><a name="catalogue_002dentry_002dtrb_002d4"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-TRB-item-deletion-function_002c-without-stack-973"></a>
+<pre class="format"><a href="TRB_item_deletion_function,_without_stack.c.txt">670</a>. &lt;<a name="670" href="TRB_item_deletion_function,_without_stack.c.txt">TRB item deletion function, without stack 670</a>&gt; =
+&lt;<a href="Finding-the-Parent-of-a-TBST-Node.html#327">Find parent of a TBST node; tbst =&gt; trb 327</a>&gt;
+
+<b>void</b><!-- /@w --> *<br><i>trb_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>trb_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btrb_005fdelete_007d-function-974"></a>  <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>p</i><!-- /@w -->; /* Node to delete. */
+  <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>q</i><!-- /@w -->; /* Parent of <i>p</i><!-- /@w -->. */
+
+  <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>x</i><!-- /@w -->; /* Node we might want to recolor red (maybe <tt>NULL</tt><!-- /@w -->). */
+  <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>f</i><!-- /@w -->; /* Parent of <i>x</i><!-- /@w -->. */
+  <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>g</i><!-- /@w -->; /* Parent of <i>f</i><!-- /@w -->. */
+
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->, <i>cmp</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Deleting-a-TAVL-Node-Step-1-_002d-Search.html#312">Step 1: Search TAVL tree for item to delete; tavl =&gt; trb 312</a>&gt;
+  <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>t</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+          <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_CHILD</tt><!-- /@w -->)
+            <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+          <i>t</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+          <i>x</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+        } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>q</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+          <b>if</b><!-- /@w --> (<i>q</i><!-- /@w --> != (<b>struct</b><!-- /@w --> <b>trb_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w -->)
+            <i>q</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <tt>TRB_THREAD</tt><!-- /@w -->;
+          <i>x</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+        }
+      <i>f</i><!-- /@w --> = <i>q</i><!-- /@w -->;
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>enum</b><!-- /@w --> <b>trb_color</b> <i>t</i><!-- /@w -->;
+      <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+
+      <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+          <i>r</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0];
+          <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>t</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+              <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_CHILD</tt><!-- /@w -->)
+                <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+              <i>t</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>r</i><!-- /@w -->;
+            }
+          <i>q</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>r</i><!-- /@w -->;
+          <i>x</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_CHILD</tt><!-- /@w --> ? <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] : <tt>NULL</tt><!-- /@w -->;
+          <i>t</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w -->;
+          <i>r</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w -->;
+          <i>p</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <i>t</i><!-- /@w -->;
+          <i>f</i><!-- /@w --> = <i>r</i><!-- /@w -->;
+          <i>dir</i><!-- /@w --> = 1;
+        } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>s</i><!-- /@w -->;
+
+          <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+              <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->)
+                <b>break</b><!-- /@w -->;
+
+              <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+            }
+
+          <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_CHILD</tt><!-- /@w -->)
+            <i>x</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+          <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>r</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->;
+              <i>r</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_THREAD</tt><!-- /@w -->;
+              <i>x</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+            }
+
+          <i>s</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+          <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>t</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+              <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_CHILD</tt><!-- /@w -->)
+                <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+              <i>t</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>s</i><!-- /@w -->;
+
+              <i>s</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_CHILD</tt><!-- /@w -->;
+            }
+
+          <i>s</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+          <i>s</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_CHILD</tt><!-- /@w -->;
+
+          <i>t</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w -->;
+          <i>s</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w -->;
+          <i>p</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <i>t</i><!-- /@w -->;
+
+          <i>q</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>s</i><!-- /@w -->;
+          <i>f</i><!-- /@w --> = <i>r</i><!-- /@w -->;
+          <i>dir</i><!-- /@w --> = 0;
+        }
+    }
+
+  <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>for</b><!-- /@w --> (;;)
+        {
+          <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>x</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>x</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+              <b>break</b><!-- /@w -->;
+            }
+          <b>if</b><!-- /@w --> (<i>f</i><!-- /@w --> == (<b>struct</b><!-- /@w --> <b>trb_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w -->)
+            <b>break</b><!-- /@w -->;
+
+          <i>g</i><!-- /@w --> = <i>find_parent</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>f</i><!-- /@w -->);
+
+          <b>if</b><!-- /@w --> (<i>dir</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>w</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+
+              <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+                  <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+
+                  <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>f</i><!-- /@w -->;
+                  <i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] != <i>f</i><!-- /@w -->] = <i>w</i><!-- /@w -->;
+
+                  <i>g</i><!-- /@w --> = <i>w</i><!-- /@w -->;
+                  <i>w</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+                }
+
+              <b>if</b><!-- /@w --> ((<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->
+                   || <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->)
+                  &amp;&amp; (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->
+                      || <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+              <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->
+                      || <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                      <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>y</i><!-- /@w --> = <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+                      <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+                      <i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+                      <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+                      <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->;
+                      <i>w</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+
+                      <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                          <i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_CHILD</tt><!-- /@w -->;
+                          <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_THREAD</tt><!-- /@w -->;
+                          <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>w</i><!-- /@w -->;
+                        }
+                    }
+
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w -->;
+                  <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+
+                  <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>f</i><!-- /@w -->;
+                  <i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] != <i>f</i><!-- /@w -->] = <i>w</i><!-- /@w -->;
+
+                  <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                      <i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_CHILD</tt><!-- /@w -->;
+                      <i>f</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_THREAD</tt><!-- /@w -->;
+                      <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->;
+                    }
+                  <b>break</b><!-- /@w -->;
+                }
+            } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>w</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+
+              <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+                  <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+
+                  <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>f</i><!-- /@w -->;
+                  <i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] != <i>f</i><!-- /@w -->] = <i>w</i><!-- /@w -->;
+
+                  <i>g</i><!-- /@w --> = <i>w</i><!-- /@w -->;
+                  <i>w</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+                }
+
+              <b>if</b><!-- /@w --> ((<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->
+                   || <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->)
+                  &amp;&amp; (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->
+                      || <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+              <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->
+                      || <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                      <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>y</i><!-- /@w --> = <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+                      <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+                      <i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_RED</tt><!-- /@w -->;
+                      <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0];
+                      <i>y</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>w</i><!-- /@w -->;
+                      <i>w</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+
+                      <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                          <i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_CHILD</tt><!-- /@w -->;
+                          <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0]-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_THREAD</tt><!-- /@w -->;
+                          <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0]-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->;
+                        }
+                    }
+
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w -->;
+                  <i>f</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0]-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+
+                  <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1];
+                  <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>f</i><!-- /@w -->;
+                  <i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[<i>g</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] != <i>f</i><!-- /@w -->] = <i>w</i><!-- /@w -->;
+
+                  <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                      <i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_CHILD</tt><!-- /@w -->;
+                      <i>f</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_THREAD</tt><!-- /@w -->;
+                      <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>w</i><!-- /@w -->;
+                    }
+                  <b>break</b><!-- /@w -->;
+                }
+            }
+
+          <i>x</i><!-- /@w --> = <i>f</i><!-- /@w -->;
+          <i>f</i><!-- /@w --> = <i>find_parent</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>x</i><!-- /@w -->);
+          <b>if</b><!-- /@w --> (<i>f</i><!-- /@w --> == (<b>struct</b><!-- /@w --> <b>trb_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w -->)
+            <b>break</b><!-- /@w -->;
+
+          <i>dir</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] != <i>x</i><!-- /@w -->;
+        }
+    }
+
+  <i>tree</i><!-- /@w -->-&gt;<i>trb_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>trb_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+  <i>tree</i><!-- /@w -->-&gt;<i>trb_count</i><!-- /@w -->&ndash;;
+  <b>return</b><!-- /@w --> (<b>void</b><!-- /@w --> *) <i>item</i><!-- /@w -->;
+}
+</pre>
+   </body></html>
+

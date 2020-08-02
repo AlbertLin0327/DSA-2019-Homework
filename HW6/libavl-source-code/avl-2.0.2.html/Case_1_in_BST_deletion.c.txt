@@ -1,0 +1,1 @@
+q->bst_link[dir] = p->bst_link[0];

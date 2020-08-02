@@ -1,0 +1,94 @@
+/* Converts |tree| into a vine. */
+static void
+tree_to_vine (struct bst_table *tree)
+{
+  struct bst_node *q, *p;
+
+  q = (struct bst_node *) &tree->bst_root;
+  p = tree->bst_root;
+  while (p != NULL)
+    if (p->bst_link[1] == NULL)
+      {
+        q = p;
+        p = p->bst_link[0];
+      }
+    else
+      {
+        struct bst_node *r = p->bst_link[1];
+        p->bst_link[1] = r->bst_link[0];
+        r->bst_link[0] = p;
+        p = r;
+        q->bst_link[0] = r;
+      }
+}
+
+/* Performs a compression transformation |count| times,
+   starting at |root|. */
+static void
+compress (struct bst_node *root, unsigned long count)
+{
+  assert (root != NULL);
+
+  while (count--)
+    {
+      struct bst_node *red = root->bst_link[0];
+      struct bst_node *black = red->bst_link[0];
+
+      root->bst_link[0] = black;
+      red->bst_link[0] = black->bst_link[1];
+      black->bst_link[1] = red;
+      root = black;
+    }
+}
+
+/* Converts |tree|, which must be in the shape of a vine, into a balanced
+   tree. */
+static void
+vine_to_tree (struct bst_table *tree)
+{
+  unsigned long vine;   /* Number of nodes in main vine. */
+  unsigned long leaves; /* Nodes in incomplete bottom level, if any. */
+  int height;           /* Height of produced balanced tree. */
+
+  leaves = tree->bst_count + 1;
+  for (;;)
+    {
+      unsigned long next = leaves & (leaves - 1);
+      if (next == 0)
+        break;
+      leaves = next;
+    }
+  leaves = tree->bst_count + 1 - leaves;
+
+  compress ((struct bst_node *) &tree->bst_root, leaves);
+
+  vine = tree->bst_count - leaves;
+  height = 1 + (leaves > 0);
+  while (vine > 1)
+    {
+      compress ((struct bst_node *) &tree->bst_root, vine / 2);
+      vine /= 2;
+      height++;
+    }
+
+  if (height > BST_MAX_HEIGHT)
+    {
+      fprintf (stderr, "libavl: Tree too big (%lu nodes) to handle.",
+               (unsigned long) tree->bst_count);
+      exit (EXIT_FAILURE);
+    }
+}
+
+/* Balances |tree|.
+   Ensures that no simple path from the root to a leaf has more than
+   |BST_MAX_HEIGHT| nodes. */
+void
+bst_balance (struct bst_table *tree)
+{
+  assert (tree != NULL);
+
+  tree_to_vine (tree);
+  vine_to_tree (tree);
+  tree->bst_generation++;
+}
+

@@ -1,0 +1,153 @@
+<html lang="en">
+<head>
+<title>Traversing a BST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deletion-by-Merging.html" title="4.8.1 Aside: Deletion by Merging">
+<link rel=Next href="Recursive-Traversal-of-a-BST.html" title="4.9.1 Traversal by Recursion">
+<link rel=Parent href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Traversing-a-BST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.9 Traversal</b></big></td>
+<td align=right>
+<a href="index.html#Traversing-a-BST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-from-a-BST.html" title="Skip Back: 4.8 Deletion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Copying-a-BST.html" title="Skip Forward: 4.10 Copying"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deletion-by-Merging.html" title="Prev: 4.8.1 Aside: Deletion by Merging"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Binary-Search-Trees.html" title="Up: 4 Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Recursive-Traversal-of-a-BST.html" title="Next: 4.9.1 Traversal by Recursion"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>After we've been manipulating a binary search tree for a while, we will
+want to know what items are in it.  The process of enumerating the items
+in a binary search tree is called <dfn>traversal</dfn> (see <a href="Glossary.html#traversal">traversal</a>).  libavl provides
+the <i>bst_t_</i><!-- /@w -->* functions for a particular kind of traversal called
+<dfn>inorder traversal</dfn> (see <a href="Glossary.html#inorder%20traversal">inorder traversal</a>), so-called because items are enumerated in
+sorted order.
+
+   <p>In this section we'll implement three algorithms for traversal.  Each of
+these algorithms is based on and in some way improves upon the previous
+algorithm.  The final implementation is the one used in libavl, so we
+will implement all of the <i>bst_t_</i><!-- /@w -->* functions for it.
+
+   <p>Before we start looking at particular algorithms, let's consider some
+criteria for evaluating traversal algorithms.  The following are not the
+only criteria that could be used, but they are indeed
+important:<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+
+     <dl>
+<dt><b>complexity</b><dd>Is it difficult to describe or to correctly implement the algorithm? 
+Complex algorithms also tend to take more code than simple ones.
+
+     <br><dt><b>efficiency</b><dd>Does the algorithm make good use of time and memory?  The ideal
+traversal algorithm would require time proportional to the number of
+nodes traversed and a constant amount of space.  In this chapter we will
+meet this ideal time criterion and come close on the space criterion for
+the average case.  In future chapters we will be able to do better even
+in the worst case.
+
+     <br><dt><b>convenience</b><dd>Is it easy to integrate the traversal functions into other code? 
+Callback functions are not as easy to use as other methods that can be
+used from <b>for</b><!-- /@w --> loops (see <a href="Improving-Convenience.html">Improving Convenience</a>).
+
+     <br><dt><b>reliability</b><dd>Are there pathological cases where the algorithm breaks down?  If so, is
+it possible to fix these problems using additional time or space?
+
+     <br><dt><b>generality</b><dd>Does the algorithm only allow iteration in a single direction?  Can we
+begin traversal at an arbitrary node, or just at the least or greatest
+node?
+
+     <br><dt><b>resilience</b><dd>If the tree is modified during a traversal, is it possible to continue
+traversal, or does the modification invalidate the traverser? 
+</dl>
+
+   <p>The first algorithm we will consider uses recursion.  This algorithm is
+worthwhile primarily for its simplicity.  In C, such an algorithm cannot
+be made as efficient, convenient, or general as other algorithms without
+unacceptable compromises.  It is possible to make it both reliable and
+resilient, but we won't bother because of its other drawbacks.
+
+   <p>We arrive at our second algorithm through a literal transformation of
+the recursion in the first algorithm into iteration.  The use of
+iteration lets us improve the algorithm's memory efficiency, and, on
+many machines, its time efficiency as well.  The iterative algorithm
+also lets us improve the convenience of using the traverser.  We could
+also add reliability and resilience to an implementation of this
+algorithm, but we'll save that for later.  The only problem with this
+algorithm, in fact, lies in its generality: it works best for moving
+only in one direction and starting from the least or greatest node.
+
+   <p>The importance of generality is what draws us to the third algorithm. 
+This algorithm is based on ideas from the previous iterative algorithm
+along with some simple observations.  This algorithm is no more complex
+than the previous one, but it is more general, allowing easily for
+iteration in either direction starting anywhere in the tree.  This is
+the algorithm used in libavl, so we build an efficient, convenient,
+reliable, general, resilient implementation.
+
+<ul class="menu">
+<li><a accesskey="1" href="Recursive-Traversal-of-a-BST.html">Recursive Traversal of a BST</a>
+<li><a accesskey="2" href="Iterative-Traversal-of-a-BST.html">Iterative Traversal of a BST</a>
+<li><a accesskey="3" href="Better-Iterative-Traversal.html">Better Iterative Traversal</a>
+</ul>
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> Some of these terms are not generic BST vocabulary. 
+Rather, they have been adopted for these particular uses in this text. 
+You can consider the above to be our working definitions of these
+terms.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

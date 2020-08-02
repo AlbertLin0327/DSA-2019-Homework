@@ -1,0 +1,5 @@
+struct tbst_node *t = p->tbst_link[0];
+while (t->tbst_tag[1] == TBST_CHILD)
+  t = t->tbst_link[1];
+t->tbst_link[1] = p->tbst_link[1];
+q->tbst_link[dir] = p->tbst_link[0];

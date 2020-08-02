@@ -1,0 +1,4 @@
+y->rtavl_link[1] = x->rtavl_link[0];
+x->rtavl_link[0] = y;
+x->rtavl_balance = -1;
+y->rtavl_balance = +1;

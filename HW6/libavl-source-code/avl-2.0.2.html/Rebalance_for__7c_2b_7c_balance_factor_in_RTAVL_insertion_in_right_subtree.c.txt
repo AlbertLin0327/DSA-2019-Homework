@@ -1,0 +1,10 @@
+w = x;
+if (x->rtavl_link[0] == NULL)
+  {
+    y->rtavl_rtag = RTAVL_THREAD;
+    y->rtavl_link[1] = x;
+  }
+else
+  y->rtavl_link[1] = x->rtavl_link[0];
+x->rtavl_link[0] = y;
+x->rtavl_balance = y->rtavl_balance = 0;

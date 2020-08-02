@@ -1,0 +1,1 @@
+size_t tbl_count (const struct tbl_table *);

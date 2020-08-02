@@ -1,0 +1,124 @@
+static void
+tree_to_vine (struct tbst_table *tree)
+{
+  struct tbst_node *p;
+
+  if (tree->tbst_root == NULL)
+    return;
+
+  p = tree->tbst_root;
+  while (p->tbst_tag[0] == TBST_CHILD)
+    p = p->tbst_link[0];
+
+  for (;;)
+    {
+      struct tbst_node *q = p->tbst_link[1];
+      if (p->tbst_tag[1] == TBST_CHILD)
+        {
+          while (q->tbst_tag[0] == TBST_CHILD)
+            q = q->tbst_link[0];
+          p->tbst_tag[1] = TBST_THREAD;
+          p->tbst_link[1] = q;
+        }
+
+      if (q == NULL)
+        break;
+
+      q->tbst_tag[0] = TBST_CHILD;
+      q->tbst_link[0] = p;
+      p = q;
+    }
+
+  tree->tbst_root = p;
+}
+
+/* Performs a nonthreaded compression operation |nonthread| times,
+   then a threaded compression operation |thread| times,
+   starting at |root|. */
+static void
+compress (struct tbst_node *root,
+          unsigned long nonthread, unsigned long thread)
+{
+  assert (root != NULL);
+
+  while (nonthread--)
+    {
+      struct tbst_node *red = root->tbst_link[0];
+      struct tbst_node *black = red->tbst_link[0];
+
+      root->tbst_link[0] = black;
+      red->tbst_link[0] = black->tbst_link[1];
+      black->tbst_link[1] = red;
+      root = black;
+    }
+
+  while (thread--)
+    {
+      struct tbst_node *red = root->tbst_link[0];
+      struct tbst_node *black = red->tbst_link[0];
+
+      root->tbst_link[0] = black;
+      red->tbst_link[0] = black;
+      red->tbst_tag[0] = TBST_THREAD;
+      black->tbst_tag[1] = TBST_CHILD;
+      root = black;
+    }
+}
+
+/* Converts |tree|, which must be in the shape of a vine, into a balanced
+   tree. */
+static void
+vine_to_tree (struct tbst_table *tree)
+{
+  unsigned long vine;   /* Number of nodes in main vine. */
+  unsigned long leaves; /* Nodes in incomplete bottom level, if any. */
+  int height;           /* Height of produced balanced tree. */
+
+  leaves = tree->tbst_count + 1;
+  for (;;)
+    {
+      unsigned long next = leaves & (leaves - 1);
+      if (next == 0)
+        break;
+      leaves = next;
+    }
+  leaves = tree->tbst_count + 1 - leaves;
+
+  compress ((struct tbst_node *) &tree->tbst_root, 0, leaves);
+
+  vine = tree->tbst_count - leaves;
+  height = 1 + (leaves > 0);
+  if (vine > 1)
+    {
+      unsigned long nonleaves = vine / 2;
+      leaves /= 2;
+      if (leaves > nonleaves)
+        {
+          leaves = nonleaves;
+          nonleaves = 0;
+        }
+      else
+        nonleaves -= leaves;
+
+      compress ((struct tbst_node *) &tree->tbst_root, leaves, nonleaves);
+      vine /= 2;
+      height++;
+    }
+  while (vine > 1)
+    {
+      compress ((struct tbst_node *) &tree->tbst_root, vine / 2, 0);
+      vine /= 2;
+      height++;
+    }
+}
+
+/* Balances |tree|. */
+void
+tbst_balance (struct tbst_table *tree)
+{
+  assert (tree != NULL);
+
+  tree_to_vine (tree);
+  vine_to_tree (tree);
+}
+

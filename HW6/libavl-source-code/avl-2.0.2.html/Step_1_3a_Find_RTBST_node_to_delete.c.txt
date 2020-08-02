@@ -1,0 +1,32 @@
+if (tree->rtbst_root == NULL)
+  return NULL;
+
+p = tree->rtbst_root;
+q = (struct rtbst_node *) &tree->rtbst_root;
+dir = 0;
+if (p == NULL)
+  return NULL;
+
+for (;;)
+  {
+    int cmp = tree->rtbst_compare (item, p->rtbst_data, tree->rtbst_param);
+    if (cmp == 0)
+      break;
+
+    dir = cmp > 0;
+    if (dir == 0)
+      {
+        if (p->rtbst_link[0] == NULL)
+          return NULL;
+      }
+    else /* |dir == 1| */
+      {
+        if (p->rtbst_rtag == RTBST_THREAD)
+          return NULL;
+      }
+
+    q = p;
+    p = p->rtbst_link[dir];
+  }
+item = p->rtbst_data;
+

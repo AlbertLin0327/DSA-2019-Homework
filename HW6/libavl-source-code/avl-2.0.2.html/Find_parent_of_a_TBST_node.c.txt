@@ -1,0 +1,36 @@
+/* Returns the parent of |node| within |tree|,
+   or a pointer to |tbst_root| if |s| is the root of the tree. */
+static struct tbst_node *
+find_parent (struct tbst_table *tree, struct tbst_node *node)
+{
+  if (node != tree->tbst_root)
+    {
+      struct tbst_node *x, *y;
+
+      for (x = y = node; ; x = x->tbst_link[0], y = y->tbst_link[1])
+        if (y->tbst_tag[1] == TBST_THREAD)
+          {
+            struct tbst_node *p = y->tbst_link[1];
+            if (p == NULL || p->tbst_link[0] != node)
+              {
+                while (x->tbst_tag[0] == TBST_CHILD)
+                  x = x->tbst_link[0];
+                p = x->tbst_link[0];
+              }
+            return p;
+          }
+        else if (x->tbst_tag[0] == TBST_THREAD)
+          {
+            struct tbst_node *p = x->tbst_link[0];
+            if (p == NULL || p->tbst_link[1] != node)
+              {
+                while (y->tbst_tag[1] == TBST_CHILD)
+                  y = y->tbst_link[1];
+                p = y->tbst_link[1];
+              }
+            return p;
+          }
+    }
+  else
+    return (struct tbst_node *) &tree->tbst_root;
+}

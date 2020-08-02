@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Implementing Compression - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Balancing-Implementation.html" title="4.12.2.2 Implementation">
+<link rel=Next href="Joining-BSTs.html" title="4.13 Aside: Joining BSTs">
+<link rel=Parent href="Transforming-a-Vine-into-a-Balanced-BST.html" title="4.12.2 From Vine to Balanced Tree">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Implementing-Compression">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.12.2.3 Implementing Compression</b></big></td>
+<td align=right>
+<a href="index.html#Implementing-Compression.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-Implementation.html" title="Skip Back: 4.12.2.2 Implementation"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-Implementation.html" title="Prev: 4.12.2.2 Implementation"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Transforming-a-Vine-into-a-Balanced-BST.html" title="Up: 4.12.2 From Vine to Balanced Tree"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Joining-BSTs.html" title="Next: 4.13 Aside: Joining BSTs"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The final bit of code we need is that for performing a compression.  The
+following code performs a compression consisting of <i>count</i><!-- /@w --> applications
+of the compression transformation starting at <i>root</i><!-- /@w -->:
+
+   <p><a name="catalogue_002dentry_002dbst_002d30"></a>
+<a name="index-BST-compression-function-147"></a>
+<pre class="format"><a href="BST_compression_function.c.txt">95</a>. &lt;<a name="95" href="BST_compression_function.c.txt">BST compression function 95</a>&gt; =
+/* Performs a compression transformation <i>count</i><!-- /@w --> times, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->starting at <i>root</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>compress</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>root</i><!-- /@w -->, <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>count</i><!-- /@w -->) <br>{
+  <i>assert</i><!-- /@w --> (<i>root</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>while</b><!-- /@w --> (<i>count</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>red</i><!-- /@w --> = <i>root</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>black</i><!-- /@w --> = <i>red</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+
+      <i>root</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>black</i><!-- /@w -->;
+      <i>red</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>black</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+      <i>black</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>red</i><!-- /@w -->;
+      <i>root</i><!-- /@w --> = <i>black</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-Implementation.html#90">90</a> and <a href="Balancing-a-PBST.html#512">512</a>.</small>
+
+   <p>The operation of <i>compress</i><!-- /@w -->() should be obvious, given the discussion
+earlier.  See <a href="Balancing-General-Trees.html">Balancing General Trees</a>, above, for a review.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Stout%201986">Stout 1986</a>], <i>vine_to_tree</i><!-- /@w --> procedure.
+
+   </body></html>
+

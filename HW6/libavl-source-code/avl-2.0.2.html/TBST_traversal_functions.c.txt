@@ -1,0 +1,201 @@
+/* Initializes |trav| for use with |tree|
+   and selects the null node. */
+void
+tbst_t_init (struct tbst_traverser *trav, struct tbst_table *tree)
+{
+  trav->tbst_table = tree;
+  trav->tbst_node = NULL;
+}
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the least value,
+   or |NULL| if |tree| is empty. */
+void *
+tbst_t_first (struct tbst_traverser *trav, struct tbst_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->tbst_table = tree;
+  trav->tbst_node = tree->tbst_root;
+  if (trav->tbst_node != NULL)
+    {
+      while (trav->tbst_node->tbst_tag[0] == TBST_CHILD)
+        trav->tbst_node = trav->tbst_node->tbst_link[0];
+      return trav->tbst_node->tbst_data;
+    }
+  else
+    return NULL;
+}
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the greatest value,
+   or |NULL| if |tree| is empty. */
+void *
+tbst_t_last (struct tbst_traverser *trav, struct tbst_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->tbst_table = tree;
+  trav->tbst_node = tree->tbst_root;
+  if (trav->tbst_node != NULL)
+    {
+      while (trav->tbst_node->tbst_tag[1] == TBST_CHILD)
+        trav->tbst_node = trav->tbst_node->tbst_link[1];
+      return trav->tbst_node->tbst_data;
+    }
+  else
+    return NULL;
+}
+
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+tbst_t_find (struct tbst_traverser *trav, struct tbst_table *tree, void *item)
+{
+  struct tbst_node *p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->tbst_table = tree;
+  trav->tbst_node = NULL;
+
+  p = tree->tbst_root;
+  if (p == NULL)
+    return NULL;
+
+  for (;;)
+    {
+      int cmp, dir;
+
+      cmp = tree->tbst_compare (item, p->tbst_data, tree->tbst_param);
+      if (cmp == 0)
+        {
+          trav->tbst_node = p;
+          return p->tbst_data;
+        }
+
+      dir = cmp > 0;
+      if (p->tbst_tag[dir] == TBST_CHILD)
+        p = p->tbst_link[dir];
+      else
+        return NULL;
+    }
+}
+
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+tbst_t_insert (struct tbst_traverser *trav,
+               struct tbst_table *tree, void *item)
+{
+  void **p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  p = tbst_probe (tree, item);
+  if (p != NULL)
+    {
+      trav->tbst_table = tree;
+      trav->tbst_node =
+        ((struct tbst_node *)
+         ((char *) p - offsetof (struct tbst_node, tbst_data)));
+      return *p;
+    }
+  else
+    {
+      tbst_t_init (trav, tree);
+      return NULL;
+    }
+}
+
+/* Initializes |trav| to have the same current node as |src|. */
+void *
+tbst_t_copy (struct tbst_traverser *trav, const struct tbst_traverser *src)
+{
+  assert (trav != NULL && src != NULL);
+
+  trav->tbst_table = src->tbst_table;
+  trav->tbst_node = src->tbst_node;
+
+  return trav->tbst_node != NULL ? trav->tbst_node->tbst_data : NULL;
+}
+
+/* Returns the next data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+tbst_t_next (struct tbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->tbst_node == NULL)
+    return tbst_t_first (trav, trav->tbst_table);
+  else if (trav->tbst_node->tbst_tag[1] == TBST_THREAD)
+    {
+      trav->tbst_node = trav->tbst_node->tbst_link[1];
+      return trav->tbst_node != NULL ? trav->tbst_node->tbst_data : NULL;
+    }
+  else
+    {
+      trav->tbst_node = trav->tbst_node->tbst_link[1];
+      while (trav->tbst_node->tbst_tag[0] == TBST_CHILD)
+        trav->tbst_node = trav->tbst_node->tbst_link[0];
+      return trav->tbst_node->tbst_data;
+    }
+}
+
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+tbst_t_prev (struct tbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->tbst_node == NULL)
+    return tbst_t_last (trav, trav->tbst_table);
+  else if (trav->tbst_node->tbst_tag[0] == TBST_THREAD)
+    {
+      trav->tbst_node = trav->tbst_node->tbst_link[0];
+      return trav->tbst_node != NULL ? trav->tbst_node->tbst_data : NULL;
+    }
+  else
+    {
+      trav->tbst_node = trav->tbst_node->tbst_link[0];
+      while (trav->tbst_node->tbst_tag[1] == TBST_CHILD)
+        trav->tbst_node = trav->tbst_node->tbst_link[1];
+      return trav->tbst_node->tbst_data;
+    }
+}
+
+/* Returns |trav|'s current item. */
+void *
+tbst_t_cur (struct tbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  return trav->tbst_node != NULL ? trav->tbst_node->tbst_data : NULL;
+}
+
+/* Replaces the current item in |trav| by |new| and returns the item replaced.
+   |trav| must not have the null item selected.
+   The new item must not upset the ordering of the tree. */
+void *
+tbst_t_replace (struct tbst_traverser *trav, void *new)
+{
+  void *old;
+
+  assert (trav != NULL && trav->tbst_node != NULL && new != NULL);
+  old = trav->tbst_node->tbst_data;
+  trav->tbst_node->tbst_data = new;
+  return old;
+}
+

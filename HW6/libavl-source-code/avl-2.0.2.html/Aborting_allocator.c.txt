@@ -1,0 +1,22 @@
+/* Allocates |size| bytes of space using |malloc()|.
+   Aborts if out of memory. */
+void *
+tbl_malloc_abort (struct libavl_allocator *allocator, size_t size)
+{
+  void *block;
+
+  assert (allocator != NULL && size > 0);
+
+  block = malloc (size);
+  if (block != NULL)
+    return block;
+
+  fprintf (stderr, "out of memory\n");
+  exit (EXIT_FAILURE);
+}
+
+struct libavl_allocator tbl_allocator_abort =
+  {
+    tbl_malloc_abort,
+    tbl_free
+  };

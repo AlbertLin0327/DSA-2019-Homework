@@ -1,0 +1,47 @@
+/* Utility functions. */
+
+/* Comparison function for pointers to |int|s.
+   |param| is not used. */
+int
+compare_ints (const void *pa, const void *pb, void *param)
+{
+  const int *a = pa;
+  const int *b = pb;
+
+  if (*a < *b)
+    return -1;
+  else if (*a > *b)
+    return +1;
+  else
+    return 0;
+}
+
+/* Prints |message| on |stderr|, which is formatted as for |printf()|,
+   and terminates the program unsuccessfully. */
+static void
+fail (const char *message, ...)
+{
+  va_list args;
+
+  fprintf (stderr, "%s: ", pgm_name);
+
+  va_start (args, message);
+  vfprintf (stderr, message, args);
+  va_end (args);
+
+  putchar ('\n');
+
+  exit (EXIT_FAILURE);
+}
+
+/* Allocates and returns a pointer to |size| bytes of memory.
+   Aborts if allocation fails. */
+static void *
+xmalloc (size_t size)
+{
+  void *block = malloc (size);
+  if (block == NULL && size != 0)
+    fail ("out of memory");
+  return block;
+}
+

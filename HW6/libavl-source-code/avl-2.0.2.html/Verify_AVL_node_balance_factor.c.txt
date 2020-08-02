@@ -1,0 +1,11 @@
+if (subheight[1] - subheight[0] != node->avl_balance)
+  {
+    printf (" Balance factor of node %d is %d, but should be %d.\n",
+            d, node->avl_balance, subheight[1] - subheight[0]);
+    *okay = 0;
+  }
+else if (node->avl_balance < -1 || node->avl_balance > +1)
+  {
+    printf (" Balance factor of node %d is %d.\n", d, node->avl_balance);
+    *okay = 0;
+  }

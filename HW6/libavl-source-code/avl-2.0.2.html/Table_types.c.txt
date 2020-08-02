@@ -1,0 +1,21 @@
+/* Function types. */
+typedef int tbl_comparison_func (const void *tbl_a, const void *tbl_b,
+                                 void *tbl_param);
+typedef void tbl_item_func (void *tbl_item, void *tbl_param);
+typedef void *tbl_copy_func (void *tbl_item, void *tbl_param);
+
+#ifndef LIBAVL_ALLOCATOR
+#define LIBAVL_ALLOCATOR
+/* Memory allocator. */
+struct libavl_allocator
+  {
+    void *(*libavl_malloc) (struct libavl_allocator *, size_t libavl_size);
+    void (*libavl_free) (struct libavl_allocator *, void *libavl_block);
+  };
+#endif
+
+/* Default memory allocator. */
+extern struct libavl_allocator tbl_allocator_default;
+void *tbl_malloc (struct libavl_allocator *, size_t);
+void tbl_free (struct libavl_allocator *, void *);
+

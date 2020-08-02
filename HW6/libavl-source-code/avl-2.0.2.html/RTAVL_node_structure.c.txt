@@ -1,0 +1,16 @@
+/* Characterizes a link as a child pointer or a thread. */
+enum rtavl_tag
+  {
+    RTAVL_CHILD,                     /* Child pointer. */
+    RTAVL_THREAD                     /* Thread. */
+  };
+
+/* A threaded binary search tree node. */
+struct rtavl_node
+  {
+    struct rtavl_node *rtavl_link[2]; /* Subtrees. */
+    void *rtavl_data;                 /* Pointer to data. */
+    unsigned char rtavl_rtag;         /* Tag field. */
+    signed char rtavl_balance;        /* Balance factor. */
+  };
+

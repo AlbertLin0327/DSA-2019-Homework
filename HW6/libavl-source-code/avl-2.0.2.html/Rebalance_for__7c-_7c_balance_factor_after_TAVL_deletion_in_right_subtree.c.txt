@@ -1,0 +1,9 @@
+if (x->tavl_tag[1] == TAVL_CHILD)
+  y->tavl_link[0] = x->tavl_link[1];
+else
+  {
+    y->tavl_tag[0] = TAVL_THREAD;
+    x->tavl_tag[1] = TAVL_CHILD;
+  }
+x->tavl_link[1] = y;
+y->tavl_balance = x->tavl_balance = 0;

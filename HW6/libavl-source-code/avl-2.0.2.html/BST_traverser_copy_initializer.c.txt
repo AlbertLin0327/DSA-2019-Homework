@@ -1,0 +1,22 @@
+/* Initializes |trav| to have the same current node as |src|. */
+void *
+bst_t_copy (struct bst_traverser *trav, const struct bst_traverser *src)
+{
+  assert (trav != NULL && src != NULL);
+
+  if (trav != src)
+    {
+      trav->bst_table = src->bst_table;
+      trav->bst_node = src->bst_node;
+      trav->bst_generation = src->bst_generation;
+      if (trav->bst_generation == trav->bst_table->bst_generation)
+        {
+          trav->bst_height = src->bst_height;
+          memcpy (trav->bst_stack, (const void *) src->bst_stack,
+                  sizeof *trav->bst_stack * trav->bst_height);
+        }
+    }
+
+  return trav->bst_node != NULL ? trav->bst_node->bst_data : NULL;
+}
+

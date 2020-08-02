@@ -1,0 +1,228 @@
+<html lang="en">
+<head>
+<title>Step 3 in RTRB Insertion - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Steps-1-and-2-in-RTRB-Insertion.html" title="12.3.1 Steps 1 and 2: Search and Insert">
+<link rel=Next href="Deleting-from-an-RTRB-Tree.html" title="12.4 Deletion">
+<link rel=Parent href="Inserting-into-an-RTRB-Tree.html" title="12.3 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Step-3-in-RTRB-Insertion">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>12.3.2 Step 3: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Step-3-in-RTRB-Insertion.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Steps-1-and-2-in-RTRB-Insertion.html" title="Skip Back: 12.3.1 Steps 1 and 2: Search and Insert"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Steps-1-and-2-in-RTRB-Insertion.html" title="Prev: 12.3.1 Steps 1 and 2: Search and Insert"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-an-RTRB-Tree.html" title="Up: 12.3 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-from-an-RTRB-Tree.html" title="Next: 12.4 Deletion"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The rebalancing outline follows &lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#201">Step 3: Rebalance after RB insertion 201</a>&gt;.
+
+   <p><a name="index-rebalance-after-RTRB-insertion-644"></a>
+<pre class="format"><a href="Step_3_3a_Rebalance_after_RTRB_insertion.c.txt">459</a>. &lt;<a name="459" href="Step_3_3a_Rebalance_after_RTRB_insertion.c.txt">Step 3: Rebalance after RTRB insertion 459</a>&gt; =
+<b>while</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt;= 3 &amp;&amp; <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtrb_color</i><!-- /@w --> == <tt>RTRB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2] == 0)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-RTRB-Insertion.html#460">Left-side rebalancing after RTRB insertion 460</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-RTRB-Insertion.html#461">Right-side rebalancing after RTRB insertion 461</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+<i>tree</i><!-- /@w -->-&gt;<i>rtrb_root</i><!-- /@w -->-&gt;<i>rtrb_color</i><!-- /@w --> = <tt>RTRB_BLACK</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-an-RTRB-Tree.html#456">456</a>.</small>
+
+   <p>The choice of case for insertion on the left side is made in the same
+way as in &lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#202">Left-side rebalancing after RB insertion 202</a>&gt;, except that of
+course right-side tests for non-empty subtrees are made using
+<i>rtrb_rtag</i><!-- /@w --> instead of <i>rtrb_link</i><!-- /@w -->[1], and similarly for insertion on
+the right side.  In short, we take <i>q</i><!-- /@w --> (which is not a real variable) as
+the new node <i>n</i><!-- /@w --> if this is the first time through the loop, or a node
+whose color has just been changed to red otherwise.  We know that both
+<i>q</i><!-- /@w --> and its parent <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] are red, violating rule 1 for red-black
+trees, and that <i>q</i><!-- /@w -->'s grandparent <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2] is black.  Here is the
+code to distinguish cases:
+
+   <p><a name="index-left_002dside-rebalancing-after-RTRB-insertion-645"></a>
+<pre class="format"><a href="Left-side_rebalancing_after_RTRB_insertion.c.txt">460</a>. &lt;<a name="460" href="Left-side_rebalancing_after_RTRB_insertion.c.txt">Left-side rebalancing after RTRB insertion 460</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtrb_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rtrb_link</i><!-- /@w -->[1];
+<b>if</b><!-- /@w --> (<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rtrb_rtag</i><!-- /@w --> == <tt>RTRB_CHILD</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>rtrb_color</i><!-- /@w --> == <tt>RTRB_RED</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-RTRB-Insertion.html#462">Case 1 in left-side RTRB insertion rebalancing 462</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rtrb_node</b> *<i>x</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 0)
+      <i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-RTRB-Insertion.html#466">Case 3 in left-side RTRB insertion rebalancing 466</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Step-3-in-RTRB-Insertion.html#464">Case 2 in left-side RTRB insertion rebalancing 464</a>&gt;
+    <b>break</b><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-RTRB-Insertion.html#459">459</a>.</small>
+
+   <p><a name="index-right_002dside-rebalancing-after-RTRB-insertion-646"></a>
+<pre class="format"><a href="Right-side_rebalancing_after_RTRB_insertion.c.txt">461</a>. &lt;<a name="461" href="Right-side_rebalancing_after_RTRB_insertion.c.txt">Right-side rebalancing after RTRB insertion 461</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtrb_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rtrb_link</i><!-- /@w -->[0];
+<b>if</b><!-- /@w --> (<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rtrb_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>rtrb_color</i><!-- /@w --> == <tt>RTRB_RED</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-RTRB-Insertion.html#463">Case 1 in right-side RTRB insertion rebalancing 463</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rtrb_node</b> *<i>x</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 1)
+      <i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-RTRB-Insertion.html#467">Case 3 in right-side RTRB insertion rebalancing 467</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Step-3-in-RTRB-Insertion.html#465">Case 2 in right-side RTRB insertion rebalancing 465</a>&gt;
+    <b>break</b><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-RTRB-Insertion.html#459">459</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>q</i><!-- /@w -->'s uncle is red</h5>
+
+<p>If node <i>q</i><!-- /@w -->'s uncle is red, then no links need be changed.  Instead,
+we will just recolor nodes.  We reuse the code for RB insertion
+(see <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#rbinscase1">rbinscase1</a>):
+
+   <p><a name="index-case-1-in-left_002dside-RTRB-insertion-rebalancing-647"></a>
+<pre class="format"><a href="Case_1_in_left-side_RTRB_insertion_rebalancing.c.txt">462</a>. &lt;<a name="462" href="Case_1_in_left-side_RTRB_insertion_rebalancing.c.txt">Case 1 in left-side RTRB insertion rebalancing 462</a>&gt; =
+&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#203">Case 1 in left-side RB insertion rebalancing; rb =&gt; rtrb 203</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-RTRB-Insertion.html#460">460</a>.</small>
+
+   <p><a name="index-case-1-in-right_002dside-RTRB-insertion-rebalancing-648"></a>
+<pre class="format"><a href="Case_1_in_right-side_RTRB_insertion_rebalancing.c.txt">463</a>. &lt;<a name="463" href="Case_1_in_right-side_RTRB_insertion_rebalancing.c.txt">Case 1 in right-side RTRB insertion rebalancing 463</a>&gt; =
+&lt;<a href="RB-Insertion-Symmetric-Case.html#207">Case 1 in right-side RB insertion rebalancing; rb =&gt; rtrb 207</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-RTRB-Insertion.html#461">461</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>q</i><!-- /@w --> is on same side of parent as parent is of grandparent</h5>
+
+<p>If <i>q</i><!-- /@w --> is a left child of its parent <i>y</i><!-- /@w --> and <i>y</i><!-- /@w --> is a left child of its
+own parent <i>x</i><!-- /@w -->, or if both <i>q</i><!-- /@w --> and <i>y</i><!-- /@w --> are right children, then we
+rotate at <i>x</i><!-- /@w --> away from <i>y</i><!-- /@w -->.  This is the same that we would do in an
+unthreaded RB tree (see <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#rbinscase2">rbinscase2</a>).
+
+   <p>However, as usual, we must make sure that threads are fixed up properly
+in the rotation.  In particular, for case 2 in left-side rebalancing, we
+must convert a right thread of <i>y</i><!-- /@w -->, after rotation, into a null left child
+pointer of <i>x</i><!-- /@w -->, like this:
+
+<div align="center"><a href="rtrbins.txt"><img border=0 src="rtrbins.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-2-in-left_002dside-RTRB-insertion-rebalancing-649"></a>
+<pre class="format"><a href="Case_2_in_left-side_RTRB_insertion_rebalancing.c.txt">464</a>. &lt;<a name="464" href="Case_2_in_left-side_RTRB_insertion_rebalancing.c.txt">Case 2 in left-side RTRB insertion rebalancing 464</a>&gt; =
+&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#204">Case 2 in left-side RB insertion rebalancing; rb =&gt; rtrb 204</a>&gt;
+
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>rtrb_rtag</i><!-- /@w --> == <tt>RTRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>rtrb_rtag</i><!-- /@w --> = <tt>RTRB_CHILD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>rtrb_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-RTRB-Insertion.html#460">460</a>.</small>
+
+   <p>For the right-side rebalancing case, we must convert a null left child
+of <i>y</i><!-- /@w -->, after rotation, into a right thread of <i>x</i><!-- /@w -->:
+
+<div align="center"><a href="rtrbins2.txt"><img border=0 src="rtrbins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-2-in-right_002dside-RTRB-insertion-rebalancing-650"></a>
+<pre class="format"><a href="Case_2_in_right-side_RTRB_insertion_rebalancing.c.txt">465</a>. &lt;<a name="465" href="Case_2_in_right-side_RTRB_insertion_rebalancing.c.txt">Case 2 in right-side RTRB insertion rebalancing 465</a>&gt; =
+&lt;<a href="RB-Insertion-Symmetric-Case.html#208">Case 2 in right-side RB insertion rebalancing; rb =&gt; rtrb 208</a>&gt;
+
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtrb_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w -->-&gt;<i>rtrb_rtag</i><!-- /@w --> = <tt>RTRB_THREAD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>rtrb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-RTRB-Insertion.html#461">461</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>q</i><!-- /@w --> is on opposite side of parent as parent is of grandparent</h5>
+
+<p>If <i>q</i><!-- /@w --> is a left child and its parent is a right child, or vice versa,
+then we have an instance of case 3, and we rotate at <i>q</i><!-- /@w -->'s parent in the
+direction from <i>q</i><!-- /@w --> to its parent.  We handle this case as seen before
+for unthreaded RB trees (see <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#rbinscase3">rbinscase3</a>), with the addition of
+fix-ups for threads during rotation.
+
+   <p>The left-side fix-up and the code to do it look like this:
+
+<div align="center"><a href="rtrbins3.txt"><img border=0 src="rtrbins3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-3-in-left_002dside-RTRB-insertion-rebalancing-651"></a>
+<pre class="format"><a href="Case_3_in_left-side_RTRB_insertion_rebalancing.c.txt">466</a>. &lt;<a name="466" href="Case_3_in_left-side_RTRB_insertion_rebalancing.c.txt">Case 3 in left-side RTRB insertion rebalancing 466</a>&gt; =
+&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#205">Case 3 in left-side RB insertion rebalancing; rb =&gt; rtrb 205</a>&gt;
+
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtrb_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w -->-&gt;<i>rtrb_rtag</i><!-- /@w --> = <tt>RTRB_THREAD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>rtrb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-RTRB-Insertion.html#460">460</a>.</small>
+
+   <p>Here's the right-side fix-up and code:
+
+<div align="center"><a href="rtrbins4.txt"><img border=0 src="rtrbins4.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-3-in-right_002dside-RTRB-insertion-rebalancing-652"></a>
+<pre class="format"><a href="Case_3_in_right-side_RTRB_insertion_rebalancing.c.txt">467</a>. &lt;<a name="467" href="Case_3_in_right-side_RTRB_insertion_rebalancing.c.txt">Case 3 in right-side RTRB insertion rebalancing 467</a>&gt; =
+&lt;<a href="RB-Insertion-Symmetric-Case.html#209">Case 3 in right-side RB insertion rebalancing; rb =&gt; rtrb 209</a>&gt;
+
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>rtrb_rtag</i><!-- /@w --> == <tt>RTRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>rtrb_rtag</i><!-- /@w --> = <tt>RTRB_CHILD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>rtrb_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-RTRB-Insertion.html#461">461</a>.</small>
+
+   </body></html>
+

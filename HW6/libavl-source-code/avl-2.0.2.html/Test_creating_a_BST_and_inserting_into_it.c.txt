@@ -1,0 +1,35 @@
+/* Test creating a BST and inserting into it. */
+tree = bst_create (compare_ints, NULL, allocator);
+if (tree == NULL)
+  {
+    if (verbosity >= 0)
+      printf ("  Out of memory creating tree.\n");
+    return 1;
+  }
+
+for (i = 0; i < n; i++)
+  {
+    if (verbosity >= 2)
+      printf ("  Inserting %d...\n", insert[i]);
+
+    /* Add the |i|th element to the tree. */
+    {
+      void **p = bst_probe (tree, &insert[i]);
+      if (p == NULL)
+        {
+          if (verbosity >= 0)
+            printf ("    Out of memory in insertion.\n");
+          bst_destroy (tree, NULL);
+          return 1;
+        }
+      if (*p != &insert[i])
+        printf ("    Duplicate item in tree!\n");
+    }
+
+    if (verbosity >= 3)
+      print_whole_tree (tree, "    Afterward");
+
+    if (!verify_tree (tree, insert, i + 1))
+      return 0;
+  }
+

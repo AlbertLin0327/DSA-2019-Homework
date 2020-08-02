@@ -1,0 +1,4 @@
+void *tbl_t_next (struct tbl_traverser *);
+void *tbl_t_prev (struct tbl_traverser *);
+void *tbl_t_cur (struct tbl_traverser *);
+void *tbl_t_replace (struct tbl_traverser *, void *);

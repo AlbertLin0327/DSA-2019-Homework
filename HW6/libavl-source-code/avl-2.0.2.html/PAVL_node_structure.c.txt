@@ -1,0 +1,9 @@
+/* An PAVL tree node. */
+struct pavl_node
+  {
+    struct pavl_node *pavl_link[2]; /* Subtrees. */
+    struct pavl_node *pavl_parent;  /* Parent node. */
+    void *pavl_data;                /* Pointer to data. */
+    signed char pavl_balance;       /* Balance factor. */
+  };
+

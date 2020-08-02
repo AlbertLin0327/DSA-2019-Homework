@@ -1,0 +1,24 @@
+/* Returns the next data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+rtbst_t_next (struct rtbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->rtbst_node == NULL)
+    return rtbst_t_first (trav, trav->rtbst_table);
+  else if (trav->rtbst_node->rtbst_rtag == RTBST_THREAD)
+    {
+      trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+      return trav->rtbst_node != NULL ? trav->rtbst_node->rtbst_data : NULL;
+    }
+  else
+    {
+      trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+      while (trav->rtbst_node->rtbst_link[0] != NULL)
+        trav->rtbst_node = trav->rtbst_node->rtbst_link[0];
+      return trav->rtbst_node->rtbst_data;
+    }
+}
+

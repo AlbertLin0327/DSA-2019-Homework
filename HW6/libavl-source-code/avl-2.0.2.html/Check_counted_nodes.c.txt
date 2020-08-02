@@ -1,0 +1,6 @@
+if (count != n)
+  {
+    printf (" Tree has %lu nodes, but should have %lu.\n",
+            (unsigned long) count, (unsigned long) n);
+    okay = 0;
+  }

@@ -1,0 +1,18 @@
+/* Makes and returns a new copy of tree rooted at |x|. */
+static struct bst_node *
+bst_copy_recursive_1 (struct bst_node *x)
+{
+  struct bst_node *y;
+
+  if (x == NULL)
+    return NULL;
+
+  y = malloc (sizeof *y);
+  if (y == NULL)
+    return NULL;
+
+  y->bst_data = x->bst_data;
+  y->bst_link[0] = bst_copy_recursive_1 (x->bst_link[0]);
+  y->bst_link[1] = bst_copy_recursive_1 (x->bst_link[1]);
+  return y;
+}

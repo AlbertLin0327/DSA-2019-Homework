@@ -1,0 +1,23 @@
+struct tbst_node *s = r->tbst_link[0];
+while (s->tbst_tag[0] == TBST_CHILD)
+  {
+    r = s;
+    s = r->tbst_link[0];
+  }
+
+p->tbst_data = s->tbst_data;
+
+if (s->tbst_tag[1] == TBST_THREAD)
+  {
+    r->tbst_tag[0] = TBST_THREAD;
+    r->tbst_link[0] = p;
+  }
+else
+  {
+    q = r->tbst_link[0] = s->tbst_link[1];
+    while (q->tbst_tag[0] == TBST_CHILD)
+      q = q->tbst_link[0];
+    q->tbst_link[0] = p;
+  }
+
+p = s;

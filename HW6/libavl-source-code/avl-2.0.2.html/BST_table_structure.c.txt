@@ -1,0 +1,11 @@
+/* Tree data structure. */
+struct bst_table
+  {
+    struct bst_node *bst_root;          /* Tree's root. */
+    bst_comparison_func *bst_compare;   /* Comparison function. */
+    void *bst_param;                    /* Extra argument to |bst_compare|. */
+    struct libavl_allocator *bst_alloc; /* Memory allocator. */
+    size_t bst_count;                   /* Number of items in tree. */
+    unsigned long bst_generation;       /* Generation number. */
+  };
+

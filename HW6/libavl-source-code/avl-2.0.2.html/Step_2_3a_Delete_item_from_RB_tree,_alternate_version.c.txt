@@ -1,0 +1,26 @@
+if (p->rb_link[0] == NULL || p->rb_link[1] == NULL)
+  {
+    x = p->rb_link[0];
+    if (x == NULL)
+      x = p->rb_link[1];
+  }
+else
+  {
+    struct rb_node *y;
+
+    pa[k] = p;
+    da[k++] = 1;
+
+    y = p->rb_link[1];
+    while (y->rb_link[0] != NULL)
+      {
+        pa[k] = y;
+        da[k++] = 0;
+        y = y->rb_link[0];
+      }
+
+    x = y->rb_link[1];
+    p->rb_data = y->rb_data;
+    p = y;
+  }
+pa[k - 1]->rb_link[da[k - 1]] = x;

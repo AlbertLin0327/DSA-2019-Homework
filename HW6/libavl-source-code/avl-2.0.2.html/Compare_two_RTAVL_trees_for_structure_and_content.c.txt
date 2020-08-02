@@ -1,0 +1,48 @@
+/* Compares binary trees rooted at |a| and |b|,
+   making sure that they are identical. */
+static int
+compare_trees (struct rtavl_node *a, struct rtavl_node *b)
+{
+  int okay;
+
+  if (a == NULL || b == NULL)
+    {
+      if (a != NULL || b != NULL)
+        {
+          printf (" a=%d b=%d\n",
+                  a ? *(int *) a->rtavl_data : -1,
+                  b ? *(int *) b->rtavl_data : -1);
+          assert (0);
+        }
+      return 1;
+    }
+  assert (a != b);
+
+  if (*(int *) a->rtavl_data != *(int *) b->rtavl_data
+      || a->rtavl_rtag != b->rtavl_rtag
+      || a->rtavl_balance != b->rtavl_balance)
+    {
+      printf (" Copied nodes differ: a=%d (bal=%d) b=%d (bal=%d) a:",
+              *(int *) a->rtavl_data, a->rtavl_balance,
+              *(int *) b->rtavl_data, b->rtavl_balance);
+
+      if (a->rtavl_rtag == RTAVL_CHILD)
+        printf ("r");
+
+      printf (" b:");
+      if (b->rtavl_rtag == RTAVL_CHILD)
+        printf ("r");
+
+      printf ("\n");
+      return 0;
+    }
+
+  if (a->rtavl_rtag == RTAVL_THREAD)
+    assert ((a->rtavl_link[1] == NULL) != (a->rtavl_link[1] != b->rtavl_link[1]));
+
+  okay = compare_trees (a->rtavl_link[0], b->rtavl_link[0]);
+  if (a->rtavl_rtag == RTAVL_CHILD)
+    okay &= compare_trees (a->rtavl_link[1], b->rtavl_link[1]);
+  return okay;
+}
+

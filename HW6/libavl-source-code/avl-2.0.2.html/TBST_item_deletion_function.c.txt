@@ -1,0 +1,109 @@
+/* Deletes from |tree| and returns an item matching |item|.
+   Returns a null pointer if no matching item found. */
+void *
+tbst_delete (struct tbst_table *tree, const void *item)
+{
+  struct tbst_node *p;        /* Node to delete. */
+  struct tbst_node *q;        /* Parent of |p|. */
+  int dir;              /* Index into |q->tbst_link[]| that leads to |p|. */
+
+  assert (tree != NULL && item != NULL);
+
+  if (tree->tbst_root == NULL)
+    return NULL;
+
+  p = tree->tbst_root;
+  q = (struct tbst_node *) &tree->tbst_root;
+  dir = 0;
+  for (;;)
+    {
+      int cmp = tree->tbst_compare (item, p->tbst_data, tree->tbst_param);
+      if (cmp == 0)
+        break;
+
+      dir = cmp > 0;
+      if (p->tbst_tag[dir] == TBST_THREAD)
+        return NULL;
+
+      q = p;
+      p = p->tbst_link[dir];
+    }
+  item = p->tbst_data;
+
+  if (p->tbst_tag[1] == TBST_THREAD)
+    {
+      if (p->tbst_tag[0] == TBST_CHILD)
+        {
+          struct tbst_node *t = p->tbst_link[0];
+          while (t->tbst_tag[1] == TBST_CHILD)
+            t = t->tbst_link[1];
+          t->tbst_link[1] = p->tbst_link[1];
+          q->tbst_link[dir] = p->tbst_link[0];
+        }
+      else
+        {
+          q->tbst_link[dir] = p->tbst_link[dir];
+          if (q != (struct tbst_node *) &tree->tbst_root)
+            q->tbst_tag[dir] = TBST_THREAD;
+        }
+    }
+  else
+    {
+      struct tbst_node *r = p->tbst_link[1];
+      if (r->tbst_tag[0] == TBST_THREAD)
+        {
+          r->tbst_link[0] = p->tbst_link[0];
+          r->tbst_tag[0] = p->tbst_tag[0];
+          if (r->tbst_tag[0] == TBST_CHILD)
+            {
+              struct tbst_node *t = r->tbst_link[0];
+              while (t->tbst_tag[1] == TBST_CHILD)
+                t = t->tbst_link[1];
+              t->tbst_link[1] = r;
+            }
+          q->tbst_link[dir] = r;
+        }
+      else
+        {
+          struct tbst_node *s;
+
+          for (;;)
+            {
+              s = r->tbst_link[0];
+              if (s->tbst_tag[0] == TBST_THREAD)
+                break;
+
+              r = s;
+            }
+
+          if (s->tbst_tag[1] == TBST_CHILD)
+            r->tbst_link[0] = s->tbst_link[1];
+          else
+            {
+              r->tbst_link[0] = s;
+              r->tbst_tag[0] = TBST_THREAD;
+            }
+
+          s->tbst_link[0] = p->tbst_link[0];
+          if (p->tbst_tag[0] == TBST_CHILD)
+            {
+              struct tbst_node *t = p->tbst_link[0];
+              while (t->tbst_tag[1] == TBST_CHILD)
+                t = t->tbst_link[1];
+              t->tbst_link[1] = s;
+
+              s->tbst_tag[0] = TBST_CHILD;
+            }
+
+          s->tbst_link[1] = p->tbst_link[1];
+          s->tbst_tag[1] = TBST_CHILD;
+
+          q->tbst_link[dir] = s;
+        }
+    }
+
+  tree->tbst_alloc->libavl_free (tree->tbst_alloc, p);
+  tree->tbst_count--;
+  return (void *) item;
+}
+

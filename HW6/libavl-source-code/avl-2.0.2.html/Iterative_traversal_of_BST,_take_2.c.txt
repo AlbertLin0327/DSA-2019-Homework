@@ -1,0 +1,10 @@
+static void
+traverse_iterative (struct bst_node *node, bst_item_func *action, void *param)
+{
+  while (node != NULL)
+    {
+      traverse_iterative (node->bst_link[0], action, param);
+      action (node->bst_data, param);
+      node = node->bst_link[1];
+    }
+}

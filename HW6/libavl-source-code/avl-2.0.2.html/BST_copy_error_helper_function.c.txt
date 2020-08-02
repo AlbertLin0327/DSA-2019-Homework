@@ -1,0 +1,13 @@
+/* Destroys |new| with |bst_destroy (new, destroy)|,
+   first setting right links of nodes in |stack| within |new|
+   to null pointers to avoid touching uninitialized data. */
+static void
+copy_error_recovery (struct bst_node **stack, int height,
+                     struct bst_table *new, bst_item_func *destroy)
+{
+  assert (stack != NULL && height >= 0 && new != NULL);
+
+  for (; height > 2; height -= 2)
+    stack[height - 1]->bst_link[1] = NULL;
+  bst_destroy (new, destroy);
+}

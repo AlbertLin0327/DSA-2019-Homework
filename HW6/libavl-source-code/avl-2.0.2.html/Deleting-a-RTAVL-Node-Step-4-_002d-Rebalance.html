@@ -1,0 +1,221 @@
+<html lang="en">
+<head>
+<title>Deleting a RTAVL Node Step 4 - Rebalance - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-a-RTAVL-Node-Step-3-_002d-Update.html" title="11.5.3 Step 3: Update Balance Factors">
+<link rel=Next href="Copying-an-RTAVL-Tree.html" title="11.6 Copying">
+<link rel=Parent href="Deleting-from-an-RTAVL-Tree.html" title="11.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>11.5.4 Step 4: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-a-RTAVL-Node-Step-3-_002d-Update.html" title="Skip Back: 11.5.3 Step 3: Update Balance Factors"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-a-RTAVL-Node-Step-3-_002d-Update.html" title="Prev: 11.5.3 Step 3: Update Balance Factors"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-an-RTAVL-Tree.html" title="Up: 11.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Copying-an-RTAVL-Tree.html" title="Next: 11.6 Copying"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Rebalancing in an RTAVL tree after deletion is not completely symmetric
+between left-side and right-side rebalancing, but there are pairs of
+similar subcases on each side.  The outlines are similar, too.  Either
+way, rebalancing occurs at node <i>y</i><!-- /@w -->, and cases are distinguished based
+on the balance factor of <i>x</i><!-- /@w -->, the child of <i>y</i><!-- /@w --> on the side opposite the
+deletion.
+
+   <p><a name="index-rebalance-after-RTAVL-deletion-in-left-subtree-616"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_after_RTAVL_deletion_in_left_subtree.c.txt">439</a>. &lt;<a name="439" href="Step_4_3a_Rebalance_after_RTAVL_deletion_in_left_subtree.c.txt">Step 4: Rebalance after RTAVL deletion in left subtree 439</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+
+<i>assert</i><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == -1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    &lt;<a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#441">Rebalance for - balance factor after left-side RTAVL deletion 441</a>&gt;
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>x</i><!-- /@w -->;
+    <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#443">Rebalance for 0 balance factor after left-side RTAVL deletion 443</a>&gt;
+        <b>break</b><!-- /@w -->;
+      }
+    <b>else</b><!-- /@w --> /* <i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == +1 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#445">Rebalance for + balance factor after left-side RTAVL deletion 445</a>&gt;
+      }
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-RTAVL-Node-Step-3-_002d-Update.html#438">438</a>.</small>
+
+   <p><a name="index-rebalance-after-RTAVL-deletion-in-right-subtree-617"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_after_RTAVL_deletion_in_right_subtree.c.txt">440</a>. &lt;<a name="440" href="Step_4_3a_Rebalance_after_RTAVL_deletion_in_right_subtree.c.txt">Step 4: Rebalance after RTAVL deletion in right subtree 440</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+
+<i>assert</i><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == +1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    &lt;<a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#442">Rebalance for + balance factor after right-side RTAVL deletion 442</a>&gt;
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>x</i><!-- /@w -->;
+    <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#444">Rebalance for 0 balance factor after right-side RTAVL deletion 444</a>&gt;
+        <b>break</b><!-- /@w -->;
+      }
+    <b>else</b><!-- /@w --> /* <i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == -1 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#446">Rebalance for - balance factor after right-side RTAVL deletion 446</a>&gt;
+      }
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-RTAVL-Node-Step-3-_002d-Update.html#438">438</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>x</i><!-- /@w --> has taller subtree on same side as deletion</h5>
+
+<p>If the taller subtree of <i>x</i><!-- /@w --> is on the same side as the deletion, then
+we rotate at <i>x</i><!-- /@w --> in the opposite direction from the deletion, then at
+<i>y</i><!-- /@w --> in the same direction as the deletion. This is the same as case 2
+for RTAVL insertion (see <a href="Rebalancing-RTAVL-Trees.html#rtavlinscase2">rtavlinscase2</a>), which in turn performs
+the general transformation described for AVL deletion case 1
+(see <a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html#avldelcase1">avldelcase1</a>), and we can reuse the code.
+
+   <p><a name="index-rebalance-for-_0040math_007b_002d_007d-balance-factor-after-left_002dside-RTAVL-deletion-618"></a>
+<pre class="format"><a href="Rebalance_for__7c-_7c_balance_factor_after_left-side_RTAVL_deletion.c.txt">441</a>. &lt;<a name="441" href="Rebalance_for__7c-_7c_balance_factor_after_left-side_RTAVL_deletion.c.txt">Rebalance for - balance factor after left-side RTAVL deletion 441</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>w</i><!-- /@w -->;
+
+&lt;<a href="Rebalancing-RTAVL-Trees.html#428">Rebalance for - balance factor in RTAVL insertion in right subtree 428</a>&gt;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>w</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#439">439</a>.</small>
+
+   <p><a name="index-rebalance-for-_0040math_007b_002b_007d-balance-factor-after-right_002dside-RTAVL-deletion-619"></a>
+<pre class="format"><a href="Rebalance_for__7c_2b_7c_balance_factor_after_right-side_RTAVL_deletion.c.txt">442</a>. &lt;<a name="442" href="Rebalance_for__7c_2b_7c_balance_factor_after_right-side_RTAVL_deletion.c.txt">Rebalance for + balance factor after right-side RTAVL deletion 442</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>w</i><!-- /@w -->;
+
+&lt;<a href="Rebalancing-RTAVL-Trees.html#427">Rebalance for + balance factor in RTAVL insertion in left subtree 427</a>&gt;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>w</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#440">440</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>x</i><!-- /@w -->'s subtrees are equal height</h5>
+
+<p>If <i>x</i><!-- /@w -->'s two subtrees are of equal height, then we perform a rotation at
+<i>y</i><!-- /@w --> toward the deletion.  This rotation cannot be troublesome, for the
+same reason discussed for rebalancing in TAVL trees
+(see <a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#tavldelcase2">tavldelcase2</a>).  We can even reuse the code:
+
+   <p><a name="index-rebalance-for-0-balance-factor-after-left_002dside-RTAVL-deletion-620"></a>
+<pre class="format"><a href="Rebalance_for_0_balance_factor_after_left-side_RTAVL_deletion.c.txt">443</a>. &lt;<a name="443" href="Rebalance_for_0_balance_factor_after_left-side_RTAVL_deletion.c.txt">Rebalance for 0 balance factor after left-side RTAVL deletion 443</a>&gt; =
+&lt;<a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#321">Rebalance for 0 balance factor after TAVL deletion in left subtree; tavl =&gt; rtavl 321</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#439">439</a>.</small>
+
+   <p><a name="index-rebalance-for-0-balance-factor-after-right_002dside-RTAVL-deletion-621"></a>
+<pre class="format"><a href="Rebalance_for_0_balance_factor_after_right-side_RTAVL_deletion.c.txt">444</a>. &lt;<a name="444" href="Rebalance_for_0_balance_factor_after_right-side_RTAVL_deletion.c.txt">Rebalance for 0 balance factor after right-side RTAVL deletion 444</a>&gt; =
+&lt;<a href="TAVL-Deletion-Symmetric-Case.html#325">Rebalance for 0 balance factor after TAVL deletion in right subtree; tavl =&gt; rtavl 325</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#440">440</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>x</i><!-- /@w --> has taller subtree on side opposite deletion</h5>
+
+<p>When <i>x</i><!-- /@w -->'s taller subtree is on the side opposite the deletion, we
+rotate at <i>y</i><!-- /@w --> toward the deletion, same as case 2.  If the deletion was
+on the left side of <i>y</i><!-- /@w -->, then the general form is the same as for TAVL
+deletion (see <a href="Deleting-a-TAVL-Node-Step-4-_002d-Rebalance.html#tavldelcase3">tavldelcase3</a>).  The special case for left-side
+deletion, where <i>x</i><!-- /@w --> lacks a left child, and the general form of the
+code, are shown here:
+
+<div align="center"><a href="rtavldel1.txt"><img border=0 src="rtavldel1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-rebalance-for-_0040math_007b_002b_007d-balance-factor-after-left_002dside-RTAVL-deletion-622"></a>
+<pre class="format"><a href="Rebalance_for__7c_2b_7c_balance_factor_after_left-side_RTAVL_deletion.c.txt">445</a>. &lt;<a name="445" href="Rebalance_for__7c_2b_7c_balance_factor_after_left-side_RTAVL_deletion.c.txt">Rebalance for + balance factor after left-side RTAVL deletion 445</a>&gt; =
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_THREAD</tt><!-- /@w -->;
+<i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;  
+<i>y</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#439">439</a>.</small>
+
+   <p>The special case for right-side deletion, where <i>x</i><!-- /@w --> lacks a right child,
+and the general form of the code, are shown here:
+
+<div align="center"><a href="rtavldel2.txt"><img border=0 src="rtavldel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-rebalance-for-_0040math_007b_002d_007d-balance-factor-after-right_002dside-RTAVL-deletion-623"></a>
+<pre class="format"><a href="Rebalance_for__7c-_7c_balance_factor_after_right-side_RTAVL_deletion.c.txt">446</a>. &lt;<a name="446" href="Rebalance_for__7c-_7c_balance_factor_after_right-side_RTAVL_deletion.c.txt">Rebalance for - balance factor after right-side RTAVL deletion 446</a>&gt; =
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_CHILD</tt><!-- /@w -->)
+  <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_CHILD</tt><!-- /@w -->;
+  }
+<i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;  
+<i>y</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#440">440</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->In the chapter about TAVL deletion, we offered two implementations of
+deletion: one using a stack (&lt;<a href="Answers-for-Chapter-8.html#659">TAVL item deletion function, with stack 659</a>&gt;) and one using an algorithm to find node parents (&lt;<a href="Deleting-from-a-TAVL-Tree.html#311">TAVL item deletion function 311</a>&gt;).  For RTAVL deletion, we offer only a stack-based
+implementation.  Why? 
+[<a href="Answers-for-Chapter-11.html#11%2d5%2d4%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->The introduction to this section states that left-looking deletion is
+more efficient than right-looking deletion in an RTAVL tree.  Confirm
+this by writing a right-looking alternate implementation of &lt;<a href="Deleting-a-RTAVL-Node-Step-2-_002d-Delete.html#431">Step 2: Delete RTAVL node 431</a>&gt; and comparing the two sets of code. 
+[<a href="Answers-for-Chapter-11.html#11%2d5%2d4%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->Rewrite &lt;<a href="Deleting-a-RTAVL-Node-Step-2-_002d-Delete.html#435">Case 4 in RTAVL deletion 435</a>&gt; to replace the deleted node's
+<i>rtavl_data</i><!-- /@w --> by its successor, then delete the successor, instead of
+shuffling pointers.  (Refer back to Exercise 4.8-3 for an
+explanation of why this approach cannot be used in libavl.) 
+[<a href="Answers-for-Chapter-11.html#11%2d5%2d4%233">answer</a>]
+
+   </body></html>
+

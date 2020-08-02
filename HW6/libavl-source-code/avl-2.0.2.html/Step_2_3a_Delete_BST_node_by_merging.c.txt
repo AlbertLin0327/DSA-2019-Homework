@@ -1,0 +1,35 @@
+if (p->bst_link[1] != NULL)
+  {
+    struct bst_node *pa[BST_MAX_HEIGHT]; /* Nodes on stack. */
+    unsigned char da[BST_MAX_HEIGHT];    /* Directions moved from stack nodes. */
+    int k = 0;                           /* Stack height. */
+
+    struct bst_node *r; /* Iterator; final value is minimum node in subtree. */
+
+    for (r = p->bst_link[1]; r->bst_link[0] != NULL; r = r->bst_link[0])
+      {
+        if (k >= BST_MAX_HEIGHT)
+          {
+            bst_balance (tree);
+            return bst_delete (tree, item);
+          }
+
+        pa[k] = r;
+        da[k++] = 0;
+      }
+    q->bst_link[dir] = r;
+    r->bst_link[0] = p->bst_link[0];
+
+    for (; k > 0; k--)
+      {
+        struct bst_node *y = pa[k - 1];
+        struct bst_node *x = y->bst_link[0];
+        y->bst_link[0] = x->bst_link[1];
+        x->bst_link[1] = y;
+        if (k > 1)
+          pa[k - 2]->bst_link[da[k - 2]] = x;
+      }
+  }
+else
+  q->bst_link[dir] = p->bst_link[0];
+

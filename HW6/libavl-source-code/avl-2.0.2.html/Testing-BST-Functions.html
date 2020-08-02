@@ -1,0 +1,225 @@
+<html lang="en">
+<head>
+<title>Testing BST Functions - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Joining-BSTs.html" title="4.13 Aside: Joining BSTs">
+<link rel=Next href="Testing-BSTs.html" title="4.14.1 Testing BSTs">
+<link rel=Parent href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Testing-BST-Functions">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14 Testing</b></big></td>
+<td align=right>
+<a href="index.html#Testing-BST-Functions.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Joining-BSTs.html" title="Skip Back: 4.13 Aside: Joining BSTs"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Additional-Exercises-for-BSTs.html" title="Skip Forward: 4.15 Additional Exercises"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Joining-BSTs.html" title="Prev: 4.13 Aside: Joining BSTs"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Binary-Search-Trees.html" title="Up: 4 Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Testing-BSTs.html" title="Next: 4.14.1 Testing BSTs"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Whew!  We're finally done with building functions for performing BST
+operations.  But we haven't tested any of our code.  Testing is an
+essential step in writing programs, because untested software cannot be
+assumed to work.
+
+   <p>Let's build a test program that exercises all of the functions we wrote. 
+We'll also do our best to make parts of it generic, so that we can reuse
+test code in later chapters when we want to test other BST-based
+structures.
+
+   <p>The first step is to figure out how to test the code.  One goal in
+testing is to exercise as much of the code as possible.  Ideally, every
+line of code would be executed sometime during testing.  Often, this is
+difficult or impossible, but the principle remains valid, with the goal
+modified to testing as much of the code as possible.
+
+   <p>In applying this principle to the BST code, we have to consider why each
+line of code is executed.  If we look at the code for most functions in
+&lt;<a href="Binary-Search-Trees.html#25"><tt>bst.c</tt> 25</a>&gt;, we can see that, if we execute them for any BST of reasonable
+size, most or all of their code will be tested.
+
+   <p>This is encouraging.  It means that we can just construct some trees and
+try out the BST functions on them, check that the results make sense,
+and have a pretty good idea that they work.  Moreover, if we build trees
+in a random fashion, and delete their nodes in a random order, and do it
+several times, we'll even have a good idea that the <i>bst_probe</i><!-- /@w -->() and
+<i>bst_delete</i><!-- /@w -->() cases have all come up and worked properly.  (If you want
+to be sure, then you can insert <i>printf</i><!-- /@w -->() calls for each case to record
+when they trip.)  This is not the same as a proof of correctness, but
+proofs of correctness can only be constructed by computer scientists
+with fancy degrees, not by mere clever programmers.
+
+   <p>There are three notably missing pieces of code coverage if we just do
+the above.  These are stack overflow handling, memory allocation failure
+handling, and traverser code to deal with modified trees.  But we can
+mop up these extra problems with a little extra effort:<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+
+     <ul>
+<li>Stack overflow handling can be tested by forcing the stack to overflow. 
+Stack overflow can occur in many places, so for best effect we must test
+each possible spot.  We will write special tests for these problems.
+
+     <li>Memory allocation failure handling can be tested by simulating memory
+allocation failures.  We will write a replacement memory allocator that
+&ldquo;fails&rdquo; after a specified number of calls.  This allocator will also
+allow for memory leak detection.
+
+     <li>Traverser code to deal with modified trees.  This can be tested by
+modifying trees during traversal and making sure that the traversal
+functions still work as expected. 
+</ul>
+
+   <p>The testing code can be broken into the following groups of functions:
+
+     <dl>
+<dt><b>Testing and verification</b><dd>These functions actually try out the BST routines and do their best to
+make sure that their results are correct.
+
+     <br><dt><b>Test set generation</b><dd>Generates the order of node insertion and deletion, for use during
+testing.
+
+     <br><dt><b>Memory manager</b><dd>Handles memory issues, including memory leak detection and failure
+simulation.
+
+     <br><dt><b>User interaction</b><dd>Figures out what the user wants to test in this run.
+
+     <br><dt><b>Main program</b><dd>Glues everything else together by calling functions in the proper order.
+
+     <br><dt><b>Utilities</b><dd>Miscellaneous routines that don't fit comfortably into another category. 
+</dl>
+
+   <p>Most of the test code will also work nicely for testing other binary
+tree-based structures.  This code is grouped into a single file,
+&lt;<a href="Testing-BST-Functions.html#97"><tt>test.c</tt> 97</a>&gt;, which has the following structure:
+
+   <p><a name="index-_0040t_007btest_002ec_007d-149"></a>
+<pre class="format"><a href="test.c.txt">97</a>. &lt;<a name="97" href="test.c.txt"><tt>test.c</tt> 97</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;limits.h&gt;
+#<b>include</b> &lt;stdarg.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> &lt;string.h&gt;
+#<b>include</b> &lt;time.h&gt;
+#<b>include</b> "test.h"
+
+&lt;<a href="Test-Set-Generation.html#121">Test declarations 121</a>&gt;
+&lt;<a href="Utility-Functions.html#134">Test utility functions 134</a>&gt;
+&lt;<a href="Memory-Manager.html#126">Memory tracker 126</a>&gt;
+&lt;<a href="Option-Parser.html#586">Option parser 586</a>&gt;
+&lt;<a href="Command_002dLine-Parser.html#589">Command line parser 589</a>&gt;
+&lt;<a href="Answers-for-Chapter-4.html#642">Insertion and deletion order generation 642</a>&gt;
+&lt;<a href="Answers-for-Chapter-4.html#643">Random number seeding 643</a>&gt;
+&lt;<a href="Main-Program.html#140">Test main program 140</a>&gt;
+</pre>
+   <p>The code specifically for testing BSTs goes into &lt;<a href="Testing-BST-Functions.html#98"><tt>bst-test.c</tt> 98</a>&gt;,
+outlined like this:
+
+   <p><a name="index-_0040t_007bbst_002dtest_002ec_007d-150"></a>
+<pre class="format"><a href="bst-test.c.txt">98</a>. &lt;<a name="98" href="bst-test.c.txt"><tt>bst-test.c</tt> 98</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;limits.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> "bst.h"
+#<b>include</b> "test.h"
+
+&lt;<a href="Displaying-BST-Structures.html#119">BST print function 119</a>&gt;
+&lt;<a href="Testing-BSTs.html#104">BST traverser check function 104</a>&gt;
+&lt;<a href="Testing-BSTs.html#106">Compare two BSTs for structure and content 106</a>&gt;
+&lt;<a href="BST-Verification.html#113">Recursively verify BST structure 113</a>&gt;
+&lt;<a href="BST-Verification.html#109">BST verify function 109</a>&gt;
+&lt;<a href="Testing-BSTs.html#100">BST test function 100</a>&gt;
+&lt;<a href="Testing-Overflow.html#122">BST overflow test function 122</a>&gt;
+</pre>
+   <p>The interface between &lt;<a href="Testing-BST-Functions.html#97"><tt>test.c</tt> 97</a>&gt; and &lt;<a href="Testing-BST-Functions.html#98"><tt>bst-test.c</tt> 98</a>&gt; is contained
+in &lt;<a href="Testing-BST-Functions.html#99"><tt>test.h</tt> 99</a>&gt;:
+
+   <p><a name="index-_0040t_007btest_002eh_007d-151"></a>
+<pre class="format"><a href="test.h.txt">99</a>. &lt;<a name="99" href="test.h.txt"><tt>test.h</tt> 99</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>ifndef</b> <tt>TEST_H</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bTEST_005fH_007d_007d-macro_0040c-152"></a><tt>TEST_H</tt><!-- /@w --> 1
+
+&lt;<a href="Memory-Allocation.html#5">Memory allocator 5</a>&gt;
+&lt;<a href="Testing-BSTs.html#101">Test prototypes 101</a>&gt;
+
+#<b>endif</b> /* test.h */
+</pre>
+   <p>Although much of the test program code is nontrivial, only some of the
+interesting parts fall within the scope of this book.  The remainder
+will be listed without comment or relegated to the exercises.  The most
+tedious code is listed in an appendix (see <a href="Supplementary-Code.html">Supplementary Code</a>).
+
+<ul class="menu">
+<li><a accesskey="1" href="Testing-BSTs.html">Testing BSTs</a>
+<li><a accesskey="2" href="Test-Set-Generation.html">Test Set Generation</a>
+<li><a accesskey="3" href="Testing-Overflow.html">Testing Overflow</a>
+<li><a accesskey="4" href="Memory-Manager.html">Memory Manager</a>
+<li><a accesskey="5" href="User-Interaction.html">User Interaction</a>
+<li><a accesskey="6" href="Utility-Functions.html">Utility Functions</a>
+<li><a accesskey="7" href="Main-Program.html">Main Program</a>
+</ul>
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> Some
+might scoff at this amount of detail, calling it wasted effort, but this
+thorough testing in fact revealed a number of subtle bugs during
+development of libavl that had otherwise gone unnoticed.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

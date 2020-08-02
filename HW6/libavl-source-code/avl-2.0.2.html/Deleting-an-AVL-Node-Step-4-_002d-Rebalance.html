@@ -1,0 +1,146 @@
+<html lang="en">
+<head>
+<title>Deleting an AVL Node Step 4 - Rebalance - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-an-AVL-Node-Step-3-_002d-Update.html" title="5.5.3 Step 3: Update Balance Factors">
+<link rel=Next href="Deleting-an-AVL-Node-Step-5-_002d-Finish-Up.html" title="5.5.5 Step 5: Finish Up">
+<link rel=Parent href="Deleting-from-an-AVL-Tree.html" title="5.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-an-AVL-Node-Step-4-_002d-Rebalance">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.5.4 Step 4: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-an-AVL-Node-Step-3-_002d-Update.html" title="Skip Back: 5.5.3 Step 3: Update Balance Factors"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-an-AVL-Node-Step-5-_002d-Finish-Up.html" title="Skip Forward: 5.5.5 Step 5: Finish Up"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-an-AVL-Node-Step-3-_002d-Update.html" title="Prev: 5.5.3 Step 3: Update Balance Factors"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-an-AVL-Tree.html" title="Up: 5.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-an-AVL-Node-Step-5-_002d-Finish-Up.html" title="Next: 5.5.5 Step 5: Finish Up"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Now we have to write code to rebalance when it becomes necessary. 
+We'll use rotations to do this, as before.  Again, we'll distinguish
+the cases on the basis of <i>x</i><!-- /@w -->'s balance factor, where <i>x</i><!-- /@w --> is <i>y</i><!-- /@w -->'s
+right child:
+
+   <p><a name="index-rebalance-after-AVL-deletion-257"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_after_AVL_deletion.c.txt">173</a>. &lt;<a name="173" href="Step_4_3a_Rebalance_after_AVL_deletion.c.txt">Step 4: Rebalance after AVL deletion 173</a>&gt; =
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == -1)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html#174">Left-side rebalancing case 1 in AVL deletion 174</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html#175">Left-side rebalancing case 2 in AVL deletion 175</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-AVL-Node-Step-3-_002d-Update.html#172">172</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>x</i><!-- /@w --> has - balance factor</h5>
+
+<p><a name="avldelcase1"></a>
+
+   <p>If <i>x</i><!-- /@w --> has a - balance factor, we handle rebalancing in a manner
+analogous to case 2 for insertion.  In fact, we reuse the code.  We
+rotate right at <i>x</i><!-- /@w -->, then left at <i>y</i><!-- /@w -->.  <i>w</i><!-- /@w --> is the left child of <i>x</i><!-- /@w -->. 
+The two rotations look like this:
+
+<div align="center"><a href="avldel1.txt"><img border=0 src="avldel1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-left_002dside-rebalancing-case-1-in-AVL-deletion-258"></a>
+<pre class="format"><a href="Left-side_rebalancing_case_1_in_AVL_deletion.c.txt">174</a>. &lt;<a name="174" href="Left-side_rebalancing_case_1_in_AVL_deletion.c.txt">Left-side rebalancing case 1 in AVL deletion 174</a>&gt; =
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>w</i><!-- /@w -->;
+&lt;<a href="AVL-Insertion-Symmetric-Case.html#159">Rotate right at <i>x</i><!-- /@w --> then left at <i>y</i><!-- /@w --> in AVL tree 159</a>&gt;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>avl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>w</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html#173">173</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>x</i><!-- /@w --> has + or 0 balance factor</h5>
+
+<p><a name="avldel2"></a>
+When <i>x</i><!-- /@w -->'s balance factor is +, the needed treatment is analogous to
+Case 1 for insertion.  We simply rotate left at <i>y</i><!-- /@w --> and update the
+pointer to the subtree, then update balance factors.  The deletion and
+rebalancing then look like this:
+
+<div align="center"><a href="avldel2.txt"><img border=0 src="avldel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>When <i>x</i><!-- /@w -->'s balance factor is 0, we perform the same rotation, but the
+height of the overall subtree does not change, so we're done and can
+exit the loop with <b>break</b><!-- /@w -->.  Here's what the deletion and rebalancing
+look like for this subcase:
+
+<div align="center"><a href="avldel3.txt"><img border=0 src="avldel3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-left_002dside-rebalancing-case-2-in-AVL-deletion-259"></a>
+<pre class="format"><a href="Left-side_rebalancing_case_2_in_AVL_deletion.c.txt">175</a>. &lt;<a name="175" href="Left-side_rebalancing_case_2_in_AVL_deletion.c.txt">Left-side rebalancing case 2 in AVL deletion 175</a>&gt; =
+<i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>avl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>x</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = -1;
+    <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = +1;
+    <b>break</b><!-- /@w -->;
+  }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html#173">173</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->In &lt;<a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html#173">Step 4: Rebalance after AVL deletion 173</a>&gt;, we refer to fields in
+<i>x</i><!-- /@w -->, the right child of <i>y</i><!-- /@w -->, without checking that <i>y</i><!-- /@w --> has a non-null
+right child.  Why can we assume that node <i>x</i><!-- /@w --> is non-null? 
+[<a href="Answers-for-Chapter-5.html#5%2d5%2d4%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Describe the shape of a tree that might require rebalancing at every
+level above a particular node.  Give an example. 
+[<a href="Answers-for-Chapter-5.html#5%2d5%2d4%232">answer</a>]
+
+   </body></html>
+

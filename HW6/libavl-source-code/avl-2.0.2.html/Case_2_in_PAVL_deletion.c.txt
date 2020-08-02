@@ -1,0 +1,8 @@
+r->pavl_link[0] = p->pavl_link[0];
+q->pavl_link[dir] = r;
+r->pavl_parent = p->pavl_parent;
+if (r->pavl_link[0] != NULL)
+  r->pavl_link[0]->pavl_parent = r;
+r->pavl_balance = p->pavl_balance;
+q = r;
+dir = 1;

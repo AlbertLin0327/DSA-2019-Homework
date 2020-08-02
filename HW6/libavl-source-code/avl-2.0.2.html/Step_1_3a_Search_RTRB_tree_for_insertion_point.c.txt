@@ -1,0 +1,30 @@
+da[0] = 0;
+pa[0] = (struct rtrb_node *) &tree->rtrb_root;
+k = 1;
+if (tree->rtrb_root != NULL)
+  for (p = tree->rtrb_root; ; p = p->rtrb_link[dir])
+    {
+      int cmp = tree->rtrb_compare (item, p->rtrb_data, tree->rtrb_param);
+      if (cmp == 0)
+        return &p->rtrb_data;
+
+      pa[k] = p;
+      da[k++] = dir = cmp > 0;
+
+      if (dir == 0)
+        {
+          if (p->rtrb_link[0] == NULL)
+            break;
+        }
+      else /* |dir == 1| */
+        {
+          if (p->rtrb_rtag == RTRB_THREAD)
+            break;
+        }
+    }
+else
+  {
+    p = (struct rtrb_node *) &tree->rtrb_root;
+    dir = 0;
+  }
+

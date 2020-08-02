@@ -1,0 +1,34 @@
+struct rtavl_node *s;
+int j = k++;
+
+for (;;)
+  {
+    da[k] = 0;
+    pa[k++] = r;
+    s = r->rtavl_link[0];
+    if (s->rtavl_link[0] == NULL)
+      break;
+
+    r = s;
+  }
+
+da[j] = 1;
+pa[j] = pa[j - 1]->rtavl_link[da[j - 1]] = s;
+
+if (s->rtavl_rtag == RTAVL_CHILD)
+  r->rtavl_link[0] = s->rtavl_link[1];
+else
+  r->rtavl_link[0] = NULL;
+
+if (p->rtavl_link[0] != NULL)
+  {
+    struct rtavl_node *t = p->rtavl_link[0];
+    while (t->rtavl_rtag == RTAVL_CHILD)
+      t = t->rtavl_link[1];
+    t->rtavl_link[1] = s;
+  }
+
+s->rtavl_link[0] = p->rtavl_link[0];
+s->rtavl_link[1] = p->rtavl_link[1];
+s->rtavl_rtag = RTAVL_CHILD;
+s->rtavl_balance = p->rtavl_balance;

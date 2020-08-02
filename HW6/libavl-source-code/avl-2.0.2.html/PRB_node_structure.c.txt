@@ -1,0 +1,16 @@
+/* Color of a red-black node. */
+enum prb_color
+  {
+    PRB_BLACK,   /* Black. */
+    PRB_RED      /* Red. */
+  };
+
+/* A red-black tree with parent pointers node. */
+struct prb_node
+  {
+    struct prb_node *prb_link[2];  /* Subtrees. */
+    struct prb_node *prb_parent;   /* Parent. */
+    void *prb_data;                /* Pointer to data. */
+    unsigned char prb_color;       /* Color. */
+  };
+

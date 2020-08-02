@@ -1,0 +1,309 @@
+/* Returns the parent of |node| within |tree|,
+   or a pointer to |trb_root| if |s| is the root of the tree. */
+static struct trb_node *
+find_parent (struct trb_table *tree, struct trb_node *node)
+{
+  if (node != tree->trb_root)
+    {
+      struct trb_node *x, *y;
+
+      for (x = y = node; ; x = x->trb_link[0], y = y->trb_link[1])
+        if (y->trb_tag[1] == TRB_THREAD)
+          {
+            struct trb_node *p = y->trb_link[1];
+            if (p == NULL || p->trb_link[0] != node)
+              {
+                while (x->trb_tag[0] == TRB_CHILD)
+                  x = x->trb_link[0];
+                p = x->trb_link[0];
+              }
+            return p;
+          }
+        else if (x->trb_tag[0] == TRB_THREAD)
+          {
+            struct trb_node *p = x->trb_link[0];
+            if (p == NULL || p->trb_link[1] != node)
+              {
+                while (y->trb_tag[1] == TRB_CHILD)
+                  y = y->trb_link[1];
+                p = y->trb_link[1];
+              }
+            return p;
+          }
+    }
+  else
+    return (struct trb_node *) &tree->trb_root;
+}
+
+/* Deletes from |tree| and returns an item matching |item|.
+   Returns a null pointer if no matching item found. */
+void *
+trb_delete (struct trb_table *tree, const void *item)
+{
+  struct trb_node *p; /* Node to delete. */
+  struct trb_node *q; /* Parent of |p|. */
+
+  struct trb_node *x; /* Node we might want to recolor red (maybe |NULL|). */
+  struct trb_node *f; /* Parent of |x|. */
+  struct trb_node *g; /* Parent of |f|. */
+
+  int dir, cmp;
+
+  assert (tree != NULL && item != NULL);
+
+  if (tree->trb_root == NULL)
+    return NULL;
+
+  q = (struct trb_node *) &tree->trb_root;
+  p = tree->trb_root;
+  dir = 0;
+  for (;;)
+    {
+      cmp = tree->trb_compare (item, p->trb_data, tree->trb_param);
+      if (cmp == 0)
+        break;
+      dir = cmp > 0;
+
+      q = p;
+      if (p->trb_tag[dir] == TRB_THREAD)
+        return NULL;
+      p = p->trb_link[dir];
+    }
+  item = p->trb_data;
+
+  if (p->trb_tag[1] == TRB_THREAD)
+    {
+      if (p->trb_tag[0] == TRB_CHILD)
+        {
+          struct trb_node *t = p->trb_link[0];
+          while (t->trb_tag[1] == TRB_CHILD)
+            t = t->trb_link[1];
+          t->trb_link[1] = p->trb_link[1];
+          x = q->trb_link[dir] = p->trb_link[0];
+        }
+      else
+        {
+          q->trb_link[dir] = p->trb_link[dir];
+          if (q != (struct trb_node *) &tree->trb_root)
+            q->trb_tag[dir] = TRB_THREAD;
+          x = NULL;
+        }
+      f = q;
+    }
+  else
+    {
+      enum trb_color t;
+      struct trb_node *r = p->trb_link[1];
+
+      if (r->trb_tag[0] == TRB_THREAD)
+        {
+          r->trb_link[0] = p->trb_link[0];
+          r->trb_tag[0] = p->trb_tag[0];
+          if (r->trb_tag[0] == TRB_CHILD)
+            {
+              struct trb_node *t = r->trb_link[0];
+              while (t->trb_tag[1] == TRB_CHILD)
+                t = t->trb_link[1];
+              t->trb_link[1] = r;
+            }
+          q->trb_link[dir] = r;
+          x = r->trb_tag[1] == TRB_CHILD ? r->trb_link[1] : NULL;
+          t = r->trb_color;
+          r->trb_color = p->trb_color;
+          p->trb_color = t;
+          f = r;
+          dir = 1;
+        }
+      else
+        {
+          struct trb_node *s;
+
+          for (;;)
+            {
+              s = r->trb_link[0];
+              if (s->trb_tag[0] == TRB_THREAD)
+                break;
+
+              r = s;
+            }
+
+          if (s->trb_tag[1] == TRB_CHILD)
+            x = r->trb_link[0] = s->trb_link[1];
+          else
+            {
+              r->trb_link[0] = s;
+              r->trb_tag[0] = TRB_THREAD;
+              x = NULL;
+            }
+
+          s->trb_link[0] = p->trb_link[0];
+          if (p->trb_tag[0] == TRB_CHILD)
+            {
+              struct trb_node *t = p->trb_link[0];
+              while (t->trb_tag[1] == TRB_CHILD)
+                t = t->trb_link[1];
+              t->trb_link[1] = s;
+
+              s->trb_tag[0] = TRB_CHILD;
+            }
+
+          s->trb_link[1] = p->trb_link[1];
+          s->trb_tag[1] = TRB_CHILD;
+
+          t = s->trb_color;
+          s->trb_color = p->trb_color;
+          p->trb_color = t;
+
+          q->trb_link[dir] = s;
+          f = r;
+          dir = 0;
+        }
+    }
+
+  if (p->trb_color == TRB_BLACK)
+    {
+      for (;;)
+        {
+          if (x != NULL && x->trb_color == TRB_RED)
+            {
+              x->trb_color = TRB_BLACK;
+              break;
+            }
+          if (f == (struct trb_node *) &tree->trb_root)
+            break;
+
+          g = find_parent (tree, f);
+
+          if (dir == 0)
+            {
+              struct trb_node *w = f->trb_link[1];
+
+              if (w->trb_color == TRB_RED)
+                {
+                  w->trb_color = TRB_BLACK;
+                  f->trb_color = TRB_RED;
+
+                  f->trb_link[1] = w->trb_link[0];
+                  w->trb_link[0] = f;
+                  g->trb_link[g->trb_link[0] != f] = w;
+
+                  g = w;
+                  w = f->trb_link[1];
+                }
+
+              if ((w->trb_tag[0] == TRB_THREAD
+                   || w->trb_link[0]->trb_color == TRB_BLACK)
+                  && (w->trb_tag[1] == TRB_THREAD
+                      || w->trb_link[1]->trb_color == TRB_BLACK))
+                w->trb_color = TRB_RED;
+              else
+                {
+                  if (w->trb_tag[1] == TRB_THREAD
+                      || w->trb_link[1]->trb_color == TRB_BLACK)
+                    {
+                      struct trb_node *y = w->trb_link[0];
+                      y->trb_color = TRB_BLACK;
+                      w->trb_color = TRB_RED;
+                      w->trb_link[0] = y->trb_link[1];
+                      y->trb_link[1] = w;
+                      w = f->trb_link[1] = y;
+
+                      if (w->trb_tag[1] == TRB_THREAD)
+                        {
+                          w->trb_tag[1] = TRB_CHILD;
+                          w->trb_link[1]->trb_tag[0] = TRB_THREAD;
+                          w->trb_link[1]->trb_link[0] = w;
+                        }
+                    }
+
+                  w->trb_color = f->trb_color;
+                  f->trb_color = TRB_BLACK;
+                  w->trb_link[1]->trb_color = TRB_BLACK;
+
+                  f->trb_link[1] = w->trb_link[0];
+                  w->trb_link[0] = f;
+                  g->trb_link[g->trb_link[0] != f] = w;
+
+                  if (w->trb_tag[0] == TRB_THREAD)
+                    {
+                      w->trb_tag[0] = TRB_CHILD;
+                      f->trb_tag[1] = TRB_THREAD;
+                      f->trb_link[1] = w;
+                    }
+                  break;
+                }
+            }
+          else
+            {
+              struct trb_node *w = f->trb_link[0];
+
+              if (w->trb_color == TRB_RED)
+                {
+                  w->trb_color = TRB_BLACK;
+                  f->trb_color = TRB_RED;
+
+                  f->trb_link[0] = w->trb_link[1];
+                  w->trb_link[1] = f;
+                  g->trb_link[g->trb_link[0] != f] = w;
+
+                  g = w;
+                  w = f->trb_link[0];
+                }
+
+              if ((w->trb_tag[0] == TRB_THREAD
+                   || w->trb_link[0]->trb_color == TRB_BLACK)
+                  && (w->trb_tag[1] == TRB_THREAD
+                      || w->trb_link[1]->trb_color == TRB_BLACK))
+                w->trb_color = TRB_RED;
+              else
+                {
+                  if (w->trb_tag[0] == TRB_THREAD
+                      || w->trb_link[0]->trb_color == TRB_BLACK)
+                    {
+                      struct trb_node *y = w->trb_link[1];
+                      y->trb_color = TRB_BLACK;
+                      w->trb_color = TRB_RED;
+                      w->trb_link[1] = y->trb_link[0];
+                      y->trb_link[0] = w;
+                      w = f->trb_link[0] = y;
+
+                      if (w->trb_tag[0] == TRB_THREAD)
+                        {
+                          w->trb_tag[0] = TRB_CHILD;
+                          w->trb_link[0]->trb_tag[1] = TRB_THREAD;
+                          w->trb_link[0]->trb_link[1] = w;
+                        }
+                    }
+
+                  w->trb_color = f->trb_color;
+                  f->trb_color = TRB_BLACK;
+                  w->trb_link[0]->trb_color = TRB_BLACK;
+
+                  f->trb_link[0] = w->trb_link[1];
+                  w->trb_link[1] = f;
+                  g->trb_link[g->trb_link[0] != f] = w;
+
+                  if (w->trb_tag[1] == TRB_THREAD)
+                    {
+                      w->trb_tag[1] = TRB_CHILD;
+                      f->trb_tag[0] = TRB_THREAD;
+                      f->trb_link[0] = w;
+                    }
+                  break;
+                }
+            }
+
+          x = f;
+          f = find_parent (tree, x);
+          if (f == (struct trb_node *) &tree->trb_root)
+            break;
+
+          dir = f->trb_link[0] != x;
+        }
+    }
+
+  tree->trb_alloc->libavl_free (tree->trb_alloc, p);
+  tree->trb_count--;
+  return (void *) item;
+}
+

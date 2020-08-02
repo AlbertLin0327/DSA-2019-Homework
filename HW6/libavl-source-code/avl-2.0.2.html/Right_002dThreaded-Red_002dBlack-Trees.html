@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+<title>Right-Threaded Red-Black Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Testing-RTAVL-Trees.html" title="11.7 Testing">
+<link rel=Next href="RTRB-Data-Types.html" title="12.1 Data Types">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Right_002dThreaded-Red_002dBlack-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>12 Right-Threaded Red-Black Trees</b></big></td>
+<td align=right>
+<a href="index.html#Right_002dThreaded-Red_002dBlack-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Right_002dThreaded-AVL-Trees.html" title="Skip Back: 11 Right-Threaded AVL Trees"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="BSTs-with-Parent-Pointers.html" title="Skip Forward: 13 BSTs with Parent Pointers"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-RTAVL-Trees.html" title="Prev: 11.7 Testing"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="RTRB-Data-Types.html" title="Next: 12.1 Data Types"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>This chapter is this book's final demonstration of right-threaded trees,
+carried out by using them in a red-black tree implementation of tables. 
+The chapter, and the code, follow the pattern that should now be
+familiar, using <i>rtrb_</i><!-- /@w --> as the naming prefix and often referring to
+right-threaded right-black trees as &ldquo;RTRB trees&rdquo;.
+
+   <p><a name="index-_0040t_007brtrb_002eh_007d-632"></a>
+<pre class="format"><a href="rtrb.h.txt">452</a>. &lt;<a name="452" href="rtrb.h.txt"><tt>rtrb.h</tt> 452</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>ifndef</b> <tt>RTRB_H</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bRTRB_005fH_007d_007d-macro_0040c-633"></a><tt>RTRB_H</tt><!-- /@w --> 1
+
+#<b>include</b> &lt;stddef.h&gt;
+
+&lt;<a href="Table-Headers.html#14">Table types; tbl =&gt; rtrb 14</a>&gt;
+&lt;<a href="RB-Data-Types.html#195">RB maximum height; rb =&gt; rtrb 195</a>&gt;
+&lt;<a href="TBST-Data-Types.html#250">TBST table structure; tbst =&gt; rtrb 250</a>&gt;
+&lt;<a href="RTRB-Data-Types.html#454">RTRB node structure 454</a>&gt;
+&lt;<a href="Traversing-a-TBST.html#267">TBST traverser structure; tbst =&gt; rtrb 267</a>&gt;
+&lt;<a href="Table-Headers.html#15">Table function prototypes; tbl =&gt; rtrb 15</a>&gt;
+
+#<b>endif</b> /* rtrb.h */
+</pre>
+   <p><a name="index-_0040t_007brtrb_002ec_007d-634"></a>
+<pre class="format"><a href="rtrb.c.txt">453</a>. &lt;<a name="453" href="rtrb.c.txt"><tt>rtrb.c</tt> 453</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> "rtrb.h"
+
+&lt;<a href="RTRB-Operations.html#455">RTRB functions 455</a>&gt;
+</pre>
+   <ul class="menu">
+<li><a accesskey="1" href="RTRB-Data-Types.html">RTRB Data Types</a>
+<li><a accesskey="2" href="RTRB-Operations.html">RTRB Operations</a>
+<li><a accesskey="3" href="Inserting-into-an-RTRB-Tree.html">Inserting into an RTRB Tree</a>
+<li><a accesskey="4" href="Deleting-from-an-RTRB-Tree.html">Deleting from an RTRB Tree</a>
+<li><a accesskey="5" href="Testing-RTRB-Trees.html">Testing RTRB Trees</a>
+</ul>
+
+   </body></html>
+

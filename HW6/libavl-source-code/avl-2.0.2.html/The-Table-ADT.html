@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>The Table ADT - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Code-License.html" title="1.4 License">
+<link rel=Next href="Informal-Definition.html" title="2.1 Informal Definition">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="The-Table-ADT">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>2 The Table ADT</b></big></td>
+<td align=right>
+<a href="index.html#The-Table-ADT.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Introduction.html" title="Skip Back: 1 Introduction"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Search-Algorithms.html" title="Skip Forward: 3 Search Algorithms"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Code-License.html" title="Prev: 1.4 License"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Informal-Definition.html" title="Next: 2.1 Informal Definition"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Most of the chapters in this book implement a table structure as some
+kind of binary tree, so it is important to understand what a table is
+before we begin.  That is this chapter's purpose.
+
+   <p>This chapter begins with a brief definition of the meaning of &ldquo;table&rdquo;
+for the purposes of this book, then moves on to describe in a more
+formal way the interface of a table used by all of the tables in this
+book.  The next chapter motivates the basic idea of a binary tree
+starting from simple, everyday concepts.  Experienced programmers may
+skip these chapters after skimming through the definitions below.
+
+<ul class="menu">
+<li><a accesskey="1" href="Informal-Definition.html">Informal Definition</a>
+<li><a accesskey="2" href="Identifiers.html">Identifiers</a>
+<li><a accesskey="3" href="Comparison-Function.html">Comparison Function</a>
+<li><a accesskey="4" href="Item-and-Copy-Functions.html">Item and Copy Functions</a>
+<li><a accesskey="5" href="Memory-Allocation.html">Memory Allocation</a>
+<li><a accesskey="6" href="Creation-and-Destruction.html">Creation and Destruction</a>
+<li><a accesskey="7" href="Count.html">Count</a>
+<li><a accesskey="8" href="Insertion-and-Deletion.html">Insertion and Deletion</a>
+<li><a accesskey="9" href="Assertions.html">Assertions</a>
+<li><a href="Traversers.html">Traversers</a>
+<li><a href="Table-Headers.html">Table Headers</a>
+<li><a href="Additional-Exercises-for-Tables.html">Additional Exercises for Tables</a>
+</ul>
+
+   </body></html>
+

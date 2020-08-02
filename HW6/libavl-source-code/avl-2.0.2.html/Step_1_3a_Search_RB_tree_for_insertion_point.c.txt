@@ -1,0 +1,13 @@
+pa[0] = (struct rb_node *) &tree->rb_root;
+da[0] = 0;
+k = 1;
+for (p = tree->rb_root; p != NULL; p = p->rb_link[da[k - 1]])
+  {
+    int cmp = tree->rb_compare (item, p->rb_data, tree->rb_param);
+    if (cmp == 0)
+      return &p->rb_data;
+
+    pa[k] = p;
+    da[k++] = cmp > 0;
+  }
+

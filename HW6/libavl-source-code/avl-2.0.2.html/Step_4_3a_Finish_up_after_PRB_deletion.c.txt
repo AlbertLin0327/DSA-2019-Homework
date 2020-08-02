@@ -1,0 +1,3 @@
+tree->prb_alloc->libavl_free (tree->prb_alloc, p);
+tree->prb_count--;
+return (void *) item;

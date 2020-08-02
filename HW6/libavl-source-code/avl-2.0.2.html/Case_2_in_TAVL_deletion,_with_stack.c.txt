@@ -1,0 +1,3 @@
+pa[k - 1]->tavl_link[da[k - 1]] = p->tavl_link[da[k - 1]];
+if (pa[k - 1] != (struct tavl_node *) &tree->tavl_root)
+  pa[k - 1]->tavl_tag[da[k - 1]] = TAVL_THREAD;

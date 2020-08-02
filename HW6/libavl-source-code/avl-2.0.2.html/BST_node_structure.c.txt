@@ -1,0 +1,7 @@
+/* A binary search tree node. */
+struct bst_node
+  {
+    struct bst_node *bst_link[2];   /* Subtrees. */
+    void *bst_data;                 /* Pointer to data. */
+  };
+

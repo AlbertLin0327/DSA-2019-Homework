@@ -1,0 +1,3 @@
+pa[k - 1]->trb_link[da[k - 1]] = p->trb_link[da[k - 1]];
+if (pa[k - 1] != (struct trb_node *) &tree->trb_root)
+  pa[k - 1]->trb_tag[da[k - 1]] = TRB_THREAD;

@@ -1,0 +1,15 @@
+/* Returns the smallest |i| such that |array[i] == key|,
+   or |-1| if |key| is not in |array[]|.
+   |array[]| must be an array of |n| |int|s sorted in ascending order. */
+int
+seq_sorted_search (int array[], int n, int key)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    if (key <= array[i])
+      return key == array[i] ? i : -1;
+
+  return -1;
+}
+

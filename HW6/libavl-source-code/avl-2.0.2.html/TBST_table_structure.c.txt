@@ -1,0 +1,10 @@
+/* Tree data structure. */
+struct tbst_table
+  {
+    struct tbst_node *tbst_root;        /* Tree's root. */
+    tbst_comparison_func *tbst_compare; /* Comparison function. */
+    void *tbst_param;                   /* Extra argument to |tbst_compare|. */
+    struct libavl_allocator *tbst_alloc; /* Memory allocator. */
+    size_t tbst_count;                  /* Number of items in tree. */
+  };
+

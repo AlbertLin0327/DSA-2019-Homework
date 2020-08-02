@@ -1,0 +1,16 @@
+p = tree->tbst_root;
+if (p == NULL)
+  return NULL;
+
+for (;;)
+  {
+    int cmp = tree->tbst_compare (item, p->tbst_data, tree->tbst_param);
+    if (cmp == 0)
+      break;
+
+    p = p->tbst_link[cmp > 0];
+  }
+
+q = find_parent (tree, p);
+dir = q->tbst_link[0] != p;
+

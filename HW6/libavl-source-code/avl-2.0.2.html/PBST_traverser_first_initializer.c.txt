@@ -1,0 +1,20 @@
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the least value,
+   or |NULL| if |tree| is empty. */
+void *
+pbst_t_first (struct pbst_traverser *trav, struct pbst_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->pbst_table = tree;
+  trav->pbst_node = tree->pbst_root;
+  if (trav->pbst_node != NULL)
+    {
+      while (trav->pbst_node->pbst_link[0] != NULL)
+        trav->pbst_node = trav->pbst_node->pbst_link[0];
+      return trav->pbst_node->pbst_data;
+    }
+  else
+    return NULL;
+}
+

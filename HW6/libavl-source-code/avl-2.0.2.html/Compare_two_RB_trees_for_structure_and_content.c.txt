@@ -1,0 +1,45 @@
+/* Compares binary trees rooted at |a| and |b|,
+   making sure that they are identical. */
+static int
+compare_trees (struct rb_node *a, struct rb_node *b)
+{
+  int okay;
+
+  if (a == NULL || b == NULL)
+    {
+      assert (a == NULL && b == NULL);
+      return 1;
+    }
+
+  if (*(int *) a->rb_data != *(int *) b->rb_data
+      || ((a->rb_link[0] != NULL) != (b->rb_link[0] != NULL))
+      || ((a->rb_link[1] != NULL) != (b->rb_link[1] != NULL))
+      || a->rb_color != b->rb_color)
+    {
+      printf (" Copied nodes differ: a=%d%c b=%d%c a:",
+              *(int *) a->rb_data, a->rb_color == RB_RED ? 'r' : 'b',
+              *(int *) b->rb_data, b->rb_color == RB_RED ? 'r' : 'b');
+
+      if (a->rb_link[0] != NULL)
+        printf ("l");
+      if (a->rb_link[1] != NULL)
+        printf ("r");
+
+      printf (" b:");
+      if (b->rb_link[0] != NULL)
+        printf ("l");
+      if (b->rb_link[1] != NULL)
+        printf ("r");
+
+      printf ("\n");
+      return 0;
+    }
+
+  okay = 1;
+  if (a->rb_link[0] != NULL)
+    okay &= compare_trees (a->rb_link[0], b->rb_link[0]);
+  if (a->rb_link[1] != NULL)
+    okay &= compare_trees (a->rb_link[1], b->rb_link[1]);
+  return okay;
+}
+

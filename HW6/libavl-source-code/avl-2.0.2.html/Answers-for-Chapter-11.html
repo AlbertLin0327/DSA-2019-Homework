@@ -1,0 +1,233 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 11 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-10.html" title="Chapter 10">
+<link rel=Next href="Answers-for-Chapter-13.html" title="Chapter 13">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-11">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 11</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-11.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-10.html" title="Skip Back: Chapter 10"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-13.html" title="Skip Forward: Chapter 13"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-10.html" title="Prev: Chapter 10"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-13.html" title="Next: Chapter 13"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 11.3</h4>
+
+<p><a name="11_002d3_00231"></a> <b>1.</b>
+<a name="catalogue_002dentry_002drtbst_002d17"></a>
+<pre class="format">/* Rotates right at *<i>yp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>rotate_right</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rtbst_node</b> **<i>yp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brotate_005fright_007d-function-977"></a>  <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>y</i><!-- /@w --> = *<i>yp</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0];
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w -->[1] == <tt>RTBST_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>x</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> = <tt>RTBST_CHILD</tt><!-- /@w -->;
+      <i>y</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+  <i>x</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+  *<i>yp</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+}
+</pre>
+   <p><a name="catalogue_002dentry_002drtbst_002d18"></a>
+<pre class="format">/* Rotates left at *<i>xp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>rotate_left</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rtbst_node</b> **<i>xp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brotate_005fleft_007d-function-978"></a>  <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>x</i><!-- /@w --> = *<i>xp</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+  <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>x</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> = <tt>RTBST_THREAD</tt><!-- /@w -->;
+      <i>x</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0];
+  <i>y</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+  *<i>xp</i><!-- /@w --> = <i>y</i><!-- /@w -->;
+}
+</pre>
+   <h4 class="subheading">Section 11.5.4</h4>
+
+<p><a name="11_002d5_002d4_00231"></a> <b>1.</b>
+There is no general efficient algorithm to find the parent of a node in
+an RTAVL tree.  The lack of left threads means that half the time we
+must do a full search from the top of the tree.  This would increase the
+execution time for deletion unacceptably.
+
+   <p><a name="11_002d5_002d4_00232"></a> <b>2.</b>
+<a name="catalogue_002dentry_002drtavl_002d4"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-delete-RTAVL-node_002c-right_002dlooking-979"></a>
+<pre class="format"><a href="Step_2_3a_Delete_RTAVL_node,_right-looking.c.txt">673</a>. &lt;<a name="673" href="Step_2_3a_Delete_RTAVL_node,_right-looking.c.txt">Step 2: Delete RTAVL node, right-looking 673</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Answers-for-Chapter-11.html#674">Case 1 in RTAVL deletion, right-looking 674</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Answers-for-Chapter-11.html#675">Case 2 in RTAVL deletion, right-looking 675</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+    <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Answers-for-Chapter-11.html#676">Case 3 in RTAVL deletion, right-looking 676</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Answers-for-Chapter-11.html#677">Case 4 in RTAVL deletion, right-looking 677</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+
+<i>tree</i><!-- /@w -->-&gt;<i>rtavl_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>rtavl_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+</pre>
+   <p><a name="index-case-1-in-RTAVL-deletion_002c-right_002dlooking-980"></a>
+<pre class="format"><a href="Case_1_in_RTAVL_deletion,_right-looking.c.txt">674</a>. &lt;<a name="674" href="Case_1_in_RTAVL_deletion,_right-looking.c.txt">Case 1 in RTAVL deletion, right-looking 674</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>t</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+<b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_CHILD</tt><!-- /@w -->)
+  <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+<i>t</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-11.html#673">673</a>.</small>
+
+   <p><a name="index-case-2-in-RTAVL-deletion_002c-right_002dlooking-981"></a>
+<pre class="format"><a href="Case_2_in_RTAVL_deletion,_right-looking.c.txt">675</a>. &lt;<a name="675" href="Case_2_in_RTAVL_deletion,_right-looking.c.txt">Case 2 in RTAVL deletion, right-looking 675</a>&gt; =
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]];
+<b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 1)
+  <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_THREAD</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-11.html#673">673</a>.</small>
+
+   <p><a name="index-case-3-in-RTAVL-deletion_002c-right_002dlooking-982"></a>
+<pre class="format"><a href="Case_3_in_RTAVL_deletion,_right-looking.c.txt">676</a>. &lt;<a name="676" href="Case_3_in_RTAVL_deletion,_right-looking.c.txt">Case 3 in RTAVL deletion, right-looking 676</a>&gt; =
+<i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+<b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>t</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+    <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_CHILD</tt><!-- /@w -->)
+      <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+    <i>t</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>r</i><!-- /@w -->;
+  }
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>r</i><!-- /@w -->;
+<i>r</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w -->;
+<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-11.html#673">673</a>.</small>
+
+   <p><a name="index-case-4-in-RTAVL-deletion_002c-right_002dlooking-983"></a>
+<pre class="format"><a href="Case_4_in_RTAVL_deletion,_right-looking.c.txt">677</a>. &lt;<a name="677" href="Case_4_in_RTAVL_deletion,_right-looking.c.txt">Case 4 in RTAVL deletion, right-looking 677</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>s</i><!-- /@w -->;
+<b>int</b><!-- /@w --> <i>j</i><!-- /@w --> = <i>k</i><!-- /@w -->++;
+
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 0;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+
+<i>da</i><!-- /@w -->[<i>j</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>j</i><!-- /@w -->] = <i>pa</i><!-- /@w -->[<i>j</i><!-- /@w --> - 1]-&gt;<i>rtavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>j</i><!-- /@w --> - 1]] = <i>s</i><!-- /@w -->;
+
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_CHILD</tt><!-- /@w -->)
+  <i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>t</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+    <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_CHILD</tt><!-- /@w -->)
+      <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+    <i>t</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>s</i><!-- /@w -->;
+  }
+
+<i>s</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+<i>s</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_CHILD</tt><!-- /@w -->;
+<i>s</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-11.html#673">673</a>.</small>
+
+   <p><a name="11_002d5_002d4_00233"></a> <b>3.</b>
+<a name="catalogue_002dentry_002drtavl_002d5"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-case-4-in-RTAVL-deletion_002c-alternate-version-984"></a>
+<pre class="format"><a href="Case_4_in_RTAVL_deletion,_alternate_version.c.txt">678</a>. &lt;<a name="678" href="Case_4_in_RTAVL_deletion,_alternate_version.c.txt">Case 4 in RTAVL deletion, alternate version 678</a>&gt; =
+<a name="index-_0040i_007bs_007d-variable-985"></a><b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>s</i><!-- /@w -->;
+
+<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 0;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>p</i><!-- /@w -->;
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 1;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_THREAD</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>t</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+    <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_CHILD</tt><!-- /@w -->)
+      <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+    <i>t</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->;
+  }
+
+<i>p</i><!-- /@w -->-&gt;<i>rtavl_data</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>rtavl_data</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>s</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>r</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_THREAD</tt><!-- /@w -->;
+    <i>r</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->;
+  }
+
+<i>p</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+</pre>
+   </body></html>
+

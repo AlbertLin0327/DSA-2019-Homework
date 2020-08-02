@@ -1,0 +1,130 @@
+<html lang="en">
+<head>
+<title>Red-Black Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Testing-AVL-Trees.html" title="5.8 Testing">
+<link rel=Next href="RB-Balancing-Rule.html" title="6.1 Balancing Rule">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Red_002dBlack-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6 Red-Black Trees</b></big></td>
+<td align=right>
+<a href="index.html#Red_002dBlack-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="AVL-Trees.html" title="Skip Back: 5 AVL Trees"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Threaded-Binary-Search-Trees.html" title="Skip Forward: 7 Threaded Binary Search Trees"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-AVL-Trees.html" title="Prev: 5.8 Testing"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="RB-Balancing-Rule.html" title="Next: 6.1 Balancing Rule"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The last chapter saw us implementing a library for one particular type
+of balanced trees.  Red-black trees were invented by R. Bayer and
+studied at length by L. J. Guibas and R. Sedgewick.  This
+chapter will implement a library for another kind of balanced tree,
+called a <dfn>red-black tree</dfn> (see <a href="Glossary.html#red%2dblack%20tree">red-black tree</a>).  For brevity, we'll often abbreviate
+&ldquo;red-black&rdquo; to RB.
+
+   <p>Insertion and deletion operations on red-black trees are more complex
+to describe or to code than the same operations on AVL trees. 
+Red-black trees also have a higher maximum height than AVL trees for a
+given number of nodes.  The primary advantage of red-black trees is
+that, in AVL trees, deleting one node from a tree containing <i>n</i><!-- /@w --> nodes
+may require <i>log2</i><!-- /@w --> (<i>n</i><!-- /@w -->) rotations, but deletion in a
+red-black tree never requires more than three rotations.
+
+   <p>The functions for RB trees in this chapter are analogous to those that
+we developed for use with AVL trees in the previous chapter.  Here's an
+outline of the red-black code:
+
+   <p><a name="index-_0040t_007brb_002eh_007d-286"></a>
+<pre class="format"><a href="rb.h.txt">192</a>. &lt;<a name="192" href="rb.h.txt"><tt>rb.h</tt> 192</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>ifndef</b> <tt>RB_H</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bRB_005fH_007d_007d-macro_0040c-287"></a><tt>RB_H</tt><!-- /@w --> 1
+
+#<b>include</b> &lt;stddef.h&gt;
+
+&lt;<a href="Table-Headers.html#14">Table types; tbl =&gt; rb 14</a>&gt;
+&lt;<a href="RB-Data-Types.html#195">RB maximum height 195</a>&gt;
+&lt;<a href="BST-Structure.html#27">BST table structure; bst =&gt; rb 27</a>&gt;
+&lt;<a href="RB-Data-Types.html#194">RB node structure 194</a>&gt;
+&lt;<a href="Better-Iterative-Traversal.html#61">BST traverser structure; bst =&gt; rb 61</a>&gt;
+&lt;<a href="Table-Headers.html#15">Table function prototypes; tbl =&gt; rb 15</a>&gt;
+
+#<b>endif</b> /* rb.h */
+</pre>
+   <p><a name="index-_0040t_007brb_002ec_007d-288"></a>
+<pre class="format"><a href="rb.c.txt">193</a>. &lt;<a name="193" href="rb.c.txt"><tt>rb.c</tt> 193</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> &lt;string.h&gt;
+#<b>include</b> "rb.h"
+
+&lt;<a href="Operations-in-an-RB-Tree.html#196">RB functions 196</a>&gt;
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], chapter 14, &ldquo;Chapter notes.&rdquo;
+
+<ul class="menu">
+<li><a accesskey="1" href="RB-Balancing-Rule.html">RB Balancing Rule</a>
+<li><a accesskey="2" href="RB-Data-Types.html">RB Data Types</a>
+<li><a accesskey="3" href="Operations-in-an-RB-Tree.html">Operations in an RB Tree</a>
+<li><a accesskey="4" href="Inserting-into-an-RB-Tree.html">Inserting into an RB Tree</a>
+<li><a accesskey="5" href="Deleting-from-an-RB-Tree.html">Deleting from an RB Tree</a>
+<li><a accesskey="6" href="Testing-RB-Trees.html">Testing RB Trees</a>
+</ul>
+
+   </body></html>
+

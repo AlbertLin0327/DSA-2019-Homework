@@ -1,0 +1,6 @@
+if (height > BST_MAX_HEIGHT)
+  {
+    fprintf (stderr, "libavl: Tree too big (%lu nodes) to handle.",
+             (unsigned long) tree->bst_count);
+    exit (EXIT_FAILURE);
+  }

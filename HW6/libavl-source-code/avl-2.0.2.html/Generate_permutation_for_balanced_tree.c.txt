@@ -1,0 +1,18 @@
+/* Generates a list of integers that produce a balanced tree when
+   inserted in order into a binary tree in the usual way.
+   |min| and |max| inclusively bound the values to be inserted.
+   Output is deposited starting at |*array|. */
+static void
+gen_balanced_tree (int min, int max, int **array)
+{
+  int i;
+
+  if (min > max)
+    return;
+
+  i = (min + max + 1) / 2;
+  *(*array)++ = i;
+  gen_balanced_tree (min, i - 1, array);
+  gen_balanced_tree (i + 1, max, array);
+}
+

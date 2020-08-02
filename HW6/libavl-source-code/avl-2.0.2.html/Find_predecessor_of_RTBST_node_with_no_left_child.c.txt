@@ -1,0 +1,15 @@
+rtbst_comparison_func *cmp = trav->rtbst_table->rtbst_compare;
+void *param = trav->rtbst_table->rtbst_param;
+struct rtbst_node *node = trav->rtbst_node;
+struct rtbst_node *i;
+
+trav->rtbst_node = NULL;
+for (i = trav->rtbst_table->rtbst_root; i != node; )
+  {
+    int dir = cmp (node->rtbst_data, i->rtbst_data, param) > 0;
+    if (dir == 1)
+      trav->rtbst_node = i;
+    i = i->rtbst_link[dir];
+  }
+
+return trav->rtbst_node != NULL ? trav->rtbst_node->rtbst_data : NULL;

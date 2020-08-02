@@ -1,0 +1,179 @@
+<html lang="en">
+<head>
+<title>Binary Search Tree in Array - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Binary-Search-of-Ordered-Array.html" title="3.5 Binary Search of Ordered Array">
+<link rel=Next href="Dynamic-Lists.html" title="3.7 Dynamic Lists">
+<link rel=Parent href="Search-Algorithms.html" title="3 Search Algorithms">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Binary-Search-Tree-in-Array">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>3.6 Binary Search Tree in Array</b></big></td>
+<td align=right>
+<a href="index.html#Binary-Search-Tree-in-Array.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Binary-Search-of-Ordered-Array.html" title="Skip Back: 3.5 Binary Search of Ordered Array"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Dynamic-Lists.html" title="Skip Forward: 3.7 Dynamic Lists"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Binary-Search-of-Ordered-Array.html" title="Prev: 3.5 Binary Search of Ordered Array"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Search-Algorithms.html" title="Up: 3 Search Algorithms"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Dynamic-Lists.html" title="Next: 3.7 Dynamic Lists"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Binary search is pretty fast.  Suppose that we wish to speed it up
+anyhow.  Then, the obvious speed-up targets in &lt;<a href="Binary-Search-of-Ordered-Array.html#21">Binary search of ordered array 21</a>&gt; above are the <b>while</b><!-- /@w --> condition and the calculations
+determining values of <i>i</i><!-- /@w -->, <i>min</i><!-- /@w -->, and <i>max</i><!-- /@w -->.  If we could eliminate these,
+we'd have an incrementally faster technique, all else being equal.  And,
+as it turns out, we <em>can</em> eliminate both of them, the former by use
+of a sentinel and the latter by precalculation.
+
+   <p>Let's consider precalculating <i>i</i><!-- /@w -->, <i>min</i><!-- /@w -->, and <i>max</i><!-- /@w --> first.  Think about
+the nature of the choices that binary search makes at each step. 
+Specifically, in &lt;<a href="Binary-Search-of-Ordered-Array.html#21">Binary search of ordered array 21</a>&gt; above, consider the
+dependence of <i>min</i><!-- /@w --> and <i>max</i><!-- /@w --> upon <i>i</i><!-- /@w -->.  Is it ever possible for <i>min</i><!-- /@w -->
+and <i>max</i><!-- /@w --> to have different values for the same <i>i</i><!-- /@w --> and <i>n</i><!-- /@w -->?
+
+   <p>The answer is no.  For any given <i>i</i><!-- /@w --> and <i>n</i><!-- /@w -->, <i>min</i><!-- /@w --> and <i>max</i><!-- /@w --> are fixed. 
+This is important because it means that we can represent the entire
+&ldquo;state&rdquo; of a binary search of an <i>n</i><!-- /@w -->-element array by the single
+variable <i>i</i><!-- /@w -->.  In other words, if we know <i>i</i><!-- /@w --> and <i>n</i><!-- /@w -->, we know all the
+choices that have been made to this point and we know the two possible
+choices of <i>i</i><!-- /@w --> for the next step.
+
+   <p>This is the key insight in eliminating calculations.  We can use an
+array in which the items are labeled with the next two possible choices.
+
+   <p>An example is indicated.  Let's continue with our example of an array
+containing the 16 integers 100 to 115.  We define an entry in the array
+to contain the item value and the array index of the item to examine next
+for search values smaller and larger than the item:
+
+   <p><a name="index-binary-search-tree-entry-30"></a>
+<pre class="format"><a href="Binary_search_tree_entry.c.txt">22</a>. &lt;<a name="22" href="Binary_search_tree_entry.c.txt">Binary search tree entry 22</a>&gt; =
+/* One entry in a binary search tree stored in an array. */
+<b>struct</b><!-- /@w --> <b>binary_tree_entry</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bbinary_005ftree_005fentry_007d-structure-31"></a>    <b>int</b><!-- /@w --> <i>value</i><!-- /@w -->;          /* This item in the binary search tree. */
+    <b>int</b><!-- /@w --> <i>smaller</i><!-- /@w -->;        /* Array index of next item for smaller targets. */
+    <b>int</b><!-- /@w --> <i>larger</i><!-- /@w -->;         /* Array index of next item for larger targets. */
+  };
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#617">617</a>.</small>
+
+   <p>Of course, it's necessary to fill in the values for <i>smaller</i><!-- /@w --> and
+<i>larger</i><!-- /@w -->.  A few moments' reflection should allow you to figure out one
+method for doing so.  Here's the full array, for reference:
+
+<pre class="format"><b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>binary_tree_entry</b> <i>bins</i><!-- /@w -->[16] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    {100, 15, 15}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{101, 0, 2}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{102, 15, 15}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{103, 1, 5}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{104, 15, 15},
+    {105, 4, 6}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{106, 15, 15}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{107, 3, 11}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{108, 15, 15}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{109, 8, 10},
+    {110, 15, 15}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{111, 9, 13}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{112, 15, 15}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{113, 12, 14}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{114, 15, 15},
+    {0, 0, 0},
+  };
+</pre>
+   <p>For now, consider only <i>bins</i><!-- /@w -->[]'s first 15 rows.  Within these rows,
+the first column is <i>value</i><!-- /@w -->, the item value, and the second and third
+columns are <i>smaller</i><!-- /@w --> and <i>larger</i><!-- /@w -->, respectively.  Values 0 through 14
+for <i>smaller</i><!-- /@w --> and <i>larger</i><!-- /@w --> indicate the index of the next element of
+<i>bins</i><!-- /@w -->[] to examine.  Value 15 indicates &ldquo;element not found&rdquo;. 
+Element <i>array</i><!-- /@w -->[15] is not used for storing data.
+
+   <p>Try searching for <i>key</i><!-- /@w --> == 110 in <i>bins</i><!-- /@w -->[], starting from element 7,
+the midpoint:
+
+     <ol type=1 start=1>
+<li><i>i</i><!-- /@w --> == 7: 110 &gt; <i>bins</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>value</i><!-- /@w --> == 107, so let <i>i</i><!-- /@w --> = <i>bins</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>larger</i><!-- /@w -->, or
+11.
+
+     <li><i>i</i><!-- /@w --> == 11: 110 &lt; <i>bins</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>value</i><!-- /@w --> == 111, so let <i>i</i><!-- /@w --> = <i>bins</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>smaller</i><!-- /@w -->,
+or 10.
+
+     <li><i>i</i><!-- /@w --> == 10: 110 == <i>bins</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>value</i><!-- /@w --> == 110, so we're done.
+        </ol>
+
+   <p>We can implement this search in C code.  The function uses the common C
+idiom of writing <b>for</b><!-- /@w --> (;;) for an &ldquo;infinite&rdquo; loop:
+
+   <p><a name="index-search-of-binary-search-tree-stored-as-array-32"></a>
+<pre class="format"><a href="Search_of_binary_search_tree_stored_as_array.c.txt">23</a>. &lt;<a name="23" href="Search_of_binary_search_tree_stored_as_array.c.txt">Search of binary search tree stored as array 23</a>&gt; =
+/* Returns <i>i</i><!-- /@w --> such that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>value</i><!-- /@w --> == <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[]. 
+   <i>array</i><!-- /@w -->[] is an array of <i>n</i><!-- /@w --> elements forming a binary search tree, 
+   with its root at <i>array</i><!-- /@w -->[<i>n</i><!-- /@w --> / 2], <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->and space for an (<i>n</i><!-- /@w --> + 1)th value at the end. */
+<b>int</b><!-- /@w --> <br><i>binary_search_tree_array</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>binary_tree_entry</b> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w --> = <i>n</i><!-- /@w --> / 2;
+
+  <i>array</i><!-- /@w -->[<i>n</i><!-- /@w -->].<i>value</i><!-- /@w --> = <i>key</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (;;)
+    <b>if</b><!-- /@w --> (<i>key</i><!-- /@w --> &gt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>value</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>i</i><!-- /@w --> = <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>larger</i><!-- /@w -->;
+    <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>key</i><!-- /@w --> &lt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>value</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>i</i><!-- /@w --> = <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>smaller</i><!-- /@w -->;
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <i>i</i><!-- /@w --> != <i>n</i><!-- /@w --> ? <i>i</i><!-- /@w --> : -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#617">617</a>.</small>
+
+   <p>Examination of the code above should reveal the purpose of <i>bins</i><!-- /@w -->[15]. 
+It is used as a sentinel value, allowing the search to always terminate
+without the use of an extra test on each loop iteration.
+
+   <p>The result of augmenting binary search with &ldquo;pointer&rdquo; values like
+<i>smaller</i><!-- /@w --> and <i>larger</i><!-- /@w --> is called a <dfn>binary search tree</dfn> (see <a href="Glossary.html#binary%20search%20tree">binary search tree</a>).
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Write a function to automatically initialize <i>smaller</i><!-- /@w --> and <i>larger</i><!-- /@w -->
+within <i>bins</i><!-- /@w -->[]. 
+[<a href="Answers-for-Chapter-3.html#3%2d6%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Write a simple automatic test program for <i>binary_search_tree_array</i><!-- /@w -->(). 
+Let the user specify the size of the array to test on the command line. 
+You may want to use your results from the previous exercise. 
+[<a href="Answers-for-Chapter-3.html#3%2d6%232">answer</a>]
+
+   </body></html>
+

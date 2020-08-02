@@ -1,0 +1,15 @@
+/* Color of a red-black node. */
+enum rb_color
+  {
+    RB_BLACK,   /* Black. */
+    RB_RED      /* Red. */
+  };
+
+/* A red-black tree node. */
+struct rb_node
+  {
+    struct rb_node *rb_link[2];   /* Subtrees. */
+    void *rb_data;                /* Pointer to data. */
+    unsigned char rb_color;       /* Color. */
+  };
+

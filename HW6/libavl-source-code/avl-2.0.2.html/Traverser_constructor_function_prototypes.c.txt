@@ -1,0 +1,7 @@
+/* Table traverser functions. */
+void tbl_t_init (struct tbl_traverser *, struct tbl_table *);
+void *tbl_t_first (struct tbl_traverser *, struct tbl_table *);
+void *tbl_t_last (struct tbl_traverser *, struct tbl_table *);
+void *tbl_t_find (struct tbl_traverser *, struct tbl_table *, void *);
+void *tbl_t_insert (struct tbl_traverser *, struct tbl_table *, void *);
+void *tbl_t_copy (struct tbl_traverser *, const struct tbl_traverser *);

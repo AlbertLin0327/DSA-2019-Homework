@@ -1,0 +1,18 @@
+pa[0] = (struct bst_node *) root;
+da[0] = 0;
+k = 1;
+for (p = *root; p != NULL; p = p->bst_link[da[k - 1]])
+  {
+    int cmp = tree->bst_compare (n->bst_data, p->bst_data, tree->bst_param);
+    assert (cmp != 0);
+
+    if (k >= BST_MAX_HEIGHT)
+      {
+        overflow = 1;
+        k--;
+      }
+
+    pa[k] = p;
+    da[k++] = cmp > 0;
+  }
+

@@ -1,0 +1,31 @@
+/* Joins |a| and |b|, which are subtrees of |tree|,
+   and returns the resulting tree. */
+static struct bst_node *
+join (struct bst_table *tree, struct bst_node *a, struct bst_node *b)
+{
+  if (b == NULL)
+    return a;
+  else if (a == NULL)
+    return b;
+  else
+    {
+      struct bst_node *b0 = b->bst_link[0];
+      struct bst_node *b1 = b->bst_link[1];
+      b->bst_link[0] = b->bst_link[1] = NULL;
+      root_insert (tree, &a, b);
+      a->bst_link[0] = join (tree, b0, a->bst_link[0]);
+      a->bst_link[1] = join (tree, b1, a->bst_link[1]);
+      return a;
+    }
+}
+
+/* Joins |a| and |b|, which must be disjoint and have compatible
+   comparison functions.
+   |b| is destroyed in the process. */
+void
+bst_join (struct bst_table *a, struct bst_table *b)
+{
+  a->bst_root = join (a, a->bst_root, b->bst_root);
+  a->bst_count += b->bst_count;
+  free (b);
+}

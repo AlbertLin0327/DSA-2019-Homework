@@ -1,0 +1,41 @@
+/* Copies tree rooted at |x| to |y|, which latter is allocated but not
+   yet initialized.
+   Returns one if successful, zero if memory was exhausted.
+   In the latter case |y| is not freed but any partially allocated
+   subtrees are. */
+static int
+bst_robust_copy_recursive_3 (struct bst_node *x, struct bst_node *y)
+{
+  y->bst_data = x->bst_data;
+
+  if (x->bst_link[0] != NULL)
+    {
+      y->bst_link[0] = malloc (sizeof *y->bst_link[0]);
+      if (y->bst_link[0] == NULL)
+        return 0;
+      if (!bst_robust_copy_recursive_3 (x->bst_link[0], y->bst_link[0]))
+        {
+          free (y->bst_link[0]);
+          return 0;
+        }
+    }
+  else
+    y->bst_link[0] = NULL;
+
+  if (x->bst_link[1] != NULL)
+    {
+      y->bst_link[1] = malloc (sizeof *y->bst_link[1]);
+      if (y->bst_link[1] == NULL)
+        return 0;
+      if (!bst_robust_copy_recursive_3 (x->bst_link[1], y->bst_link[1]))
+        {
+          bst_deallocate_recursive (y->bst_link[0]);
+          free (y->bst_link[1]);
+          return 0;
+        }
+    }
+  else
+    y->bst_link[1] = NULL;
+
+  return 1;
+}

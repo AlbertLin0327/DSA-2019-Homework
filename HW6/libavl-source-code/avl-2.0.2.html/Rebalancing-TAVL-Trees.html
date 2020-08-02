@@ -1,0 +1,175 @@
+<html lang="en">
+<head>
+<title>Rebalancing TAVL Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Steps-1-and-2-in-TAVL-Insertion.html" title="8.4.1 Steps 1 and 2: Search and Insert">
+<link rel=Next href="TAVL-Insertion-Symmetric-Case.html" title="8.4.3 Symmetric Case">
+<link rel=Parent href="Inserting-into-a-TAVL-Tree.html" title="8.4 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Rebalancing-TAVL-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>8.4.2 Step 4: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Rebalancing-TAVL-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Steps-1-and-2-in-TAVL-Insertion.html" title="Skip Back: 8.4.1 Steps 1 and 2: Search and Insert"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="TAVL-Insertion-Symmetric-Case.html" title="Skip Forward: 8.4.3 Symmetric Case"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Steps-1-and-2-in-TAVL-Insertion.html" title="Prev: 8.4.1 Steps 1 and 2: Search and Insert"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-a-TAVL-Tree.html" title="Up: 8.4 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="TAVL-Insertion-Symmetric-Case.html" title="Next: 8.4.3 Symmetric Case"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Now we're finally to the interesting part, the rebalancing step.  We
+can tell whether rebalancing is necessary based on the balance factor
+of <i>y</i><!-- /@w -->, the same as in unthreaded AVL insertion:
+
+   <p><a name="index-rebalance-after-TAVL-insertion-443"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_after_TAVL_insertion.c.txt">304</a>. &lt;<a name="304" href="Step_4_3a_Rebalance_after_TAVL_insertion.c.txt">Step 4: Rebalance after TAVL insertion 304</a>&gt; =
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == -2)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-TAVL-Trees.html#305">Rebalance TAVL tree after insertion in left subtree 305</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == +2)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="TAVL-Insertion-Symmetric-Case.html#308">Rebalance TAVL tree after insertion in right subtree 308</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>tavl_data</i><!-- /@w -->;
+<i>z</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[<i>y</i><!-- /@w --> != <i>z</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0]] = <i>w</i><!-- /@w -->;
+
+<b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>tavl_data</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-a-TAVL-Tree.html#301">301</a>.</small>
+
+   <p>We will examine the case of insertion in the left subtree of <i>y</i><!-- /@w -->, the
+node at which we must rebalance.  We take <i>x</i><!-- /@w --> as <i>y</i><!-- /@w -->'s child on the
+side of the new node, then, as for unthreaded AVL insertion, we
+distinguish two cases based on the balance factor of <i>x</i><!-- /@w -->:
+
+   <p><a name="index-rebalance-TAVL-tree-after-insertion-in-left-subtree-444"></a>
+<pre class="format"><a href="Rebalance_TAVL_tree_after_insertion_in_left_subtree.c.txt">305</a>. &lt;<a name="305" href="Rebalance_TAVL_tree_after_insertion_in_left_subtree.c.txt">Rebalance TAVL tree after insertion in left subtree 305</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == -1)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-TAVL-Trees.html#306">Rebalance for - balance factor in TAVL insertion in left subtree 306</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->} 
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-TAVL-Trees.html#307">Rebalance for + balance factor in TAVL insertion in left subtree 307</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-TAVL-Trees.html#304">304</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>x</i><!-- /@w --> has - balance factor</h5>
+
+<p>As for unthreaded insertion, we rotate right at <i>y</i><!-- /@w --> (see <a href="Rebalancing-AVL-Trees.html">Rebalancing AVL Trees</a>).  Notice the resemblance of the following code to
+<i>rotate_right</i><!-- /@w -->() in the solution to Exercise 8.2-1.
+
+   <p><a name="index-rebalance-for-_0040math_007b_002d_007d-balance-factor-in-TAVL-insertion-in-left-subtree-445"></a>
+<pre class="format"><a href="Rebalance_for__7c-_7c_balance_factor_in_TAVL_insertion_in_left_subtree.c.txt">306</a>. &lt;<a name="306" href="Rebalance_for__7c-_7c_balance_factor_in_TAVL_insertion_in_left_subtree.c.txt">Rebalance for - balance factor in TAVL insertion in left subtree 306</a>&gt; =
+<i>w</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+    <i>y</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+    <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+  }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+<i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-TAVL-Trees.html#305">305</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>x</i><!-- /@w --> has + balance factor</h5>
+
+<p>When <i>x</i><!-- /@w --> has a + balance factor, we perform the transformation shown
+below, which consists of a left rotation at <i>x</i><!-- /@w --> followed by a right
+rotation at <i>y</i><!-- /@w -->.  This is the same transformation used in unthreaded
+insertion:
+
+<div align="center"><a href="tavlins1.txt"><img border=0 src="tavlins1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>We could simply apply the standard code from Exercise 8.2-1 in each
+rotation (see Exercise 1), but it is just as
+straightforward to do both of the rotations together, then clean up
+any threads.  Subtrees <i>a</i><!-- /@w --> and <i>d</i><!-- /@w --> cannot cause thread-related
+trouble, because they are not disturbed during the transformation: <i>a</i><!-- /@w -->
+remains <i>x</i><!-- /@w -->'s left child and <i>d</i><!-- /@w --> remains <i>y</i><!-- /@w -->'s right child.  The
+children of <i>w</i><!-- /@w -->, subtrees <i>b</i><!-- /@w --> and <i>c</i><!-- /@w -->, do require handling.  If
+subtree <i>b</i><!-- /@w --> is a thread, then after the rotation and before fix-up
+<i>x</i><!-- /@w -->'s right link points to itself, and, similarly, if <i>c</i><!-- /@w --> is a thread
+then <i>y</i><!-- /@w -->'s left link points to itself.  These links must be changed
+into threads to <i>w</i><!-- /@w --> instead, and <i>w</i><!-- /@w -->'s links must be tagged as child
+pointers.
+
+   <p>If both <i>b</i><!-- /@w --> and <i>c</i><!-- /@w --> are threads then the transformation looks like the
+diagram below, showing pre-rebalancing and post-rebalancing,
+post-fix-up views.  The AVL balance rule implies that if <i>b</i><!-- /@w --> and <i>c</i><!-- /@w -->
+are threads then <i>a</i><!-- /@w --> and <i>d</i><!-- /@w --> are also:
+
+<div align="center"><a href="tavlins2.txt"><img border=0 src="tavlins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The required code is heavily based on the corresponding code for
+unthreaded AVL rebalancing:
+
+   <p><a name="catalogue_002dentry_002dtavl_002d1"></a>
+<a name="index-rebalance-for-_0040math_007b_002b_007d-balance-factor-in-TAVL-insertion-in-left-subtree-446"></a>
+<pre class="format"><a href="Rebalance_for__7c_2b_7c_balance_factor_in_TAVL_insertion_in_left_subtree.c.txt">307</a>. &lt;<a name="307" href="Rebalance_for__7c_2b_7c_balance_factor_in_TAVL_insertion_in_left_subtree.c.txt">Rebalance for + balance factor in TAVL insertion in left subtree 307</a>&gt; =
+&lt;<a href="Rebalancing-AVL-Trees.html#156">Rotate left at <i>x</i><!-- /@w --> then right at <i>y</i><!-- /@w --> in AVL tree; avl =&gt; tavl 156</a>&gt;
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->;
+    <i>w</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+  }
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+    <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>w</i><!-- /@w -->;
+    <i>w</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-TAVL-Trees.html#305">305</a>, <a href="TAVL-Deletion-Symmetric-Case.html#324">324</a>, and <a href="Answers-for-Chapter-8.html#667">667</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="tavlaltdblrot"></a>&nbsp;<!-- /@w -->Rewrite &lt;<a href="Rebalancing-TAVL-Trees.html#307">Rebalance for + balance factor in TAVL insertion in left subtree 307</a>&gt; in terms of the routines from Exercise 8.2-1. 
+[<a href="Answers-for-Chapter-8.html#8%2d4%2d2%231">answer</a>]
+
+   </body></html>
+

@@ -1,0 +1,16 @@
+static void
+process_node (void *data, void *param)
+{
+  const char *string = data;
+  size_t *total = param;
+
+  *total += strlen (string);
+}
+
+size_t
+total_length (struct bst_table *tree)
+{
+  size_t total = 0;
+  walk (tree, process_node, &total);
+  return total;
+}

@@ -1,0 +1,10 @@
+/* Balances |tree|. */
+void
+tbst_balance (struct tbst_table *tree)
+{
+  assert (tree != NULL);
+
+  tree_to_vine (tree);
+  vine_to_tree (tree);
+}
+

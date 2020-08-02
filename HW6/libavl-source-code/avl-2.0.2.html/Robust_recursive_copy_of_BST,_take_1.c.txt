@@ -1,0 +1,26 @@
+/* Stores in |*y| a new copy of tree rooted at |x|.
+   Returns nonzero if successful, or zero if memory was exhausted.*/
+static int
+bst_robust_copy_recursive_1 (struct bst_node *x, struct bst_node **y)
+{
+  if (x != NULL)
+    {
+      *y = malloc (sizeof **y);
+      if (*y == NULL)
+        return 0;
+
+      (*y)->bst_data = x->bst_data;
+      if (!(bst_robust_copy_recursive_1 (x->bst_link[0], &(*y)->bst_link[0])
+            & bst_robust_copy_recursive_1 (x->bst_link[1],
+                                           &(*y)->bst_link[1])))
+        {
+          bst_deallocate_recursive (*y);
+          *y = NULL;
+          return 0;
+        }
+    }
+  else
+    *y = NULL;
+
+  return 1;
+}

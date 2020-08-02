@@ -1,0 +1,20 @@
+n = tree->tavl_alloc->libavl_malloc (tree->tavl_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+tree->tavl_count++;
+n->tavl_data = item;
+n->tavl_tag[0] = n->tavl_tag[1] = TAVL_THREAD;
+n->tavl_link[dir] = p->tavl_link[dir];
+if (tree->tavl_root != NULL)
+  {
+    p->tavl_tag[dir] = TAVL_CHILD;
+    n->tavl_link[!dir] = p;
+  }
+else
+  n->tavl_link[1] = NULL;
+p->tavl_link[dir] = n;
+n->tavl_balance = 0;
+if (tree->tavl_root == n)
+  return &n->tavl_data;
+

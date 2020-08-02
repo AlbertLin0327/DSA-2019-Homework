@@ -1,0 +1,63 @@
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+bst_t_prev (struct bst_traverser *trav)
+{
+  struct bst_node *x;
+
+  assert (trav != NULL);
+
+  if (trav->bst_generation != trav->bst_table->bst_generation)
+    trav_refresh (trav);
+
+  x = trav->bst_node;
+  if (x == NULL)
+    {
+      return bst_t_last (trav, trav->bst_table);
+    }
+  else if (x->bst_link[0] != NULL)
+    {
+      if (trav->bst_height >= BST_MAX_HEIGHT)
+        {
+          bst_balance (trav->bst_table);
+          return bst_t_prev (trav);
+        }
+
+      trav->bst_stack[trav->bst_height++] = x;
+      x = x->bst_link[0];
+
+      while (x->bst_link[1] != NULL)
+        {
+          if (trav->bst_height >= BST_MAX_HEIGHT)
+            {
+              bst_balance (trav->bst_table);
+              return bst_t_prev (trav);
+            }
+
+          trav->bst_stack[trav->bst_height++] = x;
+          x = x->bst_link[1];
+        }
+    }
+  else
+    {
+      struct bst_node *y;
+
+      do
+        {
+          if (trav->bst_height == 0)
+            {
+              trav->bst_node = NULL;
+              return NULL;
+            }
+
+          y = x;
+          x = trav->bst_stack[--trav->bst_height];
+        }
+      while (y == x->bst_link[0]);
+    }
+  trav->bst_node = x;
+
+  return x->bst_data;
+}
+

@@ -1,0 +1,238 @@
+<html lang="en">
+<head>
+<title>Binary Search of Ordered Array - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Sequential-Search-of-Ordered-Array-with-Sentinel.html" title="3.4 Sequential Search of Ordered Array with Sentinel">
+<link rel=Next href="Binary-Search-Tree-in-Array.html" title="3.6 Binary Search Tree in Array">
+<link rel=Parent href="Search-Algorithms.html" title="3 Search Algorithms">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Binary-Search-of-Ordered-Array">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>3.5 Binary Search of Ordered Array</b></big></td>
+<td align=right>
+<a href="index.html#Binary-Search-of-Ordered-Array.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Sequential-Search-of-Ordered-Array-with-Sentinel.html" title="Skip Back: 3.4 Sequential Search of Ordered Array with Sentinel"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Binary-Search-Tree-in-Array.html" title="Skip Forward: 3.6 Binary Search Tree in Array"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Sequential-Search-of-Ordered-Array-with-Sentinel.html" title="Prev: 3.4 Sequential Search of Ordered Array with Sentinel"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Search-Algorithms.html" title="Up: 3 Search Algorithms"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Binary-Search-Tree-in-Array.html" title="Next: 3.6 Binary Search Tree in Array"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>At this point we've squeezed just about all the performance we can out
+of sequential search in portable C.  For an algorithm that searches
+faster than our final refinement of sequential search, we'll have to
+reconsider our entire approach.
+
+   <p>What's the fundamental idea behind sequential search?  It's that we
+examine array elements in order.  That's a fundamental limitation: if
+we're looking for an element in the middle of the array, we have to
+examine every element that comes before it.  If a search algorithm is
+going to be faster than sequential search, it will have to look at fewer
+elements.
+
+   <p>One way to look at search algorithms based on repeated comparisons is to
+consider what we learn about the array's content at each step.  Suppose
+that <i>array</i><!-- /@w -->[] has <i>n</i><!-- /@w --> elements in sorted order, without duplicates,
+that <i>array</i><!-- /@w -->[<i>j</i><!-- /@w -->] contains <i>key</i><!-- /@w -->, and that we are trying to learn the
+value <i>j</i><!-- /@w -->.  In sequential search, we learn only a little about the data
+set from each comparison with <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]: either <i>key</i><!-- /@w --> == <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] so
+that <i>i</i><!-- /@w --> == <i>j</i><!-- /@w -->, or <i>key</i><!-- /@w --> != <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] so that <i>i</i><!-- /@w --> != <i>j</i><!-- /@w --> and therefore <i>j</i><!-- /@w --> &gt; <i>i</i><!-- /@w -->.  As a result, we eliminate only one possibility at each step.
+
+   <p>Suppose that we haven't made any comparisons yet, so that we know
+nothing about the contents of <i>array</i><!-- /@w -->[].  If we compare <i>key</i><!-- /@w --> to
+<i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] for arbitrary <i>i</i><!-- /@w --> such that 0 &lt;= <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->, what do we learn?  There are three possibilities:
+
+     <ul>
+<li><i>key</i><!-- /@w --> &lt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]: Now we know that <i>key</i><!-- /@w --> &lt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] &lt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w --> + 1] &lt;
+<small class="dots">...</small>  &lt; <i>array</i><!-- /@w -->[<i>n</i><!-- /@w -->&nbsp;-&nbsp;1].<!-- /@w --><a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+Therefore, 0 &lt;= <i>j</i><!-- /@w --> &lt; <i>i</i><!-- /@w -->.
+
+     <li><i>key</i><!-- /@w --> == <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]: We're done: <i>j</i><!-- /@w --> == <i>i</i><!-- /@w -->.
+
+     <li><i>key</i><!-- /@w --> &gt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]: Now we know that <i>key</i><!-- /@w --> &gt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] &gt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w --> - 1] &gt;
+<small class="dots">...</small>  &gt; <i>array</i><!-- /@w -->[0].  Therefore, <i>i</i><!-- /@w --> &lt; <i>j</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->. 
+</ul>
+
+   <p>So, after one step, if we're not done, we know that <i>j</i><!-- /@w --> &gt; <i>i</i><!-- /@w --> or that <i>j</i><!-- /@w --> &lt; <i>i</i><!-- /@w -->.  If we're equally likely to be looking for each element in
+<i>array</i><!-- /@w -->[], then the best choice of <i>i</i><!-- /@w --> is <i>n</i><!-- /@w --> / 2: for that value, we
+eliminate about half of the possibilities either way.  (If <i>n</i><!-- /@w --> is odd,
+we'll round down.)
+
+   <p>After the first step, we're back to essentially the same situation: we
+know that <i>key</i><!-- /@w --> is in <i>array</i><!-- /@w -->[<i>j</i><!-- /@w -->] for some <i>j</i><!-- /@w --> in a range of about
+<i>n</i><!-- /@w --> / 2.  So we can repeat the same process.  Eventually, we will either
+find <i>key</i><!-- /@w --> and thus <i>j</i><!-- /@w -->, or we will eliminate all the possibilities.
+
+   <p>Let's try an example.  For simplicity, let <i>array</i><!-- /@w -->[] contain the values
+100 through 114 in numerical order, so that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] is 100 + <i>i</i><!-- /@w --> and
+<i>n</i><!-- /@w --> is 15.  Suppose further that <i>key</i><!-- /@w --> is 110.  The steps that we'd go
+through to find <i>j</i><!-- /@w --> are described below.  At each step, the facts are
+listed: the known range that <i>j</i><!-- /@w --> can take, the selected value of <i>i</i><!-- /@w -->,
+the results of comparing <i>key</i><!-- /@w --> to <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->], and what was learned from
+the comparison.
+
+     <ol type=1 start=1>
+<li>0 &lt;= <i>j</i><!-- /@w --> &lt;= 14: <i>i</i><!-- /@w --> becomes (0 + 14) / 2 == 7. 110 &gt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == 107, so now we know that <i>j</i><!-- /@w --> &gt; 7.
+
+     <li>8 &lt;= <i>j</i><!-- /@w --> &lt;= 14: <i>i</i><!-- /@w --> becomes (8 + 14) / 2 == 11. 110 &lt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == 111, so now we know that <i>j</i><!-- /@w -->&nbsp;&lt;&nbsp;11<!-- /@w -->.
+
+     <li>8 &lt;= <i>j</i><!-- /@w --> &lt;= 10: <i>i</i><!-- /@w --> becomes (8 + 10) / 2 == 9. 110 &gt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == 109, so now we know that <i>j</i><!-- /@w --> &gt; 9.
+
+     <li>10 &lt;= <i>j</i><!-- /@w --> &lt;= 10: <i>i</i><!-- /@w --> becomes (10 + 10) / 2 == 10.  110 == <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == 110, so we're done and <i>i</i><!-- /@w -->&nbsp;==&nbsp;<i>j</i><!-- /@w -->&nbsp;==&nbsp;10<!-- /@w -->.
+        </ol>
+
+   <p>In case you hadn't yet figured it out, this technique is called
+<dfn>binary search</dfn> (see <a href="Glossary.html#binary%20search">binary search</a>).  We can make an initial C implementation pretty
+easily:
+
+   <p><a name="index-binary-search-of-ordered-array-29"></a>
+<pre class="format"><a href="Binary_search_of_ordered_array.c.txt">21</a>. &lt;<a name="21" href="Binary_search_of_ordered_array.c.txt">Binary search of ordered array 21</a>&gt; =
+/* Returns the offset within <i>array</i><!-- /@w -->[] of an element equal to <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[].  
+   <i>array</i><!-- /@w -->[] must be an array of <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s sorted in ascending order. */
+<b>int</b><!-- /@w --> <br><i>binary_search</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> <i>min</i><!-- /@w --> = 0;
+  <b>int</b><!-- /@w --> <i>max</i><!-- /@w --> = <i>n</i><!-- /@w --> - 1;
+
+  <b>while</b><!-- /@w --> (<i>max</i><!-- /@w --> &gt;= <i>min</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>i</i><!-- /@w --> = (<i>min</i><!-- /@w --> + <i>max</i><!-- /@w -->) / 2;
+      <b>if</b><!-- /@w --> (<i>key</i><!-- /@w --> &lt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>max</i><!-- /@w --> = <i>i</i><!-- /@w --> - 1;
+      <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>key</i><!-- /@w --> &gt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>min</i><!-- /@w --> = <i>i</i><!-- /@w --> + 1;
+      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <i>i</i><!-- /@w -->;
+    }
+
+  <b>return</b><!-- /@w --> -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+   <p>The maximum number of comparisons for a binary search in an array of <i>n</i><!-- /@w -->
+elements is about
+log2(n),
+as opposed to a maximum of <i>n</i><!-- /@w --> comparisons for sequential search.  For
+moderate to large values of <i>n</i><!-- /@w -->, this is a lot better.
+
+   <p>On the other hand, for small values of <i>n</i><!-- /@w -->, binary search may actually
+be slower because it is more complicated than sequential search.  We
+also have to put our array in sorted order before we can use binary
+search.  Efficiently sorting an <i>n</i><!-- /@w -->-element array takes time
+proportional to
+n * log2(n)
+for large <i>n</i><!-- /@w -->.  So binary search is preferred if <i>n</i><!-- /@w --> is large enough
+(see the answer to Exercise 4 for one typical value) and if
+we are going to do enough searches to justify the cost of the initial
+sort.
+
+   <p>Further small refinements are possible on binary search of an ordered
+array.  Try some of the exercises below for more information.
+
+<!-- FIXME: exercise: assembly instructions for linear search -->
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998b">Knuth 1998b</a>], algorithm 6.2.1B;
+[<a href="References.html#Kernighan%201988">Kernighan 1988</a>], section 3.3;
+[<a href="References.html#Bentley%202000">Bentley 2000</a>], chapters 4 and 5, section 9.3, appendix 1;
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], program 12.6.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Function <i>binary_search</i><!-- /@w -->() above uses three local variables: <i>min</i><!-- /@w --> and
+<i>max</i><!-- /@w --> for the ends of the remaining search range and <i>i</i><!-- /@w --> for its
+midpoint.  Write and test a binary search function that uses only two
+variables: <i>i</i><!-- /@w --> for the midpoint as before and <i>m</i><!-- /@w --> representing the
+width of the range on either side of <i>i</i><!-- /@w -->.  You may require the
+existence of a dummy element just before the beginning of the array. 
+Be sure, if so, to specify what its value should be. 
+[<a href="Answers-for-Chapter-3.html#3%2d5%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->The standard C library provides a function, <i>bsearch</i><!-- /@w -->(), for searching
+ordered arrays.  Commonly, <i>bsearch</i><!-- /@w -->() is implemented as a binary
+search, though ANSI C does not require it.  Do the following:
+
+     <ol type=a start=1>
+<li>Write a function compatible with the interface for <i>binary_search</i><!-- /@w -->()
+that uses <i>bsearch</i><!-- /@w -->() &ldquo;under the hood.&rdquo;  You'll also have to write an
+additional callback function for use by <i>bsearch</i><!-- /@w -->().
+
+     <li>Write and test your own version of <i>bsearch</i><!-- /@w -->(), implementing it using a
+binary search.  (Use a different name to avoid conflicts with the C
+library.)
+        </ol>
+[<a href="Answers-for-Chapter-3.html#3%2d5%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->An earlier exercise presented a simple test framework for
+<i>seq_search</i><!-- /@w -->(), but now we have more search functions.  Write a test
+framework that will handle all of them presented so far.  Add code for
+timing successful and unsuccessful searches.  Let the user specify, on
+the command line, the algorithm to use, the size of the array to search,
+and the number of search iterations to run. 
+[<a href="Answers-for-Chapter-3.html#3%2d5%233">answer</a>]
+
+<p class="noindent"><b>4.</b><a name="benchmark"></a>&nbsp;<!-- /@w -->Run the test framework from the previous exercise on your own system for
+each algorithm.  Try different array sizes and compiler optimization
+levels.  Be sure to use enough iterations to make the searches take at
+least a few seconds each.  Analyze the results: do they make sense? 
+Try to explain any apparent discrepancies. 
+[<a href="Answers-for-Chapter-3.html#3%2d5%234">answer</a>]
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> This sort of notation
+means very different things in C and mathematics.  In mathematics,
+writing <i>a</i><!-- /@w --> &lt; <i>b</i><!-- /@w --> &lt; <i>c</i><!-- /@w --> asserts both of the relations <i>a</i><!-- /@w --> &lt; <i>b</i><!-- /@w --> and <i>b</i><!-- /@w --> &lt; <i>c</i><!-- /@w -->,
+whereas in C, it expresses the evaluation of <i>a</i><!-- /@w --> &lt; <i>b</i><!-- /@w -->, then the
+comparison of the 0 or 1 result to the value of <i>c</i><!-- /@w -->.  In mathematics
+this notation is invaluable, but in C it is rarely meaningful.  As a
+result, this book uses this notation only in the mathematical sense.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

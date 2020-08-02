@@ -1,0 +1,3 @@
+q->pbst_link[dir] = p->pbst_link[0];
+if (q->pbst_link[dir] != NULL)
+  q->pbst_link[dir]->pbst_parent = p->pbst_parent;

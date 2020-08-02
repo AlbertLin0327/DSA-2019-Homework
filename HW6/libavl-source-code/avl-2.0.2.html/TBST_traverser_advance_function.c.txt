@@ -1,0 +1,24 @@
+/* Returns the next data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+tbst_t_next (struct tbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->tbst_node == NULL)
+    return tbst_t_first (trav, trav->tbst_table);
+  else if (trav->tbst_node->tbst_tag[1] == TBST_THREAD)
+    {
+      trav->tbst_node = trav->tbst_node->tbst_link[1];
+      return trav->tbst_node != NULL ? trav->tbst_node->tbst_data : NULL;
+    }
+  else
+    {
+      trav->tbst_node = trav->tbst_node->tbst_link[1];
+      while (trav->tbst_node->tbst_tag[0] == TBST_CHILD)
+        trav->tbst_node = trav->tbst_node->tbst_link[0];
+      return trav->tbst_node->tbst_data;
+    }
+}
+

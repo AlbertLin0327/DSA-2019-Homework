@@ -1,0 +1,27 @@
+static void
+traverse_iterative (struct bst_node *node, bst_item_func *action, void *param)
+{
+  struct bst_node *stack[BST_MAX_HEIGHT];
+  size_t height = 0;
+
+  for (;;)
+    {
+      while (node != NULL)
+        {
+          if (height >= BST_MAX_HEIGHT)
+            {
+              fprintf (stderr, "tree too deep\n");
+              exit (EXIT_FAILURE);
+            }
+          stack[height++] = node;
+          node = node->bst_link[0];
+        }
+
+      if (height == 0)
+        break;
+
+      node = stack[--height];
+      action (node->bst_data, param);
+      node = node->bst_link[1];
+    }
+}

@@ -1,0 +1,4 @@
+tree->bst_alloc->libavl_free (tree->bst_alloc, p);
+tree->bst_count--;
+tree->bst_generation++;
+return (void *) item;

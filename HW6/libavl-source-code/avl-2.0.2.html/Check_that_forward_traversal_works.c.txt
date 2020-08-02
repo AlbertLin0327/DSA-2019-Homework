@@ -1,0 +1,25 @@
+/* Check that |bst_t_first()| and |bst_t_next()| work properly. */
+struct bst_traverser trav;
+size_t i;
+int prev = -1;
+int *item;
+
+for (i = 0, item = bst_t_first (&trav, tree); i < 2 * n && item != NULL;
+     i++, item = bst_t_next (&trav))
+  {
+    if (*item <= prev)
+      {
+        printf (" Tree out of order: %d follows %d in traversal\n",
+                *item, prev);
+        okay = 0;
+      }
+
+    prev = *item;
+  }
+
+if (i != n)
+  {
+    printf (" Tree should have %lu items, but has %lu in traversal\n",
+            (unsigned long) n, (unsigned long) i);
+    okay = 0;
+  }

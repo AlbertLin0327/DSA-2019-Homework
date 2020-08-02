@@ -1,0 +1,238 @@
+<html lang="en">
+<head>
+<title>Inserting an RB Node Step 3 - Rebalance - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Inserting-an-RB-Node-Step-2-_002d-Insert.html" title="6.4.2 Step 2: Insert">
+<link rel=Next href="RB-Insertion-Symmetric-Case.html" title="6.4.4 Symmetric Case">
+<link rel=Parent href="Inserting-into-an-RB-Tree.html" title="6.4 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Inserting-an-RB-Node-Step-3-_002d-Rebalance">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6.4.3 Step 3: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Inserting-an-RB-Node-Step-3-_002d-Rebalance.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-an-RB-Node-Step-2-_002d-Insert.html" title="Skip Back: 6.4.2 Step 2: Insert"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="RB-Insertion-Symmetric-Case.html" title="Skip Forward: 6.4.4 Symmetric Case"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-an-RB-Node-Step-2-_002d-Insert.html" title="Prev: 6.4.2 Step 2: Insert"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-an-RB-Tree.html" title="Up: 6.4 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="RB-Insertion-Symmetric-Case.html" title="Next: 6.4.4 Symmetric Case"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The code in step 2 that inserts a node always colors the new node red. 
+This means that rule 2 is always satisfied afterward (as long as it
+was satisfied before we began).  On the other hand, rule 1 is broken
+if the newly inserted node's parent was red.  In this latter case we
+must rearrange or recolor the BST so that it is again an RB tree.
+
+   <p>This is what rebalancing does.  At each step in rebalancing, we have
+the invariant that we just colored a node <i>p</i><!-- /@w --> red and that <i>p</i><!-- /@w -->'s
+parent, the node at the top of the stack, is also red, a rule 1
+violation.  The rebalancing step may either clear up the violation
+entirely, without introducing any other violations, in which case we
+are done, or, if that is not possible, it reduces the violation to a
+similar violation of rule 1 higher up in the tree, in which case we go
+around again.
+
+   <p>In no case can we allow the rebalancing step to introduce a rule 2
+violation, because the loop is not prepared to repair that kind of
+problem: it does not fit the invariant.  If we allowed rule 2
+violations to be introduced, we would have to write additional code to
+recognize and repair those violations.  This extra code would be a
+waste of space, because we can do just fine without it. 
+(Incidentally, there is nothing magical about using a rule 1 violation
+as our rebalancing invariant.  We could use a rule 2 violation as our
+invariant instead, and in fact we will later write an alternate
+implementation that does that, in order to show how it would be done.)
+
+   <p>Here is the rebalancing loop.  At each rebalancing step, it checks
+that we have a rule 1 violation by checking the color of <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1],
+the node on the top of the stack, and then divides into two cases, one
+for rebalancing an insertion in <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]'s left subtree and a
+symmetric case for the right subtree.  After rebalancing it recolors
+the root of the tree black just in case the loop changed it to red:
+
+   <p><a name="index-rebalance-after-RB-insertion-300"></a>
+<pre class="format"><a href="Step_3_3a_Rebalance_after_RB_insertion.c.txt">201</a>. &lt;<a name="201" href="Step_3_3a_Rebalance_after_RB_insertion.c.txt">Step 3: Rebalance after RB insertion 201</a>&gt; =
+<b>while</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt;= 3 &amp;&amp; <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2] == 0)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#202">Left-side rebalancing after RB insertion 202</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="RB-Insertion-Symmetric-Case.html#206">Right-side rebalancing after RB insertion 206</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+<i>tree</i><!-- /@w -->-&gt;<i>rb_root</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-an-RB-Tree.html#197">197</a>.</small>
+
+   <p>Now for the real work.  We'll look at the left-side insertion case
+only.  Consider the node that was just recolored red in the last
+rebalancing step, or if this is the first rebalancing step, the newly
+inserted node <i>n</i><!-- /@w -->.  The code does not name this node, but we will
+refer to it here as <i>q</i><!-- /@w -->.  We know that <i>q</i><!-- /@w --> is red and, because the
+loop condition was met, that its parent <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->&nbsp;-&nbsp;1]<!-- /@w --> is red. 
+Therefore, due to rule 1, <i>q</i><!-- /@w -->'s grandparent, <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->&nbsp;-&nbsp;2]<!-- /@w -->, must be
+black.  After this, we have three cases, distinguished by the
+following code:
+
+   <p><a name="index-left_002dside-rebalancing-after-RB-insertion-301"></a>
+<pre class="format"><a href="Left-side_rebalancing_after_RB_insertion.c.txt">202</a>. &lt;<a name="202" href="Left-side_rebalancing_after_RB_insertion.c.txt">Left-side rebalancing after RB insertion 202</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_link</i><!-- /@w -->[1];
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_RED</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#203">Case 1 in left-side RB insertion rebalancing 203</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>x</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 0)
+      <i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#205">Case 3 in left-side RB insertion rebalancing 205</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#204">Case 2 in left-side RB insertion rebalancing 204</a>&gt;
+    <b>break</b><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#201">201</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>q</i><!-- /@w -->'s uncle is red</h5>
+
+<p><a name="rbinscase1"></a>
+
+   <p>If <i>q</i><!-- /@w --> has an &ldquo;uncle&rdquo; <i>y</i><!-- /@w -->, that is, its grandparent has a child on the
+side opposite <i>q</i><!-- /@w -->, and <i>y</i><!-- /@w --> is red, then rearranging the tree's color
+scheme is all that needs to be done, like this:
+
+<div align="center"><a href="rbins1.txt"><img border=0 src="rbins1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Notice the neat way that this preserves the <dfn>black-height</dfn> (see <a href="Glossary.html#black%2dheight">black-height</a>), or the
+number of black nodes in any simple path from a given node down to a
+node with 0 or 1 children, at <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2].  This ensures that rule 2 is
+not violated.
+
+   <p>After the transformation, if node <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]'s parent exists and is red,
+then we have to move up the tree and try again.  The <b>while</b><!-- /@w --> loop
+condition takes care of this test, so adjusting the stack is all that has
+to be done in this code segment:
+
+   <p><a name="index-case-1-in-left_002dside-RB-insertion-rebalancing-302"></a>
+<pre class="format"><a href="Case_1_in_left-side_RB_insertion_rebalancing.c.txt">203</a>. &lt;<a name="203" href="Case_1_in_left-side_RB_insertion_rebalancing.c.txt">Case 1 in left-side RB insertion rebalancing 203</a>&gt; =
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_color</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+<i>k</i><!-- /@w --> -= 2;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#202">202</a>, <a href="RB-Insertion-Symmetric-Case.html#207">207</a>, <a href="Step-3-in-TRB-Insertion.html#342">342</a>, and <a href="Step-3-in-RTRB-Insertion.html#462">462</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>q</i><!-- /@w --> is the left child of <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]</h5>
+
+<p><a name="rbinscase2"></a>
+
+   <p>If <i>q</i><!-- /@w --> is the left child of its parent, then we can perform a right
+rotation at <i>q</i><!-- /@w -->'s grandparent, which we'll call <i>x</i><!-- /@w -->, and recolor a
+couple of nodes.  Then we're all done, because we've satisfied both
+rules.  Here's a diagram of what's happened:
+
+<div align="center"><a href="rbins2.txt"><img border=0 src="rbins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>There's no need to progress farther up the tree, because neither the
+subtree's black-height nor its root's color have changed.  Here's the
+corresponding code.  Bear in mind that the <b>break</b><!-- /@w --> statement is in the
+enclosing code segment:
+
+   <p><a name="index-case-2-in-left_002dside-RB-insertion-rebalancing-303"></a>
+<pre class="format"><a href="Case_2_in_left-side_RB_insertion_rebalancing.c.txt">204</a>. &lt;<a name="204" href="Case_2_in_left-side_RB_insertion_rebalancing.c.txt">Case 2 in left-side RB insertion rebalancing 204</a>&gt; =
+<i>x</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2];
+<i>x</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+<i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+
+<i>x</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+<i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 3]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 3]] = <i>y</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#202">202</a>, <a href="Step-3-in-TRB-Insertion.html#343">343</a>, and <a href="Step-3-in-RTRB-Insertion.html#464">464</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>q</i><!-- /@w --> is the right child of <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]</h5>
+
+<p><a name="rbinscase3"></a>
+
+   <p>The final case, where <i>q</i><!-- /@w --> is a right child, is really just a small
+variant of case 2, so we can handle it by transforming it into case 2
+and sharing code for that case.  To transform case 2 to case 3, we just
+rotate left at <i>q</i><!-- /@w -->'s parent, which is then treated as <i>q</i><!-- /@w -->.
+
+   <p>The diagram below shows the transformation from case 3 into case 2. 
+After this transformation, <i>x</i><!-- /@w --> is relabeled <i>q</i><!-- /@w --> and <i>y</i><!-- /@w -->'s parent is
+labeled <i>x</i><!-- /@w -->, then rebalancing continues as shown in the diagram for
+case 2, with the exception that <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] is not updated to
+correspond to <i>y</i><!-- /@w --> as shown in that diagram.  That's okay because
+variable <i>y</i><!-- /@w --> has already been set to point to the proper node.
+
+<div align="center"><a href="rbins3.txt"><img border=0 src="rbins3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-3-in-left_002dside-RB-insertion-rebalancing-304"></a>
+<pre class="format"><a href="Case_3_in_left-side_RB_insertion_rebalancing.c.txt">205</a>. &lt;<a name="205" href="Case_3_in_left-side_RB_insertion_rebalancing.c.txt">Case 3 in left-side RB insertion rebalancing 205</a>&gt; =
+<i>x</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+<i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+<i>x</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+<i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#202">202</a>, <a href="Step-3-in-TRB-Insertion.html#344">344</a>, and <a href="Step-3-in-RTRB-Insertion.html#466">466</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="mink3"></a>&nbsp;<!-- /@w -->Why is the test <i>k</i><!-- /@w --> &gt;= 3 on the <b>while</b><!-- /@w --> loop valid?  (Hint: read the
+code for step 4, below, first.) 
+[<a href="Answers-for-Chapter-6.html#6%2d4%2d3%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Consider rebalancing case 2 and, in particular, what would happen if
+the root of subtree <i>d</i><!-- /@w --> were red.  Wouldn't the rebalancing
+transformation recolor <i>x</i><!-- /@w --> as red and thus cause a rule 1 violation? 
+[<a href="Answers-for-Chapter-6.html#6%2d4%2d3%232">answer</a>]
+
+   </body></html>
+

@@ -1,0 +1,40 @@
+struct prb_node *y = g->prb_link[0];
+if (y != NULL && y->prb_color == PRB_RED)
+  {
+    f->prb_color = y->prb_color = PRB_BLACK;
+    g->prb_color = PRB_RED;
+    q = g;
+  }
+else
+  {
+    struct prb_node *h; /* Great-grandparent of |q|. */
+
+    h = g->prb_parent;
+    if (h == NULL)
+      h = (struct prb_node *) &tree->prb_root;
+
+    if (f->prb_link[0] == q)
+      {
+        f->prb_link[0] = q->prb_link[1];
+        q->prb_link[1] = f;
+        g->prb_link[1] = q;
+        f->prb_parent = q;
+        if (f->prb_link[0] != NULL)
+          f->prb_link[0]->prb_parent = f;
+
+        f = q;
+      }
+
+    g->prb_color = PRB_RED;
+    f->prb_color = PRB_BLACK;
+
+    g->prb_link[1] = f->prb_link[0];
+    f->prb_link[0] = g;
+    h->prb_link[h->prb_link[0] != g] = f;
+
+    f->prb_parent = g->prb_parent;
+    g->prb_parent = f;
+    if (g->prb_link[1] != NULL)
+      g->prb_link[1]->prb_parent = g;
+    break;
+  }

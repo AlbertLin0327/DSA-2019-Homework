@@ -1,0 +1,24 @@
+da[0] = 0;
+pa[0] = (struct trb_node *) &tree->trb_root;
+k = 1;
+if (tree->trb_root != NULL)
+  {
+    for (p = tree->trb_root; ; p = p->trb_link[dir])
+      {
+        int cmp = tree->trb_compare (item, p->trb_data, tree->trb_param);
+        if (cmp == 0)
+          return &p->trb_data;
+
+        pa[k] = p;
+        da[k++] = dir = cmp > 0;
+
+        if (p->trb_tag[dir] == TRB_THREAD)
+          break;
+      }
+  }
+else
+  {
+    p = (struct trb_node *) &tree->trb_root;
+    dir = 0;
+  }
+

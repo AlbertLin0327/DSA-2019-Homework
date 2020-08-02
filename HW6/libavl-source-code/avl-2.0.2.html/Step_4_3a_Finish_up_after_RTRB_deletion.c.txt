@@ -1,0 +1,2 @@
+tree->rtrb_alloc->libavl_free (tree->rtrb_alloc, p);
+return (void *) item;

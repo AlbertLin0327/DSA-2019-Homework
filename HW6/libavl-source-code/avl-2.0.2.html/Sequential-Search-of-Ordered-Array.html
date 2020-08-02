@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Sequential Search of Ordered Array - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Sequential-Search-with-Sentinel.html" title="3.2 Sequential Search with Sentinel">
+<link rel=Next href="Sequential-Search-of-Ordered-Array-with-Sentinel.html" title="3.4 Sequential Search of Ordered Array with Sentinel">
+<link rel=Parent href="Search-Algorithms.html" title="3 Search Algorithms">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Sequential-Search-of-Ordered-Array">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>3.3 Sequential Search of Ordered Array</b></big></td>
+<td align=right>
+<a href="index.html#Sequential-Search-of-Ordered-Array.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Sequential-Search-with-Sentinel.html" title="Skip Back: 3.2 Sequential Search with Sentinel"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Sequential-Search-of-Ordered-Array-with-Sentinel.html" title="Skip Forward: 3.4 Sequential Search of Ordered Array with Sentinel"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Sequential-Search-with-Sentinel.html" title="Prev: 3.2 Sequential Search with Sentinel"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Search-Algorithms.html" title="Up: 3 Search Algorithms"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Sequential-Search-of-Ordered-Array-with-Sentinel.html" title="Next: 3.4 Sequential Search of Ordered Array with Sentinel"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Let's jump back to the pile-of-things analogy from the beginning of this
+chapter (see <a href="Sequential-Search.html">Sequential Search</a>).  This time, suppose that instead of
+being in random order, the pile you're searching through is ordered on
+the property that you're examining; e.g., magazines sorted by
+publication date, if you're looking for, say, the July 1988 issue.
+
+   <p>Think about how this would simplify searching through the pile.  Now you
+can sometimes tell that the magazine you're looking for isn't in the
+pile before you get to the bottom, because it's not between the
+magazines that it otherwise would be.  On the other hand, you still
+might have to go through the entire pile if the magazine you're looking
+for is newer than the newest magazine in the pile (or older than the
+oldest, depending on the ordering that you chose).
+
+   <p>Back in the world of computers, we can apply the same idea to searching
+a sorted array:
+
+   <p><a name="index-sequentially-search-a-sorted-array-of-_0040w_007b_0040b_007bint_007d_007ds-26"></a>
+<pre class="format"><a href="Sequentially_search_a_sorted_array_of__7cint_7cs.c.txt">18</a>. &lt;<a name="18" href="Sequentially_search_a_sorted_array_of__7cint_7cs.c.txt">Sequentially search a sorted array of <b>int</b><!-- /@w -->s 18</a>&gt; =
+/* Returns the smallest <i>i</i><!-- /@w --> such that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[]. 
+   <i>array</i><!-- /@w -->[] must be an array of <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s sorted in ascending order. */
+<b>int</b><!-- /@w --> <br><i>seq_sorted_search</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <b>if</b><!-- /@w --> (<i>key</i><!-- /@w --> &lt;= <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->])
+      <b>return</b><!-- /@w --> <i>key</i><!-- /@w --> == <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] ? <i>i</i><!-- /@w --> : -1;
+
+  <b>return</b><!-- /@w --> -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+   <p>At first it might be a little tricky to see exactly how
+<i>seq_sorted_search</i><!-- /@w -->() works, so we'll work through a few examples. 
+Suppose that <i>array</i><!-- /@w -->[] has the four elements {3, 5, 6, 8}, so that <i>n</i><!-- /@w -->
+is 4.  If <i>key</i><!-- /@w --> is 6, then the first time through the loop the <b>if</b><!-- /@w -->
+condition is 6 &lt;= 3, or false, so the loop repeats with <i>i</i><!-- /@w --> == 1.  The
+second time through the loop we again have a false condition, 6 &lt;= 5,
+and the loop repeats again.  The third time the <b>if</b><!-- /@w --> condition, 6 &lt;= 6, is true, so control passes to the <b>if</b><!-- /@w --> statement's dependent
+<b>return</b><!-- /@w -->.  This <b>return</b><!-- /@w --> verifies that 6 == 6 and returns <i>i</i><!-- /@w -->, or 2,
+as the function's value.
+
+   <p>On the other hand, suppose <i>key</i><!-- /@w --> is 4, a value not in <i>array</i><!-- /@w -->[].  For
+the first iteration, when <i>i</i><!-- /@w --> is 0, the <b>if</b><!-- /@w --> condition, 4 &lt;= 3, is
+false, but in the second iteration we have 4 &lt;= 5, which is true. 
+However, this time <i>key</i><!-- /@w --> == <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] is 4 == 5, or false, so -1 is
+returned.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], program 12.4.
+
+   </body></html>
+

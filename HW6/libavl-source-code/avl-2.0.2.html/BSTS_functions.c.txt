@@ -1,0 +1,44 @@
+/* Returns nonzero only if |item| is in |tree|. */
+int
+bsts_find (struct bsts_tree *tree, int item)
+{
+  const struct bsts_node *node;
+
+  tree->sentinel.data = item;
+  node = tree->root;
+  while (item != node->data)
+    if (item < node->data)
+      node = node->link[0];
+    else
+      node = node->link[1];
+  return node != &tree->sentinel;
+}
+
+/* Inserts |item| into |tree|, if it is not already present. */
+void
+bsts_insert (struct bsts_tree *tree, int item)
+{
+  struct bsts_node **q = &tree->root;
+  struct bsts_node *p = tree->root;
+
+  tree->sentinel.data = item;
+  while (item != p->data)
+    {
+      int dir = item > p->data;
+      q = &p->link[dir];
+      p = p->link[dir];
+    }
+
+  if (p == &tree->sentinel)
+    {
+      *q = tree->alloc->libavl_malloc (tree->alloc, sizeof **q);
+      if (*q == NULL)
+        {
+          fprintf (stderr, "out of memory\n");
+          exit (EXIT_FAILURE);
+        }
+      (*q)->link[0] = (*q)->link[1] = &tree->sentinel;
+      (*q)->data = item;
+    }
+}
+

@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>Handling Errors in Iterative BST Copying - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Copying-a-BST-Iteratively.html" title="4.10.2 Iterative Copying">
+<link rel=Next href="Destroying-a-BST.html" title="4.11 Destruction">
+<link rel=Parent href="Copying-a-BST.html" title="4.10 Copying">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Handling-Errors-in-Iterative-BST-Copying">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.10.3 Error Handling</b></big></td>
+<td align=right>
+<a href="index.html#Handling-Errors-in-Iterative-BST-Copying.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Copying-a-BST-Iteratively.html" title="Skip Back: 4.10.2 Iterative Copying"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Copying-a-BST-Iteratively.html" title="Prev: 4.10.2 Iterative Copying"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Copying-a-BST.html" title="Up: 4.10 Copying"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Destroying-a-BST.html" title="Next: 4.11 Destruction"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>So far, outside the exercises, we've ignored the question of handling
+memory allocation errors during copying.  In our other routines, we've
+been careful to implement to handle allocation failures by cleaning up
+and returning an error indication to the caller.  Now we will apply this
+same policy to tree copying, as libavl semantics require
+(see <a href="Creation-and-Destruction.html">Creation and Destruction</a>): a memory allocation error causes the
+partially copied tree to be destroyed and returns a null pointer to the
+caller.
+
+   <p>This is a little harder to do than recovering after a single operation,
+because there are potentially many nodes that have to be freed, and each
+node might include additional user data that also has to be freed.  The
+new BST might have as-yet-uninitialized pointer fields as well, and we
+must be careful to avoid reading from these fields as we destroy the
+tree.
+
+   <p>We could use a number of strategies to destroy the partially copied tree
+while avoiding uninitialized pointers.  The strategy that we will
+actually use is to initialize these pointers to <tt>NULL</tt><!-- /@w -->, then call the
+general tree destruction routine <i>bst_destroy</i><!-- /@w -->().  We haven't yet
+written <i>bst_destroy</i><!-- /@w -->(), so for now we'll treat it as a <dfn>black
+box</dfn> (see <a href="Glossary.html#black%20box">black box</a>) that does what we want, even if we don't understand how.
+
+   <p>Next question: <em>which</em> pointers in the tree are not initialized? 
+The answer is simple: during the copy, we will not revisit nodes not
+currently on the stack, so only pointers in the current node (<i>y</i><!-- /@w -->) and
+on the stack can be uninitialized.  For its part, depending on what
+we're doing to it, <i>y</i><!-- /@w --> might not have any of its fields initialized.  As
+for the stack, nodes are pushed onto it because we have to come back
+later and build their right subtrees, so we must set their right child
+pointers to <tt>NULL</tt><!-- /@w -->.
+
+   <p>We will need this error recovery code in a number of places, so it is
+worth making it into a small helper function:
+
+   <p><a name="index-BST-copy-error-helper-function-127"></a>
+<pre class="format"><a href="BST_copy_error_helper_function.c.txt">82</a>. &lt;<a name="82" href="BST_copy_error_helper_function.c.txt">BST copy error helper function 82</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>copy_error_recovery</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> **<i>stack</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>height</i><!-- /@w -->, 
+                     <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>new</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>destroy</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcopy_005ferror_005frecovery_007d-function-128"></a>  <i>assert</i><!-- /@w --> (<i>stack</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>height</i><!-- /@w --> &gt;= 0 &amp;&amp; <i>new</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>for</b><!-- /@w --> (; <i>height</i><!-- /@w --> &gt; 2; <i>height</i><!-- /@w --> -= 2)
+    <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w --> - 1]-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+  <i>bst_destroy</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Handling-Errors-in-Iterative-BST-Copying.html#83">83</a> and <a href="Copying-an-AVL-Tree.html#185">185</a>.</small>
+
+   <p>Another problem that can arise in copying a binary tree is stack
+overflow.  We will handle stack overflow by destroying the partial copy,
+balancing the original tree, and then restarting the copy.  The balanced
+tree is guaranteed to have small enough height that it will not overflow
+the stack.
+
+   <p>The code below for our final version of <i>bst_copy</i><!-- /@w -->() takes three new
+parameters: two function pointers and a memory allocator.  The meaning
+of these parameters was explained earlier (see <a href="Creation-and-Destruction.html">Creation and Destruction</a>).  Their use within the function should be
+self-explanatory.
+
+   <p><a name="catalogue_002dentry_002dbst_002d23"></a>
+<a name="index-BST-copy-function-129"></a>
+<pre class="format"><a href="BST_copy_function.c.txt">83</a>. &lt;<a name="83" href="BST_copy_function.c.txt">BST copy function 83</a>&gt; =
+&lt;<a href="Handling-Errors-in-Iterative-BST-Copying.html#82">BST copy error helper function 82</a>&gt;
+
+<b>struct</b><!-- /@w --> <b>bst_table</b> *<br><i>bst_copy</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>org</i><!-- /@w -->, <b>bst_copy_func</b><!-- /@w --> *<i>copy</i><!-- /@w -->,
+          <b>bst_item_func</b><!-- /@w --> *<i>destroy</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fcopy_007d-function-130"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>stack</i><!-- /@w -->[2 * (<tt>BST_MAX_HEIGHT</tt><!-- /@w --> + 1)];
+  <b>int</b><!-- /@w --> <i>height</i><!-- /@w --> = 0;
+
+  <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>new</i><!-- /@w -->;
+  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>y</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>org</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>new</i><!-- /@w --> = <i>bst_create</i><!-- /@w --> (<i>org</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w -->, <i>org</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->, 
+                    <i>allocator</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? <i>allocator</i><!-- /@w --> : <i>org</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+  <i>new</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> = <i>org</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> == 0)
+    <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->;
+
+  <i>x</i><!-- /@w --> = (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>org</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <i>y</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>new</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt;= 2 * (<tt>BST_MAX_HEIGHT</tt><!-- /@w --> + 1)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>y</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+              <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+              <i>copy_error_recovery</i><!-- /@w --> (<i>stack</i><!-- /@w -->, <i>height</i><!-- /@w -->, <i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+
+              <i>bst_balance</i><!-- /@w --> ((<b>struct</b><!-- /@w --> <b>bst_table</b> *) <i>org</i><!-- /@w -->);
+              <b>return</b><!-- /@w --> <i>bst_copy</i><!-- /@w --> (<i>org</i><!-- /@w -->, <i>copy</i><!-- /@w -->, <i>destroy</i><!-- /@w -->, <i>allocator</i><!-- /@w -->);
+            }
+
+          <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>new</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>new</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->,
+                                           <b>sizeof</b><!-- /@w --> *<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+          <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> != (<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>new</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>y</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+                  <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+                }
+
+              <i>copy_error_recovery</i><!-- /@w --> (<i>stack</i><!-- /@w -->, <i>height</i><!-- /@w -->, <i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+              <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+            }
+
+          <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) <i>x</i><!-- /@w -->;
+          <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = <i>y</i><!-- /@w -->;
+          <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+          <i>y</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        }
+      <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+
+      <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>copy</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) 
+            <i>y</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+          <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>y</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <i>copy</i><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>org</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+              <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+                  <i>copy_error_recovery</i><!-- /@w --> (<i>stack</i><!-- /@w -->, <i>height</i><!-- /@w -->, <i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+                  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+                }
+            }
+
+          <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>new</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>new</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->,
+                                               <b>sizeof</b><!-- /@w --> *<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+              <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>copy_error_recovery</i><!-- /@w --> (<i>stack</i><!-- /@w -->, <i>height</i><!-- /@w -->, <i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+                  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+                }
+
+              <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+              <i>y</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+              <b>break</b><!-- /@w -->;
+            }
+          <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+
+          <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &lt;= 2)
+            <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->;
+
+          <i>y</i><!-- /@w --> = <i>stack</i><!-- /@w -->[&ndash;<i>height</i><!-- /@w -->];
+          <i>x</i><!-- /@w --> = <i>stack</i><!-- /@w -->[&ndash;<i>height</i><!-- /@w -->];
+        }
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Operations.html#29">29</a>.</small>
+
+   </body></html>
+

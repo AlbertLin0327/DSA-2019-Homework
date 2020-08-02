@@ -1,0 +1,7 @@
+/* Verify compliance with rule 2. */
+if (subbh[0] != subbh[1])
+  {
+    printf (" Node %d has two different black-heights: left bh=%d, "
+            "right bh=%d\n", d, subbh[0], subbh[1]);
+    *okay = 0;
+  }

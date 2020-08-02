@@ -1,0 +1,50 @@
+/* Inserts |item| into |tree| and returns a pointer to |item|'s address.
+   If a duplicate item is found in the tree,
+   returns a pointer to the duplicate without inserting |item|.
+   Returns |NULL| in case of memory allocation failure. */
+void **
+tbst_probe (struct tbst_table *tree, void *item)
+{
+  struct tbst_node *p; /* Traverses tree to find insertion point. */
+  struct tbst_node *n; /* New node. */
+  int dir;             /* Side of |p| on which |n| is inserted. */
+
+  assert (tree != NULL && item != NULL);
+
+  if (tree->tbst_root != NULL)
+    for (p = tree->tbst_root; ; p = p->tbst_link[dir])
+      {
+        int cmp = tree->tbst_compare (item, p->tbst_data, tree->tbst_param);
+        if (cmp == 0)
+          return &p->tbst_data;
+        dir = cmp > 0;
+
+        if (p->tbst_tag[dir] == TBST_THREAD)
+          break;
+      }
+  else
+    {
+      p = (struct tbst_node *) &tree->tbst_root;
+      dir = 0;
+    }
+
+  n = tree->tbst_alloc->libavl_malloc (tree->tbst_alloc, sizeof *n);
+  if (n == NULL)
+    return NULL;
+
+  tree->tbst_count++;
+  n->tbst_data = item;
+  n->tbst_tag[0] = n->tbst_tag[1] = TBST_THREAD;
+  n->tbst_link[dir] = p->tbst_link[dir];
+  if (tree->tbst_root != NULL)
+    {
+      p->tbst_tag[dir] = TBST_CHILD;
+      n->tbst_link[!dir] = p;
+    }
+  else
+    n->tbst_link[1] = NULL;
+  p->tbst_link[dir] = n;
+
+  return &n->tbst_data;
+}
+

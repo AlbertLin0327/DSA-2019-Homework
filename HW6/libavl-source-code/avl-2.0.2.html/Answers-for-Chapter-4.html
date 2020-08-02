@@ -1,0 +1,1500 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 4 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-3.html" title="Chapter 3">
+<link rel=Next href="Answers-for-Chapter-5.html" title="Chapter 5">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-4">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 4</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-4.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-3.html" title="Skip Back: Chapter 3"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-5.html" title="Skip Forward: Chapter 5"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-3.html" title="Prev: Chapter 3"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-5.html" title="Next: Chapter 5"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p><a name="4_00231"></a> <b>1.</b>
+This construct makes &lt;<a href="Binary-Search-Trees.html#24"><tt>bst.h</tt> 24</a>&gt; <dfn>idempotent</dfn> (see <a href="Glossary.html#idempotent">idempotent</a>), that is, including it
+many times has the same effect as including it once.  This is important
+because some C constructs, such as type definitions with <b>typedef</b><!-- /@w -->, are
+erroneous if included in a program multiple times.
+
+   <p>Of course, &lt;<a href="Answers-for-Chapter-2.html#593">Table assertion function control directives 593</a>&gt; is included
+outside the #<b>ifndef</b>-protected part of &lt;<a href="Binary-Search-Trees.html#24"><tt>bst.h</tt> 24</a>&gt;.  This is
+intentional (see Exercise 2.9-1 for details).
+
+<h4 class="subheading">Section 4.2.2</h4>
+
+<p><a name="4_002d2_002d2_00231"></a> <b>1.</b>
+Under many circumstances we often want to know how many items are in a
+binary tree.  In these cases it's cheaper to keep track of item counts
+as we go instead of counting them each time, which requires a full
+binary tree traversal.
+
+   <p>It would be better to omit it if we never needed to know how many items
+were in the tree, or if we only needed to know very seldom.
+
+<h4 class="subheading">Section 4.2.3</h4>
+
+<p><a name="4_002d2_002d3_00231"></a> <b>1.</b>
+The purpose for conditional definition of <tt>BST_MAX_HEIGHT</tt><!-- /@w --> is not to
+keep it from being redefined if the header file is included multiple
+times.  There's a higher-level &ldquo;include guard&rdquo; for that (see
+Exercise 4-1), and, besides, identical definitions of a macro
+are okay in C.  Instead, it is to allow the user to set the maximum
+height of binary trees by defining that macro before &lt;<a href="Binary-Search-Trees.html#24"><tt>bst.h</tt> 24</a>&gt; is
+#<b>include</b>d.  The limit can be adjusted upward for larger computers or
+downward for smaller ones.
+
+   <p>The main pitfall is that a user program will use different values of
+<tt>BST_MAX_HEIGHT</tt><!-- /@w --> in different source files.  This leads to undefined
+behavior.  Less of a problem are definitions to invalid values, which
+will be caught at compile time by the compiler.
+
+<h4 class="subheading">Section 4.3</h4>
+
+<p><a name="4_002d3_00231"></a> <b>1.</b>
+
+<div align="center"><a href="bstrot2.txt"><img border=0 src="bstrot2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="4_002d3_00232"></a> <b>2.</b>
+The functions need to adjust the pointer from the rotated subtree's
+parent, so they take a double-pointer <b>struct</b><!-- /@w --> <b>bst_node</b> **.  An
+alternative would be to accept two parameters: the rotated subtree's
+parent node and the <i>bst_link</i><!-- /@w -->[] index of the subtree.
+
+   <p><a name="catalogue_002dentry_002dbst_002d34"></a>
+<!-- tested 2002/1/6 -->
+<pre class="format">/* Rotates right at *<i>yp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>rotate_right</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> **<i>yp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brotate_005fright_007d-function-880"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>y</i><!-- /@w --> = *<i>yp</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+  <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+  <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+  *<i>yp</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+}
+</pre>
+   <p><a name="catalogue_002dentry_002dbst_002d35"></a>
+<!-- tested 2002/1/6 -->
+<pre class="format">/* Rotates left at *<i>xp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>rotate_left</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> **<i>xp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brotate_005fleft_007d-function-881"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w --> = *<i>xp</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+  <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+  <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+  *<i>xp</i><!-- /@w --> = <i>y</i><!-- /@w -->;
+}
+</pre>
+   <h4 class="subheading">Section 4.7</h4>
+
+<p><a name="4_002d7_00231"></a> <b>1.</b>
+This is a dirty trick.  The <i>bst_root</i><!-- /@w --> member of <b>struct</b><!-- /@w --> <b>bst_table</b> is
+not a <b>struct</b><!-- /@w --> <b>bst_node</b>, but we are pretending that it is by casting its
+address to <b>struct</b><!-- /@w --> <b>bst_node</b> *.  We can get away with this only because
+the first member of <b>struct</b><!-- /@w --> <b>bst_node</b> * is <i>bst_link</i><!-- /@w -->, whose first
+element <i>bst_link</i><!-- /@w -->[0] is a <b>struct</b><!-- /@w --> <b>bst_node</b> *, the same type as
+<i>bst_root</i><!-- /@w -->.  ANSI C guarantees that a pointer to a structure is a
+pointer to the structure's first member, so this is fine as long as we
+never try to access any member of *<i>p</i><!-- /@w --> except <i>bst_link</i><!-- /@w -->[0].  Trying to
+access other members would result in undefined behavior.
+
+   <p>The reason that we want to do this at all is that it means that the
+tree's root is not a special case.  Otherwise, we have to deal with the
+root separately from the rest of the nodes in the tree, because of its
+special status as the only node in the tree not pointed to by the
+<i>bst_link</i><!-- /@w -->[] member of a <b>struct</b><!-- /@w --> <b>bst_node</b>.
+
+   <p>It is a good idea to get used to these kinds of pointer cast, because
+they are common in libavl.
+
+   <p>As an alternative, we can declare an actual instance of <b>struct</b><!-- /@w --> <b>bst_node</b>, store the tree's <i>bst_root</i><!-- /@w --> into its <i>bst_link</i><!-- /@w -->[0], and copy
+its possibly updated value back into <i>bst_root</i><!-- /@w --> when done.  This isn't
+very elegant, but it works.  This technique is used much later in this
+book, in &lt;<a href="Copying-a-TBST.html#279">TBST main copy function 279</a>&gt;.  A different kind of alternative
+approach is used in Exercise 2.
+
+   <p><a name="4_002d7_00232"></a> <b>2.</b>
+Here, pointer-to-pointer <i>q</i><!-- /@w --> traverses the tree, starting with a pointer
+to the root, comparing each node found against <i>item</i><!-- /@w --> while looking for
+a null pointer.  If an item equal to <i>item</i><!-- /@w --> is found, it returns a
+pointer to the item's data.  Otherwise, <i>q</i><!-- /@w --> receives the address of the
+<tt>NULL</tt><!-- /@w --> pointer that becomes the new node, the new node is created, and a
+pointer to its data is returned.
+
+   <p><a name="catalogue_002dentry_002dbst_002d36"></a>
+<!-- tested 2001/11/19 -->
+<a name="index-BST-item-insertion-function_002c-alternate-version-882"></a>
+<pre class="format"><a href="BST_item_insertion_function,_alternate_version.c.txt">620</a>. &lt;<a name="620" href="BST_item_insertion_function,_alternate_version.c.txt">BST item insertion function, alternate version 620</a>&gt; =
+<b>void</b><!-- /@w --> **<br><i>bst_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fprobe_007d-function-883"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>q</i><!-- /@w -->;
+  <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>for</b><!-- /@w --> (<i>q</i><!-- /@w --> = &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->; *<i>q</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>q</i><!-- /@w --> = &amp;(*<i>q</i><!-- /@w -->)-&gt;<i>bst_link</i><!-- /@w -->[<i>cmp</i><!-- /@w --> &gt; 0]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, (*<i>q</i><!-- /@w -->)-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> == 0)
+        <b>return</b><!-- /@w --> &amp;(*<i>q</i><!-- /@w -->)-&gt;<i>bst_data</i><!-- /@w -->;
+    }
+
+  *<i>q</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> **<i>q</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (*<i>q</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  (*<i>q</i><!-- /@w -->)-&gt;<i>bst_link</i><!-- /@w -->[0] = (*<i>q</i><!-- /@w -->)-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+  (*<i>q</i><!-- /@w -->)-&gt;<i>bst_data</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+  <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->++;
+  <b>return</b><!-- /@w --> &amp;(*<i>q</i><!-- /@w -->)-&gt;<i>bst_data</i><!-- /@w -->;
+}
+</pre>
+   <p><a name="4_002d7_00233"></a> <b>3.</b>
+The first item to be inserted have the value of the original tree's
+root.  After that, at each step, we can insert either an item with the
+value of either child <i>x</i><!-- /@w --> of any node in the original tree
+corresponding to a node <i>y</i><!-- /@w --> already in the copy tree, as long as <i>x</i><!-- /@w -->'s
+value is not already in the copy tree.
+
+   <p><a name="4_002d7_00234"></a> <b>4.</b>
+The function below traverses <i>tree</i><!-- /@w --> in &ldquo;level order&rdquo;.  That is, it
+visits the root, then the root's children, then the children of the
+root's children, and so on, so that all the nodes at a particular
+level in the tree are visited in sequence.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], Program 5.16.
+
+   <p><a name="catalogue_002dentry_002dbst_002d37"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-level_002dorder-traversal-884"></a>
+<pre class="format"><a href="Level-order_traversal.c.txt">621</a>. &lt;<a name="621" href="Level-order_traversal.c.txt">Level-order traversal 621</a>&gt; =
+/* Calls <i>visit</i><!-- /@w --> for each of the nodes in <i>tree</i><!-- /@w --> in level order.
+   Returns nonzero if successful, zero if out of memory. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>bst_traverse_level_order</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>visit</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005ftraverse_005flevel_005forder_007d-function-885"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>queue</i><!-- /@w -->;
+  <b>size_t</b><!-- /@w --> <i>head</i><!-- /@w -->, <i>tail</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> == 0)
+    <b>return</b><!-- /@w --> 1;
+
+  <i>queue</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>sizeof</b><!-- /@w --> *<i>queue</i><!-- /@w --> * <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>queue</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> 0;
+
+  <i>head</i><!-- /@w --> = <i>tail</i><!-- /@w --> = 0;
+  <i>queue</i><!-- /@w -->[<i>head</i><!-- /@w -->++] = <i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <b>while</b><!-- /@w --> (<i>head</i><!-- /@w --> != <i>tail</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>cur</i><!-- /@w --> = <i>queue</i><!-- /@w -->[<i>tail</i><!-- /@w -->++];
+      <i>visit</i><!-- /@w --> (<i>cur</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>cur</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+        <i>queue</i><!-- /@w -->[<i>head</i><!-- /@w -->++] = <i>cur</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+      <b>if</b><!-- /@w --> (<i>cur</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->)
+        <i>queue</i><!-- /@w -->[<i>head</i><!-- /@w -->++] = <i>cur</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+    }
+  <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <i>queue</i><!-- /@w -->);
+
+  <b>return</b><!-- /@w --> 1;
+}
+</pre>
+   <h4 class="subheading">Section 4.7.1</h4>
+
+<p><a name="4_002d7_002d1_00231"></a> <b>1.</b>
+<!-- tested 2001/11/10 -->
+<a name="catalogue_002dentry_002dbst_002d38"></a>
+<a name="index-root-insertion-of-existing-node-in-arbitrary-subtree-886"></a>
+<pre class="format"><a href="Root_insertion_of_existing_node_in_arbitrary_subtree.c.txt">622</a>. &lt;<a name="622" href="Root_insertion_of_existing_node_in_arbitrary_subtree.c.txt">Root insertion of existing node in arbitrary subtree 622</a>&gt; =
+/* Performs root insertion of <i>n</i><!-- /@w --> at <i>root</i><!-- /@w --> within <i>tree</i><!-- /@w -->.
+   Subtree <i>root</i><!-- /@w --> must not contain a node matching <i>n</i><!-- /@w -->.
+   Returns nonzero only if successful. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>root_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>root</i><!-- /@w -->, 
+             <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007broot_005finsert_007d-function-887"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>pa</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->]; /* Nodes on stack. */
+  <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>da</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];    /* Directions moved from stack nodes. */
+  <b>int</b><!-- /@w --> <i>k</i><!-- /@w -->;                               /* Stack height. */
+
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->; /* Traverses tree looking for insertion point. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>n</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Answers-for-Chapter-4.html#623">Step 1: Search for insertion point in arbitrary subtree 623</a>&gt;
+  &lt;<a href="Answers-for-Chapter-4.html#624">Step 2: Insert <i>n</i><!-- /@w --> into arbitrary subtree 624</a>&gt;
+  &lt;<a href="Root-Insertion-in-a-BST.html#36">Step 3: Move BST node to root 36</a>&gt;
+
+  <b>return</b><!-- /@w --> 1;
+}
+</pre>
+   <p><a name="index-search-for-insertion-point-in-arbitrary-subtree-888"></a>
+<pre class="format"><a href="Step_1_3a_Search_for_insertion_point_in_arbitrary_subtree.c.txt">623</a>. &lt;<a name="623" href="Step_1_3a_Search_for_insertion_point_in_arbitrary_subtree.c.txt">Step 1: Search for insertion point in arbitrary subtree 623</a>&gt; =
+<i>pa</i><!-- /@w -->[0] = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) <i>root</i><!-- /@w -->;
+<i>da</i><!-- /@w -->[0] = 0;
+<i>k</i><!-- /@w --> = 1;
+<b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = *<i>root</i><!-- /@w -->; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>n</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+    <i>assert</i><!-- /@w --> (<i>cmp</i><!-- /@w --> != 0);
+
+    <b>if</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->)
+      <b>return</b><!-- /@w --> 0;
+
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>p</i><!-- /@w -->;
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>cmp</i><!-- /@w --> &gt; 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-4.html#622">622</a>.</small>
+
+   <p><a name="index-insert-_0040w_007b_0040i_007bn_007d_007d-into-arbitrary-subtree-889"></a>
+<pre class="format"><a href="Step_2_3a_Insert__7cn_7c_into_arbitrary_subtree.c.txt">624</a>. &lt;<a name="624" href="Step_2_3a_Insert__7cn_7c_into_arbitrary_subtree.c.txt">Step 2: Insert <i>n</i><!-- /@w --> into arbitrary subtree 624</a>&gt; =
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>bst_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>n</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-4.html#622">622</a> and <a href="Answers-for-Chapter-4.html#625">625</a>.</small>
+
+   <p><a name="4_002d7_002d1_00232"></a> <b>2.</b>
+The idea is to optimize for the common case but allow for fallback to
+a slower algorithm that doesn't require a stack when necessary.
+
+   <p><a name="catalogue_002dentry_002dbst_002d39"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-robust-root-insertion-of-existing-node-in-arbitrary-subtree-890"></a>
+<pre class="format"><a href="Robust_root_insertion_of_existing_node_in_arbitrary_subtree.c.txt">625</a>. &lt;<a name="625" href="Robust_root_insertion_of_existing_node_in_arbitrary_subtree.c.txt">Robust root insertion of existing node in arbitrary subtree 625</a>&gt; =
+/* Performs root insertion of <i>n</i><!-- /@w --> at <i>root</i><!-- /@w --> within <i>tree</i><!-- /@w -->.
+   Subtree <i>root</i><!-- /@w --> must not contain a node matching <i>n</i><!-- /@w -->.
+   Never fails and will not rebalance <i>tree</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>root_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>root</i><!-- /@w -->, 
+             <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007broot_005finsert_007d-function-891"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>pa</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->]; /* Nodes on stack. */
+  <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>da</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];    /* Directions moved from stack nodes. */
+  <b>int</b><!-- /@w --> <i>k</i><!-- /@w -->;                               /* Stack height. */
+  <b>int</b><!-- /@w --> <i>overflow</i><!-- /@w --> = 0;                    /* Set nonzero if stack overflowed. */
+
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->; /* Traverses tree looking for insertion point. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>n</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Answers-for-Chapter-4.html#626">Step 1: Robustly search for insertion point in arbitrary subtree 626</a>&gt;
+  &lt;<a href="Answers-for-Chapter-4.html#624">Step 2: Insert <i>n</i><!-- /@w --> into arbitrary subtree 624</a>&gt;
+  &lt;<a href="Answers-for-Chapter-4.html#627">Step 3: Robustly move BST node to root 627</a>&gt;
+}
+</pre>
+   <p>If the stack overflows while we're searching for the insertion point,
+we stop keeping track of any nodes but the last one and set <i>overflow</i><!-- /@w -->
+so that later we know that overflow occurred:
+
+   <p><a name="index-robustly-search-for-insertion-point-in-arbitrary-subtree-892"></a>
+<pre class="format"><a href="Step_1_3a_Robustly_search_for_insertion_point_in_arbitrary_subtree.c.txt">626</a>. &lt;<a name="626" href="Step_1_3a_Robustly_search_for_insertion_point_in_arbitrary_subtree.c.txt">Step 1: Robustly search for insertion point in arbitrary subtree 626</a>&gt; =
+<i>pa</i><!-- /@w -->[0] = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) <i>root</i><!-- /@w -->;
+<i>da</i><!-- /@w -->[0] = 0;
+<i>k</i><!-- /@w --> = 1;
+<b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = *<i>root</i><!-- /@w -->; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>n</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+    <i>assert</i><!-- /@w --> (<i>cmp</i><!-- /@w --> != 0);
+
+    <b>if</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>overflow</i><!-- /@w --> = 1;
+        <i>k</i><!-- /@w -->&ndash;;
+      }     
+
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>p</i><!-- /@w -->;
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>cmp</i><!-- /@w --> &gt; 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-4.html#625">625</a>.</small>
+
+   <p>Once we've inserted the node, we deal with the rotation in the same
+way as before if there was no overflow.  If overflow occurred, we
+instead do the rotations one by one, with a full traversal from
+*<i>root</i><!-- /@w --> every time:
+
+   <p><a name="index-robustly-move-BST-node-to-root-893"></a>
+<pre class="format"><a href="Step_3_3a_Robustly_move_BST_node_to_root.c.txt">627</a>. &lt;<a name="627" href="Step_3_3a_Robustly_move_BST_node_to_root.c.txt">Step 3: Robustly move BST node to root 627</a>&gt; =
+<b>if</b><!-- /@w --> (!<i>overflow</i><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Root-Insertion-in-a-BST.html#36">Step 3: Move BST node to root 36</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>while</b><!-- /@w --> (*<i>root</i><!-- /@w --> != <i>n</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>r</i><!-- /@w -->; /* Link to node to rotate. */
+        <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>q</i><!-- /@w -->;  /* Node to rotate. */
+        <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;
+
+        <b>for</b><!-- /@w --> (<i>r</i><!-- /@w --> = <i>root</i><!-- /@w -->; ; <i>r</i><!-- /@w --> = &amp;<i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>q</i><!-- /@w --> = *<i>r</i><!-- /@w -->;
+            <i>dir</i><!-- /@w --> = 0 &lt; <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>n</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>q</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+
+            <b>if</b><!-- /@w --> (<i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] == <i>n</i><!-- /@w -->)
+              <b>break</b><!-- /@w -->;
+          }
+
+        <b>if</b><!-- /@w --> (<i>dir</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+            <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>q</i><!-- /@w -->;
+          } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+            <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>q</i><!-- /@w -->;
+          }
+        *<i>r</i><!-- /@w --> = <i>n</i><!-- /@w -->;
+      }
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-4.html#625">625</a>.</small>
+
+   <p><a name="4_002d7_002d1_00233"></a> <b>3.</b>
+One insertion order that does <em>not</em> require much stack is
+ascending order.  If we insert 1<small class="dots">...</small>4 at the root in ascending
+order, for instance, we get a BST that looks like this:
+
+<div align="center"><a href="rootins2.txt"><img border=0 src="rootins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">If we then insert node 5, it will immediately be inserted as the right
+child of 4, and then a left rotation will make it the root, and we're
+back where we started without ever using more than one stack entry. 
+Other obvious pathological orders such as descending order and
+&ldquo;zig-zag&rdquo; order behave similarly.
+
+   <p>One insertion order that does require an arbitrary amount of stack
+space is to first insert 1<small class="dots">...</small><i>n</i><!-- /@w --> in ascending order, then the
+single item 0.  Each of the first group of insertions requires only
+one stack entry (except the first, which does not use any), but the
+final insertion uses <i>n</i><!-- /@w --> - 1.
+
+   <p>If we're interested in high average consumption of stack space, the
+pattern consisting of a series of ascending insertions (<i>n</i><!-- /@w --> / 2 + 1)<small class="dots">...</small><i>n</i><!-- /@w --> followed by a second ascending series 1<small class="dots">...</small>(<i>n</i><!-- /@w --> / 2),
+for even <i>n</i><!-- /@w -->, is most effective.  For instance, each insertion for
+insertion order 6, 7, 8, 9, 10, 1, 2, 3, 4, 5 requires 0, 1, 1, 1, 1,
+5, 6, 6, 6, 6 stack entries, respectively, for a total of 33.
+
+   <p>These are, incidentally, the best possible results in each category,
+as determined by exhaustive search over the 10! == 3,628,800
+possible root insertion orders for trees of 10 nodes.  (Thanks to
+Richard Heathfield for suggesting exhaustive search.)
+
+<h4 class="subheading">Section 4.8</h4>
+
+<p><a name="4_002d8_00231"></a> <b>1.</b>
+Add this before the top-level <b>else</b><!-- /@w --> clause in &lt;<a href="Deleting-from-a-BST.html#39">Step 2: Delete BST node 39</a>&gt;:
+
+   <p><a name="catalogue_002dentry_002dbst_002d40"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-case-1_002e5-in-BST-deletion-894"></a>
+<pre class="format"><a href="Case_1.5_in_BST_deletion.c.txt">628</a>. &lt;<a name="628" href="Case_1.5_in_BST_deletion.c.txt">Case 1.5 in BST deletion 628</a>&gt; =
+<b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+</pre>
+   <p><a name="4_002d8_00232"></a> <b>2.</b>
+Be sure to look at Exercise 3 before actually making this
+change.
+
+   <p><a name="catalogue_002dentry_002dbst_002d41"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-case-3-in-BST-deletion_002c-alternate-version-895"></a>
+<pre class="format"><a href="Case_3_in_BST_deletion,_alternate_version.c.txt">629</a>. &lt;<a name="629" href="Case_3_in_BST_deletion,_alternate_version.c.txt">Case 3 in BST deletion, alternate version 629</a>&gt; =
+<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+<b>while</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+  }
+<i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+<i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+<i>p</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+</pre>
+   <p>We could, indeed, make similar changes to the other cases, but for these
+cases the code would become more complicated, not simpler.
+
+   <p><a name="4_002d8_00233"></a> <b>3.</b>
+The semantics for libavl traversers only invalidate traversers with
+the deleted item selected, but the revised code would actually free the
+node of the successor to that item.  Because <b>struct</b><!-- /@w --> <b>bst_traverser</b>
+keeps a pointer to the <b>struct</b><!-- /@w --> <b>bst_node</b> of the current item, attempts
+to use a traverser that had selected the successor of the deleted item
+would result in undefined behavior.
+
+   <p>Some other binary tree libraries have looser semantics on their
+traversers, so they can afford to use this technique.
+
+<h4 class="subheading">Section 4.9.1</h4>
+
+<p><a name="4_002d9_002d1_00231"></a> <b>1.</b>
+It would probably be faster to check before each call rather than after,
+because this way many calls would be avoided.  However, it might be more
+difficult to maintain the code, because we would have to remember to
+check for a null pointer before every call.  For instance, the call to
+<i>traverse_recursive</i><!-- /@w -->() within <i>walk</i><!-- /@w -->() might easily be overlooked. 
+Which is &ldquo;better&rdquo; is therefore a toss-up, dependent on a program's
+goals and the programmer's esthetic sense.
+
+   <p><a name="4_002d9_002d1_00232"></a> <b>2.</b>
+<a name="catalogue_002dentry_002dbst_002d42"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-recursive-traversal-of-BST_002c-using-nested-function-896"></a>
+<pre class="format"><a href="Recursive_traversal_of_BST,_using_nested_function.c.txt">630</a>. &lt;<a name="630" href="Recursive_traversal_of_BST,_using_nested_function.c.txt">Recursive traversal of BST, using nested function 630</a>&gt; =
+<b>void</b><!-- /@w --> <br><i>walk</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bwalk_007d-function-897"></a>  <b>void</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>traverse_recursive</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>traverse_recursive</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+        <i>action</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+        <i>traverse_recursive</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+      }
+  }
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>action</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>traverse_recursive</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->);
+}
+</pre>
+   <h4 class="subheading">Section 4.9.2</h4>
+
+<p><a name="4_002d9_002d2_00231"></a> <b>1a.</b>
+First of all, a minimal-height binary tree of <i>n</i><!-- /@w --> nodes has a
+<dfn>height</dfn> (see <a href="Glossary.html#height">height</a>) of about
+log2(n),
+that is, starting from the root and moving only downward, you can visit
+at most <i>n</i><!-- /@w --> nodes (including the root) without running out of nodes. 
+Examination of the code should reveal to you that only moving down to
+the left pushes nodes on the stack and only moving upward pops nodes
+off.  What's more, the first thing the code does is move as far down to
+the left as it can.  So, the maximum height of the stack in a
+minimum-height binary tree of <i>n</i><!-- /@w --> nodes is the binary tree's height, or,
+again, about
+log2(n).
+
+<p class="noindent"><b>1b.</b>
+If a binary tree has only left children, as does the BST on the left
+below, the stack will grow as tall as the tree, to a height of <i>n</i><!-- /@w -->. 
+Conversely, if a binary tree has only right children, as does the BST on
+the right below, no nodes will be pushed onto the stack at all.
+
+<div align="center"><a href="patholog1.txt"><img border=0 src="patholog1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent"><b>1c.</b>
+It's only acceptable if it's known that the stack will not exceed the
+fixed maximum height (or if the program aborting with an error is itself
+acceptable).  Otherwise, you should use a recursive method (but see part
+(e) below), or a dynamically extended stack, or a balanced binary tree
+library.
+
+<p class="noindent"><b>1d.</b>
+Keep in mind this is not the only way or necessarily the best way to
+handle stack overflow.  Our final code for tree traversal will rebalance
+the tree when it grows too tall.
+
+   <p><a name="catalogue_002dentry_002dbst_002d43"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-iterative-traversal-of-BST_002c-with-dynamically-allocated-stack-898"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_with_dynamically_allocated_stack.c.txt">631</a>. &lt;<a name="631" href="Iterative_traversal_of_BST,_with_dynamically_allocated_stack.c.txt">Iterative traversal of BST, with dynamically allocated stack 631</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>traverse_iterative</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btraverse_005fiterative_007d-function-899"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>stack</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+  <b>size_t</b><!-- /@w --> <i>height</i><!-- /@w --> = 0;
+  <b>size_t</b><!-- /@w --> <i>max_height</i><!-- /@w --> = 0;
+
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>while</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt;= <i>max_height</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>max_height</i><!-- /@w --> = <i>max_height</i><!-- /@w --> * 2 + 8;
+              <i>stack</i><!-- /@w --> = <i>realloc</i><!-- /@w --> (<i>stack</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>stack</i><!-- /@w --> * <i>max_height</i><!-- /@w -->);
+              <b>if</b><!-- /@w --> (<i>stack</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"out of memory\n"</tt>);
+                  <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+                }
+            }
+
+          <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = <i>node</i><!-- /@w -->;
+          <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        }
+
+      <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> == 0)
+        <b>break</b><!-- /@w -->;
+
+      <i>node</i><!-- /@w --> = <i>stack</i><!-- /@w -->[&ndash;<i>height</i><!-- /@w -->];
+      <i>action</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+    }
+
+  <i>free</i><!-- /@w --> (<i>stack</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><b>1e.</b>
+Yes, <i>traverse_recursive</i><!-- /@w -->() can run out of memory, because its arguments
+must be stored somewhere by the compiler.  Given typical compilers, it
+will consume more memory per call than <i>traverse_iterative</i><!-- /@w -->() will per
+item on the stack, because each call includes two arguments not pushed
+on <i>traverse_iterative</i><!-- /@w -->()'s stack, plus any needed compiler-specific
+bookkeeping information.
+
+<h4 class="subheading">Section 4.9.2.1</h4>
+
+<p><a name="4_002d9_002d2_002d1_00231"></a> <b>1.</b>
+After calling <i>bst_balance</i><!-- /@w -->(), the structure of the binary tree may have
+changed completely, so we need to &ldquo;find our place&rdquo; again by setting up
+the traverser structure as if the traversal had been done on the
+rebalanced tree all along.  Specifically, members <i>node</i><!-- /@w -->,
+<i>stack</i><!-- /@w -->[], and <i>height</i><!-- /@w --> of <b>struct</b><!-- /@w --> <b>traverser</b> need to be
+updated.
+
+   <p>It is easy to set up <b>struct</b><!-- /@w --> <b>traverser</b> in this way, given the
+previous node in inorder traversal, which we'll call <i>prev</i><!-- /@w -->.  Simply
+search the tree from the new root to find this node.  Along the way,
+because the stack is used to record nodes whose left subtree we are
+examining, push nodes onto the stack as we move left down the tree. 
+Member <i>node</i><!-- /@w --> receives <i>prev</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1], just as it would have if
+no overflow had occurred.
+
+   <p>A small problem with this approach is that it requires knowing the
+previous node in inorder, which is neither explicitly noted in <b>struct</b><!-- /@w --> <b>traverser</b> nor easy to find out.  But it <em>is</em> easy to find out
+the next node: it is the smallest-valued node in the binary tree rooted
+at the node we were considering when the stack overflowed.  (If you need
+convincing, refer to the code for <i>next_item</i><!-- /@w -->() above: the <b>while</b><!-- /@w --> loop
+descends to the left, pushing nodes as it goes, until it hits a <tt>NULL</tt><!-- /@w -->
+pointer, then the node pushed last is popped and returned.)  So we can
+return this as the next node in inorder while setting up the traverser
+to return the nodes after it.
+
+   <p>Here's the code:
+
+   <p><a name="catalogue_002dentry_002dbst_002d44"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-handle-stack-overflow-during-BST-traversal-900"></a>
+<pre class="format"><a href="Handle_stack_overflow_during_BST_traversal.c.txt">632</a>. &lt;<a name="632" href="Handle_stack_overflow_during_BST_traversal.c.txt">Handle stack overflow during BST traversal 632</a>&gt; =
+<a name="index-_0040i_007biter_007d-variable-901"></a><a name="index-_0040i_007biter_007d-variable-902"></a><b>struct</b><!-- /@w --> <b>bst_node</b> *<i>prev</i><!-- /@w -->, *<i>iter</i><!-- /@w -->;
+
+<i>prev</i><!-- /@w --> = <i>node</i><!-- /@w -->;
+<b>while</b><!-- /@w --> (<i>prev</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>prev</i><!-- /@w --> = <i>prev</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+
+<i>bst_balance</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>table</i><!-- /@w -->);
+
+<i>trav</i><!-- /@w -->-&gt;<i>height</i><!-- /@w --> = 0;
+<b>for</b><!-- /@w --> (<i>iter</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>table</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->; <i>iter</i><!-- /@w --> != <i>prev</i><!-- /@w -->; )
+  <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>table</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>prev</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>iter</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>trav</i><!-- /@w -->-&gt;<i>table</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->) &lt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>trav</i><!-- /@w -->-&gt;<i>stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>height</i><!-- /@w -->++] = <i>iter</i><!-- /@w -->;
+      <i>iter</i><!-- /@w --> = <i>iter</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>iter</i><!-- /@w --> = <i>iter</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+
+<i>trav</i><!-- /@w -->-&gt;<i>node</i><!-- /@w --> = <i>iter</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+<b>return</b><!-- /@w --> <i>prev</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+</pre>
+   <p>Without this code, it is not necessary to have member <i>table</i><!-- /@w --> in <b>struct</b><!-- /@w --> <b>traverser</b>.
+
+   <p><a name="4_002d9_002d2_002d1_00232"></a> <b>2.</b>
+It is possible to write <i>prev_item</i><!-- /@w -->() given our current <i>next_item</i><!-- /@w -->(), but
+the result is not very efficient, for two reasons, both related to the
+way that <b>struct</b><!-- /@w --> <b>traverser</b> is used.  First, the structure doesn't
+contain a pointer to the current item.  Second, its stack doesn't
+contain pointers to trees that must be descended to the left to find a
+predecessor node, only those that must be descended to the right to find
+a successor node.
+
+   <p>The next section will develop an alternate, more general method for
+traversal that avoids these problems.
+
+<h4 class="subheading">Section 4.9.3</h4>
+
+<p><a name="4_002d9_002d3_00231"></a> <b>1.</b>
+The <i>bst_probe</i><!-- /@w -->() function can't disturb any traversals.  A change in
+the tree is only problematic for a traverser if it deletes the currently
+selected node (which is explicitly undefined: see <a href="Traversers.html">Traversers</a>) or if
+it shuffles around any of the nodes that are on the traverser's stack. 
+An insertion into a tree only creates new leaves, so it can't cause
+either of those problems, and there's no need to increment the
+generation number.
+
+   <p>The same logic applies to <i>bst_t_insert</i><!-- /@w -->(), presented later.
+
+   <p>On the other hand, an insertion into the AVL and red-black trees
+discussed in the next two chapters can cause restructuring of the tree
+and thus potentially disturb ongoing traversals.  For this reason, the
+insertion functions for AVL and red-black trees <em>will</em> increment
+the tree's generation number.
+
+   <p><a name="4_002d9_002d3_00232"></a> <b>2.</b>
+First, <i>trav_refresh</i><!-- /@w -->() is only called from <i>bst_t_next</i><!-- /@w -->() and
+<i>bst_t_prev</i><!-- /@w -->(), and these functions are mirrors of each other, so we
+need only show it for one of them.
+
+   <p>Second, all of the traverser functions check the stack height, so these
+will not cause an item to be initialized at too high a height, nor will
+<i>bst_t_next</i><!-- /@w -->() or <i>bst_t_prev</i><!-- /@w -->() increase the stack height above its
+limit.
+
+   <p>Since the traverser functions won't force a too-tall stack directly,
+this leaves the other functions.  Only functions that modify the tree
+could cause problems, by pushing an item farther down in the tree.
+
+   <p>There are only four functions that modify a tree.  The insertion
+functions <i>bst_probe</i><!-- /@w -->() and <i>bst_t_insert</i><!-- /@w -->() can't cause problems,
+because they add leaves but never move around nodes.  The deletion
+function <i>bst_delete</i><!-- /@w -->() does move around nodes in case 3, but it always
+moves them higher in the tree, never lower.  Finally, <i>bst_balance</i><!-- /@w -->()
+always ensures that all nodes in the resultant tree are within the
+tree's height limit.
+
+   <p><a name="4_002d9_002d3_00233"></a> <b>3.</b>
+This won't work because the stack may contain pointers to nodes that
+have been deleted and whose memory have been freed.  In ANSI C89 and
+C99, any use of a pointer to an object after the end of its lifetime
+results in undefined behavior, even seemingly innocuous uses such as
+pointer comparisons.  What's worse, the memory for the node may already
+have been recycled for use for another, different node elsewhere in the
+tree.
+
+   <p>This approach does work if there are never any deletions in the tree,
+or if we use some kind of generation number for each node that we
+store along with each stack entry.  The latter would be overkill
+unless comparisons are very expensive and the traversals in changing
+trees are common.  Another possibility would be to somehow only select
+this behavior if there have been no deletions in the binary tree since
+the traverser was last used.  This could be done, for instance, with a
+second generation number in the binary tree incremented only on
+deletions, with a corresponding number kept in the traverser.
+
+   <p>The following reimplements <i>trav_refresh</i><!-- /@w -->() to include this
+optimization.  As noted, it will not work if there are any deletions in
+the tree.  It does work for traversers that must be refreshed due to,
+e.g., rebalancing.
+
+   <p><a name="catalogue_002dentry_002dbst_002d45"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-BST-traverser-refresher_002c-with-caching-903"></a>
+<pre class="format"><a href="BST_traverser_refresher,_with_caching.c.txt">633</a>. &lt;<a name="633" href="BST_traverser_refresher,_with_caching.c.txt">BST traverser refresher, with caching 633</a>&gt; =
+/* Refreshes the stack of parent pointers in <i>trav</i><!-- /@w -->
+   and updates its generation number.
+   Will *not* work if any deletions have occurred in the tree. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>trav_refresh</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_traverser</b> *<i>trav</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btrav_005frefresh_007d-function-904"></a>  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>trav</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>bst_comparison_func</b><!-- /@w --> *<i>cmp</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w -->;
+      <b>void</b><!-- /@w --> *<i>param</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->;
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_node</i><!-- /@w -->;
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>i</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+      <b>size_t</b><!-- /@w --> <i>height</i><!-- /@w --> = 0;
+
+      <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w --> &gt; 0 &amp;&amp; <i>i</i><!-- /@w --> == <i>trav</i><!-- /@w -->-&gt;<i>bst_stack</i><!-- /@w -->[0])
+        <b>for</b><!-- /@w --> (; <i>height</i><!-- /@w --> &lt; <i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w -->; <i>height</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>next</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_stack</i><!-- /@w -->[<i>height</i><!-- /@w --> + 1];
+            <b>if</b><!-- /@w --> (<i>i</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <i>next</i><!-- /@w --> &amp;&amp; <i>i</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <i>next</i><!-- /@w -->)
+              <b>break</b><!-- /@w -->;
+            <i>i</i><!-- /@w --> = <i>next</i><!-- /@w -->;
+          }
+
+      <b>while</b><!-- /@w --> (<i>i</i><!-- /@w --> != <i>node</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>assert</i><!-- /@w --> (<i>height</i><!-- /@w --> &lt; <tt>BST_MAX_HEIGHT</tt><!-- /@w -->);
+          <i>assert</i><!-- /@w --> (<i>i</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+          <i>trav</i><!-- /@w -->-&gt;<i>bst_stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = <i>i</i><!-- /@w -->;
+          <i>i</i><!-- /@w --> = <i>i</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>cmp</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>i</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->) &gt; 0];
+        }
+
+      <i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w --> = <i>height</i><!-- /@w -->;
+    }
+}
+</pre>
+   <h4 class="subheading">Section 4.9.3.2</h4>
+
+<p><a name="4_002d9_002d3_002d2_00231"></a> <b>1.</b>
+It only calls itself if it runs out of stack space.  Its call to
+<i>bst_balance</i><!-- /@w -->() right before the recursive call ensures that the tree is
+short enough to fit within the stack, so the recursive call cannot
+overflow.
+
+<h4 class="subheading">Section 4.9.3.6</h4>
+
+<p><a name="4_002d9_002d3_002d6_00231"></a> <b>1.</b>
+The assignment statements are harmless, but <i>memcpy</i><!-- /@w -->() of overlapping
+regions produces undefined behavior.
+
+<h4 class="subheading">Section 4.10.1</h4>
+
+<p><a name="4_002d10_002d1_00231"></a> <b>1a.</b>
+Notice the use of &amp; instead of &amp;&amp; below.  This ensures that both
+link fields get initialized, so that deallocation can be done in a
+simple way.  If &amp;&amp; were used instead then we wouldn't have any way to
+tell whether (*<i>y</i><!-- /@w -->)-&gt;<i>bst_link</i><!-- /@w -->[1] had been initialized.
+
+   <p><a name="catalogue_002dentry_002dbst_002d46"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-robust-recursive-copy-of-BST_002c-take-1-905"></a>
+<pre class="format"><a href="Robust_recursive_copy_of_BST,_take_1.c.txt">634</a>. &lt;<a name="634" href="Robust_recursive_copy_of_BST,_take_1.c.txt">Robust recursive copy of BST, take 1 634</a>&gt; =
+/* Stores in *<i>y</i><!-- /@w --> a new copy of tree rooted at <i>x</i><!-- /@w -->. 
+   Returns nonzero if successful, or zero if memory was exhausted.*/
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>bst_robust_copy_recursive_1</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>y</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005frobust_005fcopy_005frecursive_005f1_007d-function-906"></a>  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      *<i>y</i><!-- /@w --> = <i>malloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> **<i>y</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (*<i>y</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+        <b>return</b><!-- /@w --> 0;
+
+      (*<i>y</i><!-- /@w -->)-&gt;<i>bst_data</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+      <b>if</b><!-- /@w --> (!(<i>bst_robust_copy_recursive_1</i><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0], &amp;(*<i>y</i><!-- /@w -->)-&gt;<i>bst_link</i><!-- /@w -->[0])
+            &amp; <i>bst_robust_copy_recursive_1</i><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1], <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&amp;(*<i>y</i><!-- /@w -->)-&gt;<i>bst_link</i><!-- /@w -->[1]))) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>bst_deallocate_recursive</i><!-- /@w --> (*<i>y</i><!-- /@w -->);
+          *<i>y</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+          <b>return</b><!-- /@w --> 0;
+        }
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->*<i>y</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> 1;
+}
+</pre>
+   <p>Here's a needed auxiliary function:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-recursive-deallocation-function-907"></a>
+<pre class="format"><a href="Recursive_deallocation_function.c.txt">635</a>. &lt;<a name="635" href="Recursive_deallocation_function.c.txt">Recursive deallocation function 635</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>bst_deallocate_recursive</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fdeallocate_005frecursive_007d-function-908"></a>  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w -->;
+
+  <i>bst_deallocate_recursive</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+  <i>bst_deallocate_recursive</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+  <i>free</i><!-- /@w --> (<i>node</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><b>1b.</b>
+<a name="catalogue_002dentry_002dbst_002d47"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-robust-recursive-copy-of-BST_002c-take-2-909"></a>
+<pre class="format"><a href="Robust_recursive_copy_of_BST,_take_2.c.txt">636</a>. &lt;<a name="636" href="Robust_recursive_copy_of_BST,_take_2.c.txt">Robust recursive copy of BST, take 2 636</a>&gt; =
+<a name="index-_0040i_007berror_005fnode_007d-variable-910"></a><b>static</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> <i>error_node</i><!-- /@w -->;
+
+/* Makes and returns a new copy of tree rooted at <i>x</i><!-- /@w -->.
+   If an allocation error occurs, returns &amp;<i>error_node</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> *<br><i>bst_robust_copy_recursive_2</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005frobust_005fcopy_005frecursive_005f2_007d-function-911"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>y</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  <i>y</i><!-- /@w --> = <i>malloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> *<i>y</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> &amp;<i>error_node</i><!-- /@w -->;
+
+  <i>y</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+  <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>bst_robust_copy_recursive_2</i><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+  <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>bst_robust_copy_recursive_2</i><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+  <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] == &amp;<i>error_node</i><!-- /@w --> || <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] == &amp;<i>error_node</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>bst_deallocate_recursive</i><!-- /@w --> (<i>y</i><!-- /@w -->);
+      <b>return</b><!-- /@w --> &amp;<i>error_node</i><!-- /@w -->;
+    }
+
+  <b>return</b><!-- /@w --> <i>y</i><!-- /@w -->;
+}
+</pre>
+   <p><a name="4_002d10_002d1_00232"></a> <b>2.</b>
+Here's one way to do it, which is simple but perhaps not the fastest
+possible.
+
+   <p><a name="catalogue_002dentry_002dbst_002d48"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-robust-recursive-copy-of-BST_002c-take-3-912"></a>
+<pre class="format"><a href="Robust_recursive_copy_of_BST,_take_3.c.txt">637</a>. &lt;<a name="637" href="Robust_recursive_copy_of_BST,_take_3.c.txt">Robust recursive copy of BST, take 3 637</a>&gt; =
+/* Copies tree rooted at <i>x</i><!-- /@w --> to <i>y</i><!-- /@w -->, which latter is allocated but not <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->yet initialized. 
+   Returns one if successful, zero if memory was exhausted. 
+   In the latter case <i>y</i><!-- /@w --> is not freed but any partially allocated
+   subtrees are. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>bst_robust_copy_recursive_3</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>y</i><!-- /@w -->) <br>{
+  <i>y</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>malloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> *<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+      <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+        <b>return</b><!-- /@w --> 0;
+      <b>if</b><!-- /@w --> (!<i>bst_robust_copy_recursive_3</i><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0], <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0])) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>free</i><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+          <b>return</b><!-- /@w --> 0;
+        }
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>malloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> *<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+      <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->)
+        <b>return</b><!-- /@w --> 0;
+      <b>if</b><!-- /@w --> (!<i>bst_robust_copy_recursive_3</i><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1], <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1])) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>bst_deallocate_recursive</i><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+          <i>free</i><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+          <b>return</b><!-- /@w --> 0;
+        }
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> 1;      
+}
+</pre>
+   <h4 class="subheading">Section 4.10.2</h4>
+
+<p><a name="4_002d10_002d2_00231"></a> <b>1.</b>
+Here is one possibility.
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-intermediate-step-between-_0040w_007b_0040i_007bbst_005fcopy_005frecursive_005f2_007d_007d_0028_0029-and-_0040w_007b_0040i_007bbst_005fcopy_005fiterative_007d_007d_0028_0029-913"></a>
+<pre class="format"><a href="Intermediate_step_between__7cbst_copy_recursive_2_28_29_7c_and__7cbst_copy_iterative_28_29_7c.c.txt">638</a>. &lt;<a name="638" href="Intermediate_step_between__7cbst_copy_recursive_2_28_29_7c_and__7cbst_copy_iterative_28_29_7c.c.txt">Intermediate step between <i>bst_copy_recursive_2</i><!-- /@w -->() and <i>bst_copy_iterative</i><!-- /@w -->() 638</a>&gt; =
+/* Copies <i>org</i><!-- /@w --> to a newly created tree, which is returned. */
+<b>struct</b><!-- /@w --> <b>bst_table</b> *<br><i>bst_copy_iterative</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>org</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fcopy_005fiterative_007d-function-914"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>stack</i><!-- /@w -->[2 * (<tt>BST_MAX_HEIGHT</tt><!-- /@w --> + 1)];
+  <b>int</b><!-- /@w --> <i>height</i><!-- /@w --> = 0;
+
+  <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>new</i><!-- /@w -->;
+  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>y</i><!-- /@w -->;
+
+  <i>new</i><!-- /@w --> = <i>bst_create</i><!-- /@w --> (<i>org</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w -->, <i>org</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->, <i>org</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->);
+  <i>new</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> = <i>org</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> == 0)
+    <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->;
+
+  <i>x</i><!-- /@w --> = (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>org</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <i>y</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>new</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>org</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>org</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->,
+                                           <b>sizeof</b><!-- /@w --> *<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+          <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) <i>x</i><!-- /@w -->;
+          <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = <i>y</i><!-- /@w -->;
+          <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+          <i>y</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        }
+      <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+
+      <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>y</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+
+          <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>org</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>org</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->,
+                                               <b>sizeof</b><!-- /@w --> *<i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+              <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+              <i>y</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+              <b>break</b><!-- /@w -->;
+            }
+          <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+
+          <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &lt;= 2)
+            <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->;
+
+          <i>y</i><!-- /@w --> = <i>stack</i><!-- /@w -->[&ndash;<i>height</i><!-- /@w -->];
+          <i>x</i><!-- /@w --> = <i>stack</i><!-- /@w -->[&ndash;<i>height</i><!-- /@w -->];
+        }
+    }
+}
+</pre>
+   <h4 class="subheading">Section 4.11.1</h4>
+
+<p><a name="4_002d11_002d1_00231"></a> <b>1.</b>
+<i>bst_copy</i><!-- /@w -->() can set <i>bst_data</i><!-- /@w --> to <tt>NULL</tt><!-- /@w --> when memory allocation fails.
+
+<h4 class="subheading">Section 4.13</h4>
+
+<p><a name="4_002d13_00231"></a> <b>1.</b>
+Factoring out recursion is troublesome in this case.  Writing the loop
+with an explicit stack exposes more explicitly the issue of stack
+overflow.  Failure on stack overflow is not acceptable, because it
+would leave both trees in disarray, so we handle it by dropping back
+to a slower algorithm that does not require a stack.
+
+   <p>This code also makes use of <i>root_insert</i><!-- /@w -->() from &lt;<a href="Answers-for-Chapter-4.html#625">Robust root insertion of existing node in arbitrary subtree 625</a>&gt;.
+
+   <p><a name="catalogue_002dentry_002dbst_002d49"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-BST-join-function_002c-iterative-version-915"></a>
+<pre class="format"><a href="BST_join_function,_iterative_version.c.txt">639</a>. &lt;<a name="639" href="BST_join_function,_iterative_version.c.txt">BST join function, iterative version 639</a>&gt; =
+/* Adds to <i>tree</i><!-- /@w --> all the nodes in the tree rooted at <i>p</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>fallback_join</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bfallback_005fjoin_007d-function-916"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>q</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w --> = <i>q</i><!-- /@w -->)
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+        <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+        <i>root_insert</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+      }
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+        <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->;
+      }
+}
+
+/* Joins <i>a</i><!-- /@w --> and <i>b</i><!-- /@w -->, which must be disjoint and have compatible <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->comparison functions.
+   <i>b</i><!-- /@w --> is destroyed in the process. */
+<b>void</b><!-- /@w --> <br><i>bst_join</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>ta</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tb</i><!-- /@w -->) <br>{
+  <b>size_t</b><!-- /@w --> <i>count</i><!-- /@w --> = <i>ta</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> + <i>tb</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>ta</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <i>ta</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w --> = <i>tb</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>tb</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>pa</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>qa</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];
+      <b>int</b><!-- /@w --> <i>k</i><!-- /@w --> = 0;
+
+      <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = &amp;<i>ta</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+      <i>qa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>tb</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+      <b>while</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>a</i><!-- /@w --> = <i>pa</i><!-- /@w -->[&ndash;<i>k</i><!-- /@w -->];
+          <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>b</i><!-- /@w --> = <i>qa</i><!-- /@w -->[<i>k</i><!-- /@w -->];
+
+          <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>b0</i><!-- /@w --> = <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+              <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>b1</i><!-- /@w --> = <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+              <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+              <i>root_insert</i><!-- /@w --> (<i>ta</i><!-- /@w -->, <i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->);
+
+              <b>if</b><!-- /@w --> (<i>b1</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <b>if</b><!-- /@w --> (<i>k</i><!-- /@w --> &lt; <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                      <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = &amp;(*<i>a</i><!-- /@w -->)-&gt;<i>bst_link</i><!-- /@w -->[1];
+                      <i>qa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>b1</i><!-- /@w -->;
+                      <b>if</b><!-- /@w --> (*<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] != <tt>NULL</tt><!-- /@w -->)
+                        <i>k</i><!-- /@w -->++;
+                      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->*<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>qa</i><!-- /@w -->[<i>k</i><!-- /@w -->];
+                    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                      <b>int</b><!-- /@w --> <i>j</i><!-- /@w -->;
+
+                      <i>fallback_join</i><!-- /@w --> (<i>ta</i><!-- /@w -->, <i>b0</i><!-- /@w -->);
+                      <i>fallback_join</i><!-- /@w --> (<i>ta</i><!-- /@w -->, <i>b1</i><!-- /@w -->);
+                      <b>for</b><!-- /@w --> (<i>j</i><!-- /@w --> = 0; <i>j</i><!-- /@w --> &lt; <i>k</i><!-- /@w -->; <i>j</i><!-- /@w -->++)
+                        <i>fallback_join</i><!-- /@w --> (<i>ta</i><!-- /@w -->, <i>qa</i><!-- /@w -->[<i>j</i><!-- /@w -->]);
+
+                      <i>ta</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> = <i>count</i><!-- /@w -->;
+                      <i>free</i><!-- /@w --> (<i>tb</i><!-- /@w -->);
+                      <i>bst_balance</i><!-- /@w --> (<i>ta</i><!-- /@w -->);
+                      <b>return</b><!-- /@w -->;
+                    }
+                }
+
+              <i>a</i><!-- /@w --> = &amp;(*<i>a</i><!-- /@w -->)-&gt;<i>bst_link</i><!-- /@w -->[0];
+              <i>b</i><!-- /@w --> = <i>b0</i><!-- /@w -->;
+              <b>if</b><!-- /@w --> (*<i>a</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  *<i>a</i><!-- /@w --> = <i>b</i><!-- /@w -->;
+                  <b>break</b><!-- /@w -->;
+                } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>b</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+                <b>break</b><!-- /@w -->;
+            }
+        }
+    }
+
+  <i>ta</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> = <i>count</i><!-- /@w -->;
+  <i>free</i><!-- /@w --> (<i>tb</i><!-- /@w -->);
+}
+</pre>
+   <h4 class="subheading">Section 4.14.1</h4>
+
+<p><a name="4_002d14_002d1_00231"></a> <b>1.</b>
+Functions not used at all are <i>bst_insert</i><!-- /@w -->(), <i>bst_replace</i><!-- /@w -->(),
+<i>bst_t_replace</i><!-- /@w -->(), <i>bst_malloc</i><!-- /@w -->(), and <i>bst_free</i><!-- /@w -->().
+
+   <p>Functions used explicitly within <i>test</i><!-- /@w -->() or functions that it calls are
+<i>bst_create</i><!-- /@w -->(), <i>bst_find</i><!-- /@w -->(), <i>bst_probe</i><!-- /@w -->(), <i>bst_delete</i><!-- /@w -->(),
+<i>bst_t_init</i><!-- /@w -->(), <i>bst_t_first</i><!-- /@w -->(), <i>bst_t_last</i><!-- /@w -->(),
+<i>bst_t_insert</i><!-- /@w -->(), <i>bst_t_find</i><!-- /@w -->(), <i>bst_t_copy</i><!-- /@w -->(), <i>bst_t_next</i><!-- /@w -->(), <i>bst_t_prev</i><!-- /@w -->(),
+<i>bst_t_cur</i><!-- /@w -->(), <i>bst_copy</i><!-- /@w -->(), and <i>bst_destroy</i><!-- /@w -->().
+
+   <p>The <i>trav_refresh</i><!-- /@w -->() function is called indirectly by modifying the tree
+during traversal.
+
+   <p>The <i>copy_error_recovery</i><!-- /@w -->() function is called if a memory allocation
+error occurs during <i>bst_copy</i><!-- /@w -->().  The <i>bst_balance</i><!-- /@w -->() function, and
+therefore also <i>tree_to_vine</i><!-- /@w -->(), <i>vine_to_tree</i><!-- /@w -->(), and <i>compress</i><!-- /@w -->(), are
+called if a stack overflow occurs. It is possible to force both these
+behaviors with command-line options to the test program.
+
+   <p><a name="4_002d14_002d1_00232"></a> <b>2.</b>
+Some kinds of errors mean that we can keep going and test other parts
+of the code.  Other kinds of errors mean that something is deeply
+wrong, and returning without cleanup is the safest action short of
+terminating the program entirely.  The third category is memory
+allocation errors.  In our test program these are always caused
+intentionally in order to test out the BST functions' error recovery
+abilities, so a memory allocation error is not really an error at all,
+and we clean up and return successfully.  (A real memory allocation
+error will cause the program to abort in the memory allocator.  See
+the definition of <i>mt_allocate</i><!-- /@w -->() within &lt;<a href="Memory-Manager.html#126">Memory tracker 126</a>&gt;.)
+
+<h4 class="subheading">Section 4.14.1.1</h4>
+
+<p><a name="4_002d14_002d1_002d1_00231"></a> <b>1.</b>
+The definition of <b>size_t</b><!-- /@w --> differs from one compiler to the next.  All
+we know about it for sure is that it's an unsigned type appropriate for
+representing the size of an object.  So we must convert it to some known
+type in order to pass it to <i>printf</i><!-- /@w -->(), because <i>printf</i><!-- /@w -->(), having a
+variable number of arguments, does not know what type to convert it
+into.
+
+   <p>Incidentally, C99 solves this problem by providing a <span class="samp">z</span> modifier
+for <i>printf</i><!-- /@w -->() conversions, so that we could use <tt>"%zu"</tt> to print out
+<b>size_t</b><!-- /@w --> values without the need for a cast.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#ISO%201999">ISO 1999</a>], section 7.19.6.1.
+
+   <p><a name="4_002d14_002d1_002d1_00232"></a> <b>2.</b>
+Yes.
+
+<h4 class="subheading">Section 4.14.2</h4>
+
+<p><a name="4_002d14_002d2_00231"></a> <b>1.</b>
+<a name="index-generate-random-permutation-of-integers-917"></a>
+<pre class="format"><a href="Generate_random_permutation_of_integers.c.txt">640</a>. &lt;<a name="640" href="Generate_random_permutation_of_integers.c.txt">Generate random permutation of integers 640</a>&gt; =
+/* Fills the <i>n</i><!-- /@w --> elements of <i>array</i><!-- /@w -->[] with a random permutation of the
+   integers between 0 and <i>n</i><!-- /@w --> - 1. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>permuted_integers</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>size_t</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpermuted_005fintegers_007d-function-918"></a>  <b>size_t</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>i</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>size_t</b><!-- /@w --> <i>j</i><!-- /@w --> = <i>i</i><!-- /@w --> + (<b>unsigned</b><!-- /@w -->) <i>rand</i><!-- /@w --> () / (<tt>RAND_MAX</tt><!-- /@w --> / (<i>n</i><!-- /@w --> - <i>i</i><!-- /@w -->) + 1);
+      <b>int</b><!-- /@w --> <i>t</i><!-- /@w --> = <i>array</i><!-- /@w -->[<i>j</i><!-- /@w -->];
+      <i>array</i><!-- /@w -->[<i>j</i><!-- /@w -->] = <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->];
+      <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>t</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-4.html#642">642</a>.</small>
+
+   <p><a name="4_002d14_002d2_00232"></a> <b>2.</b>
+All it takes is a preorder traversal.  If the code below is confusing,
+try looking back at &lt;<a href="Answers-for-Chapter-3.html#616">Initialize <i>smaller</i><!-- /@w --> and <i>larger</i><!-- /@w --> within binary search tree 616</a>&gt;.
+
+   <p><a name="index-generate-permutation-for-balanced-tree-919"></a>
+<pre class="format"><a href="Generate_permutation_for_balanced_tree.c.txt">641</a>. &lt;<a name="641" href="Generate_permutation_for_balanced_tree.c.txt">Generate permutation for balanced tree 641</a>&gt; =
+/* Generates a list of integers that produce a balanced tree when
+   inserted in order into a binary tree in the usual way.
+   <i>min</i><!-- /@w --> and <i>max</i><!-- /@w --> inclusively bound the values to be inserted.
+   Output is deposited starting at *<i>array</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>gen_balanced_tree</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>min</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>max</i><!-- /@w -->, <b>int</b><!-- /@w --> **<i>array</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bgen_005fbalanced_005ftree_007d-function-920"></a>  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>min</i><!-- /@w --> &gt; <i>max</i><!-- /@w -->)
+    <b>return</b><!-- /@w -->;
+
+  <i>i</i><!-- /@w --> = (<i>min</i><!-- /@w --> + <i>max</i><!-- /@w --> + 1) / 2;
+  *(*<i>array</i><!-- /@w -->)++ = <i>i</i><!-- /@w -->;
+  <i>gen_balanced_tree</i><!-- /@w --> (<i>min</i><!-- /@w -->, <i>i</i><!-- /@w --> - 1, <i>array</i><!-- /@w -->);
+  <i>gen_balanced_tree</i><!-- /@w --> (<i>i</i><!-- /@w --> + 1, <i>max</i><!-- /@w -->, <i>array</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-4.html#642">642</a>.</small>
+
+   <p><a name="4_002d14_002d2_00233"></a> <b>3.</b>
+<a name="index-insertion-and-deletion-order-generation-921"></a>
+<pre class="format"><a href="Insertion_and_deletion_order_generation.c.txt">642</a>. &lt;<a name="642" href="Insertion_and_deletion_order_generation.c.txt">Insertion and deletion order generation 642</a>&gt; =
+&lt;<a href="Answers-for-Chapter-4.html#640">Generate random permutation of integers 640</a>&gt;
+&lt;<a href="Answers-for-Chapter-4.html#641">Generate permutation for balanced tree 641</a>&gt;
+
+/* Generates a permutation of the integers 0 to <i>n</i><!-- /@w --> - 1 into
+   <i>insert</i><!-- /@w -->[] according to <i>insert_order</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>gen_insertions</i><!-- /@w --> (<b>size_t</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>enum</b><!-- /@w --> <b>insert_order</b> <i>insert_order</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>insert</i><!-- /@w -->[]) <br>{
+<a name="index-_0040i_007bgen_005finsertions_007d-function-922"></a>  <b>size_t</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>switch</b><!-- /@w --> (<i>insert_order</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>case</b><!-- /@w --> <tt>INS_RANDOM</tt><!-- /@w -->:
+      <i>permuted_integers</i><!-- /@w --> (<i>insert</i><!-- /@w -->, <i>n</i><!-- /@w -->);
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>INS_ASCENDING</tt><!-- /@w -->:
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>i</i><!-- /@w -->;
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>INS_DESCENDING</tt><!-- /@w -->:
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>n</i><!-- /@w --> - <i>i</i><!-- /@w --> - 1;
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>INS_BALANCED</tt><!-- /@w -->:
+      <i>gen_balanced_tree</i><!-- /@w --> (0, <i>n</i><!-- /@w --> - 1, &amp;<i>insert</i><!-- /@w -->);
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>INS_ZIGZAG</tt><!-- /@w -->:
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <b>if</b><!-- /@w --> (<i>i</i><!-- /@w --> % 2 == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>i</i><!-- /@w --> / 2;
+        <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>n</i><!-- /@w --> - <i>i</i><!-- /@w --> / 2 - 1;
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>INS_ASCENDING_SHIFTED</tt><!-- /@w -->:
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+           <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>i</i><!-- /@w --> + <i>n</i><!-- /@w --> / 2;
+           <b>if</b><!-- /@w --> ((<b>size_t</b><!-- /@w -->) <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->] &gt;= <i>n</i><!-- /@w -->)
+             <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->] -= <i>n</i><!-- /@w -->;
+        }
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>INS_CUSTOM</tt><!-- /@w -->:
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <b>if</b><!-- /@w --> (<i>scanf</i><!-- /@w --> (<tt>"%d"</tt>, &amp;<i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]) == 0)
+          <i>fail</i><!-- /@w --> (<tt>"error reading insertion order from stdin"</tt>);
+      <b>break</b><!-- /@w -->;
+
+    <b>default</b><!-- /@w -->:
+      <i>assert</i><!-- /@w --> (0);
+    }
+}
+
+/* Generates a permutation of the integers 0 to <i>n</i><!-- /@w --> - 1 into
+   <i>delete</i><!-- /@w -->[] according to <i>delete_order</i><!-- /@w --> and <i>insert</i><!-- /@w -->[]. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>gen_deletions</i><!-- /@w --> (<b>size_t</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>enum</b><!-- /@w --> <b>delete_order</b> <i>delete_order</i><!-- /@w -->,
+               <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>insert</i><!-- /@w -->, <b>int</b><!-- /@w --> *<i>delete</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bgen_005fdeletions_007d-function-923"></a>  <b>size_t</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>switch</b><!-- /@w --> (<i>delete_order</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>case</b><!-- /@w --> <tt>DEL_RANDOM</tt><!-- /@w -->:
+      <i>permuted_integers</i><!-- /@w --> (<i>delete</i><!-- /@w -->, <i>n</i><!-- /@w -->);
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>DEL_REVERSE</tt><!-- /@w -->:
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>insert</i><!-- /@w -->[<i>n</i><!-- /@w --> - <i>i</i><!-- /@w --> - 1];
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>DEL_SAME</tt><!-- /@w -->:
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->];
+      <b>break</b><!-- /@w -->;
+
+    <b>case</b><!-- /@w --> <tt>DEL_CUSTOM</tt><!-- /@w -->:
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <b>if</b><!-- /@w --> (<i>scanf</i><!-- /@w --> (<tt>"%d"</tt>, &amp;<i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]) == 0)
+          <i>fail</i><!-- /@w --> (<tt>"error reading deletion order from stdin"</tt>);
+      <b>break</b><!-- /@w -->;
+
+    <b>default</b><!-- /@w -->:
+      <i>assert</i><!-- /@w --> (0);
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#97">97</a>.</small>
+
+   <p><a name="4_002d14_002d2_00234"></a> <b>4.</b>
+The function below is carefully designed.  It uses <i>time</i><!-- /@w -->() to obtain
+the current time.  The alternative <i>clock</i><!-- /@w -->() is a poor choice because
+it measures CPU time used, which is often more or less constant among
+runs.  The actual value of a <b>time_t</b><!-- /@w --> is not portable, so it computes
+a &ldquo;hash&rdquo; of the bytes in it using a multiply-and-add technique.  The
+factor used for multiplication normally comes out as 257, a prime and
+therefore a good candidate.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998a">Knuth 1998a</a>], section 3.2.1;
+[<a href="References.html#Aho%201986">Aho 1986</a>], section 7.6.
+
+   <p><a name="index-random-number-seeding-924"></a>
+<pre class="format"><a href="Random_number_seeding.c.txt">643</a>. &lt;<a name="643" href="Random_number_seeding.c.txt">Random number seeding 643</a>&gt; =
+/* Choose and return an initial random seed based on the current time.
+   Based on code by Lawrence Kirby &lt;fred@genesis.demon.co.uk&gt;. */
+<b>unsigned</b><!-- /@w --> <br><i>time_seed</i><!-- /@w --> (<b>void</b><!-- /@w -->) <br>{
+<a name="index-_0040i_007btime_005fseed_007d-function-925"></a>  <b>time_t</b><!-- /@w --> <i>timeval</i><!-- /@w -->;	/* Current time. */
+  <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>ptr</i><!-- /@w -->;	/* Type punned pointed into timeval. */
+  <b>unsigned</b><!-- /@w --> <i>seed</i><!-- /@w -->;	/* Generated seed. */
+  <b>size_t</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <i>timeval</i><!-- /@w --> = <i>time</i><!-- /@w --> (<tt>NULL</tt><!-- /@w -->);
+  <i>ptr</i><!-- /@w --> = (<b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> *) &amp;<i>timeval</i><!-- /@w -->;
+
+  <i>seed</i><!-- /@w --> = 0;
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <b>sizeof</b><!-- /@w --> <i>timeval</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <i>seed</i><!-- /@w --> = <i>seed</i><!-- /@w --> * (<tt>UCHAR_MAX</tt><!-- /@w --> + 2<i>u</i><!-- /@w -->) + <i>ptr</i><!-- /@w -->[<i>i</i><!-- /@w -->];
+
+  <b>return</b><!-- /@w --> <i>seed</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#97">97</a>.</small>
+
+<h4 class="subheading">Section 4.14.3</h4>
+
+<p><a name="4_002d14_002d3_00231"></a> <b>1.</b>
+<a name="index-overflow-testers-926"></a>
+<pre class="format"><a href="Overflow_testers.c.txt">644</a>. &lt;<a name="644" href="Overflow_testers.c.txt">Overflow testers 124</a>&gt; +=
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>test_bst_t_last</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fbst_005ft_005flast_007d-function-927"></a>  <b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>trav</i><!-- /@w -->;
+  <b>int</b><!-- /@w --> *<i>last</i><!-- /@w -->;
+
+  <i>last</i><!-- /@w --> = <i>bst_t_last</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>last</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>last</i><!-- /@w --> != <i>n</i><!-- /@w --> - 1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>"    Last item test failed: expected %d, got %d\n"</tt>,
+              <i>n</i><!-- /@w --> - 1, <i>last</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>last</i><!-- /@w --> : -1);
+      <b>return</b><!-- /@w --> 0;
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>test_bst_t_find</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fbst_005ft_005ffind_007d-function-928"></a>  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>trav</i><!-- /@w -->;
+      <b>int</b><!-- /@w --> *<i>iter</i><!-- /@w -->;
+
+      <i>iter</i><!-- /@w --> = <i>bst_t_find</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->, &amp;<i>i</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>iter</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>iter</i><!-- /@w --> != <i>i</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>printf</i><!-- /@w --> (<tt>"    Find item test failed: looked for %d, got %d\n"</tt>,
+                  <i>i</i><!-- /@w -->, <i>iter</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>iter</i><!-- /@w --> : -1);
+          <b>return</b><!-- /@w --> 0;
+        }
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>test_bst_t_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fbst_005ft_005finsert_007d-function-929"></a>  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>trav</i><!-- /@w -->;
+      <b>int</b><!-- /@w --> *<i>iter</i><!-- /@w -->;
+
+      <i>iter</i><!-- /@w --> = <i>bst_t_insert</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->, &amp;<i>i</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>iter</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>iter</i><!-- /@w --> == &amp;<i>i</i><!-- /@w --> || *<i>iter</i><!-- /@w --> != <i>i</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>printf</i><!-- /@w --> (<tt>"    Insert item test failed: inserted dup %d, got %d\n"</tt>,
+                  <i>i</i><!-- /@w -->, <i>iter</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>iter</i><!-- /@w --> : -1);
+          <b>return</b><!-- /@w --> 0;
+        }
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>test_bst_t_next</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fbst_005ft_005fnext_007d-function-930"></a>  <b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>trav</i><!-- /@w -->;
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <i>bst_t_init</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> *<i>iter</i><!-- /@w --> = <i>bst_t_next</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>iter</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>iter</i><!-- /@w --> != <i>i</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>printf</i><!-- /@w --> (<tt>"    Next item test failed: expected %d, got %d\n"</tt>,
+                  <i>i</i><!-- /@w -->, <i>iter</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>iter</i><!-- /@w --> : -1);
+          <b>return</b><!-- /@w --> 0;
+        }
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>test_bst_t_prev</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fbst_005ft_005fprev_007d-function-931"></a>  <b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>trav</i><!-- /@w -->;
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <i>bst_t_init</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = <i>n</i><!-- /@w --> - 1; <i>i</i><!-- /@w --> &gt;= 0; <i>i</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> *<i>iter</i><!-- /@w --> = <i>bst_t_prev</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>iter</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>iter</i><!-- /@w --> != <i>i</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>printf</i><!-- /@w --> (<tt>"    Previous item test failed: expected %d, got %d\n"</tt>,
+                  <i>i</i><!-- /@w -->, <i>iter</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>iter</i><!-- /@w --> : -1);
+          <b>return</b><!-- /@w --> 0;
+        }
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>test_bst_copy</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fbst_005fcopy_007d-function-932"></a>  <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>copy</i><!-- /@w --> = <i>bst_copy</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+  <b>int</b><!-- /@w --> <i>okay</i><!-- /@w --> = <i>compare_trees</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, <i>copy</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->);
+
+  <i>bst_destroy</i><!-- /@w --> (<i>copy</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+
+  <b>return</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+}
+</pre>
+   <h4 class="subheading">Section 4.14.4</h4>
+
+<p><a name="4_002d14_002d4_00231"></a> <b>1.</b>
+Attempting to apply an allocation policy to allocations of zero-byte
+blocks is silly.  How could a failure be indicated, given that one of
+the successful results for an allocation of 0 bytes is <tt>NULL</tt><!-- /@w -->?  At any
+rate, libavl never calls <i>bst_allocate</i><!-- /@w -->() with a <i>size</i><!-- /@w --> argument of
+0.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#ISO%201990">ISO 1990</a>], section 7.10.3.
+
+<h4 class="subheading">Section 4.15</h4>
+
+<p><a name="4_002d15_00231"></a> <b>1.</b>
+We'll use <i>bsts_</i><!-- /@w -->, short for &ldquo;binary search tree with sentinel&rdquo;, as
+the prefix for these functions.  First, we need node and tree
+structures:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-BSTS-structures-933"></a>
+<pre class="format"><a href="BSTS_structures.c.txt">645</a>. &lt;<a name="645" href="BSTS_structures.c.txt">BSTS structures 645</a>&gt; =
+/* Node for binary search tree with sentinel. */
+<b>struct</b><!-- /@w --> <b>bsts_node</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bbsts_005fnode_007d-structure-934"></a>    <b>struct</b><!-- /@w --> <b>bsts_node</b> *<i>link</i><!-- /@w -->[2];
+    <b>int</b><!-- /@w --> <i>data</i><!-- /@w -->;
+  };
+
+/* Binary search tree with sentinel. */
+<b>struct</b><!-- /@w --> <b>bsts_tree</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bbsts_005ftree_007d-structure-935"></a>    <b>struct</b><!-- /@w --> <b>bsts_node</b> *<i>root</i><!-- /@w -->;
+    <b>struct</b><!-- /@w --> <b>bsts_node</b> <i>sentinel</i><!-- /@w -->;
+    <b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>alloc</i><!-- /@w -->;
+  };
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-4.html#649">649</a>.</small>
+
+   <p>Searching is simple:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-BSTS-functions-936"></a>
+<pre class="format"><a href="BSTS_functions.c.txt">646</a>. &lt;<a name="646" href="BSTS_functions.c.txt">BSTS functions 646</a>&gt; =
+/* Returns nonzero only if <i>item</i><!-- /@w --> is in <i>tree</i><!-- /@w -->. */
+<b>int</b><!-- /@w --> <br><i>bsts_find</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bsts_tree</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbsts_005ffind_007d-function-937"></a>  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bsts_node</b> *<i>node</i><!-- /@w -->;
+
+  <i>tree</i><!-- /@w -->-&gt;<i>sentinel</i><!-- /@w -->.<i>data</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+  <i>node</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>root</i><!-- /@w -->;
+  <b>while</b><!-- /@w --> (<i>item</i><!-- /@w --> != <i>node</i><!-- /@w -->-&gt;<i>data</i><!-- /@w -->)
+    <b>if</b><!-- /@w --> (<i>item</i><!-- /@w --> &lt; <i>node</i><!-- /@w -->-&gt;<i>data</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>link</i><!-- /@w -->[0];
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>link</i><!-- /@w -->[1];
+  <b>return</b><!-- /@w --> <i>node</i><!-- /@w --> != &amp;<i>tree</i><!-- /@w -->-&gt;<i>sentinel</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>See also <a href="Answers-for-Chapter-4.html#647">647</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Answers-for-Chapter-4.html#649">649</a>.</small></div>
+
+   <p>Insertion is just a little more complex, because we have to keep track
+of the link that we just came from (alternately, we could divide the
+function into multiple cases):
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-BSTS-functions-938"></a>
+<pre class="format"><a href="BSTS_functions.c.txt">647</a>. &lt;<a name="647" href="BSTS_functions.c.txt">BSTS functions 646</a>&gt; +=
+/* Inserts <i>item</i><!-- /@w --> into <i>tree</i><!-- /@w -->, if it is not already present. */
+<b>void</b><!-- /@w --> <br><i>bsts_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bsts_tree</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbsts_005finsert_007d-function-939"></a>  <b>struct</b><!-- /@w --> <b>bsts_node</b> **<i>q</i><!-- /@w --> = &amp;<i>tree</i><!-- /@w -->-&gt;<i>root</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>bsts_node</b> *<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>root</i><!-- /@w -->;
+
+  <i>tree</i><!-- /@w -->-&gt;<i>sentinel</i><!-- /@w -->.<i>data</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+  <b>while</b><!-- /@w --> (<i>item</i><!-- /@w --> != <i>p</i><!-- /@w -->-&gt;<i>data</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>dir</i><!-- /@w --> = <i>item</i><!-- /@w --> &gt; <i>p</i><!-- /@w -->-&gt;<i>data</i><!-- /@w -->;
+      <i>q</i><!-- /@w --> = &amp;<i>p</i><!-- /@w -->-&gt;<i>link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+      <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+    }
+
+  <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == &amp;<i>tree</i><!-- /@w -->-&gt;<i>sentinel</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      *<i>q</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> **<i>q</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (*<i>q</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"out of memory\n"</tt>);
+          <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+        }
+      (*<i>q</i><!-- /@w -->)-&gt;<i>link</i><!-- /@w -->[0] = (*<i>q</i><!-- /@w -->)-&gt;<i>link</i><!-- /@w -->[1] = &amp;<i>tree</i><!-- /@w -->-&gt;<i>sentinel</i><!-- /@w -->;
+      (*<i>q</i><!-- /@w -->)-&gt;<i>data</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p>Our test function will just insert a collection of integers, then make
+sure that all of them are in the resulting tree.  This is not as
+thorough as it could be, and it doesn't bother to free what it
+allocates, but it is good enough for now:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-BSTS-test-940"></a>
+<pre class="format"><a href="BSTS_test.c.txt">648</a>. &lt;<a name="648" href="BSTS_test.c.txt">BSTS test 648</a>&gt; =
+/* Tests BSTS functions.  
+   <i>insert</i><!-- /@w --> and <i>delete</i><!-- /@w --> must contain some permutation of values
+   0<small class="dots">...</small><i>n</i><!-- /@w --> - 1. */
+<b>int</b><!-- /@w --> <br><i>test_correctness</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>alloc</i><!-- /@w -->, <b>int</b><!-- /@w --> *<i>insert</i><!-- /@w -->, 
+                  <b>int</b><!-- /@w --> *<i>delete</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fcorrectness_007d-function-941"></a>  <b>struct</b><!-- /@w --> <b>bsts_tree</b> <i>tree</i><!-- /@w -->;
+  <b>int</b><!-- /@w --> <i>okay</i><!-- /@w --> = 1;
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <i>tree</i><!-- /@w -->.<i>root</i><!-- /@w --> = &amp;<i>tree</i><!-- /@w -->.<i>sentinel</i><!-- /@w -->;
+  <i>tree</i><!-- /@w -->.<i>alloc</i><!-- /@w --> = <i>alloc</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <i>bsts_insert</i><!-- /@w --> (&amp;<i>tree</i><!-- /@w -->, <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <b>if</b><!-- /@w --> (!<i>bsts_find</i><!-- /@w --> (&amp;<i>tree</i><!-- /@w -->, <i>i</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>printf</i><!-- /@w --> (<tt>"%d should be in tree, but isn't\n"</tt>, <i>i</i><!-- /@w -->);
+        <i>okay</i><!-- /@w --> = 0;
+      }
+
+  <b>return</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+}
+
+/* Not supported. */
+<b>int</b><!-- /@w --> <br><i>test_overflow</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>alloc</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>order</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005foverflow_007d-function-942"></a>  <b>return</b><!-- /@w --> 0;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-4.html#649">649</a>.</small>
+
+   <p>Function <i>test</i><!-- /@w -->() doesn't free allocated nodes, resulting in a memory
+leak.  You should fix this if you are concerned about it.
+
+   <p>Here's the whole program:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-_0040t_007bbsts_002ec_007d-943"></a>
+<pre class="format"><a href="bsts.c.txt">649</a>. &lt;<a name="649" href="bsts.c.txt"><tt>bsts.c</tt> 649</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> "test.h"
+
+&lt;<a href="Answers-for-Chapter-4.html#645">BSTS structures 645</a>&gt;
+&lt;<a href="Memory-Allocation.html#5">Memory allocator; tbl =&gt; bsts 5</a>&gt;
+&lt;<a href="Memory-Allocation.html#7">Default memory allocator header; tbl =&gt; bsts 7</a>&gt;
+&lt;<a href="Memory-Allocation.html#6">Default memory allocation functions; tbl =&gt; bsts 6</a>&gt;
+&lt;<a href="Answers-for-Chapter-4.html#646">BSTS functions 646</a>&gt;
+&lt;<a href="Answers-for-Chapter-4.html#648">BSTS test 648</a>&gt;
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Bentley%202000">Bentley 2000</a>], exercise 7 in chapter 13.
+
+   </body></html>
+

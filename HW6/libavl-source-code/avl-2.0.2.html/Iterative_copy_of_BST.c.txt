@@ -1,0 +1,55 @@
+/* Copies |org| to a newly created tree, which is returned. */
+struct bst_table *
+bst_copy_iterative (const struct bst_table *org)
+{
+  struct bst_node *stack[2 * (BST_MAX_HEIGHT + 1)];
+                                     /* Stack. */
+  int height = 0;                    /* Stack height. */
+  struct bst_table *new;             /* New tree. */
+  const struct bst_node *x;          /* Node currently being copied. */
+  struct bst_node *y;                /* New node being copied from |x|. */
+
+  new = bst_create (org->bst_compare, org->bst_param, org->bst_alloc);
+  new->bst_count = org->bst_count;
+  if (new->bst_count == 0)
+    return new;
+
+  x = (const struct bst_node *) &org->bst_root;
+  y = (struct bst_node *) &new->bst_root;
+  for (;;)
+    {
+      while (x->bst_link[0] != NULL)
+        {
+          y->bst_link[0]
+            = org->bst_alloc->libavl_malloc (org->bst_alloc,
+                                             sizeof *y->bst_link[0]);
+          stack[height++] = (struct bst_node *) x;
+          stack[height++] = y;
+          x = x->bst_link[0];
+          y = y->bst_link[0];
+        }
+      y->bst_link[0] = NULL;
+      for (;;)
+        {
+          y->bst_data = x->bst_data;
+
+          if (x->bst_link[1] != NULL)
+            {
+              y->bst_link[1] =
+                org->bst_alloc->libavl_malloc (org->bst_alloc,
+                                              sizeof *y->bst_link[1]);
+              x = x->bst_link[1];
+              y = y->bst_link[1];
+              break;
+            }
+          else
+            y->bst_link[1] = NULL;
+
+          if (height <= 2)
+            return new;
+
+          y = stack[--height];
+          x = stack[--height];
+        }
+    }
+}

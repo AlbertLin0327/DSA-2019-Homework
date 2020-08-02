@@ -1,0 +1,4 @@
+w = x;
+y->avl_link[0] = x->avl_link[1];
+x->avl_link[1] = y;
+x->avl_balance = y->avl_balance = 0;

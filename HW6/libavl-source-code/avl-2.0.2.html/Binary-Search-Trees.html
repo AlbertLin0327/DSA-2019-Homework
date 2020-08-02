@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Binary Search Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Dynamic-Lists.html" title="3.7 Dynamic Lists">
+<link rel=Next href="BST-Vocabulary.html" title="4.1 Vocabulary">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Binary-Search-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4 Binary Search Trees</b></big></td>
+<td align=right>
+<a href="index.html#Binary-Search-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Search-Algorithms.html" title="Skip Back: 3 Search Algorithms"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="AVL-Trees.html" title="Skip Forward: 5 AVL Trees"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Dynamic-Lists.html" title="Prev: 3.7 Dynamic Lists"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="BST-Vocabulary.html" title="Next: 4.1 Vocabulary"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The previous chapter motivated the need for binary search trees.  This
+chapter implements a table ADT backed by a binary search tree.  Along
+the way, we'll see how binary search trees are constructed and
+manipulated in abstract terms as well as in concrete C code.
+
+   <p>The library includes a header file &lt;<a href="Binary-Search-Trees.html#24"><tt>bst.h</tt> 24</a>&gt; and an implementation file
+&lt;<a href="Binary-Search-Trees.html#25"><tt>bst.c</tt> 25</a>&gt;, outlined below.  We borrow most of the header file from the
+generic table headers designed a couple of chapters back, simply
+replacing <i>tbl</i><!-- /@w --> by <i>bst</i><!-- /@w -->, the prefix used in this table module.
+
+   <p><a name="index-_0040t_007bbst_002eh_007d-33"></a>
+<pre class="format"><a href="bst.h.txt">24</a>. &lt;<a name="24" href="bst.h.txt"><tt>bst.h</tt> 24</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>ifndef</b> <tt>BST_H</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bBST_005fH_007d_007d-macro_0040c-34"></a><tt>BST_H</tt><!-- /@w --> 1
+
+#<b>include</b> &lt;stddef.h&gt;
+
+&lt;<a href="Table-Headers.html#14">Table types; tbl =&gt; bst 14</a>&gt;
+&lt;<a href="BST-Maximum-Height.html#28">BST maximum height 28</a>&gt;
+&lt;<a href="BST-Structure.html#27">BST table structure 27</a>&gt;
+&lt;<a href="BST-Node-Structure.html#26">BST node structure 26</a>&gt;
+&lt;<a href="Better-Iterative-Traversal.html#61">BST traverser structure 61</a>&gt;
+&lt;<a href="Table-Headers.html#15">Table function prototypes; tbl =&gt; bst 15</a>&gt;
+&lt;<a href="Balancing-a-BST.html#88">BST extra function prototypes 88</a>&gt;
+
+#<b>endif</b> /* bst.h */
+
+&lt;<a href="Answers-for-Chapter-2.html#593">Table assertion function control directives; tbl =&gt; bst 593</a>&gt;
+</pre>
+   <p><a name="index-_0040t_007bbst_002ec_007d-35"></a>
+<pre class="format"><a href="bst.c.txt">25</a>. &lt;<a name="25" href="bst.c.txt"><tt>bst.c</tt> 25</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> &lt;string.h&gt;
+#<b>include</b> "bst.h"
+
+&lt;<a href="BST-Operations.html#29">BST operations 29</a>&gt;
+</pre>
+   <p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="includeguard"></a>&nbsp;<!-- /@w -->What is the purpose of #<b>ifndef</b> <tt>BST_H</tt><!-- /@w --> <small class="dots">...</small> #<b>endif</b> in &lt;<a href="Binary-Search-Trees.html#24"><tt>bst.h</tt> 24</a>&gt;
+above? 
+[<a href="Answers-for-Chapter-4.html#4%231">answer</a>]
+
+<ul class="menu">
+<li><a accesskey="1" href="BST-Vocabulary.html">BST Vocabulary</a>
+<li><a accesskey="2" href="BST-Data-Types.html">BST Data Types</a>
+<li><a accesskey="3" href="BST-Rotations.html">BST Rotations</a>
+<li><a accesskey="4" href="BST-Operations.html">BST Operations</a>
+<li><a accesskey="5" href="Creating-a-BST.html">Creating a BST</a>
+<li><a accesskey="6" href="Searching-a-BST.html">Searching a BST</a>
+<li><a accesskey="7" href="Inserting-into-a-BST.html">Inserting into a BST</a>
+<li><a accesskey="8" href="Deleting-from-a-BST.html">Deleting from a BST</a>
+<li><a accesskey="9" href="Traversing-a-BST.html">Traversing a BST</a>
+<li><a href="Copying-a-BST.html">Copying a BST</a>
+<li><a href="Destroying-a-BST.html">Destroying a BST</a>
+<li><a href="Balancing-a-BST.html">Balancing a BST</a>
+<li><a href="Joining-BSTs.html">Joining BSTs</a>
+<li><a href="Testing-BST-Functions.html">Testing BST Functions</a>
+<li><a href="Additional-Exercises-for-BSTs.html">Additional Exercises for BSTs</a>
+</ul>
+
+   </body></html>
+

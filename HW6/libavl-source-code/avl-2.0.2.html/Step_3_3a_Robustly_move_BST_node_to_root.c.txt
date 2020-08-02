@@ -1,0 +1,50 @@
+if (!overflow)
+  {
+    for (; k > 1; k--)
+      {
+        struct bst_node *q = pa[k - 1];
+
+        if (da[k - 1] == 0)
+          {
+            q->bst_link[0] = n->bst_link[1];
+            n->bst_link[1] = q;
+          }
+        else /* |da[k - 1] == 1| */
+          {
+            q->bst_link[1] = n->bst_link[0];
+            n->bst_link[0] = q;
+          }
+        pa[k - 2]->bst_link[da[k - 2]] = n;
+      }
+  }
+else
+  {
+    while (*root != n)
+      {
+        struct bst_node **r; /* Link to node to rotate. */
+        struct bst_node *q;  /* Node to rotate. */
+        int dir;
+
+        for (r = root; ; r = &q->bst_link[dir])
+          {
+            q = *r;
+            dir = 0 < tree->bst_compare (n->bst_data, q->bst_data,
+                                         tree->bst_param);
+
+            if (q->bst_link[dir] == n)
+              break;
+          }
+
+        if (dir == 0)
+          {
+            q->bst_link[0] = n->bst_link[1];
+            n->bst_link[1] = q;
+          }
+        else
+          {
+            q->bst_link[1] = n->bst_link[0];
+            n->bst_link[0] = q;
+          }
+        *r = n;
+      }
+  }

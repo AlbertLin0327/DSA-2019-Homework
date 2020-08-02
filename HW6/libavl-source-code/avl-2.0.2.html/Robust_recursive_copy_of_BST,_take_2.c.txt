@@ -1,0 +1,27 @@
+static struct bst_node error_node;
+
+/* Makes and returns a new copy of tree rooted at |x|.
+   If an allocation error occurs, returns |&error_node|. */
+static struct bst_node *
+bst_robust_copy_recursive_2 (struct bst_node *x)
+{
+  struct bst_node *y;
+
+  if (x == NULL)
+    return NULL;
+
+  y = malloc (sizeof *y);
+  if (y == NULL)
+    return &error_node;
+
+  y->bst_data = x->bst_data;
+  y->bst_link[0] = bst_robust_copy_recursive_2 (x->bst_link[0]);
+  y->bst_link[1] = bst_robust_copy_recursive_2 (x->bst_link[1]);
+  if (y->bst_link[0] == &error_node || y->bst_link[1] == &error_node)
+    {
+      bst_deallocate_recursive (y);
+      return &error_node;
+    }
+
+  return y;
+}

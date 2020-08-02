@@ -1,0 +1,5 @@
+/* Maximum BST height. */
+#ifndef BST_MAX_HEIGHT
+#define BST_MAX_HEIGHT 32
+#endif
+

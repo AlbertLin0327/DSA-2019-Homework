@@ -1,0 +1,56 @@
+/* Prints the structure of |node|,
+   which is |level| levels from the top of the tree. */
+void
+print_tree_structure (struct tbst_node *node, int level)
+{
+  int i;
+
+  /* You can set the maximum level as high as you like.
+     Most of the time, you'll want to debug code using small trees,
+     so that a large |level| indicates a ``loop'', which is a bug. */
+  if (level > 16)
+    {
+      printf ("[...]");
+      return;
+    }
+
+  if (node == NULL)
+    {
+      printf ("<nil>");
+      return;
+    }
+
+  printf ("%d(", node->tbst_data ? *(int *) node->tbst_data : -1);
+
+  for (i = 0; i <= 1; i++)
+    {
+      if (node->tbst_tag[i] == TBST_CHILD)
+        {
+          if (node->tbst_link[i] == node)
+            printf ("loop");
+          else
+            print_tree_structure (node->tbst_link[i], level + 1);
+        }
+      else if (node->tbst_link[i] != NULL)
+        printf (">%d",
+                (node->tbst_link[i]->tbst_data
+                ? *(int *) node->tbst_link[i]->tbst_data : -1));
+      else
+        printf (">>");
+
+      if (i == 0)
+        fputs (", ", stdout);
+    }
+
+  putchar (')');
+}
+
+/* Prints the entire structure of |tree| with the given |title|. */
+void
+print_whole_tree (const struct tbst_table *tree, const char *title)
+{
+  printf ("%s: ", title);
+  print_tree_structure (tree->tbst_root, 0);
+  putchar ('\n');
+}
+

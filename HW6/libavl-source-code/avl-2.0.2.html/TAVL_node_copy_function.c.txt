@@ -1,0 +1,36 @@
+/* Creates a new node as a child of |dst| on side |dir|.
+   Copies data and |tavl_balance| from |src| into the new node,
+   applying |copy()|, if non-null.
+   Returns nonzero only if fully successful.
+   Regardless of success, integrity of the tree structure is assured,
+   though failure may leave a null pointer in a |tavl_data| member. */
+static int
+copy_node (struct tavl_table *tree,
+           struct tavl_node *dst, int dir,
+           const struct tavl_node *src, tavl_copy_func *copy)
+{
+  struct tavl_node *new =
+    tree->tavl_alloc->libavl_malloc (tree->tavl_alloc, sizeof *new);
+  if (new == NULL)
+    return 0;
+
+  new->tavl_link[dir] = dst->tavl_link[dir];
+  new->tavl_tag[dir] = TAVL_THREAD;
+  new->tavl_link[!dir] = dst;
+  new->tavl_tag[!dir] = TAVL_THREAD;
+  dst->tavl_link[dir] = new;
+  dst->tavl_tag[dir] = TAVL_CHILD;
+
+  new->tavl_balance = src->tavl_balance;
+  if (copy == NULL)
+    new->tavl_data = src->tavl_data;
+  else
+    {
+      new->tavl_data = copy (src->tavl_data, tree->tavl_param);
+      if (new->tavl_data == NULL)
+        return 0;
+    }
+
+  return 1;
+}
+

@@ -1,0 +1,255 @@
+<html lang="en">
+<head>
+<title>Initial Black Insertion in an RB Tree - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="RB-Insertion-Symmetric-Case.html" title="6.4.4 Symmetric Case">
+<link rel=Next href="Deleting-from-an-RB-Tree.html" title="6.5 Deletion">
+<link rel=Parent href="Inserting-into-an-RB-Tree.html" title="6.4 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Initial-Black-Insertion-in-an-RB-Tree">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6.4.5 Aside: Initial Black Insertion</b></big></td>
+<td align=right>
+<a href="index.html#Initial-Black-Insertion-in-an-RB-Tree.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="RB-Insertion-Symmetric-Case.html" title="Skip Back: 6.4.4 Symmetric Case"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="RB-Insertion-Symmetric-Case.html" title="Prev: 6.4.4 Symmetric Case"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-an-RB-Tree.html" title="Up: 6.4 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-from-an-RB-Tree.html" title="Next: 6.5 Deletion"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The traditional algorithm for insertion in an RB tree colors new nodes
+red.  This is a good choice, because it often means that no
+rebalancing is necessary, but it is not the only possible choice. 
+This section implements an alternate algorithm for insertion into an
+RB tree that colors new nodes black.
+
+   <p>The outline is the same as for initial-red insertion.  We change the
+newly inserted node from red to black and replace the rebalancing
+algorithm:
+
+   <p><a name="catalogue_002dentry_002drb_002d1"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-RB-item-insertion-function_002c-initial-black-309"></a>
+<pre class="format"><a href="RB_item_insertion_function,_initial_black.c.txt">210</a>. &lt;<a name="210" href="RB_item_insertion_function,_initial_black.c.txt">RB item insertion function, initial black 210</a>&gt; =
+<b>void</b><!-- /@w --> **<br><i>rb_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rb_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brb_005fprobe_007d-function-310"></a>  &lt;<a href="Inserting-into-an-RB-Tree.html#198"><i>rb_probe</i><!-- /@w -->() local variables 198</a>&gt;
+
+  &lt;<a href="Inserting-an-RB-Node-Step-1-_002d-Search.html#199">Step 1: Search RB tree for insertion point 199</a>&gt;
+  &lt;<a href="Inserting-an-RB-Node-Step-2-_002d-Insert.html#200">Step 2: Insert RB node; RB_RED =&gt; RB_BLACK 200</a>&gt;
+  &lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#211">Step 3: Rebalance after initial-black RB insertion 211</a>&gt;
+
+  <b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>rb_data</i><!-- /@w -->;
+}
+</pre>
+   <p>The remaining task is to devise the rebalancing algorithm. 
+Rebalancing is always necessary, unless the tree was empty before
+insertion, because insertion of a black node into a nonempty tree
+always violates rule 2.  Thus, our invariant is that we have a rule 2
+violation to fix.
+
+   <p>More specifically, the invariant, as implemented, is that at the top
+of each trip through the loop, stack <i>pa</i><!-- /@w -->[] contains the chain of
+ancestors of a node that is the black root of a subtree whose
+black-height is 1 more than it should be.  We give that node the name
+<i>q</i><!-- /@w -->.  There is one easy rebalancing special case: if node <i>q</i><!-- /@w --> has a
+black parent, we can just recolor <i>q</i><!-- /@w --> as red, and we're done.  Here's
+the loop:
+
+   <p><a name="index-rebalance-after-initial_002dblack-RB-insertion-311"></a>
+<pre class="format"><a href="Step_3_3a_Rebalance_after_initial-black_RB_insertion.c.txt">211</a>. &lt;<a name="211" href="Step_3_3a_Rebalance_after_initial-black_RB_insertion.c.txt">Step 3: Rebalance after initial-black RB insertion 211</a>&gt; =
+<b>while</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt;= 2) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>q</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]];
+
+    <b>if</b><!-- /@w --> (<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_BLACK</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+        <b>break</b><!-- /@w -->;
+      }
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2] == 0)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#212">Left-side rebalancing after initial-black RB insertion 212</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#216">Right-side rebalancing after initial-black RB insertion 216</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#210">210</a>.</small>
+
+   <p>Consider rebalancing where insertion was on the left side of <i>q</i><!-- /@w -->'s
+grandparent.  We know that <i>q</i><!-- /@w --> is black and its parent <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] is
+red.  Then, we can divide rebalancing into three cases, described
+below in detail.  (For additional insight, compare these cases to the
+corresponding cases for initial-red insertion.)
+
+   <p><a name="index-left_002dside-rebalancing-after-initial_002dblack-RB-insertion-312"></a>
+<pre class="format"><a href="Left-side_rebalancing_after_initial-black_RB_insertion.c.txt">212</a>. &lt;<a name="212" href="Left-side_rebalancing_after_initial-black_RB_insertion.c.txt">Left-side rebalancing after initial-black RB insertion 212</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_link</i><!-- /@w -->[1];
+
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_RED</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#213">Case 1 in left-side initial-black RB insertion rebalancing 213</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>x</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 0)
+      <i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#215">Case 3 in left-side initial-black RB insertion rebalancing 215</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#214">Case 2 in left-side initial-black RB insertion rebalancing 214</a>&gt;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#211">211</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>q</i><!-- /@w -->'s uncle is red</h5>
+
+<p>If <i>q</i><!-- /@w --> has an red &ldquo;uncle&rdquo; <i>y</i><!-- /@w -->, then we recolor <i>q</i><!-- /@w --> red and <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] and <i>y</i><!-- /@w --> black.  This fixes the immediate problem, making the
+black-height of <i>q</i><!-- /@w --> equal to its sibling's, but increases the
+black-height of <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2], so we must repeat the rebalancing process
+farther up the tree:
+
+<div align="center"><a href="rbib1.txt"><img border=0 src="rbib1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-1-in-left_002dside-initial_002dblack-RB-insertion-rebalancing-313"></a>
+<pre class="format"><a href="Case_1_in_left-side_initial-black_RB_insertion_rebalancing.c.txt">213</a>. &lt;<a name="213" href="Case_1_in_left-side_initial-black_RB_insertion_rebalancing.c.txt">Case 1 in left-side initial-black RB insertion rebalancing 213</a>&gt; =
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>rb_color</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+<i>q</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+<i>k</i><!-- /@w --> -= 2;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#212">212</a> and <a href="Initial-Black-Insertion-in-an-RB-Tree.html#217">217</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>q</i><!-- /@w --> is the left child of <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]</h5>
+
+<p>If <i>q</i><!-- /@w --> is a left child, then call <i>q</i><!-- /@w -->'s parent <i>y</i><!-- /@w --> and its grandparent
+<i>x</i><!-- /@w -->, rotate right at <i>x</i><!-- /@w -->, and recolor <i>q</i><!-- /@w -->, <i>y</i><!-- /@w -->, and <i>x</i><!-- /@w -->.  The effect
+is that the black-heights of all three subtrees is the same as before
+<i>q</i><!-- /@w --> was inserted, so we're done, and <b>break</b><!-- /@w --> out of the loop.
+
+<div align="center"><a href="rbib2.txt"><img border=0 src="rbib2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-2-in-left_002dside-initial_002dblack-RB-insertion-rebalancing-314"></a>
+<pre class="format"><a href="Case_2_in_left-side_initial-black_RB_insertion_rebalancing.c.txt">214</a>. &lt;<a name="214" href="Case_2_in_left-side_initial-black_RB_insertion_rebalancing.c.txt">Case 2 in left-side initial-black RB insertion rebalancing 214</a>&gt; =
+<i>x</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2];
+<i>x</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+<i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+
+<i>x</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+<i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 3]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 3]] = <i>y</i><!-- /@w -->;
+<b>break</b><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#212">212</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>q</i><!-- /@w --> is the right child of <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]</h5>
+
+<p>If <i>q</i><!-- /@w --> is a right child, then we rotate left at its parent, which we
+here call <i>x</i><!-- /@w -->.  The result is in the form for application of case 2,
+so after the rotation, we relabel the nodes to be consistent with that
+case.
+
+<div align="center"><a href="rbib3.txt"><img border=0 src="rbib3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-3-in-left_002dside-initial_002dblack-RB-insertion-rebalancing-315"></a>
+<pre class="format"><a href="Case_3_in_left-side_initial-black_RB_insertion_rebalancing.c.txt">215</a>. &lt;<a name="215" href="Case_3_in_left-side_initial-black_RB_insertion_rebalancing.c.txt">Case 3 in left-side initial-black RB insertion rebalancing 215</a>&gt; =
+<i>x</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>q</i><!-- /@w -->;
+<i>x</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+<i>q</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#212">212</a>.</small>
+
+<h5 class="subsubsection">6.4.5.1 Symmetric Case</h5>
+
+<p><a name="index-right_002dside-rebalancing-after-initial_002dblack-RB-insertion-316"></a>
+<pre class="format"><a href="Right-side_rebalancing_after_initial-black_RB_insertion.c.txt">216</a>. &lt;<a name="216" href="Right-side_rebalancing_after_initial-black_RB_insertion.c.txt">Right-side rebalancing after initial-black RB insertion 216</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_link</i><!-- /@w -->[0];
+
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> == <tt>RB_RED</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#217">Case 1 in right-side initial-black RB insertion rebalancing 217</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>x</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 1)
+      <i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#219">Case 3 in right-side initial-black RB insertion rebalancing 219</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#218">Case 2 in right-side initial-black RB insertion rebalancing 218</a>&gt;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#211">211</a>.</small>
+
+   <p><a name="index-case-1-in-right_002dside-initial_002dblack-RB-insertion-rebalancing-317"></a>
+<pre class="format"><a href="Case_1_in_right-side_initial-black_RB_insertion_rebalancing.c.txt">217</a>. &lt;<a name="217" href="Case_1_in_right-side_initial-black_RB_insertion_rebalancing.c.txt">Case 1 in right-side initial-black RB insertion rebalancing 217</a>&gt; =
+&lt;<a href="Initial-Black-Insertion-in-an-RB-Tree.html#213">Case 1 in left-side initial-black RB insertion rebalancing 213</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#216">216</a>.</small>
+
+   <p><a name="index-case-2-in-right_002dside-initial_002dblack-RB-insertion-rebalancing-318"></a>
+<pre class="format"><a href="Case_2_in_right-side_initial-black_RB_insertion_rebalancing.c.txt">218</a>. &lt;<a name="218" href="Case_2_in_right-side_initial-black_RB_insertion_rebalancing.c.txt">Case 2 in right-side initial-black RB insertion rebalancing 218</a>&gt; =
+<i>x</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2];
+<i>x</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_RED</tt><!-- /@w -->;
+<i>y</i><!-- /@w -->-&gt;<i>rb_color</i><!-- /@w --> = <tt>RB_BLACK</tt><!-- /@w -->;
+
+<i>x</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0];
+<i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 3]-&gt;<i>rb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 3]] = <i>y</i><!-- /@w -->;
+<b>break</b><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#216">216</a>.</small>
+
+   <p><a name="index-case-3-in-right_002dside-initial_002dblack-RB-insertion-rebalancing-319"></a>
+<pre class="format"><a href="Case_3_in_right-side_initial-black_RB_insertion_rebalancing.c.txt">219</a>. &lt;<a name="219" href="Case_3_in_right-side_initial-black_RB_insertion_rebalancing.c.txt">Case 3 in right-side initial-black RB insertion rebalancing 219</a>&gt; =
+<i>x</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>q</i><!-- /@w -->;
+<i>x</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1];
+<i>q</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rb_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Initial-Black-Insertion-in-an-RB-Tree.html#216">216</a>.</small>
+
+   </body></html>
+

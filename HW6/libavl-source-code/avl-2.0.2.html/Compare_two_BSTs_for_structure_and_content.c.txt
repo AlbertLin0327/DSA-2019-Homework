@@ -1,0 +1,43 @@
+/* Compares binary trees rooted at |a| and |b|,
+   making sure that they are identical. */
+static int
+compare_trees (struct bst_node *a, struct bst_node *b)
+{
+  int okay;
+
+  if (a == NULL || b == NULL)
+    {
+      assert (a == NULL && b == NULL);
+      return 1;
+    }
+
+  if (*(int *) a->bst_data != *(int *) b->bst_data
+      || ((a->bst_link[0] != NULL) != (b->bst_link[0] != NULL))
+      || ((a->bst_link[1] != NULL) != (b->bst_link[1] != NULL)))
+    {
+      printf (" Copied nodes differ: a=%d b=%d a:",
+              *(int *) a->bst_data, *(int *) b->bst_data);
+
+      if (a->bst_link[0] != NULL)
+        printf ("l");
+      if (a->bst_link[1] != NULL)
+        printf ("r");
+
+      printf (" b:");
+      if (b->bst_link[0] != NULL)
+        printf ("l");
+      if (b->bst_link[1] != NULL)
+        printf ("r");
+
+      printf ("\n");
+      return 0;
+    }
+
+  okay = 1;
+  if (a->bst_link[0] != NULL)
+    okay &= compare_trees (a->bst_link[0], b->bst_link[0]);
+  if (a->bst_link[1] != NULL)
+    okay &= compare_trees (a->bst_link[1], b->bst_link[1]);
+  return okay;
+}
+

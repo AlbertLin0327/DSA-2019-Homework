@@ -1,0 +1,3 @@
+pa[k - 1]->rtavl_link[da[k - 1]] = p->rtavl_link[da[k - 1]];
+if (da[k - 1] == 1)
+  pa[k - 1]->rtavl_rtag = RTAVL_THREAD;

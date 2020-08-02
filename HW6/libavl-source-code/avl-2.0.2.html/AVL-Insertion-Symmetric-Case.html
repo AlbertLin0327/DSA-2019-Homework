@@ -1,0 +1,110 @@
+<html lang="en">
+<head>
+<title>AVL Insertion Symmetric Case - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Rebalancing-AVL-Trees.html" title="5.4.4 Step 4: Rebalance">
+<link rel=Next href="AVL-Insertion-Example.html" title="5.4.6 Example">
+<link rel=Parent href="Inserting-into-an-AVL-Tree.html" title="5.4 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="AVL-Insertion-Symmetric-Case">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.4.5 Symmetric Case</b></big></td>
+<td align=right>
+<a href="index.html#AVL-Insertion-Symmetric-Case.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Rebalancing-AVL-Trees.html" title="Skip Back: 5.4.4 Step 4: Rebalance"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="AVL-Insertion-Example.html" title="Skip Forward: 5.4.6 Example"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Rebalancing-AVL-Trees.html" title="Prev: 5.4.4 Step 4: Rebalance"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-an-AVL-Tree.html" title="Up: 5.4 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="AVL-Insertion-Example.html" title="Next: 5.4.6 Example"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Finally, we need to write code for the case that we chose not to discuss
+earlier, where the insertion occurs in the right subtree of <i>y</i><!-- /@w -->.  All we
+have to do is invert the signs of balance factors and switch
+<i>avl_link</i><!-- /@w -->[] indexes between 0 and 1.  The results are this:
+
+   <p><a name="index-rebalance-AVL-tree-after-insertion-in-right-subtree-239"></a>
+<pre class="format"><a href="Rebalance_AVL_tree_after_insertion_in_right_subtree.c.txt">157</a>. &lt;<a name="157" href="Rebalance_AVL_tree_after_insertion_in_right_subtree.c.txt">Rebalance AVL tree after insertion in right subtree 157</a>&gt; =
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == +1)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="AVL-Insertion-Symmetric-Case.html#158">Rotate left at <i>y</i><!-- /@w --> in AVL tree 158</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="AVL-Insertion-Symmetric-Case.html#159">Rotate right at <i>x</i><!-- /@w --> then left at <i>y</i><!-- /@w --> in AVL tree 159</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-AVL-Trees.html#151">151</a> and <a href="Recursive-Insertion.html#162">162</a>.</small>
+
+   <p><a name="index-rotate-left-at-_0040w_007b_0040i_007by_007d_007d-in-AVL-tree-240"></a>
+<pre class="format"><a href="Rotate_left_at__7cy_7c_in_AVL_tree.c.txt">158</a>. &lt;<a name="158" href="Rotate_left_at__7cy_7c_in_AVL_tree.c.txt">Rotate left at <i>y</i><!-- /@w --> in AVL tree 158</a>&gt; =
+<i>w</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+<i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+<i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="AVL-Insertion-Symmetric-Case.html#157">157</a> and <a href="PAVL-Insertion-Symmetric-Case.html#532">532</a>.</small>
+
+   <p><a name="catalogue_002dentry_002dbst_002d33"></a>
+<a name="index-rotate-right-at-_0040w_007b_0040i_007bx_007d_007d-then-left-at-_0040w_007b_0040i_007by_007d_007d-in-AVL-tree-241"></a>
+<pre class="format"><a href="Rotate_right_at__7cx_7c_then_left_at__7cy_7c_in_AVL_tree.c.txt">159</a>. &lt;<a name="159" href="Rotate_right_at__7cx_7c_then_left_at__7cy_7c_in_AVL_tree.c.txt">Rotate right at <i>x</i><!-- /@w --> then left at <i>y</i><!-- /@w --> in AVL tree 159</a>&gt; =
+<i>assert</i><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == -1);
+<i>w</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>w</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+<i>w</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->;
+<i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+<i>w</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == +1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0, <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = -1;
+<b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+<b>else</b><!-- /@w --> /* <i>w</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == -1 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = +1, <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+<i>w</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="AVL-Insertion-Symmetric-Case.html#157">157</a>, <a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html#174">174</a>, <a href="TAVL-Insertion-Symmetric-Case.html#310">310</a>, <a href="Rebalancing-RTAVL-Trees.html#428">428</a>, and <a href="PAVL-Insertion-Symmetric-Case.html#533">533</a>.</small>
+
+   </body></html>
+

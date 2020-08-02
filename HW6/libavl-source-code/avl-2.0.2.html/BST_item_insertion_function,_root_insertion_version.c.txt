@@ -1,0 +1,64 @@
+/* Inserts |item| into |tree| and returns a pointer to |item|'s address.
+   If a duplicate item is found in the tree,
+   returns a pointer to the duplicate without inserting |item|.
+   Returns |NULL| in case of memory allocation failure. */
+void **
+bst_probe (struct bst_table *tree, void *item)
+{
+  struct bst_node *pa[BST_MAX_HEIGHT]; /* Nodes on stack. */
+  unsigned char da[BST_MAX_HEIGHT];   /* Directions moved from stack nodes. */
+  int k;                             /* Stack height. */
+
+  struct bst_node *p; /* Traverses tree looking for insertion point. */
+  struct bst_node *n; /* Newly inserted node. */
+
+  assert (tree != NULL && item != NULL);
+
+  pa[0] = (struct bst_node *) &tree->bst_root;
+  da[0] = 0;
+  k = 1;
+  for (p = tree->bst_root; p != NULL; p = p->bst_link[da[k - 1]])
+    {
+      int cmp = tree->bst_compare (item, p->bst_data, tree->bst_param);
+      if (cmp == 0)
+        return &p->bst_data;
+
+      if (k >= BST_MAX_HEIGHT)
+        {
+          bst_balance (tree);
+          return bst_probe (tree, item);
+        }
+
+      pa[k] = p;
+      da[k++] = cmp > 0;
+    }
+
+  n = pa[k - 1]->bst_link[da[k - 1]] =
+    tree->bst_alloc->libavl_malloc (tree->bst_alloc, sizeof *n);
+  if (n == NULL)
+    return NULL;
+
+  n->bst_link[0] = n->bst_link[1] = NULL;
+  n->bst_data = item;
+  tree->bst_count++;
+  tree->bst_generation++;
+
+  for (; k > 1; k--)
+    {
+      struct bst_node *q = pa[k - 1];
+
+      if (da[k - 1] == 0)
+        {
+          q->bst_link[0] = n->bst_link[1];
+          n->bst_link[1] = q;
+        }
+      else /* |da[k - 1] == 1| */
+        {
+          q->bst_link[1] = n->bst_link[0];
+          n->bst_link[0] = q;
+        }
+      pa[k - 2]->bst_link[da[k - 2]] = n;
+    }
+
+  return &n->bst_data;
+}

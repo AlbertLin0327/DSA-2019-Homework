@@ -1,0 +1,29 @@
+struct rtavl_node *s;
+int j = k++;
+
+for (;;)
+  {
+    da[k] = 1;
+    pa[k++] = r;
+    s = r->rtavl_link[1];
+    if (s->rtavl_rtag == RTAVL_THREAD)
+      break;
+
+    r = s;
+  }
+
+da[j] = 0;
+pa[j] = pa[j - 1]->rtavl_link[da[j - 1]] = s;
+
+if (s->rtavl_link[0] != NULL)
+  r->rtavl_link[1] = s->rtavl_link[0];
+else
+  {
+    r->rtavl_rtag = RTAVL_THREAD;
+    r->rtavl_link[1] = s;
+  }
+
+s->rtavl_balance = p->rtavl_balance;
+s->rtavl_link[0] = p->rtavl_link[0];
+s->rtavl_link[1] = p->rtavl_link[1];
+s->rtavl_rtag = p->rtavl_rtag;

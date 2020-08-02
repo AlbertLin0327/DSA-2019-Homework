@@ -1,0 +1,1 @@
+pa[k - 1]->rb_link[da[k - 1]] = p->rb_link[0];

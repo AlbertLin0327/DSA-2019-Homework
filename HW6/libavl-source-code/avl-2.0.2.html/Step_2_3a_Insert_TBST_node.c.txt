@@ -1,0 +1,16 @@
+n = tree->tbst_alloc->libavl_malloc (tree->tbst_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+tree->tbst_count++;
+n->tbst_data = item;
+n->tbst_tag[0] = n->tbst_tag[1] = TBST_THREAD;
+n->tbst_link[dir] = p->tbst_link[dir];
+if (tree->tbst_root != NULL)
+  {
+    p->tbst_tag[dir] = TBST_CHILD;
+    n->tbst_link[!dir] = p;
+  }
+else
+  n->tbst_link[1] = NULL;
+p->tbst_link[dir] = n;

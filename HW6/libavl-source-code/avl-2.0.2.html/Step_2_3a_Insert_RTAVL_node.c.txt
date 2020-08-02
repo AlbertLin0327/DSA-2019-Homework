@@ -1,0 +1,23 @@
+n = tree->rtavl_alloc->libavl_malloc (tree->rtavl_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+tree->rtavl_count++;
+n->rtavl_data = item;
+n->rtavl_link[0] = NULL;
+if (dir == 0)
+  n->rtavl_link[1] = p;
+else /* |dir == 1| */
+  {
+    p->rtavl_rtag = RTAVL_CHILD;
+    n->rtavl_link[1] = p->rtavl_link[1];
+  }
+n->rtavl_rtag = RTAVL_THREAD;
+n->rtavl_balance = 0;
+p->rtavl_link[dir] = n;
+if (y == NULL)
+  {
+    n->rtavl_link[1] = NULL;
+    return &n->rtavl_data;
+  }
+

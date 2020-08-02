@@ -1,0 +1,14 @@
+/* Returns the smallest |i| such that |array[i] == key|,
+   or |-1| if |key| is not in |array[]|.
+   |array[]| must be an array of |n int|s. */
+int
+seq_search (int array[], int n, int key)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    if (array[i] == key)
+      return i;
+  return -1;
+}
+

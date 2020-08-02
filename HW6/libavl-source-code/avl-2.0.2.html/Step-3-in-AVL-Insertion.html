@@ -1,0 +1,232 @@
+<html lang="en">
+<head>
+<title>Step 3 in AVL Insertion - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Step-2-in-AVL-Insertion.html" title="5.4.2 Step 2: Insert">
+<link rel=Next href="Rebalancing-AVL-Trees.html" title="5.4.4 Step 4: Rebalance">
+<link rel=Parent href="Inserting-into-an-AVL-Tree.html" title="5.4 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Step-3-in-AVL-Insertion">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.4.3 Step 3: Update Balance Factors</b></big></td>
+<td align=right>
+<a href="index.html#Step-3-in-AVL-Insertion.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Step-2-in-AVL-Insertion.html" title="Skip Back: 5.4.2 Step 2: Insert"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Rebalancing-AVL-Trees.html" title="Skip Forward: 5.4.4 Step 4: Rebalance"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Step-2-in-AVL-Insertion.html" title="Prev: 5.4.2 Step 2: Insert"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-an-AVL-Tree.html" title="Up: 5.4 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Rebalancing-AVL-Trees.html" title="Next: 5.4.4 Step 4: Rebalance"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>When we add a new node <i>n</i><!-- /@w --> to an AVL tree, the balance factor of <i>n</i><!-- /@w -->'s
+parent must change, because the new node increases the height of one
+of the parent's subtrees.  The balance factor of <i>n</i><!-- /@w -->'s parent's parent
+may need to change, too, depending on the parent's balance factor, and
+in fact the change can propagate all the way up the tree to its root.
+
+   <p>At each stage of updating balance factors, we are in a similar
+situation.  First, we are examining a particular node <i>p</i><!-- /@w --> that is one
+of <i>n</i><!-- /@w -->'s direct ancestors.  The first time around, <i>p</i><!-- /@w --> is <i>n</i><!-- /@w -->'s
+parent, the next time, if necessary, <i>p</i><!-- /@w --> is <i>n</i><!-- /@w -->'s grandparent, and so
+on.  Second, the height of one of <i>p</i><!-- /@w -->'s subtrees has increased, and
+which one can be determined using <i>da</i><!-- /@w -->[].
+
+   <p>In general, if the height of <i>p</i><!-- /@w -->'s left subtree increases, <i>p</i><!-- /@w -->'s
+balance factor decreases.  On the other hand, if the right subtree's
+height increases, <i>p</i><!-- /@w -->'s balance factor increases.  If we account for
+the three possible starting balance factors and the two possible
+sides, there are six possibilities.  The three of these corresponding
+to an increase in one subtree's height are symmetric with the others
+that go along with an increase in the other subtree's height.  We
+treat these three cases below.
+
+<h5 class="subsubheading">Case 1: <i>p</i><!-- /@w --> has balance factor 0</h5>
+
+<p>If <i>p</i><!-- /@w --> had balance factor 0, its new balance factor is - or +,
+depending on the side of the root to which the node was added.  After
+that, the change in height propagates up the tree to <i>p</i><!-- /@w -->'s parent
+(unless <i>p</i><!-- /@w --> is the tree's root) because the height of the subtree rooted
+at <i>p</i><!-- /@w -->'s parent has also increased.
+
+   <p>The example below shows a new node <i>n</i><!-- /@w --> inserted as the left child of a
+node with balance factor 0.  On the far left is the original tree before
+insertion; in the middle left is the tree after insertion but before any
+balance factors are adjusted; in the middle right is the tree after the
+first adjustment, with <i>p</i><!-- /@w --> as <i>n</i><!-- /@w -->'s parent; on the far right is the tree
+after the second adjustment, with <i>p</i><!-- /@w --> as <i>n</i><!-- /@w -->'s grandparent.  Only in the
+trees on the far left and far right are all of the balance factors
+correct.
+
+<div align="center"><a href="avlins1.txt"><img border=0 src="avlins1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<h5 class="subsubheading">Case 2: <i>p</i><!-- /@w -->'s shorter subtree has increased in height</h5>
+
+<p>If the new node was added to <i>p</i><!-- /@w -->'s shorter subtree, then the subtree has
+become more balanced and its balance factor becomes 0.  If <i>p</i><!-- /@w --> started
+out with balance factor +, this means the new node is in <i>p</i><!-- /@w -->'s left
+subtree.  If <i>p</i><!-- /@w --> had a - balance factor, this means the new node is in
+the right subtree.  Since tree <i>p</i><!-- /@w --> has the same height as it did before,
+the change does not propagate up the tree any farther, and we are done. 
+Here's an example that shows pre-insertion and post-balance factor
+updating views:
+
+<div align="center"><a href="avlins2.txt"><img border=0 src="avlins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<h5 class="subsubheading">Case 3: <i>p</i><!-- /@w -->'s taller subtree has increased in height</h5>
+
+<p>If the new node was added on the taller side of a subtree with nonzero
+balance factor, the balance factor becomes +2 or -2.  This is a
+problem, because balance factors in AVL trees must be between -1 and
++1.  We have to rebalance the tree in this case.  We will cover
+rebalancing later.  For now, take it on faith that rebalancing does
+not increase the height of subtree <i>p</i><!-- /@w --> as a whole, so there is no need
+to propagate changes any farther up the tree.
+
+   <p>Here's an example of an insertion that leads to rebalancing.  On the
+left is the tree before insertion; in the middle is the tree after
+insertion and updating balance factors; on the right is the tree after
+rebalancing to.  The -2 balance factor is shown as two minus signs
+(-<!-- /@w -->-).  The rebalanced tree is the same height as the original
+tree before insertion.
+
+<div align="center"><a href="avlins3.txt"><img border=0 src="avlins3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>As another demonstration that the height of a rebalanced subtree does
+not change after insertion, here's a similar example that has one more
+layer of nodes.  The trees below follow the same pattern as the ones
+above, but the rebalanced subtree has a parent.  Even though the tree's
+root has the wrong balance factor in the middle diagram, it turns out to
+be correct after rebalancing.
+
+<div align="center"><a href="avlins4.txt"><img border=0 src="avlins4.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<h5 class="subsubheading">Implementation</h5>
+
+<p>Looking at the rules above, we can see that only in case 1, where <i>p</i><!-- /@w -->'s
+balance factor is 0, do changes to balance factors continue to propagate
+upward in the tree.  So we can start from <i>n</i><!-- /@w -->'s parent and move upward
+in the tree, handling case 1 each time, until we hit a nonzero balance
+factor, handle case 2 or case 3 at that node, and we're done (except for
+possible rebalancing afterward).
+
+   <p>Wait a second&mdash;there is no efficient way to move upward in a binary
+search tree!<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>  Fortunately,
+there is another approach we can use.  Remember the extra code we put
+into &lt;<a href="Step-1-in-AVL-Insertion.html#148">Step 1: Search AVL tree for insertion point 148</a>&gt;?  This code kept
+track of the last node we'd passed through that had a nonzero balance
+factor as <i>s</i><!-- /@w -->.  We can use <i>s</i><!-- /@w --> to move downward, instead of upward,
+through the nodes whose balance factors are to be updated.
+
+   <p>Node <i>s</i><!-- /@w --> itself is the topmost node to be updated; when we arrive at
+node <i>n</i><!-- /@w -->, we know we're done.  We also kept track of the directions we
+moved downward in <i>da</i><!-- /@w -->[].  Suppose that we've got a node <i>p</i><!-- /@w --> whose
+balance factor is to be updated and a direction <i>d</i><!-- /@w --> that we moved from
+it.  We know that if we moved down to the left (<i>d</i><!-- /@w --> == 0) then the
+balance factor must be decreased, and that if we moved down to the right
+(<i>d</i><!-- /@w --> == 1) then the balance factor must be increased.
+
+   <p>Now we have enough knowledge to write the code to update balance
+factors.  The results are almost embarrassingly short:
+
+   <p><a name="index-update-balance-factors-after-AVL-insertion-232"></a>
+<pre class="format"><a href="Step_3_3a_Update_balance_factors_after_AVL_insertion.c.txt">150</a>. &lt;<a name="150" href="Step_3_3a_Update_balance_factors_after_AVL_insertion.c.txt">Step 3: Update balance factors after AVL insertion 150</a>&gt; =
+<b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>y</i><!-- /@w -->, <i>k</i><!-- /@w --> = 0; <i>p</i><!-- /@w --> != <i>n</i><!-- /@w -->; <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->]], <i>k</i><!-- /@w -->++)
+  <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] == 0)
+    <i>p</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w -->&ndash;;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>p</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w -->++;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-an-AVL-Tree.html#146">146</a>, <a href="Inserting-into-a-TAVL-Tree.html#301">301</a>, and <a href="Inserting-into-an-RTAVL-Tree.html#419">419</a>.</small>
+
+   <p>Now <i>p</i><!-- /@w --> points to the new node as a consequence of the loop's exit
+condition.  Variable <i>p</i><!-- /@w --> will not be modified again in this function, so
+it is used in the function's final <b>return</b><!-- /@w --> statement to take the
+address of the new node's <i>avl_data</i><!-- /@w --> member (see &lt;<a href="Inserting-into-an-AVL-Tree.html#146">AVL item insertion function 146</a>&gt; above).
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Can case 3 be applied to the parent of the newly inserted node? 
+[<a href="Answers-for-Chapter-5.html#5%2d4%2d3%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="avlinsert"></a>&nbsp;<!-- /@w -->For each of the AVL trees below, add a new node with a value smaller
+than any already in the tree and update the balance factors of the
+existing nodes.  For each balance factor that changes, indicate the
+numbered case above that applies.  Which of the trees require
+rebalancing after the insertion?
+
+<div align="center"><a href="avlexer.txt"><img border=0 src="avlexer.png" alt="[Click here for plain-text rendering]"></a></div>
+   <p>[<a href="Answers-for-Chapter-5.html#5%2d4%2d3%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->Earlier versions of libavl used <b>char</b><!-- /@w -->s, not <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w -->s, to
+cache the results of comparisons, as the elements of <i>da</i><!-- /@w -->[] are used
+here.  At some warning levels, this caused the GNU C compiler to emit
+the warning &ldquo;array subscript has type `char'<span class="dmn">&rdquo;</span> when it
+encountered expressions like <i>q</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->]].  Explain why this
+can be a useful warning message. 
+[<a href="Answers-for-Chapter-5.html#5%2d4%2d3%233">answer</a>]
+
+<p class="noindent"><b>4.</b>&nbsp;<!-- /@w -->If our AVL trees won't ever have a height greater than 32, then we can
+portably use the bits in a single <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> to compactly store
+what the entire <i>da</i><!-- /@w -->[] array does.  Write a new version of step 3 to
+use this form, along with any necessary modifications to other steps
+and <i>avl_probe</i><!-- /@w -->()'s local variables. 
+[<a href="Answers-for-Chapter-5.html#5%2d4%2d3%234">answer</a>]
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> We could make a list of the nodes as we move down
+the tree and reuse it on the way back up.  We'll do that for deletion,
+but there's a simpler way for insertion, so keep reading.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

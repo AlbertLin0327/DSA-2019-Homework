@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+<title>Test Set Generation - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Displaying-BST-Structures.html" title="4.14.1.2 Displaying BST Structures">
+<link rel=Next href="Testing-Overflow.html" title="4.14.3 Testing Overflow">
+<link rel=Parent href="Testing-BST-Functions.html" title="4.14 Testing">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Test-Set-Generation">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14.2 Test Set Generation</b></big></td>
+<td align=right>
+<a href="index.html#Test-Set-Generation.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-BSTs.html" title="Skip Back: 4.14.1 Testing BSTs"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Testing-Overflow.html" title="Skip Forward: 4.14.3 Testing Overflow"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Displaying-BST-Structures.html" title="Prev: 4.14.1.2 Displaying BST Structures"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Testing-BST-Functions.html" title="Up: 4.14 Testing"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Testing-Overflow.html" title="Next: 4.14.3 Testing Overflow"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>We need code to generate a random permutation of numbers to order
+insertion and deletion of items.  We will support some other orders
+besides random permutation as well for completeness and to allow for
+overflow testing.  Here is the complete list:
+
+   <p><a name="index-test-declarations-179"></a>
+<pre class="format"><a href="Test_declarations.c.txt">121</a>. &lt;<a name="121" href="Test_declarations.c.txt">Test declarations 121</a>&gt; =
+/* Insertion order. */
+<b>enum</b><!-- /@w --> <b>insert_order</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007binsert_005forder_007d-enumeration-180"></a>    <tt>INS_RANDOM</tt><!-- /@w -->,			/* Random order. */
+    <tt>INS_ASCENDING</tt><!-- /@w -->,		/* Ascending order. */
+    <tt>INS_DESCENDING</tt><!-- /@w -->,		/* Descending order. */
+    <tt>INS_BALANCED</tt><!-- /@w -->,		/* Balanced tree order. */
+    <tt>INS_ZIGZAG</tt><!-- /@w -->,			/* Zig-zag order. */
+    <tt>INS_ASCENDING_SHIFTED</tt><!-- /@w -->,      /* Ascending from middle, then beginning. */
+    <tt>INS_CUSTOM</tt><!-- /@w -->,			/* Custom order. */
+
+    <tt>INS_CNT</tt><!-- /@w -->                     /* Number of insertion orders. */
+  };
+
+/* Deletion order. */
+<b>enum</b><!-- /@w --> <b>delete_order</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bdelete_005forder_007d-enumeration-181"></a>    <tt>DEL_RANDOM</tt><!-- /@w -->,			/* Random order. */
+    <tt>DEL_REVERSE</tt><!-- /@w -->,		/* Reverse of insertion order. */
+    <tt>DEL_SAME</tt><!-- /@w -->,			/* Same as insertion order. */
+    <tt>DEL_CUSTOM</tt><!-- /@w -->,			/* Custom order. */
+
+    <tt>DEL_CNT</tt><!-- /@w -->                     /* Number of deletion orders. */
+  };
+</pre>
+   <p class="noindent"><small>See also <a href="Memory-Manager.html#125">125</a>, <a href="User-Interaction.html#133">133</a>, <a href="Main-Program.html#138">138</a>, <a href="Main-Program.html#139">139</a>, and<a href="Main-Program.html#141">141</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Testing-BST-Functions.html#97">97</a>.</small></div>
+
+<p class="noindent">The code to actually generate these orderings is left to the exercises.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Write a function to generate a random permutation of the <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s
+between 0 and <i>n</i><!-- /@w --> - 1 into a provided array. 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d2%231">answer</a>]
+
+<p class="noindent"><b>*2.</b>&nbsp;<!-- /@w -->Write a function to generate an ordering of <b>int</b><!-- /@w -->s that, when inserted
+into a binary tree, produces a balanced tree of the integers from <i>min</i><!-- /@w --> to
+<i>max</i><!-- /@w --> inclusive.  (Hint: what kind of recursive traversal makes this
+easy?) 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d2%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->Write one function to generate an insertion order of <i>n</i><!-- /@w --> integers into a
+provided array based on an <b>enum</b><!-- /@w --> <b>insert_order</b> and the functions written
+in the previous two exercises.  Write a second function to generate a
+deletion order using similar parameters plus the order of insertion. 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d2%233">answer</a>]
+
+<p class="noindent"><b>*4.</b>&nbsp;<!-- /@w -->By default, the C random number generator produces the same sequence
+every time the program is run.  In order to generate different
+sequences, it has to be &ldquo;seeded&rdquo; using <i>srand</i><!-- /@w -->() with a unique value. 
+Write a function to select a random number seed based on the current
+time. 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d2%234">answer</a>]
+
+   </body></html>
+

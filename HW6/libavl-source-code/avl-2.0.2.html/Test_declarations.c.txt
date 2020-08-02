@@ -1,0 +1,75 @@
+/* Insertion order. */
+enum insert_order
+  {
+    INS_RANDOM,                        /* Random order. */
+    INS_ASCENDING,                /* Ascending order. */
+    INS_DESCENDING,                /* Descending order. */
+    INS_BALANCED,                /* Balanced tree order. */
+    INS_ZIGZAG,                        /* Zig-zag order. */
+    INS_ASCENDING_SHIFTED,      /* Ascending from middle, then beginning. */
+    INS_CUSTOM,                        /* Custom order. */
+
+    INS_CNT                     /* Number of insertion orders. */
+  };
+
+/* Deletion order. */
+enum delete_order
+  {
+    DEL_RANDOM,                        /* Random order. */
+    DEL_REVERSE,                /* Reverse of insertion order. */
+    DEL_SAME,                        /* Same as insertion order. */
+    DEL_CUSTOM,                        /* Custom order. */
+
+    DEL_CNT                     /* Number of deletion orders. */
+  };
+
+/* Memory tracking policy. */
+enum mt_policy
+  {
+    MT_TRACK,                        /* Track allocation for leak detection. */
+    MT_NO_TRACK,                /* No leak detection. */
+    MT_FAIL_COUNT,        /* Fail allocations after a while. */
+    MT_FAIL_PERCENT,                /* Fail allocations randomly. */
+    MT_SUBALLOC                 /* Suballocate from larger blocks. */
+  };
+
+/* A single command-line option. */
+struct option
+  {
+    const char *long_name;        /* Long name (|"--name"|). */
+    int short_name;                /* Short name (|"-n"|); value returned. */
+    int has_arg;                /* Has a required argument? */
+  };
+
+/* Test to perform. */
+enum test
+  {
+    TST_CORRECTNESS,                /* Default tests. */
+    TST_OVERFLOW,                /* Stack overflow test. */
+    TST_NULL                    /* No test, just overhead. */
+  };
+
+/* Program options. */
+struct test_options
+  {
+    enum test test;                     /* Test to perform. */
+    enum insert_order insert_order;     /* Insertion order. */
+    enum delete_order delete_order;     /* Deletion order. */
+
+    enum mt_policy alloc_policy;        /* Allocation policy. */
+    int alloc_arg[2];                   /* Policy arguments. */
+    int alloc_incr; /* Amount to increment |alloc_arg| each iteration. */
+
+    int node_cnt;                       /* Number of nodes in tree. */
+    int iter_cnt;                       /* Number of runs. */
+
+    int seed_given;                     /* Seed provided on command line? */
+    unsigned seed;                      /* Random number seed. */
+
+    int verbosity;                      /* Verbosity level, 0=default. */
+    int nonstop;                        /* Don't stop after one error? */
+  };
+
+/* Program name. */
+char *pgm_name;
+

@@ -1,0 +1,16 @@
+for (; k > 1; k--)
+  {
+    struct bst_node *q = pa[k - 1];
+
+    if (da[k - 1] == 0)
+      {
+        q->bst_link[0] = n->bst_link[1];
+        n->bst_link[1] = q;
+      }
+    else /* |da[k - 1] == 1| */
+      {
+        q->bst_link[1] = n->bst_link[0];
+        n->bst_link[0] = q;
+      }
+    pa[k - 2]->bst_link[da[k - 2]] = n;
+  }

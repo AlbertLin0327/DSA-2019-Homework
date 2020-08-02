@@ -1,0 +1,207 @@
+<html lang="en">
+<head>
+<title>Root Insertion in a BST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Inserting-into-a-BST.html" title="4.7 Insertion">
+<link rel=Next href="Deleting-from-a-BST.html" title="4.8 Deletion">
+<link rel=Parent href="Inserting-into-a-BST.html" title="4.7 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Root-Insertion-in-a-BST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.7.1 Aside: Root Insertion</b></big></td>
+<td align=right>
+<a href="index.html#Root-Insertion-in-a-BST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-into-a-BST.html" title="Prev: 4.7 Insertion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-a-BST.html" title="Up: 4.7 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-from-a-BST.html" title="Next: 4.8 Deletion"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>One side effect of the usual method for BST insertion, implemented in
+the previous section, is that items inserted more recently tend to be
+farther from the root, and therefore it takes longer to find them than
+items inserted longer ago.  If all items are equally likely to be
+requested in a search, this is unimportant, but this is regrettable
+for some common usage patterns, where recently inserted items tend to
+be searched for more often than older items.
+
+   <p>In this section, we examine an alternative scheme for insertion that
+addresses this problem, called &ldquo;insertion at the root&rdquo; or &ldquo;root
+insertion&rdquo;.  An insertion with this algorithm always places the new
+node at the root of the tree.  Following a series of such insertions,
+nodes inserted more recently tend to be nearer the root than other
+nodes.
+
+   <p>As a first attempt at implementing this idea, we might try simply
+making the new node the root and assigning the old root as one of its
+children.  Unfortunately, this and similar approaches will not work
+because there is no guarantee that nodes in the existing tree have
+values all less than or all greater than the new node.
+
+   <p>An approach that will work is to perform a conventional insertion as a
+leaf node, then use a series of rotations to move the new node to the
+root.  For example, the diagram below illustrates rotations to move
+node 4 to the root.  A left rotation on 3 changes the first tree into
+the second, a right rotation on 5 changes the second into the third,
+and finally a left rotation on 1 moves 4 into the root position:
+
+<div align="center"><a href="rootins.txt"><img border=0 src="rootins.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The general rule follows the pattern above.  If we moved down to the
+left from a node <i>x</i><!-- /@w --> during the insertion search, we rotate right at
+<i>x</i><!-- /@w -->.  If we moved down to the right, we rotate left.
+
+   <p>The implementation is straightforward.  As we search for the insertion
+point we keep track of the nodes we've passed through, then after the
+insertion we return to each of them in reverse order and perform a
+rotation:
+
+   <p><a name="catalogue_002dentry_002dbst_002d3"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-BST-item-insertion-function_002c-root-insertion-version-49"></a>
+<pre class="format"><a href="BST_item_insertion_function,_root_insertion_version.c.txt">33</a>. &lt;<a name="33" href="BST_item_insertion_function,_root_insertion_version.c.txt">BST item insertion function, root insertion version 33</a>&gt; =
+<b>void</b><!-- /@w --> **<br><i>bst_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fprobe_007d-function-50"></a>  &lt;<a href="Inserting-into-an-RB-Tree.html#198"><i>rb_probe</i><!-- /@w -->() local variables; rb =&gt; bst 198</a>&gt;
+
+  &lt;<a href="Root-Insertion-in-a-BST.html#34">Step 1: Search BST for insertion point, root insertion version 34</a>&gt;
+  &lt;<a href="Root-Insertion-in-a-BST.html#35">Step 2: Insert new BST node, root insertion version 35</a>&gt;
+  &lt;<a href="Root-Insertion-in-a-BST.html#36">Step 3: Move BST node to root 36</a>&gt;
+
+  <b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+}
+</pre>
+   <p><a name="index-search-BST-for-insertion-point_002c-root-insertion-version-51"></a>
+<pre class="format"><a href="Step_1_3a_Search_BST_for_insertion_point,_root_insertion_version.c.txt">34</a>. &lt;<a name="34" href="Step_1_3a_Search_BST_for_insertion_point,_root_insertion_version.c.txt">Step 1: Search BST for insertion point, root insertion version 34</a>&gt; =
+<i>pa</i><!-- /@w -->[0] = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+<i>da</i><!-- /@w -->[0] = 0;
+<i>k</i><!-- /@w --> = 1;
+<b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+    <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> == 0)
+      <b>return</b><!-- /@w --> &amp;<i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>bst_balance</i><!-- /@w --> (<i>tree</i><!-- /@w -->);
+        <b>return</b><!-- /@w --> <i>bst_probe</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>item</i><!-- /@w -->);
+      }
+
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>p</i><!-- /@w -->;
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>cmp</i><!-- /@w --> &gt; 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Root-Insertion-in-a-BST.html#33">33</a>.</small>
+
+   <p><a name="index-insert-new-BST-node_002c-root-insertion-version-52"></a>
+<pre class="format"><a href="Step_2_3a_Insert_new_BST_node,_root_insertion_version.c.txt">35</a>. &lt;<a name="35" href="Step_2_3a_Insert_new_BST_node,_root_insertion_version.c.txt">Step 2: Insert new BST node, root insertion version 35</a>&gt; =
+<i>n</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>bst_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] =
+  <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>n</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>n</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+<i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+<i>n</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+<i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->++;
+<i>tree</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w -->++;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Root-Insertion-in-a-BST.html#33">33</a>.</small>
+
+   <p><a name="index-move-BST-node-to-root-53"></a>
+<pre class="format"><a href="Step_3_3a_Move_BST_node_to_root.c.txt">36</a>. &lt;<a name="36" href="Step_3_3a_Move_BST_node_to_root.c.txt">Step 3: Move BST node to root 36</a>&gt; =
+<b>for</b><!-- /@w --> (; <i>k</i><!-- /@w --> &gt; 1; <i>k</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>q</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+        <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>q</i><!-- /@w -->;
+      } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> /* <i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 1 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>q</i><!-- /@w -->;
+      }
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>bst_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]] = <i>n</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Root-Insertion-in-a-BST.html#33">33</a>, <a href="Answers-for-Chapter-4.html#622">622</a>, and <a href="Answers-for-Chapter-4.html#627">627</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], section 12.8.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="rootins1"></a>&nbsp;<!-- /@w -->Root insertion will prove useful later when we write a function to
+join a pair of disjoint BSTs (see <a href="Joining-BSTs.html">Joining BSTs</a>).  For that
+purpose, we need to be able to insert a preallocated node as the root
+of an arbitrary tree that may be a subtree of some other tree.  Write
+a function to do this matching the following prototype:
+
+<pre class="format"><b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <i>root_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> **<i>root</i><!-- /@w -->,
+                        <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>new_node</i><!-- /@w -->);
+</pre>
+   <p class="noindent">Your function should insert <i>new_node</i><!-- /@w --> at *<i>root</i><!-- /@w --> using root
+insertion, storing <i>new_node</i><!-- /@w --> into *<i>root</i><!-- /@w -->, and return nonzero only if
+successful.  The subtree at *<i>root</i><!-- /@w --> is in <i>tree</i><!-- /@w -->.  You may assume that
+no node matching <i>new_node</i><!-- /@w --> exists within subtree <i>root</i><!-- /@w -->. 
+[<a href="Answers-for-Chapter-4.html#4%2d7%2d1%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="rootins2"></a>&nbsp;<!-- /@w -->Now implement a root insertion as in Exercise 1, except
+that the function is not allowed to fail, and rebalancing the tree is
+not acceptable either.  Use the same prototype with the return type
+changed to <b>void</b><!-- /@w -->. 
+[<a href="Answers-for-Chapter-4.html#4%2d7%2d1%232">answer</a>]
+
+<p class="noindent"><b>*3.</b>&nbsp;<!-- /@w -->Suppose that we perform a series of root insertions in an initially
+empty BST.  What kinds of insertion orders require a large amount of
+stack? 
+[<a href="Answers-for-Chapter-4.html#4%2d7%2d1%233">answer</a>]
+
+   </body></html>
+

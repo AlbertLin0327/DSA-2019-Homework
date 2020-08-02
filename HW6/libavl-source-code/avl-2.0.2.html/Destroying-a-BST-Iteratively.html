@@ -1,0 +1,178 @@
+<html lang="en">
+<head>
+<title>Destroying a BST Iteratively - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Destroying-a-BST-Recursively.html" title="4.11.2 Aside: Recursive Destruction">
+<link rel=Next href="Balancing-a-BST.html" title="4.12 Balance">
+<link rel=Parent href="Destroying-a-BST.html" title="4.11 Destruction">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Destroying-a-BST-Iteratively">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.11.3 Aside: Iterative Destruction</b></big></td>
+<td align=right>
+<a href="index.html#Destroying-a-BST-Iteratively.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Destroying-a-BST-Recursively.html" title="Skip Back: 4.11.2 Aside: Recursive Destruction"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Destroying-a-BST-Recursively.html" title="Prev: 4.11.2 Aside: Recursive Destruction"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Destroying-a-BST.html" title="Up: 4.11 Destruction"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Balancing-a-BST.html" title="Next: 4.12 Balance"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>As we've done before for other algorithms, we can factor the recursive
+destruction algorithm into an equivalent iteration.  In this case,
+neither recursive call is tail recursive, and we can't easily modify
+the code so that it is.  We could still factor out the recursion by
+our usual methods, although it would be more difficult, but this
+problem is simple enough to figure out from first principles.  Let's
+do it that way, instead, this time.
+
+   <p>The idea is that, for the tree's root, we traverse its left subtree,
+then its right subtree, then free the root.  This pattern is called a
+<dfn>postorder traversal</dfn> (see <a href="Glossary.html#postorder%20traversal">postorder traversal</a>).
+
+   <p>Let's think about how much state we need to keep track of.  When we're
+traversing the root's left subtree, we still need to remember the root,
+in order to come back to it later.  The same is true while traversing
+the root's right subtree, because we still need to come back to free the
+root.  What's more, we need to keep track of what state we're in: have
+we traversed the root's left subtree or not, have we traversed the
+root's right subtree or not?
+
+   <p>This naturally suggests a stack that holds two-part items (<i>root</i><!-- /@w -->, <i>state</i><!-- /@w -->), where <i>root</i><!-- /@w --> is the root of the tree or subtree and <i>state</i><!-- /@w --> is
+the state of the traversal at that node.  We start by selecting the
+tree's root as our current node <i>p</i><!-- /@w -->, then pushing (<i>p</i><!-- /@w -->, 0) onto the
+stack and moving down to the left as far as we can, pushing as we go. 
+Then we start popping off the stack into (<i>p</i><!-- /@w -->, <i>state</i><!-- /@w -->) and notice that
+<i>state</i><!-- /@w --> is 0, which tells us that we've traversed <i>p</i><!-- /@w -->'s left subtree but
+not its right.  So, we push (<i>p</i><!-- /@w -->, 1) back onto the stack, then we
+traverse <i>p</i><!-- /@w -->'s right subtree.  When, later, we pop off that same node
+back off the stack, the 1 tells us that we've already traversed both
+subtrees, so we free the node and keep popping.  The pattern follows as
+we continue back up the tree.
+
+   <p>That sounds pretty complicated, so let's work through an example to help
+clarify.  Consider this binary search tree:
+
+<div align="center"><a href="traversal.txt"><img border=0 src="traversal.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Abstractly speaking, we start with 4 as <i>p</i><!-- /@w --> and an empty stack.  First,
+we work our way down the left-child pointers, pushing onto the stack as
+we go.  We push (4, 0), then (2, 0), then (1, 0), and then <i>p</i><!-- /@w --> is
+<tt>NULL</tt><!-- /@w --> and we've fallen off the bottom of the tree.  We pop the top item
+off the stack into (<i>p</i><!-- /@w -->, <i>state</i><!-- /@w -->), getting (1, 0).  Noticing that we
+have 0 for <i>state</i><!-- /@w -->, we push (1, 1) on the stack and traverse 1's right
+subtree, but it is empty so there is nothing to do.  We pop again and
+notice that <i>state</i><!-- /@w --> is 1, meaning that we've fully traversed 1's
+subtrees, so we free node 1.  We pop again, getting 2 for <i>p</i><!-- /@w --> and 0 for
+<i>state</i><!-- /@w -->.  Because <i>state</i><!-- /@w --> is 0, we push (2, 1) and traverse 2's
+right subtree, which means that we push (3, 0).  We traverse 3's null
+right subtree (again, it is empty so there is nothing to do), pushing
+and popping (3, 1), then free node 3, then move back up to 2.  Because
+we've traversed 2's right subtree, <i>state</i><!-- /@w --> is 1 and <i>p</i><!-- /@w --> is 2, and we
+free node 2.  You should be able to figure out how 4 and 5 get freed.
+
+   <p>A straightforward implementation of this approach looks like this:
+
+   <p><a name="catalogue_002dentry_002dbst_002d26"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-destroy-a-BST-iteratively-135"></a>
+<pre class="format"><a href="Destroy_a_BST_iteratively.c.txt">86</a>. &lt;<a name="86" href="Destroy_a_BST_iteratively.c.txt">Destroy a BST iteratively 86</a>&gt; =
+<b>void</b><!-- /@w --> <br><i>bst_destroy</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>destroy</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fdestroy_007d-function-136"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>stack</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];
+  <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>state</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];
+  <b>int</b><!-- /@w --> <i>height</i><!-- /@w --> = 0;
+
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>while</b><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"tree too deep\n"</tt>);
+              <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+            }
+          <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->] = <i>p</i><!-- /@w -->;
+          <i>state</i><!-- /@w -->[<i>height</i><!-- /@w -->] = 0;
+          <i>height</i><!-- /@w -->++;
+
+          <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        }
+
+      <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+              <b>return</b><!-- /@w -->;
+            }
+
+          <i>height</i><!-- /@w -->&ndash;;
+          <i>p</i><!-- /@w --> = <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->];
+          <b>if</b><!-- /@w --> (<i>state</i><!-- /@w -->[<i>height</i><!-- /@w -->] == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>state</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = 1;
+              <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+              <b>break</b><!-- /@w -->;
+            } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>if</b><!-- /@w --> (<i>destroy</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+                <i>destroy</i><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+              <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+            }
+        }
+    }
+}
+</pre>
+   <!-- FIXME: Exercise benchmarking difference in speed. -->
+<!-- FIXME: Exercise adding code to handle stack overflow? -->
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201997">Knuth 1997</a>], exercise 13 in section 2.3.1.
+
+   </body></html>
+

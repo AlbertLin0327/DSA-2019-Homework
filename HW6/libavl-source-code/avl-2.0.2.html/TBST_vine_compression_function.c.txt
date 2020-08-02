@@ -1,0 +1,33 @@
+/* Performs a nonthreaded compression operation |nonthread| times,
+   then a threaded compression operation |thread| times,
+   starting at |root|. */
+static void
+compress (struct tbst_node *root,
+          unsigned long nonthread, unsigned long thread)
+{
+  assert (root != NULL);
+
+  while (nonthread--)
+    {
+      struct tbst_node *red = root->tbst_link[0];
+      struct tbst_node *black = red->tbst_link[0];
+
+      root->tbst_link[0] = black;
+      red->tbst_link[0] = black->tbst_link[1];
+      black->tbst_link[1] = red;
+      root = black;
+    }
+
+  while (thread--)
+    {
+      struct tbst_node *red = root->tbst_link[0];
+      struct tbst_node *black = red->tbst_link[0];
+
+      root->tbst_link[0] = black;
+      red->tbst_link[0] = black;
+      red->tbst_tag[0] = TBST_THREAD;
+      black->tbst_tag[1] = TBST_CHILD;
+      root = black;
+    }
+}
+

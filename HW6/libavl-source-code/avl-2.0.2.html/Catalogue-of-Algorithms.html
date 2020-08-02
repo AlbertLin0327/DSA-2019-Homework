@@ -1,0 +1,733 @@
+<html lang="en">
+<head>
+<title>Catalogue of Algorithms - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-14.html" title="Chapter 14">
+<link rel=Next href="Index.html" title="Appendix F Index">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Catalogue-of-Algorithms">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Appendix E Catalogue of Algorithms</b></big></td>
+<td align=right>
+<a href="index.html#Catalogue-of-Algorithms.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-to-All-the-Exercises.html" title="Skip Back: Appendix D Answers to All the Exercises"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Index.html" title="Skip Forward: Appendix F Index"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-14.html" title="Prev: Chapter 14"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Index.html" title="Next: Appendix F Index"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>This appendix lists all of the algorithms described and implemented in
+this book, along with page number references.  Each algorithm is
+listed under the least-specific type of tree to which it applies,
+which is not always the same as the place where it is introduced.  For
+instance, rotations on threaded trees can be used in any threaded
+tree, so they appear under &ldquo;Threaded Binary Search Tree Algorithms&rdquo;,
+despite their formal introduction later within the threaded AVL tree
+chapter.
+
+   <p>Sometimes multiple algorithms for accomplishing the same task are
+listed.  In this case, the different algorithms are qualified by a few
+descriptive words.  For the algorithm used in libavl, the
+description is enclosed by parentheses, and the description of each
+alternative algorithm is set off by a comma.
+
+<h3 class="unnumberedsec">Binary Search Tree Algorithms</h3>
+
+<p class="noindent">Advancing a traverser:
+<div align="right"><a href="BST-Traverser-Advancing.html#catalogue%2dentry%2dbst%2d17">catalogue-entry-bst-17</a>
+   </div>
+
+<p class="noindent">Backing up a traverser:
+<div align="right"><a href="BST-Traverser-Retreating.html#catalogue%2dentry%2dbst%2d18">catalogue-entry-bst-18</a>
+   </div>
+
+<p class="noindent">Balancing:
+<div align="right"><a href="Balancing-a-BST.html#catalogue%2dentry%2dbst%2d27">catalogue-entry-bst-27</a>
+   </div>
+
+<p class="noindent">Copying (iterative; robust):
+<div align="right"><a href="Handling-Errors-in-Iterative-BST-Copying.html#catalogue%2dentry%2dbst%2d23">catalogue-entry-bst-23</a>
+   </div>
+
+<p class="noindent">Copying, iterative:
+<div align="right"><a href="Copying-a-BST-Iteratively.html#catalogue%2dentry%2dbst%2d22">catalogue-entry-bst-22</a>
+   </div>
+
+<p class="noindent">Copying, recursive:
+<div align="right"><a href="Copying-a-BST-Recursively.html#catalogue%2dentry%2dbst%2d21">catalogue-entry-bst-21</a>
+   </div>
+
+<p class="noindent">Copying, recursive; robust, version 1:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d46">catalogue-entry-bst-46</a>
+   </div>
+
+<p class="noindent">Copying, recursive; robust, version 2:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d47">catalogue-entry-bst-47</a>
+   </div>
+
+<p class="noindent">Copying, recursive; robust, version 3:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d48">catalogue-entry-bst-48</a>
+   </div>
+
+<p class="noindent">Creation:
+<div align="right"><a href="Creating-a-BST.html#catalogue%2dentry%2dbst%2d0">catalogue-entry-bst-0</a>
+   </div>
+
+<p class="noindent">Deletion (iterative):
+<div align="right"><a href="Deleting-from-a-BST.html#catalogue%2dentry%2dbst%2d4">catalogue-entry-bst-4</a>
+   </div>
+
+<p class="noindent">Deletion, by merging:
+<div align="right"><a href="Deletion-by-Merging.html#catalogue%2dentry%2dbst%2d5">catalogue-entry-bst-5</a>
+   </div>
+
+<p class="noindent">Deletion, special case for no left child:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d40">catalogue-entry-bst-40</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d41">catalogue-entry-bst-41</a>
+   </div>
+
+<p class="noindent">Destruction (by rotation):
+<div align="right"><a href="Destroying-a-BST-by-Rotation.html#catalogue%2dentry%2dbst%2d24">catalogue-entry-bst-24</a>
+   </div>
+
+<p class="noindent">Destruction, iterative:
+<div align="right"><a href="Destroying-a-BST-Iteratively.html#catalogue%2dentry%2dbst%2d26">catalogue-entry-bst-26</a>
+   </div>
+
+<p class="noindent">Destruction, recursive:
+<div align="right"><a href="Destroying-a-BST-Recursively.html#catalogue%2dentry%2dbst%2d25">catalogue-entry-bst-25</a>
+   </div>
+
+<p class="noindent">Getting the current item in a traverser:
+<div align="right"><a href="BST-Traversal-Current-Item.html#catalogue%2dentry%2dbst%2d19">catalogue-entry-bst-19</a>
+   </div>
+
+<p class="noindent">Initialization of traverser as copy:
+<div align="right"><a href="BST-Traverser-Copying.html#catalogue%2dentry%2dbst%2d15">catalogue-entry-bst-15</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to found item:
+<div align="right"><a href="BST-Traverser-Find-Initialization.html#catalogue%2dentry%2dbst%2d13">catalogue-entry-bst-13</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to greatest item:
+<div align="right"><a href="BST-Traverser-Last-Initialization.html#catalogue%2dentry%2dbst%2d12">catalogue-entry-bst-12</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to inserted item:
+<div align="right"><a href="BST-Traverser-Insert-Initialization.html#catalogue%2dentry%2dbst%2d14">catalogue-entry-bst-14</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to least item:
+<div align="right"><a href="BST-Traverser-First-Initialization.html#catalogue%2dentry%2dbst%2d11">catalogue-entry-bst-11</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to null item:
+<div align="right"><a href="BST-Traverser-Null-Initialization.html#catalogue%2dentry%2dbst%2d10">catalogue-entry-bst-10</a>
+   </div>
+
+<p class="noindent">Insertion (iterative):
+<div align="right"><a href="Inserting-into-a-BST.html#catalogue%2dentry%2dbst%2d2">catalogue-entry-bst-2</a>
+   </div>
+
+<p class="noindent">Insertion, as root:
+<div align="right"><a href="Root-Insertion-in-a-BST.html#catalogue%2dentry%2dbst%2d3">catalogue-entry-bst-3</a>
+   </div>
+
+<p class="noindent">Insertion, as root, of existing node in arbitrary subtree:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d38">catalogue-entry-bst-38</a>
+   </div>
+
+<p class="noindent">Insertion, as root, of existing node in arbitrary subtree, robustly:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d39">catalogue-entry-bst-39</a>
+   </div>
+
+<p class="noindent">Insertion, using pointer to pointer:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d36">catalogue-entry-bst-36</a>
+   </div>
+
+<p class="noindent">Join, iterative:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d49">catalogue-entry-bst-49</a>
+   </div>
+
+<p class="noindent">Join, recursive:
+<div align="right"><a href="Joining-BSTs.html#catalogue%2dentry%2dbst%2d31">catalogue-entry-bst-31</a>
+   </div>
+
+<p class="noindent">Refreshing of a traverser (general):
+<div align="right"><a href="Better-Iterative-Traversal.html#catalogue%2dentry%2dbst%2d9">catalogue-entry-bst-9</a>
+   </div>
+
+<p class="noindent">Refreshing of a traverser, optimized:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d45">catalogue-entry-bst-45</a>
+   </div>
+
+<p class="noindent">Replacing the current item in a traverser:
+<div align="right"><a href="BST-Traversal-Replacing-the-Current-Item.html#catalogue%2dentry%2dbst%2d20">catalogue-entry-bst-20</a>
+   </div>
+
+<p class="noindent">Rotation, left:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d35">catalogue-entry-bst-35</a>
+   </div>
+
+<p class="noindent">Rotation, left double:
+<div align="right"><a href="Rebalancing-AVL-Trees.html#catalogue%2dentry%2dbst%2d32">catalogue-entry-bst-32</a>
+   </div>
+
+<p class="noindent">Rotation, right:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d34">catalogue-entry-bst-34</a>
+   </div>
+
+<p class="noindent">Rotation, right double:
+<div align="right"><a href="AVL-Insertion-Symmetric-Case.html#catalogue%2dentry%2dbst%2d33">catalogue-entry-bst-33</a>
+   </div>
+
+<p class="noindent">Search:
+<div align="right"><a href="Searching-a-BST.html#catalogue%2dentry%2dbst%2d1">catalogue-entry-bst-1</a>
+   </div>
+
+<p class="noindent">Traversal (iterative; convenient, reliable):
+<div align="right"><a href="BST-Traverser-Advancing.html#catalogue%2dentry%2dbst%2d16">catalogue-entry-bst-16</a>
+   </div>
+
+<p class="noindent">Traversal, iterative:
+<div align="right"><a href="Iterative-Traversal-of-a-BST.html#catalogue%2dentry%2dbst%2d7">catalogue-entry-bst-7</a>
+   </div>
+
+<p class="noindent">Traversal, iterative; convenient:
+<div align="right"><a href="Improving-Convenience.html#catalogue%2dentry%2dbst%2d8">catalogue-entry-bst-8</a>
+   </div>
+
+<p class="noindent">Traversal, iterative; convenient, reliable:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d44">catalogue-entry-bst-44</a>
+   </div>
+
+<p class="noindent">Traversal, iterative; with dynamic stack:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d43">catalogue-entry-bst-43</a>
+   </div>
+
+<p class="noindent">Traversal, level order:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d37">catalogue-entry-bst-37</a>
+   </div>
+
+<p class="noindent">Traversal, recursive:
+<div align="right"><a href="Recursive-Traversal-of-a-BST.html#catalogue%2dentry%2dbst%2d6">catalogue-entry-bst-6</a>
+   </div>
+
+<p class="noindent">Traversal, recursive; with nested function:
+<div align="right"><a href="Answers-for-Chapter-4.html#catalogue%2dentry%2dbst%2d42">catalogue-entry-bst-42</a>
+   </div>
+
+<p class="noindent">Vine compression:
+<div align="right"><a href="Implementing-Compression.html#catalogue%2dentry%2dbst%2d30">catalogue-entry-bst-30</a>
+   </div>
+
+<p class="noindent">Vine from tree:
+<div align="right"><a href="Transforming-a-BST-into-a-Vine.html#catalogue%2dentry%2dbst%2d28">catalogue-entry-bst-28</a>
+   </div>
+
+<p class="noindent">Vine to balanced tree:
+<div align="right"><a href="Balancing-Implementation.html#catalogue%2dentry%2dbst%2d29">catalogue-entry-bst-29</a>
+   </div>
+
+<h3 class="unnumberedsec">AVL Tree Algorithms</h3>
+
+<p class="noindent">Advancing a traverser:
+<div align="right"><a href="Traversal-of-an-AVL-Tree.html#catalogue%2dentry%2davl%2d7">catalogue-entry-avl-7</a>
+   </div>
+
+<p class="noindent">Backing up a traverser:
+<div align="right"><a href="Traversal-of-an-AVL-Tree.html#catalogue%2dentry%2davl%2d8">catalogue-entry-avl-8</a>
+   </div>
+
+<p class="noindent">Copying (iterative):
+<div align="right"><a href="Copying-an-AVL-Tree.html#catalogue%2dentry%2davl%2d9">catalogue-entry-avl-9</a>
+   </div>
+
+<p class="noindent">Deletion (iterative):
+<div align="right"><a href="Deleting-from-an-AVL-Tree.html#catalogue%2dentry%2davl%2d2">catalogue-entry-avl-2</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification:
+<div align="right"><a href="Answers-for-Chapter-5.html#catalogue%2dentry%2davl%2d11">catalogue-entry-avl-11</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to found item:
+<div align="right"><a href="Traversal-of-an-AVL-Tree.html#catalogue%2dentry%2davl%2d6">catalogue-entry-avl-6</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to greatest item:
+<div align="right"><a href="Traversal-of-an-AVL-Tree.html#catalogue%2dentry%2davl%2d5">catalogue-entry-avl-5</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to inserted item:
+<div align="right"><a href="Traversal-of-an-AVL-Tree.html#catalogue%2dentry%2davl%2d3">catalogue-entry-avl-3</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to least item:
+<div align="right"><a href="Traversal-of-an-AVL-Tree.html#catalogue%2dentry%2davl%2d4">catalogue-entry-avl-4</a>
+   </div>
+
+<p class="noindent">Insertion (iterative):
+<div align="right"><a href="Inserting-into-an-AVL-Tree.html#catalogue%2dentry%2davl%2d0">catalogue-entry-avl-0</a>
+   </div>
+
+<p class="noindent">Insertion, recursive:
+<div align="right"><a href="Recursive-Insertion.html#catalogue%2dentry%2davl%2d1">catalogue-entry-avl-1</a>
+   </div>
+
+<p class="noindent">Insertion, with bitmask:
+<div align="right"><a href="Answers-for-Chapter-5.html#catalogue%2dentry%2davl%2d10">catalogue-entry-avl-10</a>
+   </div>
+
+<h3 class="unnumberedsec">Red-Black Tree Algorithms</h3>
+
+<p class="noindent">Deletion (iterative):
+<div align="right"><a href="Deleting-from-an-RB-Tree.html#catalogue%2dentry%2drb%2d2">catalogue-entry-rb-2</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification:
+<div align="right"><a href="Answers-for-Chapter-6.html#catalogue%2dentry%2drb%2d3">catalogue-entry-rb-3</a>
+   </div>
+
+<p class="noindent">Insertion (iterative):
+<div align="right"><a href="Inserting-into-an-RB-Tree.html#catalogue%2dentry%2drb%2d0">catalogue-entry-rb-0</a>
+   </div>
+
+<p class="noindent">Insertion, initial black:
+<div align="right"><a href="Initial-Black-Insertion-in-an-RB-Tree.html#catalogue%2dentry%2drb%2d1">catalogue-entry-rb-1</a>
+   </div>
+
+<h3 class="unnumberedsec">Threaded Binary Search Tree Algorithms</h3>
+
+<p class="noindent">Advancing a traverser:
+<div align="right"><a href="TBST-Traverser-Advancing.html#catalogue%2dentry%2dtbst%2d10">catalogue-entry-tbst-10</a>
+   </div>
+
+<p class="noindent">Backing up a traverser:
+<div align="right"><a href="TBST-Traverser-Retreating.html#catalogue%2dentry%2dtbst%2d11">catalogue-entry-tbst-11</a>
+   </div>
+
+<p class="noindent">Balancing:
+<div align="right"><a href="Balancing-a-TBST.html#catalogue%2dentry%2dtbst%2d15">catalogue-entry-tbst-15</a>
+   </div>
+
+<p class="noindent">Copying:
+<div align="right"><a href="Copying-a-TBST.html#catalogue%2dentry%2dtbst%2d13">catalogue-entry-tbst-13</a>
+   </div>
+
+<p class="noindent">Copying a node:
+<div align="right"><a href="Copying-a-TBST.html#catalogue%2dentry%2dtbst%2d12">catalogue-entry-tbst-12</a>
+   </div>
+
+<p class="noindent">Creation:
+<div align="right"><a href="Creating-a-TBST.html#catalogue%2dentry%2dtbst%2d0">catalogue-entry-tbst-0</a>
+   </div>
+
+<p class="noindent">Deletion (parent tracking):
+<div align="right"><a href="Deleting-from-a-TBST.html#catalogue%2dentry%2dtbst%2d3">catalogue-entry-tbst-3</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification:
+<div align="right"><a href="Answers-for-Chapter-7.html#catalogue%2dentry%2dtbst%2d21">catalogue-entry-tbst-21</a>
+   </div>
+
+<p class="noindent">Deletion, with parent node algorithm:
+<div align="right"><a href="Answers-for-Chapter-7.html#catalogue%2dentry%2dtbst%2d20">catalogue-entry-tbst-20</a>
+   </div>
+
+<p class="noindent">Destruction:
+<div align="right"><a href="Destroying-a-TBST.html#catalogue%2dentry%2dtbst%2d14">catalogue-entry-tbst-14</a>
+   </div>
+
+<p class="noindent">Initialization of traverser as copy:
+<div align="right"><a href="TBST-Traverser-Copying.html#catalogue%2dentry%2dtbst%2d9">catalogue-entry-tbst-9</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to found item:
+<div align="right"><a href="TBST-Traverser-Find-Initialization.html#catalogue%2dentry%2dtbst%2d7">catalogue-entry-tbst-7</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to greatest item:
+<div align="right"><a href="TBST-Traverser-Last-Initialization.html#catalogue%2dentry%2dtbst%2d6">catalogue-entry-tbst-6</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to inserted item:
+<div align="right"><a href="TBST-Traverser-Insert-Initialization.html#catalogue%2dentry%2dtbst%2d8">catalogue-entry-tbst-8</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to least item:
+<div align="right"><a href="TBST-Traverser-First-Initialization.html#catalogue%2dentry%2dtbst%2d5">catalogue-entry-tbst-5</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to null item:
+<div align="right"><a href="TBST-Traverser-Null-Initialization.html#catalogue%2dentry%2dtbst%2d4">catalogue-entry-tbst-4</a>
+   </div>
+
+<p class="noindent">Insertion:
+<div align="right"><a href="Inserting-into-a-TBST.html#catalogue%2dentry%2dtbst%2d2">catalogue-entry-tbst-2</a>
+   </div>
+
+<p class="noindent">Parent of a node:
+<div align="right"><a href="Finding-the-Parent-of-a-TBST-Node.html#catalogue%2dentry%2dtbst%2d19">catalogue-entry-tbst-19</a>
+   </div>
+
+<p class="noindent">Rotation, left:
+<div align="right"><a href="Answers-for-Chapter-8.html#catalogue%2dentry%2dtbst%2d23">catalogue-entry-tbst-23</a>
+   </div>
+
+<p class="noindent">Rotation, right:
+<div align="right"><a href="Answers-for-Chapter-8.html#catalogue%2dentry%2dtbst%2d22">catalogue-entry-tbst-22</a>
+   </div>
+
+<p class="noindent">Search:
+<div align="right"><a href="Searching-a-TBST.html#catalogue%2dentry%2dtbst%2d1">catalogue-entry-tbst-1</a>
+   </div>
+
+<p class="noindent">Vine compression:
+<div align="right"><a href="Transforming-a-Vine-into-a-Balanced-TBST.html#catalogue%2dentry%2dtbst%2d18">catalogue-entry-tbst-18</a>
+   </div>
+
+<p class="noindent">Vine from tree:
+<div align="right"><a href="Transforming-a-TBST-into-a-Vine.html#catalogue%2dentry%2dtbst%2d16">catalogue-entry-tbst-16</a>
+   </div>
+
+<p class="noindent">Vine to balanced tree:
+<div align="right"><a href="Transforming-a-Vine-into-a-Balanced-TBST.html#catalogue%2dentry%2dtbst%2d17">catalogue-entry-tbst-17</a>
+   </div>
+
+<h3 class="unnumberedsec">Threaded AVL Tree Algorithms</h3>
+
+<p class="noindent">Copying a node:
+<div align="right"><a href="Copying-a-TAVL-Tree.html#catalogue%2dentry%2dtavl%2d4">catalogue-entry-tavl-4</a>
+   </div>
+
+<p class="noindent">Deletion (without stack):
+<div align="right"><a href="Deleting-from-a-TAVL-Tree.html#catalogue%2dentry%2dtavl%2d3">catalogue-entry-tavl-3</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification:
+<div align="right"><a href="Answers-for-Chapter-8.html#catalogue%2dentry%2dtavl%2d6">catalogue-entry-tavl-6</a>
+   </div>
+
+<p class="noindent">Deletion, with stack:
+<div align="right"><a href="Answers-for-Chapter-8.html#catalogue%2dentry%2dtavl%2d7">catalogue-entry-tavl-7</a>
+   </div>
+
+<p class="noindent">Insertion:
+<div align="right"><a href="Inserting-into-a-TAVL-Tree.html#catalogue%2dentry%2dtavl%2d0">catalogue-entry-tavl-0</a>
+   </div>
+
+<p class="noindent">Rotation, left double, version 1:
+<div align="right"><a href="Rebalancing-TAVL-Trees.html#catalogue%2dentry%2dtavl%2d1">catalogue-entry-tavl-1</a>
+   </div>
+
+<p class="noindent">Rotation, left double, version 2:
+<div align="right"><a href="Answers-for-Chapter-8.html#catalogue%2dentry%2dtavl%2d5">catalogue-entry-tavl-5</a>
+   </div>
+
+<p class="noindent">Rotation, right double:
+<div align="right"><a href="TAVL-Insertion-Symmetric-Case.html#catalogue%2dentry%2dtavl%2d2">catalogue-entry-tavl-2</a>
+   </div>
+
+<h3 class="unnumberedsec">Threaded Red-Black Tree Algorithms</h3>
+
+<p class="noindent">Deletion (with stack):
+<div align="right"><a href="Deleting-from-a-TRB-Tree.html#catalogue%2dentry%2dtrb%2d1">catalogue-entry-trb-1</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification:
+<div align="right"><a href="Answers-for-Chapter-9.html#catalogue%2dentry%2dtrb%2d3">catalogue-entry-trb-3</a>
+   </div>
+
+<p class="noindent">Deletion, without stack:
+<div align="right"><a href="Answers-for-Chapter-9.html#catalogue%2dentry%2dtrb%2d4">catalogue-entry-trb-4</a>
+   </div>
+
+<p class="noindent">Insertion (with stack):
+<div align="right"><a href="Inserting-into-a-TRB-Tree.html#catalogue%2dentry%2dtrb%2d0">catalogue-entry-trb-0</a>
+   </div>
+
+<p class="noindent">Insertion, without stack:
+<div align="right"><a href="Answers-for-Chapter-9.html#catalogue%2dentry%2dtrb%2d2">catalogue-entry-trb-2</a>
+   </div>
+
+<h3 class="unnumberedsec">Right-Threaded Binary Search Tree Algorithms</h3>
+
+<p class="noindent">Advancing a traverser:
+<div align="right"><a href="RTBST-Traverser-Advancing.html#catalogue%2dentry%2drtbst%2d7">catalogue-entry-rtbst-7</a>
+   </div>
+
+<p class="noindent">Backing up a traverser:
+<div align="right"><a href="RTBST-Traverser-Retreating.html#catalogue%2dentry%2drtbst%2d8">catalogue-entry-rtbst-8</a>
+   </div>
+
+<p class="noindent">Balancing:
+<div align="right"><a href="Balancing-an-RTBST.html#catalogue%2dentry%2drtbst%2d12">catalogue-entry-rtbst-12</a>
+   </div>
+
+<p class="noindent">Copying:
+<div align="right"><a href="Copying-an-RTBST.html#catalogue%2dentry%2drtbst%2d10">catalogue-entry-rtbst-10</a>
+   </div>
+
+<p class="noindent">Copying a node:
+<div align="right"><a href="Copying-an-RTBST.html#catalogue%2dentry%2drtbst%2d9">catalogue-entry-rtbst-9</a>
+   </div>
+
+<p class="noindent">Deletion (left-looking):
+<div align="right"><a href="Left_002dLooking-Deletion-in-an-RTBST.html#catalogue%2dentry%2drtbst%2d3">catalogue-entry-rtbst-3</a>
+   </div>
+
+<p class="noindent">Deletion, right-looking:
+<div align="right"><a href="Right_002dLooking-Deletion-in-a-RTBST.html#catalogue%2dentry%2drtbst%2d2">catalogue-entry-rtbst-2</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification, left-looking:
+<div align="right"><a href="Answers-for-Chapter-10.html#catalogue%2dentry%2drtbst%2d16">catalogue-entry-rtbst-16</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification, right-looking:
+<div align="right"><a href="Answers-for-Chapter-10.html#catalogue%2dentry%2drtbst%2d15">catalogue-entry-rtbst-15</a>
+   </div>
+
+<p class="noindent">Destruction:
+<div align="right"><a href="Destroying-an-RTBST.html#catalogue%2dentry%2drtbst%2d11">catalogue-entry-rtbst-11</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to found item:
+<div align="right"><a href="RTBST-Traverser-Find-Initialization.html#catalogue%2dentry%2drtbst%2d6">catalogue-entry-rtbst-6</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to greatest item:
+<div align="right"><a href="RTBST-Traverser-Last-Initialization.html#catalogue%2dentry%2drtbst%2d5">catalogue-entry-rtbst-5</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to least item:
+<div align="right"><a href="RTBST-Traverser-First-Initialization.html#catalogue%2dentry%2drtbst%2d4">catalogue-entry-rtbst-4</a>
+   </div>
+
+<p class="noindent">Insertion:
+<div align="right"><a href="Inserting-into-an-RTBST.html#catalogue%2dentry%2drtbst%2d1">catalogue-entry-rtbst-1</a>
+   </div>
+
+<p class="noindent">Rotation, left:
+<div align="right"><a href="Answers-for-Chapter-11.html#catalogue%2dentry%2drtbst%2d18">catalogue-entry-rtbst-18</a>
+   </div>
+
+<p class="noindent">Rotation, right:
+<div align="right"><a href="Answers-for-Chapter-11.html#catalogue%2dentry%2drtbst%2d17">catalogue-entry-rtbst-17</a>
+   </div>
+
+<p class="noindent">Search:
+<div align="right"><a href="Searching-an-RTBST.html#catalogue%2dentry%2drtbst%2d0">catalogue-entry-rtbst-0</a>
+   </div>
+
+<p class="noindent">Vine compression:
+<div align="right"><a href="Balancing-an-RTBST.html#catalogue%2dentry%2drtbst%2d14">catalogue-entry-rtbst-14</a>
+   </div>
+
+<p class="noindent">Vine from tree:
+<div align="right"><a href="Balancing-an-RTBST.html#catalogue%2dentry%2drtbst%2d13">catalogue-entry-rtbst-13</a>
+   </div>
+
+<h3 class="unnumberedsec">Right-Threaded AVL Tree Algorithms</h3>
+
+<p class="noindent">Copying:
+<div align="right"><a href="Copying-an-RTAVL-Tree.html#catalogue%2dentry%2drtavl%2d2">catalogue-entry-rtavl-2</a>
+   </div>
+
+<p class="noindent">Copying a node:
+<div align="right"><a href="Copying-an-RTAVL-Tree.html#catalogue%2dentry%2drtavl%2d3">catalogue-entry-rtavl-3</a>
+   </div>
+
+<p class="noindent">Deletion (left-looking):
+<div align="right"><a href="Deleting-from-an-RTAVL-Tree.html#catalogue%2dentry%2drtavl%2d1">catalogue-entry-rtavl-1</a>
+   </div>
+
+<p class="noindent">Deletion, right-looking:
+<div align="right"><a href="Answers-for-Chapter-11.html#catalogue%2dentry%2drtavl%2d4">catalogue-entry-rtavl-4</a>
+   </div>
+
+<p class="noindent">Deletion, with data modification:
+<div align="right"><a href="Answers-for-Chapter-11.html#catalogue%2dentry%2drtavl%2d5">catalogue-entry-rtavl-5</a>
+   </div>
+
+<p class="noindent">Insertion:
+<div align="right"><a href="Inserting-into-an-RTAVL-Tree.html#catalogue%2dentry%2drtavl%2d0">catalogue-entry-rtavl-0</a>
+   </div>
+
+<h3 class="unnumberedsec">Right-Threaded Red-Black Tree Algorithms</h3>
+
+<p class="noindent">Deletion:
+<div align="right"><a href="Deleting-from-an-RTRB-Tree.html#catalogue%2dentry%2drtrb%2d1">catalogue-entry-rtrb-1</a>
+   </div>
+
+<p class="noindent">Insertion:
+<div align="right"><a href="Inserting-into-an-RTRB-Tree.html#catalogue%2dentry%2drtrb%2d0">catalogue-entry-rtrb-0</a>
+   </div>
+
+<h3 class="unnumberedsec">Binary Search Tree with Parent Pointers Algorithms</h3>
+
+<p class="noindent">Advancing a traverser:
+<div align="right"><a href="PBST-Traverser-Advancing.html#catalogue%2dentry%2dpbst%2d6">catalogue-entry-pbst-6</a>
+   </div>
+
+<p class="noindent">Backing up a traverser:
+<div align="right"><a href="PBST-Traverser-Retreating.html#catalogue%2dentry%2dpbst%2d7">catalogue-entry-pbst-7</a>
+   </div>
+
+<p class="noindent">Balancing (with later parent updates):
+<div align="right"><a href="Balancing-a-PBST.html#catalogue%2dentry%2dpbst%2d9">catalogue-entry-pbst-9</a>
+   </div>
+
+<p class="noindent">Balancing, with integrated parent updates:
+<div align="right"><a href="Answers-for-Chapter-13.html#catalogue%2dentry%2dpbst%2d12">catalogue-entry-pbst-12</a>
+   </div>
+
+<p class="noindent">Copying:
+<div align="right"><a href="Copying-a-PBST.html#catalogue%2dentry%2dpbst%2d8">catalogue-entry-pbst-8</a>
+   </div>
+
+<p class="noindent">Deletion:
+<div align="right"><a href="Deleting-from-a-PBST.html#catalogue%2dentry%2dpbst%2d1">catalogue-entry-pbst-1</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to found item:
+<div align="right"><a href="PBST-Traverser-Find-Initialization.html#catalogue%2dentry%2dpbst%2d4">catalogue-entry-pbst-4</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to greatest item:
+<div align="right"><a href="PBST-Traverser-Last-Initialization.html#catalogue%2dentry%2dpbst%2d3">catalogue-entry-pbst-3</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to inserted item:
+<div align="right"><a href="PBST-Traverser-Insert-Initialization.html#catalogue%2dentry%2dpbst%2d5">catalogue-entry-pbst-5</a>
+   </div>
+
+<p class="noindent">Initialization of traverser to least item:
+<div align="right"><a href="PBST-Traverser-First-Initialization.html#catalogue%2dentry%2dpbst%2d2">catalogue-entry-pbst-2</a>
+   </div>
+
+<p class="noindent">Insertion:
+<div align="right"><a href="Inserting-into-a-PBST.html#catalogue%2dentry%2dpbst%2d0">catalogue-entry-pbst-0</a>
+   </div>
+
+<p class="noindent">Rotation, left:
+<div align="right"><a href="Answers-for-Chapter-14.html#catalogue%2dentry%2dpbst%2d16">catalogue-entry-pbst-16</a>
+   </div>
+
+<p class="noindent">Rotation, right:
+<div align="right"><a href="Answers-for-Chapter-14.html#catalogue%2dentry%2dpbst%2d15">catalogue-entry-pbst-15</a>
+   </div>
+
+<p class="noindent">Update parent pointers:
+<div align="right"><a href="Balancing-a-PBST.html#catalogue%2dentry%2dpbst%2d11">catalogue-entry-pbst-11</a>
+   </div>
+
+<p class="noindent">Vine compression (with parent updates):
+<div align="right"><a href="Answers-for-Chapter-13.html#catalogue%2dentry%2dpbst%2d14">catalogue-entry-pbst-14</a>
+   </div>
+
+<p class="noindent">Vine to balanced tree (without parent updates):
+<div align="right"><a href="Balancing-a-PBST.html#catalogue%2dentry%2dpbst%2d10">catalogue-entry-pbst-10</a>
+   </div>
+
+<p class="noindent">Vine to balanced tree, with parent updates:
+<div align="right"><a href="Answers-for-Chapter-13.html#catalogue%2dentry%2dpbst%2d13">catalogue-entry-pbst-13</a>
+   </div>
+
+<h3 class="unnumberedsec">AVL Tree with Parent Pointers Algorithms</h3>
+
+<p class="noindent">Copying:
+<div align="right"><a href="Copying-a-PAVL-Tree.html#catalogue%2dentry%2dpavl%2d2">catalogue-entry-pavl-2</a>
+   </div>
+
+<p class="noindent">Deletion:
+<div align="right"><a href="Deleting-from-a-PAVL-Tree.html#catalogue%2dentry%2dpavl%2d1">catalogue-entry-pavl-1</a>
+   </div>
+
+<p class="noindent">Insertion:
+<div align="right"><a href="Inserting-into-a-PAVL-Tree.html#catalogue%2dentry%2dpavl%2d0">catalogue-entry-pavl-0</a>
+   </div>
+
+<h3 class="unnumberedsec">Red-Black Tree with Parent Pointers Algorithms</h3>
+
+<p class="noindent">Deletion:
+<div align="right"><a href="Deleting-from-a-PRB-Tree.html#catalogue%2dentry%2dprb%2d1">catalogue-entry-prb-1</a>
+   </div>
+
+<p class="noindent">Insertion:
+<div align="right"><a href="Inserting-into-a-PRB-Tree.html#catalogue%2dentry%2dprb%2d0">catalogue-entry-prb-0</a>
+   </div>
+
+</p>
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr valign=middle>
+<td align=left width="33%">
+<a href="Answers-for-Chapter-14.html"><img src="prev.png" border=0 alt="Prev:" align=middle></a>
+Chapter 14
+</td>
+<td align=center width="33%">
+<a href="index.html"><img src="up.png" border=0 alt="Up:" align=middle></a>
+Table of Contents
+</td>
+<td align=right width="33%">
+Appendix F Index
+<a href="Index.html"><img src="next.png" border=0 alt="Next" align=middle></a>
+</td>
+</tr></table>
+</body></html>
+

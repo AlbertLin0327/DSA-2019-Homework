@@ -1,0 +1,281 @@
+<html lang="en">
+<head>
+<title>Deleting from a BST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Root-Insertion-in-a-BST.html" title="4.7.1 Aside: Root Insertion">
+<link rel=Next href="Deletion-by-Merging.html" title="4.8.1 Aside: Deletion by Merging">
+<link rel=Parent href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-from-a-BST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.8 Deletion</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-from-a-BST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-into-a-BST.html" title="Skip Back: 4.7 Insertion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Traversing-a-BST.html" title="Skip Forward: 4.9 Traversal"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Root-Insertion-in-a-BST.html" title="Prev: 4.7.1 Aside: Root Insertion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Binary-Search-Trees.html" title="Up: 4 Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deletion-by-Merging.html" title="Next: 4.8.1 Aside: Deletion by Merging"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Deleting an item from a binary search tree is a little harder than
+inserting one.  Before we write any code, let's consider how to delete
+nodes from a binary search tree in an abstract fashion.  Here's a BST
+from which we can draw examples during the discussion:
+
+<div align="center"><a href="bstdel.txt"><img border=0 src="bstdel.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>It is more difficult to remove some nodes from this tree than to remove
+others.  Here, we recognize three distinct cases (Exercise 4.8-1
+offers a fourth), described in detail below in terms of the deletion of
+a node designated <i>p</i><!-- /@w -->.
+
+<h5 class="subsubheading">Case 1: <i>p</i><!-- /@w --> has no right child</h5>
+
+<p><a name="bstdelcase1"></a>
+It is trivial to delete a node with no right child, such as node 1, 4,
+7, or 8 above.  We replace the pointer leading to <i>p</i><!-- /@w --> by <i>p</i><!-- /@w -->'s left
+child, if it has one, or by a null pointer, if not.  In other words,
+we replace the deleted node by its left child.  For example, the
+process of deleting node 8 looks like this:
+
+<div align="center"><a href="bstdel2.txt"><img border=0 src="bstdel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<h5 class="subsubheading">Case 2: <i>p</i><!-- /@w -->'s right child has no left child</h5>
+
+<p><a name="bstdelcase2"></a>
+
+   <p>This case deletes any node <i>p</i><!-- /@w --> with a right child <i>r</i><!-- /@w --> that itself has no
+left child.  Nodes 2, 3, and 6 in the tree above are examples.  In this
+case, we move <i>r</i><!-- /@w --> into <i>p</i><!-- /@w -->'s place, attaching <i>p</i><!-- /@w -->'s former left subtree,
+if any, as the new left subtree of <i>r</i><!-- /@w -->.  For instance, to delete node 2
+in the tree above, we can replace it by its right child 3, giving node
+2's left child 1 to node 3 as its new left child.  The process looks
+like this:
+
+<div align="center"><a href="bstdel3.txt"><img border=0 src="bstdel3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<h5 class="subsubheading">Case 3: <i>p</i><!-- /@w -->'s right child has a left child</h5>
+
+<p><a name="bstdelcase3"></a>
+
+   <p>This is the &ldquo;hard&rdquo; case, where <i>p</i><!-- /@w -->'s right child <i>r</i><!-- /@w --> has a left child. 
+but if we approach it properly we can make it make sense.  Let <i>p</i><!-- /@w -->'s
+<dfn>inorder successor</dfn> (see <a href="Glossary.html#inorder%20successor">inorder successor</a>), that is, the node with the smallest value
+greater than <i>p</i><!-- /@w -->, be <i>s</i><!-- /@w -->.  Then, our strategy is to detach <i>s</i><!-- /@w --> from its
+position in the tree, which is always an easy thing to do, and put it
+into the spot formerly occupied by <i>p</i><!-- /@w -->, which disappears from the tree. 
+In our example, to delete node 5, we move inorder successor node 6 into
+its place, like this:
+
+<div align="center"><a href="bstdel4.txt"><img border=0 src="bstdel4.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="successor"></a>
+But how do we know that node <i>s</i><!-- /@w --> exists and that we can delete it
+easily?  We know that it exists because otherwise this would be case 1
+or case 2 (consider their conditions).  We can easily detach from its
+position for a more subtle reason: <i>s</i><!-- /@w --> is the inorder successor of <i>p</i><!-- /@w -->
+and is therefore has the smallest value in <i>p</i><!-- /@w -->'s right subtree, so <i>s</i><!-- /@w -->
+cannot have a left child.  (If it did, then this left child would have
+a smaller value than <i>s</i><!-- /@w -->, so it, rather than <i>s</i><!-- /@w -->, would be <i>p</i><!-- /@w -->'s
+inorder successor.)  Because <i>s</i><!-- /@w --> doesn't have a left child, we can
+simply replace it by its right child, if any.  This is the mirror
+image of case 1.
+
+<h5 class="subsubheading">Implementation</h5>
+
+<p>The code for BST deletion closely follows the above discussion.  Let's
+start with an outline of the function:
+
+   <p><a name="catalogue_002dentry_002dbst_002d4"></a>
+<a name="index-BST-item-deletion-function-54"></a>
+<pre class="format"><a href="BST_item_deletion_function.c.txt">37</a>. &lt;<a name="37" href="BST_item_deletion_function.c.txt">BST item deletion function 37</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>bst_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fdelete_007d-function-55"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->, *<i>q</i><!-- /@w -->; /* Node to delete and its parent. */
+  <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w -->;                /* Comparison between <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> and <i>item</i><!-- /@w -->. */
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;                /* Side of <i>q</i><!-- /@w --> on which <i>p</i><!-- /@w --> is located. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Deleting-from-a-BST.html#38">Step 1: Find BST node to delete 38</a>&gt;
+  &lt;<a href="Deleting-from-a-BST.html#39">Step 2: Delete BST node 39</a>&gt;
+  &lt;<a href="Deleting-from-a-BST.html#44">Step 3: Finish up after deleting BST node 44</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Operations.html#29">29</a>.</small>
+
+   <p>We begin by finding the node to delete, in much the same way that
+<i>bst_find</i><!-- /@w -->() did.  But, in every case above, we replace the link leading
+to the node being deleted by another node or a null pointer.  To do so,
+we have to keep track of the pointer that led to the node to be deleted. 
+This is the purpose of <i>q</i><!-- /@w --> and <i>dir</i><!-- /@w --> in the code below.
+
+   <p><a name="index-find-BST-node-to-delete-56"></a>
+<pre class="format"><a href="Step_1_3a_Find_BST_node_to_delete.c.txt">38</a>. &lt;<a name="38" href="Step_1_3a_Find_BST_node_to_delete.c.txt">Step 1: Find BST node to delete 38</a>&gt; =
+<i>p</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+<b>for</b><!-- /@w --> (<i>cmp</i><!-- /@w --> = -1; <i>cmp</i><!-- /@w --> != 0; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>dir</i><!-- /@w --> = <i>cmp</i><!-- /@w --> &gt; 0;
+    <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+    <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+      <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+  }
+<i>item</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-BST.html#37">37</a>.</small>
+
+   <p>Now we can actually delete the node.  Here is the code to distinguish
+between the three cases:
+
+   <p><a name="index-delete-BST-node-57"></a>
+<pre class="format"><a href="Step_2_3a_Delete_BST_node.c.txt">39</a>. &lt;<a name="39" href="Step_2_3a_Delete_BST_node.c.txt">Step 2: Delete BST node 39</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) { &lt;<a href="Deleting-from-a-BST.html#40">Case 1 in BST deletion 40</a>&gt; }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+    <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Deleting-from-a-BST.html#41">Case 2 in BST deletion 41</a>&gt;
+      } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Deleting-from-a-BST.html#42">Case 3 in BST deletion 42</a>&gt;
+      }
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-BST.html#37">37</a>.</small>
+
+   <p>In case 1, we simply replace the node by its left subtree:
+
+   <p><a name="index-case-1-in-BST-deletion-58"></a>
+<pre class="format"><a href="Case_1_in_BST_deletion.c.txt">40</a>. &lt;<a name="40" href="Case_1_in_BST_deletion.c.txt">Case 1 in BST deletion 40</a>&gt; =
+<i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-BST.html#39">39</a>.</small>
+
+   <p>In case 2, we attach the node's left subtree as its right child <i>r</i><!-- /@w -->'s
+left subtree, then replace the node by <i>r</i><!-- /@w -->:
+
+   <p><a name="index-case-2-in-BST-deletion-59"></a>
+<pre class="format"><a href="Case_2_in_BST_deletion.c.txt">41</a>. &lt;<a name="41" href="Case_2_in_BST_deletion.c.txt">Case 2 in BST deletion 41</a>&gt; =
+<i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+<i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>r</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-BST.html#39">39</a>.</small>
+
+   <p>We begin case 3 by finding <i>p</i><!-- /@w -->'s inorder successor as <i>s</i><!-- /@w -->, and the
+parent of <i>s</i><!-- /@w --> as <i>r</i><!-- /@w -->.  Node <i>p</i><!-- /@w -->'s inorder successor is the smallest
+value in <i>p</i><!-- /@w -->'s right subtree and that the smallest value in a tree can
+be found by descending to the left until a node with no left child is
+found:
+
+   <p><a name="index-case-3-in-BST-deletion-60"></a>
+<pre class="format"><a href="Case_3_in_BST_deletion.c.txt">42</a>. &lt;<a name="42" href="Case_3_in_BST_deletion.c.txt">Case 3 in BST deletion 42</a>&gt; =
+<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>s</i><!-- /@w -->;
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>See also <a href="Deleting-from-a-BST.html#43">43</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Deleting-from-a-BST.html#39">39</a>.</small></div>
+
+   <p>Case 3 wraps up by adjusting pointers so that <i>s</i><!-- /@w --> moves into <i>p</i><!-- /@w -->'s
+place:
+
+   <p><a name="index-case-3-in-BST-deletion-61"></a>
+<pre class="format"><a href="Case_3_in_BST_deletion.c.txt">43</a>. &lt;<a name="43" href="Case_3_in_BST_deletion.c.txt">Case 3 in BST deletion 42</a>&gt; +=
+<i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+<i>s</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+<i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>s</i><!-- /@w -->;
+</pre>
+   <p>As the final step, we decrement the number of nodes in the tree, free
+the node, and return its data:
+
+   <p><a name="index-finish-up-after-deleting-BST-node-62"></a>
+<pre class="format"><a href="Step_3_3a_Finish_up_after_deleting_BST_node.c.txt">44</a>. &lt;<a name="44" href="Step_3_3a_Finish_up_after_deleting_BST_node.c.txt">Step 3: Finish up after deleting BST node 44</a>&gt; =
+<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+<i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->&ndash;;
+<i>tree</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w -->++;
+<b>return</b><!-- /@w --> (<b>void</b><!-- /@w --> *) <i>item</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-BST.html#37">37</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998b">Knuth 1998b</a>], algorithm 6.2.2D;
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 13.3.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="bstdelcase15"></a>&nbsp;<!-- /@w -->Write code for a case 1.5 which handles deletion of nodes with no left
+child. 
+[<a href="Answers-for-Chapter-4.html#4%2d8%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="bstaltdel"></a>&nbsp;<!-- /@w -->In the code presented above for case 3, we update pointers to move
+<i>s</i><!-- /@w --> into <i>p</i><!-- /@w -->'s position, then free <i>p</i><!-- /@w -->.  An alternate approach
+is to replace <i>p</i><!-- /@w -->'s data by <i>s</i><!-- /@w -->'s and delete <i>s</i><!-- /@w -->.  Write code to
+use this approach.  Can a similar modification be made to either of the
+other cases? 
+[<a href="Answers-for-Chapter-4.html#4%2d8%232">answer</a>]
+
+<p class="noindent"><b>*3.</b><a name="modifydata"></a>&nbsp;<!-- /@w -->The code in the previous exercise is a few lines shorter than that in
+the main text, so it would seem to be preferable.  Explain why the
+revised code, and other code based on the same idea, cannot be used in
+libavl.  (Hint: consider the semantics of libavl traversers.) 
+[<a href="Answers-for-Chapter-4.html#4%2d8%233">answer</a>]
+
+<ul class="menu">
+<li><a accesskey="1" href="Deletion-by-Merging.html">Deletion by Merging</a>
+</ul>
+
+   </body></html>
+

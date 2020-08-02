@@ -1,0 +1,19 @@
+/* ``Starts'' a timer by recording the current time in |*t|. */
+static void
+start_timer (clock_t *t)
+{
+  clock_t now = clock ();
+  while (now == clock ())
+    /* Do nothing. */;
+  *t = clock ();
+}
+
+/* Prints the elapsed time since |start|, set by |start_timer()|. */
+static void
+stop_timer (clock_t start)
+{
+  clock_t end = clock ();
+
+  printf ("%.2f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
+}
+

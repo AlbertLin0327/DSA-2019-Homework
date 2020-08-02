@@ -1,0 +1,42 @@
+/* Compares binary trees rooted at |a| and |b|,
+   making sure that they are identical. */
+static int
+compare_trees (struct pbst_node *a, struct pbst_node *b)
+{
+  int okay;
+
+  if (a == NULL || b == NULL)
+    {
+      assert (a == NULL && b == NULL);
+      return 1;
+    }
+
+  if (*(int *) a->pbst_data != *(int *) b->pbst_data
+      || ((a->pbst_link[0] != NULL) != (b->pbst_link[0] != NULL))
+      || ((a->pbst_link[1] != NULL) != (b->pbst_link[1] != NULL))
+      || ((a->pbst_parent != NULL) != (b->pbst_parent != NULL))
+      || (a->pbst_parent != NULL && b->pbst_parent != NULL
+          && a->pbst_parent->pbst_data != b->pbst_parent->pbst_data))
+    {
+      printf (" Copied nodes differ:\n"
+              "  a: %d, parent %d, %s left child, %s right child\n"
+              "  b: %d, parent %d, %s left child, %s right child\n",
+              *(int *) a->pbst_data,
+              a->pbst_parent != NULL ? *(int *) a->pbst_parent : -1,
+              a->pbst_link[0] != NULL ? "has" : "no",
+              a->pbst_link[1] != NULL ? "has" : "no",
+              *(int *) b->pbst_data,
+              b->pbst_parent != NULL ? *(int *) b->pbst_parent : -1,
+              b->pbst_link[0] != NULL ? "has" : "no",
+              b->pbst_link[1] != NULL ? "has" : "no");
+      return 0;
+    }
+
+  okay = 1;
+  if (a->pbst_link[0] != NULL)
+    okay &= compare_trees (a->pbst_link[0], b->pbst_link[0]);
+  if (a->pbst_link[1] != NULL)
+    okay &= compare_trees (a->pbst_link[1], b->pbst_link[1]);
+  return okay;
+}
+

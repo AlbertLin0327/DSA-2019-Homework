@@ -1,0 +1,24 @@
+struct rtbst_node *s = r->rtbst_link[1];
+while (s->rtbst_rtag == RTBST_CHILD)
+  {
+    r = s;
+    s = r->rtbst_link[1];
+  }
+
+p->rtbst_data = s->rtbst_data;
+
+if (s->rtbst_link[0] != NULL)
+  {
+    struct rtbst_node *t = s->rtbst_link[0];
+    while (t->rtbst_rtag == RTBST_CHILD)
+      t = t->rtbst_link[1];
+    t->rtbst_link[1] = p;
+    r->rtbst_link[1] = s->rtbst_link[0];
+  }
+else
+  {
+    r->rtbst_link[1] = p;
+    r->rtbst_rtag = RTBST_THREAD;
+  }
+
+p = s;

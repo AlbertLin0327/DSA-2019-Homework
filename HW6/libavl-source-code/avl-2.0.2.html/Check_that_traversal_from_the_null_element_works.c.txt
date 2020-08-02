@@ -1,0 +1,33 @@
+/* Check that |bst_t_init()| works properly. */
+struct bst_traverser init, first, last;
+int *cur, *prev, *next;
+
+bst_t_init (&init, tree);
+bst_t_first (&first, tree);
+bst_t_last (&last, tree);
+
+cur = bst_t_cur (&init);
+if (cur != NULL)
+  {
+    printf (" Inited traverser should be null, but is actually %d.\n",
+            *cur);
+    okay = 0;
+  }
+
+next = bst_t_next (&init);
+if (next != bst_t_cur (&first))
+  {
+    printf (" Next after null should be %d, but is actually %d.\n",
+            *(int *) bst_t_cur (&first), *next);
+    okay = 0;
+  }
+bst_t_prev (&init);
+
+prev = bst_t_prev (&init);
+if (prev != bst_t_cur (&last))
+  {
+    printf (" Previous before null should be %d, but is actually %d.\n",
+            *(int *) bst_t_cur (&last), *prev);
+    okay = 0;
+  }
+bst_t_next (&init);

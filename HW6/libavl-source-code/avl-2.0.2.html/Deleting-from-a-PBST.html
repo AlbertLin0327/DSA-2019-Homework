@@ -1,0 +1,246 @@
+<html lang="en">
+<head>
+<title>Deleting from a PBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Inserting-into-a-PBST.html" title="13.3 Insertion">
+<link rel=Next href="Traversing-a-PBST.html" title="13.5 Traversal">
+<link rel=Parent href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-from-a-PBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>13.4 Deletion</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-from-a-PBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-into-a-PBST.html" title="Skip Back: 13.3 Insertion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Traversing-a-PBST.html" title="Skip Forward: 13.5 Traversal"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-into-a-PBST.html" title="Prev: 13.3 Insertion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="BSTs-with-Parent-Pointers.html" title="Up: 13 BSTs with Parent Pointers"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Traversing-a-PBST.html" title="Next: 13.5 Traversal"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The new aspect of deletion in a PBST is that we must properly adjust
+parent pointers.  The outline is the same as usual:
+
+   <p><a name="catalogue_002dentry_002dpbst_002d1"></a>
+<a name="index-PBST-item-deletion-function-684"></a>
+<pre class="format"><a href="PBST_item_deletion_function.c.txt">493</a>. &lt;<a name="493" href="PBST_item_deletion_function.c.txt">PBST item deletion function 493</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>pbst_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpbst_005fdelete_007d-function-685"></a>  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>p</i><!-- /@w -->; /* Traverses tree to find node to delete. */
+  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>q</i><!-- /@w -->; /* Parent of <i>p</i><!-- /@w -->. */
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;             /* Side of <i>q</i><!-- /@w --> on which <i>p</i><!-- /@w --> is linked. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Deleting-from-a-PBST.html#494">Step 1: Find PBST node to delete 494</a>&gt;
+  &lt;<a href="Deleting-from-a-PBST.html#496">Step 2: Delete PBST node 496</a>&gt;
+  &lt;<a href="Deleting-from-a-PBST.html#501">Step 3: Finish up after deleting PBST node 501</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="PBST-Operations.html#489">489</a>.</small>
+
+   <p>We find the node to delete by using <i>p</i><!-- /@w --> to search for <i>item</i><!-- /@w -->.  For the
+first time in implementing a deletion routine, we do not keep track of
+the current node's parent, because we can always find it out later
+with little effort:
+
+   <p><a name="index-find-PBST-node-to-delete-686"></a>
+<pre class="format"><a href="Step_1_3a_Find_PBST_node_to_delete.c.txt">494</a>. &lt;<a name="494" href="Step_1_3a_Find_PBST_node_to_delete.c.txt">Step 1: Find PBST node to delete 494</a>&gt; =
+<b>if</b><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w -->;
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>pbst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>pbst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>pbst_param</i><!-- /@w -->);
+    <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> == 0)
+      <b>break</b><!-- /@w -->;
+
+    <i>dir</i><!-- /@w --> = <i>cmp</i><!-- /@w --> &gt; 0;
+    <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+      <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+  }
+<i>item</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_data</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>See also <a href="Deleting-from-a-PBST.html#495">495</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Deleting-from-a-PBST.html#493">493</a>, <a href="Deleting-from-a-PAVL-Tree.html#534">534</a>, and <a href="Deleting-from-a-PRB-Tree.html#566">566</a>.</small></div>
+
+   <p>Now we've found the node to delete, <i>p</i><!-- /@w -->.  The first step in deletion
+is to find the parent of <i>p</i><!-- /@w --> as <i>q</i><!-- /@w -->.  Node <i>p</i><!-- /@w --> is <i>q</i><!-- /@w -->'s child on side
+<i>dir</i><!-- /@w -->.  Deletion of the root is a special case:
+
+   <p><a name="index-find-PBST-node-to-delete-687"></a>
+<pre class="format"><a href="Step_1_3a_Find_PBST_node_to_delete.c.txt">495</a>. &lt;<a name="495" href="Step_1_3a_Find_PBST_node_to_delete.c.txt">Step 1: Find PBST node to delete 494</a>&gt; +=
+<i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>q</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>q</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>pbst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w -->;
+    <i>dir</i><!-- /@w --> = 0;
+  }
+</pre>
+   <p>The remainder of the deletion follows the usual outline:
+
+   <p><a name="index-delete-PBST-node-688"></a>
+<pre class="format"><a href="Step_2_3a_Delete_PBST_node.c.txt">496</a>. &lt;<a name="496" href="Step_2_3a_Delete_PBST_node.c.txt">Step 2: Delete PBST node 496</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-from-a-PBST.html#497">Case 1 in PBST deletion 497</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1];
+    <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-from-a-PBST.html#498">Case 2 in PBST deletion 498</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-from-a-PBST.html#499">Case 3 in PBST deletion 499</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-PBST.html#493">493</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>p</i><!-- /@w --> has no right child</h5>
+
+<p><a name="pbstdel1"></a>
+
+   <p>If <i>p</i><!-- /@w --> has no right child, then we can replace it by its left child,
+if any.  If <i>p</i><!-- /@w --> does have a left child then we must update its parent
+to be <i>p</i><!-- /@w -->'s former parent.
+
+   <p><a name="index-case-1-in-PBST-deletion-689"></a>
+<pre class="format"><a href="Case_1_in_PBST_deletion.c.txt">497</a>. &lt;<a name="497" href="Case_1_in_PBST_deletion.c.txt">Case 1 in PBST deletion 497</a>&gt; =
+<i>q</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+<b>if</b><!-- /@w --> (<i>q</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] != <tt>NULL</tt><!-- /@w -->)
+  <i>q</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-PBST.html#496">496</a>, <a href="Deleting-a-PAVL-Node-Step-2-_002d-Delete.html#536">536</a>, and <a href="Deleting-a-PRB-Node-Step-2-_002d-Delete.html#568">568</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>p</i><!-- /@w -->'s right child has no left child</h5>
+
+<p><a name="pbstdel2"></a>
+
+   <p>When we delete a node with a right child that in turn has no left
+child, the operation looks like this:
+
+<div align="center"><a href="pbstdel1.txt"><img border=0 src="pbstdel1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The key points to notice are that node <i>r</i><!-- /@w -->'s parent changes and so
+does the parent of <i>r</i><!-- /@w -->'s new left child, if there is one.  We update
+these in deletion:
+
+   <p><a name="index-case-2-in-PBST-deletion-690"></a>
+<pre class="format"><a href="Case_2_in_PBST_deletion.c.txt">498</a>. &lt;<a name="498" href="Case_2_in_PBST_deletion.c.txt">Case 2 in PBST deletion 498</a>&gt; =
+<i>r</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+<i>q</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>r</i><!-- /@w -->;
+<i>r</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>r</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>r</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-PBST.html#496">496</a>, <a href="Deleting-a-PAVL-Node-Step-2-_002d-Delete.html#537">537</a>, and <a href="Deleting-a-PRB-Node-Step-2-_002d-Delete.html#569">569</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>p</i><!-- /@w -->'s right child has a left child</h5>
+
+<p><a name="pbstdel3"></a>
+
+   <p>If <i>p</i><!-- /@w -->'s right child has a left child, then we replace <i>p</i><!-- /@w --> by its
+successor, as usual.  Finding the successor <i>s</i><!-- /@w --> and its parent <i>r</i><!-- /@w --> is
+a little simpler than usual, because we can move up the tree so
+easily.  We know that <i>s</i><!-- /@w --> has a non-null parent so there is no need to
+handle that special case:
+
+   <p><a name="index-case-3-in-PBST-deletion-691"></a>
+<pre class="format"><a href="Case_3_in_PBST_deletion.c.txt">499</a>. &lt;<a name="499" href="Case_3_in_PBST_deletion.c.txt">Case 3 in PBST deletion 499</a>&gt; =
+<b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+<b>while</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>s</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+<i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>See also <a href="Deleting-from-a-PBST.html#500">500</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Deleting-from-a-PBST.html#496">496</a>, <a href="Deleting-a-PAVL-Node-Step-2-_002d-Delete.html#538">538</a>, and <a href="Deleting-a-PRB-Node-Step-2-_002d-Delete.html#570">570</a>.</small></div>
+
+   <p>The only other change here is that we must update parent pointers. 
+It is easy to pick out the ones that must be changed by looking at a
+diagram of the deletion:
+
+<div align="center"><a href="pbstdel2.txt"><img border=0 src="pbstdel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">Node <i>s</i><!-- /@w -->'s parent changes, as do the parents of its new right child
+<i>x</i><!-- /@w --> and, if it has one, its left child <i>a</i><!-- /@w -->.  Perhaps less obviously,
+if <i>s</i><!-- /@w --> originally had a right child, it becomes the new left child of
+<i>r</i><!-- /@w -->, so its new parent is <i>r</i><!-- /@w -->:
+
+   <p><a name="index-case-3-in-PBST-deletion-692"></a>
+<pre class="format"><a href="Case_3_in_PBST_deletion.c.txt">500</a>. &lt;<a name="500" href="Case_3_in_PBST_deletion.c.txt">Case 3 in PBST deletion 499</a>&gt; +=
+<i>r</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+<i>s</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1];
+<i>q</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>s</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>s</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+<i>s</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+<i>s</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>r</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>r</i><!-- /@w -->;
+</pre>
+   <p>Finally, we free the deleted node <i>p</i><!-- /@w --> and return its data:
+
+   <p><a name="index-finish-up-after-deleting-PBST-node-693"></a>
+<pre class="format"><a href="Step_3_3a_Finish_up_after_deleting_PBST_node.c.txt">501</a>. &lt;<a name="501" href="Step_3_3a_Finish_up_after_deleting_PBST_node.c.txt">Step 3: Finish up after deleting PBST node 501</a>&gt; =
+<i>tree</i><!-- /@w -->-&gt;<i>pbst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>pbst_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+<i>tree</i><!-- /@w -->-&gt;<i>pbst_count</i><!-- /@w -->&ndash;;
+<b>return</b><!-- /@w --> (<b>void</b><!-- /@w --> *) <i>item</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-PBST.html#493">493</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 13.3.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->In case 1, can we change the right side of the assignment in the <b>if</b><!-- /@w -->
+statement's consequent from <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> to <i>q</i><!-- /@w -->? 
+[<a href="Answers-for-Chapter-13.html#13%2d4%231">answer</a>]
+
+   </body></html>
+

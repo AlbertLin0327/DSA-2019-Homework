@@ -1,0 +1,13 @@
+x = pa[k - 2];
+x->rtrb_color = RTRB_RED;
+y->rtrb_color = RTRB_BLACK;
+
+x->rtrb_link[0] = y->rtrb_link[1];
+y->rtrb_link[1] = x;
+pa[k - 3]->rtrb_link[da[k - 3]] = y;
+
+if (y->rtrb_rtag == RTRB_THREAD)
+  {
+    y->rtrb_rtag = RTRB_CHILD;
+    x->rtrb_link[0] = NULL;
+  }

@@ -1,0 +1,10 @@
+n = pa[k - 1]->bst_link[da[k - 1]] =
+  tree->bst_alloc->libavl_malloc (tree->bst_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+n->bst_link[0] = n->bst_link[1] = NULL;
+n->bst_data = item;
+tree->bst_count++;
+tree->bst_generation++;
+

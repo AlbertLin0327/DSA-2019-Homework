@@ -1,0 +1,6 @@
+/* Table functions. */
+struct tbl_table *tbl_create (tbl_comparison_func *, void *,
+                              struct libavl_allocator *);
+struct tbl_table *tbl_copy (const struct tbl_table *, tbl_copy_func *,
+                            tbl_item_func *, struct libavl_allocator *);
+void tbl_destroy (struct tbl_table *, tbl_item_func *);

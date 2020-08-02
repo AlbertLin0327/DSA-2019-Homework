@@ -1,0 +1,31 @@
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+tbst_t_insert (struct tbst_traverser *trav,
+               struct tbst_table *tree, void *item)
+{
+  void **p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  p = tbst_probe (tree, item);
+  if (p != NULL)
+    {
+      trav->tbst_table = tree;
+      trav->tbst_node =
+        ((struct tbst_node *)
+         ((char *) p - offsetof (struct tbst_node, tbst_data)));
+      return *p;
+    }
+  else
+    {
+      tbst_t_init (trav, tree);
+      return NULL;
+    }
+}
+

@@ -1,0 +1,8 @@
+f->prb_link[0] = q->prb_link[1];
+q->prb_link[1] = f;
+g->prb_link[1] = q;
+f->prb_parent = q;
+if (f->prb_link[0] != NULL)
+  f->prb_link[0]->prb_parent = f;
+
+f = q;

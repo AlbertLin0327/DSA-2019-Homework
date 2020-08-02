@@ -1,0 +1,17 @@
+/* Prints a message to the console explaining how to use this program. */
+static void
+usage (void)
+{
+  size_t i;
+
+  fputs ("usage: srch-test <algorithm> <array-size> <n-iterations>\n"
+         "where <algorithm> is one of the following:\n", stdout);
+
+  for (i = 0; i < n_search_func; i++)
+    printf ("        %u for %s\n", (unsigned) i + 1, search_func_tab[i].name);
+
+  fputs ("      <array-size> is the size of the array to search, and\n"
+         "      <n-iterations> is the number of times to iterate.\n", stdout);
+
+  exit (EXIT_FAILURE);
+}

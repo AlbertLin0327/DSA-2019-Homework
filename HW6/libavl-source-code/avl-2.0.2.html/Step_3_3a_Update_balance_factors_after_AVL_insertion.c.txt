@@ -1,0 +1,6 @@
+for (p = y, k = 0; p != n; p = p->avl_link[da[k]], k++)
+  if (da[k] == 0)
+    p->avl_balance--;
+  else
+    p->avl_balance++;
+

@@ -1,0 +1,204 @@
+static int
+test_bst_t_first (struct bst_table *tree, int n)
+{
+  struct bst_traverser trav;
+  int *first;
+
+  first = bst_t_first (&trav, tree);
+  if (first == NULL || *first != 0)
+    {
+      printf ("    First item test failed: expected 0, got %d\n",
+              first != NULL ? *first : -1);
+      return 0;
+    }
+
+  return 1;
+}
+
+static int
+test_bst_t_last (struct bst_table *tree, int n)
+{
+  struct bst_traverser trav;
+  int *last;
+
+  last = bst_t_last (&trav, tree);
+  if (last == NULL || *last != n - 1)
+    {
+      printf ("    Last item test failed: expected %d, got %d\n",
+              n - 1, last != NULL ? *last : -1);
+      return 0;
+    }
+
+  return 1;
+}
+
+static int
+test_bst_t_find (struct bst_table *tree, int n)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    {
+      struct bst_traverser trav;
+      int *iter;
+
+      iter = bst_t_find (&trav, tree, &i);
+      if (iter == NULL || *iter != i)
+        {
+          printf ("    Find item test failed: looked for %d, got %d\n",
+                  i, iter != NULL ? *iter : -1);
+          return 0;
+        }
+    }
+
+  return 1;
+}
+
+static int
+test_bst_t_insert (struct bst_table *tree, int n)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    {
+      struct bst_traverser trav;
+      int *iter;
+
+      iter = bst_t_insert (&trav, tree, &i);
+      if (iter == NULL || iter == &i || *iter != i)
+        {
+          printf ("    Insert item test failed: inserted dup %d, got %d\n",
+                  i, iter != NULL ? *iter : -1);
+          return 0;
+        }
+    }
+
+  return 1;
+}
+
+static int
+test_bst_t_next (struct bst_table *tree, int n)
+{
+  struct bst_traverser trav;
+  int i;
+
+  bst_t_init (&trav, tree);
+  for (i = 0; i < n; i++)
+    {
+      int *iter = bst_t_next (&trav);
+      if (iter == NULL || *iter != i)
+        {
+          printf ("    Next item test failed: expected %d, got %d\n",
+                  i, iter != NULL ? *iter : -1);
+          return 0;
+        }
+    }
+
+  return 1;
+}
+
+static int
+test_bst_t_prev (struct bst_table *tree, int n)
+{
+  struct bst_traverser trav;
+  int i;
+
+  bst_t_init (&trav, tree);
+  for (i = n - 1; i >= 0; i--)
+    {
+      int *iter = bst_t_prev (&trav);
+      if (iter == NULL || *iter != i)
+        {
+          printf ("    Previous item test failed: expected %d, got %d\n",
+                  i, iter != NULL ? *iter : -1);
+          return 0;
+        }
+    }
+
+  return 1;
+}
+
+static int
+test_bst_copy (struct bst_table *tree, int n)
+{
+  struct bst_table *copy = bst_copy (tree, NULL, NULL, NULL);
+  int okay = compare_trees (tree->bst_root, copy->bst_root);
+
+  bst_destroy (copy, NULL);
+
+  return okay;
+}
+
+/* Tests the tree routines for proper handling of overflows.
+   Inserting the |n| elements of |order[]| should produce a tree
+   with height greater than |BST_MAX_HEIGHT|.
+   Uses |allocator| as the allocator for tree and node data.
+   Use |verbosity| to set the level of chatter on |stdout|. */
+int
+test_overflow (struct libavl_allocator *allocator,
+               int order[], int n, int verbosity)
+{
+  /* An overflow tester function. */
+  typedef int test_func (struct bst_table *, int n);
+
+  /* An overflow tester. */
+  struct test
+    {
+      test_func *func;                  /* Tester function. */
+      const char *name;                 /* Test name. */
+    };
+
+  /* All the overflow testers. */
+  static const struct test test[] =
+    {
+      {test_bst_t_first, "first item"},
+      {test_bst_t_last, "last item"},
+      {test_bst_t_find, "find item"},
+      {test_bst_t_insert, "insert item"},
+      {test_bst_t_next, "next item"},
+      {test_bst_t_prev, "previous item"},
+      {test_bst_copy, "copy tree"},
+    };
+
+  const struct test *i;                 /* Iterator. */
+
+  /* Run all the overflow testers. */
+  for (i = test; i < test + sizeof test / sizeof *test; i++)
+    {
+      struct bst_table *tree;
+      int j;
+
+      if (verbosity >= 2)
+        printf ("  Running %s test...\n", i->name);
+
+      tree = bst_create (compare_ints, NULL, allocator);
+      if (tree == NULL)
+        {
+          printf ("    Out of memory creating tree.\n");
+          return 1;
+        }
+
+      for (j = 0; j < n; j++)
+        {
+          void **p = bst_probe (tree, &order[j]);
+          if (p == NULL || *p != &order[j])
+            {
+              if (p == NULL && verbosity >= 0)
+                printf ("    Out of memory in insertion.\n");
+              else if (p != NULL)
+                printf ("    Duplicate item in tree!\n");
+              bst_destroy (tree, NULL);
+              return p == NULL;
+            }
+        }
+
+      if (i->func (tree, n) == 0)
+        return 0;
+
+      if (verify_tree (tree, order, n) == 0)
+        return 0;
+      bst_destroy (tree, NULL);
+    }
+
+  return 1;
+}

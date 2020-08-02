@@ -1,0 +1,24 @@
+/* Converts |tree| into a vine. */
+static void
+tree_to_vine (struct bst_table *tree)
+{
+  struct bst_node *q, *p;
+
+  q = (struct bst_node *) &tree->bst_root;
+  p = tree->bst_root;
+  while (p != NULL)
+    if (p->bst_link[1] == NULL)
+      {
+        q = p;
+        p = p->bst_link[0];
+      }
+    else
+      {
+        struct bst_node *r = p->bst_link[1];
+        p->bst_link[1] = r->bst_link[0];
+        r->bst_link[0] = p;
+        p = r;
+        q->bst_link[0] = r;
+      }
+}
+

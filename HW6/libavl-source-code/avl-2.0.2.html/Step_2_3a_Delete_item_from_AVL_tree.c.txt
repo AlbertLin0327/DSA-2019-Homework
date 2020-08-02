@@ -1,0 +1,42 @@
+if (p->avl_link[1] == NULL)
+  pa[k - 1]->avl_link[da[k - 1]] = p->avl_link[0];
+else
+  {
+    struct avl_node *r = p->avl_link[1];
+    if (r->avl_link[0] == NULL)
+      {
+        r->avl_link[0] = p->avl_link[0];
+        r->avl_balance = p->avl_balance;
+        pa[k - 1]->avl_link[da[k - 1]] = r;
+        da[k] = 1;
+        pa[k++] = r;
+      }
+    else
+      {
+        struct avl_node *s;
+        int j = k++;
+
+        for (;;)
+          {
+            da[k] = 0;
+            pa[k++] = r;
+            s = r->avl_link[0];
+            if (s->avl_link[0] == NULL)
+              break;
+
+            r = s;
+          }
+
+        s->avl_link[0] = p->avl_link[0];
+        r->avl_link[0] = s->avl_link[1];
+        s->avl_link[1] = p->avl_link[1];
+        s->avl_balance = p->avl_balance;
+
+        pa[j - 1]->avl_link[da[j - 1]] = s;
+        da[j] = 1;
+        pa[j] = s;
+      }
+  }
+
+tree->avl_alloc->libavl_free (tree->avl_alloc, p);
+

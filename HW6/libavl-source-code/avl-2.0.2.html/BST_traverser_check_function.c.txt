@@ -1,0 +1,42 @@
+/* Checks that the current item at |trav| is |i|
+   and that its previous and next items are as they should be.
+   |label| is a name for the traverser used in reporting messages.
+   There should be |n| items in the tree numbered |0|@dots{}|n - 1|.
+   Returns nonzero only if there is an error. */
+static int
+check_traverser (struct bst_traverser *trav, int i, int n, const char *label)
+{
+  int okay = 1;
+  int *cur, *prev, *next;
+
+  prev = bst_t_prev (trav);
+  if ((i == 0 && prev != NULL)
+      || (i > 0 && (prev == NULL || *prev != i - 1)))
+    {
+      printf ("   %s traverser ahead of %d, but should be ahead of %d.\n",
+              label, prev != NULL ? *prev : -1, i == 0 ? -1 : i - 1);
+      okay = 0;
+    }
+  bst_t_next (trav);
+
+  cur = bst_t_cur (trav);
+  if (cur == NULL || *cur != i)
+    {
+      printf ("   %s traverser at %d, but should be at %d.\n",
+              label, cur != NULL ? *cur : -1, i);
+      okay = 0;
+    }
+
+  next = bst_t_next (trav);
+  if ((i == n - 1 && next != NULL)
+      || (i != n - 1 && (next == NULL || *next != i + 1)))
+    {
+      printf ("   %s traverser behind %d, but should be behind %d.\n",
+              label, next != NULL ? *next : -1, i == n - 1 ? -1 : i + 1);
+      okay = 0;
+    }
+  bst_t_prev (trav);
+
+  return okay;
+}
+

@@ -1,0 +1,176 @@
+<html lang="en">
+<head>
+<title>Balancing a PBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Copying-a-PBST.html" title="13.6 Copying">
+<link rel=Next href="Testing-PBSTs.html" title="13.8 Testing">
+<link rel=Parent href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Balancing-a-PBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>13.7 Balance</b></big></td>
+<td align=right>
+<a href="index.html#Balancing-a-PBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Copying-a-PBST.html" title="Skip Back: 13.6 Copying"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Testing-PBSTs.html" title="Skip Forward: 13.8 Testing"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Copying-a-PBST.html" title="Prev: 13.6 Copying"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="BSTs-with-Parent-Pointers.html" title="Up: 13 BSTs with Parent Pointers"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Testing-PBSTs.html" title="Next: 13.8 Testing"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>We can balance a PBST in the same way that we would balance a BST
+without parent pointers.  In fact, we'll use the same code, with the
+only change omitting only the maximum height check.  This code doesn't
+set parent pointers, so afterward we traverse the tree to take care of
+that.
+
+   <p>Here are the pieces of the core code that need to be repeated:
+
+   <p><a name="catalogue_002dentry_002dpbst_002d9"></a>
+<a name="index-PBST-balance-function-711"></a>
+<pre class="format"><a href="PBST_balance_function.c.txt">511</a>. &lt;<a name="511" href="PBST_balance_function.c.txt">PBST balance function 511</a>&gt; =
+&lt;<a href="Transforming-a-BST-into-a-Vine.html#89">BST to vine function; bst =&gt; pbst 89</a>&gt;
+&lt;<a href="Balancing-a-PBST.html#512">Vine to balanced PBST function 512</a>&gt;
+&lt;<a href="Balancing-a-PBST.html#514">Update parent pointers function 514</a>&gt;
+
+<b>void</b><!-- /@w --> <br><i>pbst_balance</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpbst_005fbalance_007d-function-712"></a>  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>tree_to_vine</i><!-- /@w --> (<i>tree</i><!-- /@w -->);
+  <i>vine_to_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->);
+  <i>update_parents</i><!-- /@w --> (<i>tree</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="PBST-Operations.html#489">489</a>.</small>
+
+   <p><a name="catalogue_002dentry_002dpbst_002d10"></a>
+<a name="index-vine-to-balanced-PBST-function-713"></a>
+<pre class="format"><a href="Vine_to_balanced_PBST_function.c.txt">512</a>. &lt;<a name="512" href="Vine_to_balanced_PBST_function.c.txt">Vine to balanced PBST function 512</a>&gt; =
+&lt;<a href="Implementing-Compression.html#95">BST compression function; bst =&gt; pbst 95</a>&gt;
+
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>vine_to_tree</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bvine_005fto_005ftree_007d-function-714"></a>  <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>vine</i><!-- /@w -->;      /* Number of nodes in main vine. */
+  <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>leaves</i><!-- /@w -->;    /* Nodes in incomplete bottom level, if any. */
+  <b>int</b><!-- /@w --> <i>height</i><!-- /@w -->;              /* Height of produced balanced tree. */
+
+  &lt;<a href="Balancing-Implementation.html#91">Calculate <i>leaves</i><!-- /@w -->; bst =&gt; pbst 91</a>&gt;
+  &lt;<a href="Balancing-Implementation.html#92">Reduce vine general case to special case; bst =&gt; pbst 92</a>&gt;
+  &lt;<a href="Balancing-Implementation.html#93">Make special case vine into balanced tree and count height; bst =&gt; pbst 93</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-a-PBST.html#511">511</a>.</small>
+
+   <p><a name="index-PBST-extra-function-prototypes-715"></a>
+<pre class="format"><a href="PBST_extra_function_prototypes.c.txt">513</a>. &lt;<a name="513" href="PBST_extra_function_prototypes.c.txt">PBST extra function prototypes 513</a>&gt; =
+
+/* Special PBST functions. */
+<b>void</b><!-- /@w --> <i>pbst_balance</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_table</b> *<i>tree</i><!-- /@w -->);
+</pre>
+   <h5 class="subsubheading">Updating Parent Pointers</h5>
+
+<p>The procedure for rebalancing a binary tree leaves the nodes' parent
+pointers pointing every which way.  Now we'll fix them.  Incidentally,
+this is a general procedure, so the same code could be used in other
+situations where we have a tree to which we want to add parent
+pointers.
+
+   <p>The procedure takes the same form as an inorder traversal, except that
+there is nothing to do in the place where we would normally visit the
+node.  Instead, every time we move down to the left or the right, we
+set the parent pointer of the node we move to.
+
+   <p>The code is straightforward enough.  The basic strategy is to always
+move down to the left when possible; otherwise, move down to the right
+if possible; otherwise, repeatedly move up until we've moved up to the
+left to arrive at a node with a right child, then move to that right
+child.
+
+   <p><a name="catalogue_002dentry_002dpbst_002d11"></a>
+<a name="index-update-parent-pointers-function-716"></a>
+<pre class="format"><a href="Update_parent_pointers_function.c.txt">514</a>. &lt;<a name="514" href="Update_parent_pointers_function.c.txt">Update parent pointers function 514</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>update_parents</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bupdate_005fparents_007d-function-717"></a>  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>p</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w -->;
+
+  <i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+  <b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w -->; ; <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>for</b><!-- /@w --> (; <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0])
+        <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+
+      <b>for</b><!-- /@w --> (; <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+                <b>return</b><!-- /@w -->;
+
+              <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0])
+                <b>break</b><!-- /@w -->;
+              <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->;
+            }
+        }
+
+      <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-a-PBST.html#511">511</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->There is another approach to updating parent pointers: we can do it
+during the compressions.  Implement this approach.  Make sure not to
+miss any pointers. 
+[<a href="Answers-for-Chapter-13.html#13%2d7%231">answer</a>]
+
+   </body></html>
+

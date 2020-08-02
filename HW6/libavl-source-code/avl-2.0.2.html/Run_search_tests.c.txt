@@ -1,0 +1,4 @@
+test_search_func (f, array, n);
+time_successful_search (f, array, n, n_iter);
+time_unsuccessful_search (f, array, n, n_iter);
+

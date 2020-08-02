@@ -1,0 +1,11 @@
+n = pa[k - 1]->rb_link[da[k - 1]] =
+  tree->rb_alloc->libavl_malloc (tree->rb_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+n->rb_data = item;
+n->rb_link[0] = n->rb_link[1] = NULL;
+n->rb_color = RB_RED;
+tree->rb_count++;
+tree->rb_generation++;
+

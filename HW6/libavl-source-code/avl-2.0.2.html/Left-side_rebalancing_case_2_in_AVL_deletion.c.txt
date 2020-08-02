@@ -1,0 +1,11 @@
+y->avl_link[1] = x->avl_link[0];
+x->avl_link[0] = y;
+pa[k - 1]->avl_link[da[k - 1]] = x;
+if (x->avl_balance == 0)
+  {
+    x->avl_balance = -1;
+    y->avl_balance = +1;
+    break;
+  }
+else
+  x->avl_balance = y->avl_balance = 0;

@@ -1,0 +1,29 @@
+struct rtbst_node *s;
+
+for (;;)
+  {
+    s = r->rtbst_link[0];
+    if (s->rtbst_link[0] == NULL)
+      break;
+
+    r = s;
+  }
+
+if (s->rtbst_rtag == RTBST_CHILD)
+  r->rtbst_link[0] = s->rtbst_link[1];
+else
+  r->rtbst_link[0] = NULL;
+
+s->rtbst_link[0] = p->rtbst_link[0];
+if (p->rtbst_link[0] != NULL)
+  {
+    struct rtbst_node *t = p->rtbst_link[0];
+    while (t->rtbst_rtag == RTBST_CHILD)
+      t = t->rtbst_link[1];
+    t->rtbst_link[1] = s;
+  }
+
+s->rtbst_link[1] = p->rtbst_link[1];
+s->rtbst_rtag = RTBST_CHILD;
+
+q->rtbst_link[dir] = s;

@@ -1,0 +1,172 @@
+<html lang="en">
+<head>
+<title>AVL Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Additional-Exercises-for-BSTs.html" title="4.15 Additional Exercises">
+<link rel=Next href="AVL-Balancing-Rule.html" title="5.1 Balancing Rule">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="AVL-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5 AVL Trees</b></big></td>
+<td align=right>
+<a href="index.html#AVL-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Binary-Search-Trees.html" title="Skip Back: 4 Binary Search Trees"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Red_002dBlack-Trees.html" title="Skip Forward: 6 Red-Black Trees"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Additional-Exercises-for-BSTs.html" title="Prev: 4.15 Additional Exercises"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="AVL-Balancing-Rule.html" title="Next: 5.1 Balancing Rule"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>In the last chapter, we designed and implemented a table ADT using
+binary search trees.  We were interested in binary trees from the
+beginning because of their promise of speed compared to linear lists.
+
+   <p>But we only get these speed improvements if our binary trees are
+arranged more or less optimally, with the tree's height as small as
+possible.  If we insert and delete items in the tree in random order,
+then chances are that we'll come pretty close to this optimal
+tree.<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+
+   <p>In &ldquo;pathological&rdquo; cases, search within binary search trees can be as
+slow as sequential search, or even slower when the extra bookkeeping
+needed for a binary tree is taken into account.  For example, after
+inserting items into a BST in sorted order, we get something like the
+vines on the left and the right below.  The BST in the middle below
+illustrates a more unusual case, a &ldquo;zig-zag&rdquo; BST that results from
+inserting items from alternating ends of an ordered list.
+
+<div align="center"><a href="patholog2.txt"><img border=0 src="patholog2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Unfortunately, these pathological cases can easily come up in
+practice, because sorted data in the input to a program is common.  We
+could periodically balance the tree using some heuristic to detect
+that it is &ldquo;too tall&rdquo;.  In the last chapter, in fact, we used a weak
+version of this idea, rebalancing when a stack overflow force it.  We
+could abandon the idea of a binary search tree, using some other data
+structure.  Finally, we could adopt some modifications to binary
+search trees that prevent the pathological case from occurring.
+
+   <p>For the remainder of this book, we're only interested in the latter
+choice.  We'll look at two sets of rules that, when applied to the
+basic structure of a binary search tree, ensure that the tree's height
+is kept within a constant factor of the minimum value.  Although this
+is not as good as keeping the BST's height at its minimum, it comes
+pretty close, and the required operations are much faster.  A tree
+arranged to rules such as these is called a <dfn>balanced tree</dfn> (see <a href="Glossary.html#balanced%20tree">balanced tree</a>). 
+The operations used for minimizing tree height are said to
+<dfn>rebalance</dfn> (see <a href="Glossary.html#rebalance">rebalance</a>) the tree, even though this is different from the
+sort of rebalancing we did in the previous chapter, and are said to
+maintain the tree's &ldquo;balance.&rdquo;
+
+   <p>A balanced tree arranged according to the first set of rebalancing
+rules that we'll examine is called an <dfn>AVL tree</dfn> (see <a href="Glossary.html#AVL%20tree">AVL tree</a>), after its
+inventors, G. M. Adel'son-Vel'skii&lt; and E. M. 
+Landis.  AVL trees are the subject of this chapter, and the next
+chapter will discuss red-black trees, another type of balanced tree.
+
+   <p>In the following sections, we'll construct a table implementation based
+on AVL trees.  Here's an outline of the AVL code:
+
+   <p><a name="index-_0040t_007bavl_002eh_007d-221"></a>
+<pre class="format"><a href="avl.h.txt">142</a>. &lt;<a name="142" href="avl.h.txt"><tt>avl.h</tt> 142</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>ifndef</b> <tt>AVL_H</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bAVL_005fH_007d_007d-macro_0040c-222"></a><tt>AVL_H</tt><!-- /@w --> 1
+
+#<b>include</b> &lt;stddef.h&gt;
+
+&lt;<a href="Table-Headers.html#14">Table types; tbl =&gt; avl 14</a>&gt;
+&lt;<a href="BST-Maximum-Height.html#28">BST maximum height; bst =&gt; avl 28</a>&gt;
+&lt;<a href="BST-Structure.html#27">BST table structure; bst =&gt; avl 27</a>&gt;
+&lt;<a href="AVL-Data-Types.html#144">AVL node structure 144</a>&gt;
+&lt;<a href="Better-Iterative-Traversal.html#61">BST traverser structure; bst =&gt; avl 61</a>&gt;
+&lt;<a href="Table-Headers.html#15">Table function prototypes; tbl =&gt; avl 15</a>&gt;
+
+#<b>endif</b> /* avl.h */
+</pre>
+   <p><a name="index-_0040t_007bavl_002ec_007d-223"></a>
+<pre class="format"><a href="avl.c.txt">143</a>. &lt;<a name="143" href="avl.c.txt"><tt>avl.c</tt> 143</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> &lt;string.h&gt;
+#<b>include</b> "avl.h"
+
+&lt;<a href="AVL-Operations.html#145">AVL functions 145</a>&gt;
+</pre>
+   <ul class="menu">
+<li><a accesskey="1" href="AVL-Balancing-Rule.html">AVL Balancing Rule</a>
+<li><a accesskey="2" href="AVL-Data-Types.html">AVL Data Types</a>
+<li><a accesskey="3" href="AVL-Operations.html">AVL Operations</a>
+<li><a accesskey="4" href="Inserting-into-an-AVL-Tree.html">Inserting into an AVL Tree</a>
+<li><a accesskey="5" href="Deleting-from-an-AVL-Tree.html">Deleting from an AVL Tree</a>
+<li><a accesskey="6" href="Traversal-of-an-AVL-Tree.html">Traversal of an AVL Tree</a>
+<li><a accesskey="7" href="Copying-an-AVL-Tree.html">Copying an AVL Tree</a>
+<li><a accesskey="8" href="Testing-AVL-Trees.html">Testing AVL Trees</a>
+</ul>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998b">Knuth 1998b</a>], sections 6.2.2 and 6.2.3;
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 13.4.
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> This seems true intuitively, but there are some difficult
+mathematics in this area.  For details, refer to [<a href="References.html#Knuth%201998b">Knuth 1998b</a>]
+theorem 6.2.2H, [<a href="References.html#Knuth%201977">Knuth 1977</a>], and [<a href="References.html#Knuth%201978">Knuth 1978</a>].</p>
+
+   <p><hr></div>
+
+   </body></html>
+

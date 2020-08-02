@@ -1,0 +1,5 @@
+struct trb_node *t = p->trb_link[0];
+while (t->trb_tag[1] == TRB_CHILD)
+  t = t->trb_link[1];
+t->trb_link[1] = p->trb_link[1];
+pa[k - 1]->trb_link[da[k - 1]] = p->trb_link[0];

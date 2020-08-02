@@ -1,0 +1,29 @@
+/* Search |tree| for an item matching |item|, and return it if found.
+   Otherwise return |NULL|. */
+void *
+tbst_find (const struct tbst_table *tree, const void *item)
+{
+  const struct tbst_node *p;
+
+  assert (tree != NULL && item != NULL);
+
+  p = tree->tbst_root;
+  if (p == NULL)
+    return NULL;
+
+  for (;;)
+    {
+      int cmp, dir;
+
+      cmp = tree->tbst_compare (item, p->tbst_data, tree->tbst_param);
+      if (cmp == 0)
+        return p->tbst_data;
+
+      dir = cmp > 0;
+      if (p->tbst_tag[dir] == TBST_CHILD)
+        p = p->tbst_link[dir];
+      else
+        return NULL;
+    }
+}
+

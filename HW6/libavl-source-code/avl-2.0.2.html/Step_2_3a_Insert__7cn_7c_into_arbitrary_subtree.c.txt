@@ -1,0 +1,2 @@
+pa[k - 1]->bst_link[da[k - 1]] = n;
+

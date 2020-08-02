@@ -1,0 +1,200 @@
+/* Deletes from |tree| and returns an item matching |item|.
+   Returns a null pointer if no matching item found. */
+void *
+rb_delete (struct rb_table *tree, const void *item)
+{
+  struct rb_node *pa[RB_MAX_HEIGHT]; /* Nodes on stack. */
+  unsigned char da[RB_MAX_HEIGHT];   /* Directions moved from stack nodes. */
+  int k;                             /* Stack height. */
+
+  struct rb_node *p;    /* The node to delete, or a node part way to it. */
+  int cmp;              /* Result of comparison between |item| and |p|. */
+
+  assert (tree != NULL && item != NULL);
+
+  k = 0;
+  p = (struct rb_node *) &tree->rb_root;
+  for (cmp = -1; cmp != 0;
+       cmp = tree->rb_compare (item, p->rb_data, tree->rb_param))
+    {
+      int dir = cmp > 0;
+
+      pa[k] = p;
+      da[k++] = dir;
+
+      p = p->rb_link[dir];
+      if (p == NULL)
+        return NULL;
+    }
+  item = p->rb_data;
+
+  if (p->rb_link[1] == NULL)
+    pa[k - 1]->rb_link[da[k - 1]] = p->rb_link[0];
+  else
+    {
+      enum rb_color t;
+      struct rb_node *r = p->rb_link[1];
+
+      if (r->rb_link[0] == NULL)
+        {
+          r->rb_link[0] = p->rb_link[0];
+          t = r->rb_color;
+          r->rb_color = p->rb_color;
+          p->rb_color = t;
+          pa[k - 1]->rb_link[da[k - 1]] = r;
+          da[k] = 1;
+          pa[k++] = r;
+        }
+      else
+        {
+          struct rb_node *s;
+          int j = k++;
+
+          for (;;)
+            {
+              da[k] = 0;
+              pa[k++] = r;
+              s = r->rb_link[0];
+              if (s->rb_link[0] == NULL)
+                break;
+
+              r = s;
+            }
+
+          da[j] = 1;
+          pa[j] = s;
+          pa[j - 1]->rb_link[da[j - 1]] = s;
+
+          s->rb_link[0] = p->rb_link[0];
+          r->rb_link[0] = s->rb_link[1];
+          s->rb_link[1] = p->rb_link[1];
+
+          t = s->rb_color;
+          s->rb_color = p->rb_color;
+          p->rb_color = t;
+        }
+    }
+
+  if (p->rb_color == RB_BLACK)
+    {
+      for (;;)
+        {
+          struct rb_node *x = pa[k - 1]->rb_link[da[k - 1]];
+          if (x != NULL && x->rb_color == RB_RED)
+            {
+              x->rb_color = RB_BLACK;
+              break;
+            }
+          if (k < 2)
+            break;
+
+          if (da[k - 1] == 0)
+            {
+              struct rb_node *w = pa[k - 1]->rb_link[1];
+
+              if (w->rb_color == RB_RED)
+                {
+                  w->rb_color = RB_BLACK;
+                  pa[k - 1]->rb_color = RB_RED;
+
+                  pa[k - 1]->rb_link[1] = w->rb_link[0];
+                  w->rb_link[0] = pa[k - 1];
+                  pa[k - 2]->rb_link[da[k - 2]] = w;
+
+                  pa[k] = pa[k - 1];
+                  da[k] = 0;
+                  pa[k - 1] = w;
+                  k++;
+
+                  w = pa[k - 1]->rb_link[1];
+                }
+
+              if ((w->rb_link[0] == NULL
+                   || w->rb_link[0]->rb_color == RB_BLACK)
+                  && (w->rb_link[1] == NULL
+                      || w->rb_link[1]->rb_color == RB_BLACK))
+                w->rb_color = RB_RED;
+              else
+                {
+                  if (w->rb_link[1] == NULL
+                      || w->rb_link[1]->rb_color == RB_BLACK)
+                    {
+                      struct rb_node *y = w->rb_link[0];
+                      y->rb_color = RB_BLACK;
+                      w->rb_color = RB_RED;
+                      w->rb_link[0] = y->rb_link[1];
+                      y->rb_link[1] = w;
+                      w = pa[k - 1]->rb_link[1] = y;
+                    }
+
+                  w->rb_color = pa[k - 1]->rb_color;
+                  pa[k - 1]->rb_color = RB_BLACK;
+                  w->rb_link[1]->rb_color = RB_BLACK;
+
+                  pa[k - 1]->rb_link[1] = w->rb_link[0];
+                  w->rb_link[0] = pa[k - 1];
+                  pa[k - 2]->rb_link[da[k - 2]] = w;
+                  break;
+                }
+            }
+          else
+            {
+              struct rb_node *w = pa[k - 1]->rb_link[0];
+
+              if (w->rb_color == RB_RED)
+                {
+                  w->rb_color = RB_BLACK;
+                  pa[k - 1]->rb_color = RB_RED;
+
+                  pa[k - 1]->rb_link[0] = w->rb_link[1];
+                  w->rb_link[1] = pa[k - 1];
+                  pa[k - 2]->rb_link[da[k - 2]] = w;
+
+                  pa[k] = pa[k - 1];
+                  da[k] = 1;
+                  pa[k - 1] = w;
+                  k++;
+
+                  w = pa[k - 1]->rb_link[0];
+                }
+
+              if ((w->rb_link[0] == NULL
+                   || w->rb_link[0]->rb_color == RB_BLACK)
+                  && (w->rb_link[1] == NULL
+                      || w->rb_link[1]->rb_color == RB_BLACK))
+                w->rb_color = RB_RED;
+              else
+                {
+                  if (w->rb_link[0] == NULL
+                      || w->rb_link[0]->rb_color == RB_BLACK)
+                    {
+                      struct rb_node *y = w->rb_link[1];
+                      y->rb_color = RB_BLACK;
+                      w->rb_color = RB_RED;
+                      w->rb_link[1] = y->rb_link[0];
+                      y->rb_link[0] = w;
+                      w = pa[k - 1]->rb_link[0] = y;
+                    }
+
+                  w->rb_color = pa[k - 1]->rb_color;
+                  pa[k - 1]->rb_color = RB_BLACK;
+                  w->rb_link[0]->rb_color = RB_BLACK;
+
+                  pa[k - 1]->rb_link[0] = w->rb_link[1];
+                  w->rb_link[1] = pa[k - 1];
+                  pa[k - 2]->rb_link[da[k - 2]] = w;
+                  break;
+                }
+            }
+
+          k--;
+        }
+
+    }
+
+  tree->rb_alloc->libavl_free (tree->rb_alloc, p);
+  tree->rb_count--;
+  tree->rb_generation++;
+  return (void *) item;
+}
+

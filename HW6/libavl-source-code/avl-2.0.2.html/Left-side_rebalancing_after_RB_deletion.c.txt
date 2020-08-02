@@ -1,0 +1,46 @@
+struct rb_node *w = pa[k - 1]->rb_link[1];
+
+if (w->rb_color == RB_RED)
+  {
+    w->rb_color = RB_BLACK;
+    pa[k - 1]->rb_color = RB_RED;
+
+    pa[k - 1]->rb_link[1] = w->rb_link[0];
+    w->rb_link[0] = pa[k - 1];
+    pa[k - 2]->rb_link[da[k - 2]] = w;
+
+    pa[k] = pa[k - 1];
+    da[k] = 0;
+    pa[k - 1] = w;
+    k++;
+
+    w = pa[k - 1]->rb_link[1];
+  }
+
+if ((w->rb_link[0] == NULL
+     || w->rb_link[0]->rb_color == RB_BLACK)
+    && (w->rb_link[1] == NULL
+        || w->rb_link[1]->rb_color == RB_BLACK))
+  w->rb_color = RB_RED;
+else
+  {
+    if (w->rb_link[1] == NULL
+        || w->rb_link[1]->rb_color == RB_BLACK)
+      {
+        struct rb_node *y = w->rb_link[0];
+        y->rb_color = RB_BLACK;
+        w->rb_color = RB_RED;
+        w->rb_link[0] = y->rb_link[1];
+        y->rb_link[1] = w;
+        w = pa[k - 1]->rb_link[1] = y;
+      }
+
+    w->rb_color = pa[k - 1]->rb_color;
+    pa[k - 1]->rb_color = RB_BLACK;
+    w->rb_link[1]->rb_color = RB_BLACK;
+
+    pa[k - 1]->rb_link[1] = w->rb_link[0];
+    w->rb_link[0] = pa[k - 1];
+    pa[k - 2]->rb_link[da[k - 2]] = w;
+    break;
+  }

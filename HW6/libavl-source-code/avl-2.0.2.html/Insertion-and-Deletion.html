@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>Insertion and Deletion - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Count.html" title="2.7 Count">
+<link rel=Next href="Assertions.html" title="2.9 Assertions">
+<link rel=Parent href="The-Table-ADT.html" title="2 The Table ADT">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Insertion-and-Deletion">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>2.8 Insertion and Deletion</b></big></td>
+<td align=right>
+<a href="index.html#Insertion-and-Deletion.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Count.html" title="Skip Back: 2.7 Count"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Assertions.html" title="Skip Forward: 2.9 Assertions"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Count.html" title="Prev: 2.7 Count"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="The-Table-ADT.html" title="Up: 2 The Table ADT"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Assertions.html" title="Next: 2.9 Assertions"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>These functions insert and delete items in tables.  There is also a
+function for searching a table without modifying it.
+
+   <p>The design behind the insertion functions takes into account a couple of
+important issues:
+
+     <ul>
+<li>What should happen if there is a matching item already in the tree?  If
+the items contain only keys and no values, then there's no point in
+doing anything.  If the items do contain values, then we might want to
+leave the existing item or replace it, depending on the particular
+circumstances.  The <i>tbl_insert</i><!-- /@w -->() and <i>tbl_replace</i><!-- /@w -->() functions are
+handy in simple cases like these.
+
+     <li>Occasionally it is convenient to insert one item into a table, then
+immediately replace it by a different item that has identical key data. 
+For instance, if there is a good chance that a data item already exists
+within a table, then it might make sense to insert data allocated as a
+local variable into a table, then replace it by a dynamically allocated
+copy if it turned out that the item wasn't already in the table.  That
+way, we save the time required to make an additional copy of the item to
+insert.  The <i>tbl_probe</i><!-- /@w -->() function allows for this kind of flexibility. 
+</ul>
+
+   <p><a name="index-table-insertion-and-deletion-function-prototypes-18"></a>
+<pre class="format"><a href="Table_insertion_and_deletion_function_prototypes.c.txt">10</a>. &lt;<a name="10" href="Table_insertion_and_deletion_function_prototypes.c.txt">Table insertion and deletion function prototypes 10</a>&gt; =
+<b>void</b><!-- /@w --> **<i>tbl_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_table</b> *, <b>void</b><!-- /@w --> *);
+<b>void</b><!-- /@w --> *<i>tbl_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_table</b> *, <b>void</b><!-- /@w --> *);
+<b>void</b><!-- /@w --> *<i>tbl_replace</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_table</b> *, <b>void</b><!-- /@w --> *);
+<b>void</b><!-- /@w --> *<i>tbl_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_table</b> *, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *);
+<b>void</b><!-- /@w --> *<i>tbl_find</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>tbl_table</b> *, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Table-Headers.html#15">15</a>.</small>
+
+<p class="noindent">Each of these functions takes a table to manipulate as its first
+argument and a table item as its second argument, here called <i>table</i><!-- /@w -->
+and <i>item</i><!-- /@w -->, respectively.  Both arguments must be non-null in all cases. 
+All but <i>tbl_probe</i><!-- /@w -->() return a table item or a null pointer.
+
+     <ul>
+<li><i>tbl_probe</i><!-- /@w -->(): Searches in <i>table</i><!-- /@w --> for an item matching <i>item</i><!-- /@w -->. 
+If found, a pointer to the <b>void</b><!-- /@w -->&nbsp;*<!-- /@w --> data item is returned.  Otherwise,
+<i>item</i><!-- /@w --> is inserted into the table and a pointer to the copy within
+the table is returned.  Memory allocation failure causes a null pointer
+to be returned.
+
+     <p>The pointer returned can be used to replace the item found or inserted
+by a different item.  This must only be done if the replacement item has
+the same position relative to the other items in the table as did the
+original item.  That is, for existing item <i>e</i><!-- /@w -->, replacement item <i>r</i><!-- /@w -->,
+and the table's comparison function <i>f</i><!-- /@w -->(), the return values of <i>f</i><!-- /@w -->(<i>e</i><!-- /@w -->,&nbsp;<i>x</i><!-- /@w -->)<!-- /@w --> and <i>f</i><!-- /@w -->(<i>r</i><!-- /@w -->, <i>x</i><!-- /@w -->) must have the same sign for every other item <i>x</i><!-- /@w -->
+currently in the table.  Calling any other table function invalidates
+the pointer returned and it must not be referenced subsequently.
+
+     <li><i>tbl_insert</i><!-- /@w -->(): Inserts <i>item</i><!-- /@w --> into <i>table</i><!-- /@w -->, but not if a
+matching item exists.  Returns a null pointer if successful or if a
+memory allocation error occurs.  If a matching item already exists in
+the table, returns that item.
+
+     <li><i>tbl_replace</i><!-- /@w -->(): Inserts <i>item</i><!-- /@w --> into <i>table</i><!-- /@w -->, replacing and
+returning any matching item.  Returns a null pointer if the item was
+inserted but there was no matching item to replace, or if a memory
+allocation error occurs.
+
+     <li><i>tbl_delete</i><!-- /@w -->(): Removes from <i>table</i><!-- /@w --> and returns an item matching
+<i>item</i><!-- /@w -->.  Returns a null pointer if no matching item exists in the
+table.
+
+     <li><i>tbl_find</i><!-- /@w -->(): Searches <i>table</i><!-- /@w --> for an item matching <i>item</i><!-- /@w --> and
+returns any item found.  Returns a null pointer if no matching item
+exists in the table. 
+</ul>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="nullinsert"></a>&nbsp;<!-- /@w -->Functions <i>tbl_insert</i><!-- /@w -->() and <i>tbl_replace</i><!-- /@w -->() return <tt>NULL</tt><!-- /@w --> in two very
+different situations: an error or successful insertion.  Why is this not
+necessarily a design mistake? 
+[<a href="Answers-for-Chapter-2.html#2%2d8%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Suggest a reason for disallowing insertion of a null item. 
+[<a href="Answers-for-Chapter-2.html#2%2d8%232">answer</a>]
+
+<p class="noindent"><b>3.</b><a name="genericinsertreplace"></a>&nbsp;<!-- /@w -->Write generic implementations of <i>tbl_insert</i><!-- /@w -->() and <i>tbl_replace</i><!-- /@w -->() in
+terms of <i>tbl_probe</i><!-- /@w -->(). 
+[<a href="Answers-for-Chapter-2.html#2%2d8%233">answer</a>]
+
+   </body></html>
+

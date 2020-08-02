@@ -1,0 +1,208 @@
+<html lang="en">
+<head>
+<title>Step 3 in PRB Insertion - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Step-2-in-PRB-Insertion.html" title="15.3.1 Step 2: Insert">
+<link rel=Next href="PRB-Insertion-Symmetric-Case.html" title="15.3.3 Symmetric Case">
+<link rel=Parent href="Inserting-into-a-PRB-Tree.html" title="15.3 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Step-3-in-PRB-Insertion">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>15.3.2 Step 3: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Step-3-in-PRB-Insertion.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Step-2-in-PRB-Insertion.html" title="Skip Back: 15.3.1 Step 2: Insert"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="PRB-Insertion-Symmetric-Case.html" title="Skip Forward: 15.3.3 Symmetric Case"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Step-2-in-PRB-Insertion.html" title="Prev: 15.3.1 Step 2: Insert"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-a-PRB-Tree.html" title="Up: 15.3 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="PRB-Insertion-Symmetric-Case.html" title="Next: 15.3.3 Symmetric Case"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>When we rebalanced ordinary RB trees, we used the expressions <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] and <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->&nbsp;-&nbsp;2]<!-- /@w --> to refer to the parent and grandparent,
+respectively, of the node at which we were rebalancing, and we called
+that node <i>q</i><!-- /@w -->, though that wasn't a variable name (see <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html">Inserting an RB Node Step 3 - Rebalance</a>).  Now that we have parent pointers, we use
+a real variable <i>q</i><!-- /@w --> to refer to the node where we're rebalancing.
+
+   <p>This means that we could refer to its parent and grandparent as
+<i>q</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w --> and <i>q</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w -->, respectively, but
+there's a small problem with that.  During rebalancing, we will need
+to move nodes around and modify parent pointers.  That means that
+<i>q</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w --> and <i>q</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w --> will be changing under
+us as we work.  This makes writing correct code hard, and reading it
+even harder.  It is much easier to use a pair of new variables to hold
+<i>q</i><!-- /@w -->'s parent and grandparent.
+
+   <p>That's exactly the role that <i>f</i><!-- /@w --> and <i>g</i><!-- /@w -->, respectively, play in the
+code below.  If you compare this code to &lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#201">Step 3: Rebalance after RB insertion 201</a>&gt;, you'll also notice the way that checking that <i>f</i><!-- /@w --> and <i>g</i><!-- /@w -->
+are non-null corresponds to checking that the stack height is at least
+3 (see Exercise 6.4.3-1 for an explanation of the reason this is a valid
+test).
+
+   <p><a name="index-rebalance-after-PRB-insertion-773"></a>
+<pre class="format"><a href="Step_3_3a_Rebalance_after_PRB_insertion.c.txt">557</a>. &lt;<a name="557" href="Step_3_3a_Rebalance_after_PRB_insertion.c.txt">Step 3: Rebalance after PRB insertion 557</a>&gt; =
+<i>q</i><!-- /@w --> = <i>n</i><!-- /@w -->;
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>prb_node</b> *<i>f</i><!-- /@w -->; /* Parent of <i>q</i><!-- /@w -->. */
+    <b>struct</b><!-- /@w --> <b>prb_node</b> *<i>g</i><!-- /@w -->; /* Grandparent of <i>q</i><!-- /@w -->. */
+
+    <i>f</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w -->;
+    <b>if</b><!-- /@w --> (<i>f</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>f</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> == <tt>PRB_BLACK</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>g</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w -->;
+    <b>if</b><!-- /@w --> (<i>g</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>g</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] == <i>f</i><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-PRB-Insertion.html#558">Left-side rebalancing after PRB insertion 558</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="PRB-Insertion-Symmetric-Case.html#562">Right-side rebalancing after PRB insertion 562</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->} <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<i>tree</i><!-- /@w -->-&gt;<i>prb_root</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> = <tt>PRB_BLACK</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-a-PRB-Tree.html#555">555</a>.</small>
+
+   <p>After replacing <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] by <i>f</i><!-- /@w --> and <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2] by <i>g</i><!-- /@w -->, the cases
+for PRB rebalancing are distinguished on the same basis as those for
+RB rebalancing (see &lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#202">Left-side rebalancing after RB insertion 202</a>&gt;). 
+One addition: cases 2 and 3 need to work with <i>q</i><!-- /@w -->'s great-grandparent,
+so they stash it into a new variable <i>h</i><!-- /@w -->.
+
+   <p><a name="index-left_002dside-rebalancing-after-PRB-insertion-774"></a>
+<pre class="format"><a href="Left-side_rebalancing_after_PRB_insertion.c.txt">558</a>. &lt;<a name="558" href="Left-side_rebalancing_after_PRB_insertion.c.txt">Left-side rebalancing after PRB insertion 558</a>&gt; =
+<b>struct</b><!-- /@w --> <b>prb_node</b> *<i>y</i><!-- /@w --> = <i>g</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1];
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> == <tt>PRB_RED</tt><!-- /@w -->) 
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-PRB-Insertion.html#559">Case 1 in left-side PRB insertion rebalancing 559</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>prb_node</b> *<i>h</i><!-- /@w -->; /* Great-grandparent of <i>q</i><!-- /@w -->. */
+
+    <i>h</i><!-- /@w --> = <i>g</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w -->;
+    <b>if</b><!-- /@w --> (<i>h</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+      <i>h</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>prb_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>prb_root</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>f</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] == <i>q</i><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-PRB-Insertion.html#561">Case 3 in left-side PRB insertion rebalancing 561</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Step-3-in-PRB-Insertion.html#560">Case 2 in left-side PRB insertion rebalancing 560</a>&gt;
+    <b>break</b><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-PRB-Insertion.html#557">557</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>q</i><!-- /@w -->'s uncle is red</h5>
+
+<p>In this case, as before, we need only rearrange colors
+(see <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#rbinscase1">rbinscase1</a>).  Instead of popping the top two items off the
+stack, we directly set up <i>q</i><!-- /@w -->, the next node at which to rebalance, to
+be the (former) grandparent of the original <i>q</i><!-- /@w -->.
+
+<div align="center"><a href="prbins1.txt"><img border=0 src="prbins1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-1-in-left_002dside-PRB-insertion-rebalancing-775"></a>
+<pre class="format"><a href="Case_1_in_left-side_PRB_insertion_rebalancing.c.txt">559</a>. &lt;<a name="559" href="Case_1_in_left-side_PRB_insertion_rebalancing.c.txt">Case 1 in left-side PRB insertion rebalancing 559</a>&gt; =
+<i>f</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> = <tt>PRB_BLACK</tt><!-- /@w -->;
+<i>g</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> = <tt>PRB_RED</tt><!-- /@w -->;
+<i>q</i><!-- /@w --> = <i>g</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-PRB-Insertion.html#558">558</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>q</i><!-- /@w --> is the left child of its parent</h5>
+
+<p>If <i>q</i><!-- /@w --> is the left child of its parent, we rotate right at <i>g</i><!-- /@w -->:
+
+<div align="center"><a href="prbins2.txt"><img border=0 src="prbins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">The result satisfies both RB balancing rules.  Refer back to the
+discussion of the same case in ordinary RB trees for more details
+(see <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#rbinscase2">rbinscase2</a>).
+
+   <p><a name="index-case-2-in-left_002dside-PRB-insertion-rebalancing-776"></a>
+<pre class="format"><a href="Case_2_in_left-side_PRB_insertion_rebalancing.c.txt">560</a>. &lt;<a name="560" href="Case_2_in_left-side_PRB_insertion_rebalancing.c.txt">Case 2 in left-side PRB insertion rebalancing 560</a>&gt; =
+<i>g</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> = <tt>PRB_RED</tt><!-- /@w -->;
+<i>f</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> = <tt>PRB_BLACK</tt><!-- /@w -->;
+
+<i>g</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] = <i>f</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1];
+<i>f</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] = <i>g</i><!-- /@w -->;
+<i>h</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[<i>h</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] != <i>g</i><!-- /@w -->] = <i>f</i><!-- /@w -->;
+
+<i>f</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w --> = <i>g</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w -->;
+<i>g</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w --> = <i>f</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>g</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>g</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0]-&gt;<i>prb_parent</i><!-- /@w --> = <i>g</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-PRB-Insertion.html#558">558</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>q</i><!-- /@w --> is the right child of its parent</h5>
+
+<p>If <i>q</i><!-- /@w --> is a right child, then we transform it into case 2 by rotating
+left at <i>f</i><!-- /@w -->:
+
+<div align="center"><a href="prbins3.txt"><img border=0 src="prbins3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">Afterward we relabel <i>q</i><!-- /@w --> as <i>f</i><!-- /@w --> and treat the result as case 2.  There
+is no need to properly set <i>q</i><!-- /@w --> itself because case 2 never uses
+variable <i>q</i><!-- /@w -->.  For more details, refer back to case 3 in ordinary RB
+trees (see <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#rbinscase3">rbinscase3</a>).
+
+   <p><a name="index-case-3-in-left_002dside-PRB-insertion-rebalancing-777"></a>
+<pre class="format"><a href="Case_3_in_left-side_PRB_insertion_rebalancing.c.txt">561</a>. &lt;<a name="561" href="Case_3_in_left-side_PRB_insertion_rebalancing.c.txt">Case 3 in left-side PRB insertion rebalancing 561</a>&gt; =
+<i>f</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] = <i>q</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0];
+<i>q</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] = <i>f</i><!-- /@w -->;
+<i>g</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] = <i>q</i><!-- /@w -->;
+<i>f</i><!-- /@w -->-&gt;<i>prb_parent</i><!-- /@w --> = <i>q</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>f</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->)
+  <i>f</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1]-&gt;<i>prb_parent</i><!-- /@w --> = <i>f</i><!-- /@w -->;
+
+<i>f</i><!-- /@w --> = <i>q</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-PRB-Insertion.html#558">558</a>.</small>
+
+   </body></html>
+

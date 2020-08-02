@@ -1,0 +1,36 @@
+static void
+traverse_iterative (struct bst_node *node, bst_item_func *action, void *param)
+{
+  struct bst_node **stack = NULL;
+  size_t height = 0;
+  size_t max_height = 0;
+
+  for (;;)
+    {
+      while (node != NULL)
+        {
+          if (height >= max_height)
+            {
+              max_height = max_height * 2 + 8;
+              stack = realloc (stack, sizeof *stack * max_height);
+              if (stack == NULL)
+                {
+                  fprintf (stderr, "out of memory\n");
+                  exit (EXIT_FAILURE);
+                }
+            }
+
+          stack[height++] = node;
+          node = node->bst_link[0];
+        }
+
+      if (height == 0)
+        break;
+
+      node = stack[--height];
+      action (node->bst_data, param);
+      node = node->bst_link[1];
+    }
+
+  free (stack);
+}

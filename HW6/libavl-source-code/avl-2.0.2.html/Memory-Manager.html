@@ -1,0 +1,388 @@
+<html lang="en">
+<head>
+<title>Memory Manager - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Testing-Overflow.html" title="4.14.3 Testing Overflow">
+<link rel=Next href="User-Interaction.html" title="4.14.5 User Interaction">
+<link rel=Parent href="Testing-BST-Functions.html" title="4.14 Testing">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Memory-Manager">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14.4 Memory Manager</b></big></td>
+<td align=right>
+<a href="index.html#Memory-Manager.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-Overflow.html" title="Skip Back: 4.14.3 Testing Overflow"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="User-Interaction.html" title="Skip Forward: 4.14.5 User Interaction"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-Overflow.html" title="Prev: 4.14.3 Testing Overflow"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Testing-BST-Functions.html" title="Up: 4.14 Testing"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="User-Interaction.html" title="Next: 4.14.5 User Interaction"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>We want to test our code to make sure that it always releases allocated
+memory and that it behaves robustly when memory allocations fail.  We
+can do the former by building our own memory manager that keeps tracks
+of blocks as they are allocated and freed.  The memory manager can also
+disallow allocations according to a policy set by the user, taking care
+of the latter.
+
+   <p>The available policies are:
+
+   <p><a name="index-test-declarations-187"></a>
+<pre class="format"><a href="Test_declarations.c.txt">125</a>. &lt;<a name="125" href="Test_declarations.c.txt">Test declarations 121</a>&gt; +=
+/* Memory tracking policy. */
+<b>enum</b><!-- /@w --> <b>mt_policy</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bmt_005fpolicy_007d-enumeration-188"></a>    <tt>MT_TRACK</tt><!-- /@w -->,			/* Track allocation for leak detection. */
+    <tt>MT_NO_TRACK</tt><!-- /@w -->,		/* No leak detection. */
+    <tt>MT_FAIL_COUNT</tt><!-- /@w -->,      	/* Fail allocations after a while. */
+    <tt>MT_FAIL_PERCENT</tt><!-- /@w -->,		/* Fail allocations randomly. */
+    <tt>MT_SUBALLOC</tt><!-- /@w -->                 /* Suballocate from larger blocks. */
+  };
+</pre>
+   <p class="noindent"><tt>MT_TRACK</tt><!-- /@w --> and <tt>MT_NO_TRACK</tt><!-- /@w --> should be self-explanatory. 
+<tt>MT_FAIL_COUNT</tt><!-- /@w --> takes an argument specifying after how many allocations
+further allocations should always fail.  <tt>MT_FAIL_PERCENT</tt><!-- /@w --> takes an
+argument specifying an integer percentage of allocations to randomly
+fail.
+
+   <p><tt>MT_SUBALLOC</tt><!-- /@w --> causes small blocks to be carved out of larger ones
+allocated with <i>malloc</i><!-- /@w -->().  This is a good idea for two reasons:
+<i>malloc</i><!-- /@w -->() can be slow and <i>malloc</i><!-- /@w -->() can waste a lot of space dealing
+with the small blocks that libavl uses for its node.  Suballocation
+cannot be implemented in an entirely portable way because of alignment
+issues, but the test program here requires the user to specify the
+alignment needed, and its use is optional anyhow.
+
+   <p>The memory manager keeps track of allocated blocks using <b>struct</b><!-- /@w --> <b>block</b>:
+
+   <p><a name="index-memory-tracker-189"></a>
+<pre class="format"><a href="Memory_tracker.c.txt">126</a>. &lt;<a name="126" href="Memory_tracker.c.txt">Memory tracker 126</a>&gt; =
+/* Memory tracking allocator. */
+
+/* A memory block. */
+<b>struct</b><!-- /@w --> <b>block</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bblock_007d-structure-190"></a>    <b>struct</b><!-- /@w --> <b>block</b> *<i>next</i><!-- /@w -->;                 /* Next in linked list. */
+
+    <b>int</b><!-- /@w --> <i>idx</i><!-- /@w -->;                            /* Allocation order index number. */
+    <b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->;                        /* Size in bytes. */
+    <b>size_t</b><!-- /@w --> <i>used</i><!-- /@w -->;                        /* MT_SUBALLOC: amount used so far. */
+    <b>void</b><!-- /@w --> *<i>content</i><!-- /@w -->;                      /* Allocated region. */
+  };
+</pre>
+   <p class="noindent"><small>See also <a href="Memory-Manager.html#127">127</a>, <a href="Memory-Manager.html#128">128</a>, <a href="Memory-Manager.html#129">129</a>, <a href="Memory-Manager.html#130">130</a>, <a href="Memory-Manager.html#131">131</a>, and<a href="Memory-Manager.html#132">132</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Testing-BST-Functions.html#97">97</a>.</small></div>
+
+<p class="noindent">The <i>next</i><!-- /@w --> member of <b>struct</b><!-- /@w --> <b>block</b> is used to keep a linked list of all
+the currently allocated blocks.  Searching this list is inefficient, but
+there are at least two reasons to do it this way, instead of using a
+more efficient data structure, such as a binary tree.  First, this code
+is for testing binary tree routines&mdash;using a binary tree data structure
+to do it is a strange idea!  Second, the ISO C standard says that, with
+few exceptions, using the relational operators (&lt;, &lt;=, &gt;, &gt;=) to
+compare pointers that do not point inside the same array produces
+undefined behavior, but allows use of the equality operators (==, !=)
+for a larger class of pointers.
+
+   <p>We also need a data structure to keep track of settings and a list of
+blocks.  This memory manager uses the technique discussed in
+Exercise 2.5-3 to provide this structure to the allocator.
+
+   <p><a name="index-memory-tracker-191"></a>
+<pre class="format"><a href="Memory_tracker.c.txt">127</a>. &lt;<a name="127" href="Memory_tracker.c.txt">Memory tracker 126</a>&gt; +=
+/* Indexes into <i>arg</i><!-- /@w -->[] within <b>struct</b><!-- /@w --> <b>mt_allocator</b>. */
+<b>enum</b><!-- /@w --> <b>mt_arg_index</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bmt_005farg_005findex_007d-enumeration-192"></a>    <tt>MT_COUNT</tt><!-- /@w --> = 0,      /* <tt>MT_FAIL_COUNT</tt><!-- /@w -->: Remaining successful allocations. */
+    <tt>MT_PERCENT</tt><!-- /@w --> = 0,    /* <tt>MT_FAIL_PERCENT</tt><!-- /@w -->: Failure percentage. */
+    <tt>MT_BLOCK_SIZE</tt><!-- /@w --> = 0, /* <tt>MT_SUBALLOC</tt><!-- /@w -->: Size of block to suballocate. */
+    <tt>MT_ALIGN</tt><!-- /@w --> = 1       /* <tt>MT_SUBALLOC</tt><!-- /@w -->: Alignment of suballocated blocks. */
+  };
+
+/* Memory tracking allocator. */
+<b>struct</b><!-- /@w --> <b>mt_allocator</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bmt_005fallocator_007d-structure-193"></a>    <b>struct</b><!-- /@w --> <b>libavl_allocator</b> <i>allocator</i><!-- /@w -->;  /* Allocator.  Must be first member. */
+
+    /* Settings. */
+    <b>enum</b><!-- /@w --> <b>mt_policy</b> <i>policy</i><!-- /@w -->;              /* Allocation policy. */
+    <b>int</b><!-- /@w --> <i>arg</i><!-- /@w -->[2];                         /* Policy arguments. */
+    <b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->;                      /* Message verbosity level. */
+
+    /* Current state. */
+    <b>struct</b><!-- /@w --> <b>block</b> *<i>head</i><!-- /@w -->, *<i>tail</i><!-- /@w -->;          /* Head and tail of block list. */
+    <b>int</b><!-- /@w --> <i>alloc_idx</i><!-- /@w -->;                      /* Number of allocations so far. */
+    <b>int</b><!-- /@w --> <i>block_cnt</i><!-- /@w -->;                      /* Number of still-allocated blocks. */
+  };
+</pre>
+   <p>Function <i>mt_create</i><!-- /@w -->() creates a new instance of the memory tracker.  It
+takes an allocation policy and policy argument, as well as a number
+specifying how verbose it should be in reporting information.  It uses
+utility function <i>xmalloc</i><!-- /@w -->(), a simple wrapper for <i>malloc</i><!-- /@w -->() that
+aborts the program on failure.  Here it is:
+
+   <p><a name="index-memory-tracker-194"></a>
+<pre class="format"><a href="Memory_tracker.c.txt">128</a>. &lt;<a name="128" href="Memory_tracker.c.txt">Memory tracker 126</a>&gt; +=
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>mt_allocate</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *, <b>size_t</b><!-- /@w -->);
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <i>mt_free</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *, <b>void</b><!-- /@w --> *);
+
+/* Initializes the memory manager for use 
+   with allocation policy <i>policy</i><!-- /@w --> and policy arguments <i>arg</i><!-- /@w -->[],
+   at verbosity level <i>verbosity</i><!-- /@w -->, where 0 is a &ldquo;normal&rdquo; value. */
+<b>struct</b><!-- /@w --> <b>mt_allocator</b> *<br><i>mt_create</i><!-- /@w --> (<b>enum</b><!-- /@w --> <b>mt_policy</b> <i>policy</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>arg</i><!-- /@w -->[2], <b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bmt_005fcreate_007d-function-195"></a>  <b>struct</b><!-- /@w --> <b>mt_allocator</b> *<i>mt</i><!-- /@w --> = <i>xmalloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> *<i>mt</i><!-- /@w -->);
+
+  <i>mt</i><!-- /@w -->-&gt;<i>allocator</i><!-- /@w -->.<i>libavl_malloc</i><!-- /@w --> = <i>mt_allocate</i><!-- /@w -->;
+  <i>mt</i><!-- /@w -->-&gt;<i>allocator</i><!-- /@w -->.<i>libavl_free</i><!-- /@w --> = <i>mt_free</i><!-- /@w -->;
+
+  <i>mt</i><!-- /@w -->-&gt;<i>policy</i><!-- /@w --> = <i>policy</i><!-- /@w -->;
+  <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[0] = <i>arg</i><!-- /@w -->[0];
+  <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[1] = <i>arg</i><!-- /@w -->[1];
+  <i>mt</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w --> = <i>verbosity</i><!-- /@w -->;
+
+  <i>mt</i><!-- /@w -->-&gt;<i>head</i><!-- /@w --> = <i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+  <i>mt</i><!-- /@w -->-&gt;<i>alloc_idx</i><!-- /@w --> = 0;
+  <i>mt</i><!-- /@w -->-&gt;<i>block_cnt</i><!-- /@w --> = 0;
+
+  <b>return</b><!-- /@w --> <i>mt</i><!-- /@w -->;
+}
+</pre>
+   <p>After allocations and deallocations are done, the memory manager must be
+freed with <i>mt_destroy</i><!-- /@w -->(), which also reports any memory leaks.  Blocks
+are removed from the block list as they are freed, so any remaining
+blocks must be leaked memory:
+
+   <p><a name="index-memory-tracker-196"></a>
+<pre class="format"><a href="Memory_tracker.c.txt">129</a>. &lt;<a name="129" href="Memory_tracker.c.txt">Memory tracker 126</a>&gt; +=
+/* Frees and destroys memory tracker <i>mt</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->reporting any memory leaks. */
+<b>void</b><!-- /@w --> <br><i>mt_destroy</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>mt_allocator</b> *<i>mt</i><!-- /@w -->) <br>{
+  <i>assert</i><!-- /@w --> (<i>mt</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>block_cnt</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>policy</i><!-- /@w --> != <tt>MT_NO_TRACK</tt><!-- /@w --> &amp;&amp; <i>mt</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w --> &gt;= 1)
+        <i>printf</i><!-- /@w --> (<tt>"  No memory leaks.\n"</tt>);
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>block</b> *<i>iter</i><!-- /@w -->, *<i>next</i><!-- /@w -->;
+
+      <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>policy</i><!-- /@w --> != <tt>MT_SUBALLOC</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"  Memory leaks detected:\n"</tt>);
+      <b>for</b><!-- /@w --> (<i>iter</i><!-- /@w --> = <i>mt</i><!-- /@w -->-&gt;<i>head</i><!-- /@w -->; <i>iter</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>iter</i><!-- /@w --> = <i>next</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>policy</i><!-- /@w --> != <tt>MT_SUBALLOC</tt><!-- /@w -->) 
+            <i>printf</i><!-- /@w --> (<tt>"    block #%d: %lu bytes\n"</tt>,
+                    <i>iter</i><!-- /@w -->-&gt;<i>idx</i><!-- /@w -->, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>iter</i><!-- /@w -->-&gt;<i>size</i><!-- /@w -->);
+
+          <i>next</i><!-- /@w --> = <i>iter</i><!-- /@w -->-&gt;<i>next</i><!-- /@w -->;
+          <i>free</i><!-- /@w --> (<i>iter</i><!-- /@w -->-&gt;<i>content</i><!-- /@w -->);
+          <i>free</i><!-- /@w --> (<i>iter</i><!-- /@w -->);
+        }
+    }
+
+  <i>free</i><!-- /@w --> (<i>mt</i><!-- /@w -->);
+}
+</pre>
+   <p>For the sake of good encapsulation, <i>mt_allocator</i><!-- /@w -->() returns the <b>struct</b><!-- /@w --> <b>libavl_allocator</b> associated with a given memory tracker:
+
+   <p><a name="index-memory-tracker-197"></a>
+<pre class="format"><a href="Memory_tracker.c.txt">130</a>. &lt;<a name="130" href="Memory_tracker.c.txt">Memory tracker 126</a>&gt; +=
+/* Returns the <b>struct</b><!-- /@w --> <b>libavl_allocator</b> associated with <i>mt</i><!-- /@w -->. */
+<b>void</b><!-- /@w --> *<br><i>mt_allocator</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>mt_allocator</b> *<i>mt</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bmt_005fallocator_007d-function-198"></a>  <b>return</b><!-- /@w --> &amp;<i>mt</i><!-- /@w -->-&gt;<i>allocator</i><!-- /@w -->;
+}
+</pre>
+   <p>The allocator function <i>mt_allocate</i><!-- /@w -->() is in charge of implementing the
+selected allocation policy.  It delegates most of the work to a pair of
+helper functions <i>new_block</i><!-- /@w -->() and <i>reject_request</i><!-- /@w -->() and makes use of
+utility function <i>xmalloc</i><!-- /@w -->(), a simple wrapper for <i>malloc</i><!-- /@w -->() that
+aborts the program on failure.  The implementation is straightforward:
+
+   <p><a name="index-memory-tracker-199"></a>
+<pre class="format"><a href="Memory_tracker.c.txt">131</a>. &lt;<a name="131" href="Memory_tracker.c.txt">Memory tracker 126</a>&gt; +=
+/* Creates a new <b>struct</b><!-- /@w --> <b>block</b> containing <i>size</i><!-- /@w --> bytes of content
+   and returns a pointer to content. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> *<br><i>new_block</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>mt_allocator</b> *<i>mt</i><!-- /@w -->, <b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bnew_005fblock_007d-function-200"></a>  <b>struct</b><!-- /@w --> <b>block</b> *<i>new</i><!-- /@w -->;
+
+  /* Allocate and initialize new <b>struct</b><!-- /@w --> <b>block</b>. */
+  <i>new</i><!-- /@w --> = <i>xmalloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> *<i>new</i><!-- /@w -->);
+  <i>new</i><!-- /@w -->-&gt;<i>next</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+  <i>new</i><!-- /@w -->-&gt;<i>idx</i><!-- /@w --> = <i>mt</i><!-- /@w -->-&gt;<i>alloc_idx</i><!-- /@w -->++;
+  <i>new</i><!-- /@w -->-&gt;<i>size</i><!-- /@w --> = <i>size</i><!-- /@w -->;
+  <i>new</i><!-- /@w -->-&gt;<i>used</i><!-- /@w --> = 0;
+  <i>new</i><!-- /@w -->-&gt;<i>content</i><!-- /@w --> = <i>xmalloc</i><!-- /@w --> (<i>size</i><!-- /@w -->);
+
+  /* Add block to linked list. */
+  <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>head</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <i>mt</i><!-- /@w -->-&gt;<i>head</i><!-- /@w --> = <i>new</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w -->-&gt;<i>next</i><!-- /@w --> = <i>new</i><!-- /@w -->;
+  <i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w --> = <i>new</i><!-- /@w -->;
+
+  /* Alert user. */
+  <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w --> &gt;= 3) 
+    <i>printf</i><!-- /@w --> (<tt>"    block #%d: allocated %lu bytes\n"</tt>,
+            <i>new</i><!-- /@w -->-&gt;<i>idx</i><!-- /@w -->, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>size</i><!-- /@w -->);
+
+  /* Finish up and return. */
+  <i>mt</i><!-- /@w -->-&gt;<i>block_cnt</i><!-- /@w -->++;
+  <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->-&gt;<i>content</i><!-- /@w -->;
+}
+
+/* Prints a message about a rejected allocation if appropriate. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>reject_request</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>mt_allocator</b> *<i>mt</i><!-- /@w -->, <b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007breject_005frequest_007d-function-201"></a>  <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w --> &gt;= 2)
+    <i>printf</i><!-- /@w --> (<tt>"    block #%d: rejected request for %lu bytes\n"</tt>,
+            <i>mt</i><!-- /@w -->-&gt;<i>alloc_idx</i><!-- /@w -->++, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>size</i><!-- /@w -->);
+}
+
+/* Allocates and returns a block of <i>size</i><!-- /@w --> bytes. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> *<br><i>mt_allocate</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->, <b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bmt_005fallocate_007d-function-202"></a>  <b>struct</b><!-- /@w --> <b>mt_allocator</b> *<i>mt</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>mt_allocator</b> *) <i>allocator</i><!-- /@w -->;
+
+  /* Special case. */  
+  <b>if</b><!-- /@w --> (<i>size</i><!-- /@w --> == 0)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  <b>switch</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>policy</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>case</b><!-- /@w --> <tt>MT_TRACK</tt><!-- /@w -->: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <i>new_block</i><!-- /@w --> (<i>mt</i><!-- /@w -->, <i>size</i><!-- /@w -->);
+
+    <b>case</b><!-- /@w --> <tt>MT_NO_TRACK</tt><!-- /@w -->: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <i>xmalloc</i><!-- /@w --> (<i>size</i><!-- /@w -->);
+
+    <b>case</b><!-- /@w --> <tt>MT_FAIL_COUNT</tt><!-- /@w -->:
+      <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_COUNT</tt><!-- /@w -->] == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>reject_request</i><!-- /@w --> (<i>mt</i><!-- /@w -->, <i>size</i><!-- /@w -->);
+          <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+        }
+      <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_COUNT</tt><!-- /@w -->]&ndash;;
+      <b>return</b><!-- /@w --> <i>new_block</i><!-- /@w --> (<i>mt</i><!-- /@w -->, <i>size</i><!-- /@w -->);
+
+    <b>case</b><!-- /@w --> <tt>MT_FAIL_PERCENT</tt><!-- /@w -->:
+      <b>if</b><!-- /@w --> (<i>rand</i><!-- /@w --> () / (<tt>RAND_MAX</tt><!-- /@w --> / 100 + 1) &lt; <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_PERCENT</tt><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>reject_request</i><!-- /@w --> (<i>mt</i><!-- /@w -->, <i>size</i><!-- /@w -->);
+          <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+        }
+      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <i>new_block</i><!-- /@w --> (<i>mt</i><!-- /@w -->, <i>size</i><!-- /@w -->);
+
+    <b>case</b><!-- /@w --> <tt>MT_SUBALLOC</tt><!-- /@w -->:
+      <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->
+          || <i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w -->-&gt;<i>used</i><!-- /@w --> + <i>size</i><!-- /@w --> &gt; (<b>size_t</b><!-- /@w -->) <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_BLOCK_SIZE</tt><!-- /@w -->])
+        <i>new_block</i><!-- /@w --> (<i>mt</i><!-- /@w -->, <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_BLOCK_SIZE</tt><!-- /@w -->]);
+      <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w -->-&gt;<i>used</i><!-- /@w --> + <i>size</i><!-- /@w --> &lt;= (<b>size_t</b><!-- /@w -->) <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_BLOCK_SIZE</tt><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>void</b><!-- /@w --> *<i>p</i><!-- /@w --> = (<b>char</b><!-- /@w --> *) <i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w -->-&gt;<i>content</i><!-- /@w --> + <i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w -->-&gt;<i>used</i><!-- /@w -->;
+          <i>size</i><!-- /@w --> = ((<i>size</i><!-- /@w --> + <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_ALIGN</tt><!-- /@w -->] - 1)
+                  / <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_ALIGN</tt><!-- /@w -->] * <i>mt</i><!-- /@w -->-&gt;<i>arg</i><!-- /@w -->[<tt>MT_ALIGN</tt><!-- /@w -->]);
+          <i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w -->-&gt;<i>used</i><!-- /@w --> += <i>size</i><!-- /@w -->;
+          <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w --> &gt;= 3)
+            <i>printf</i><!-- /@w --> (<tt>"    block #%d: suballocated %lu bytes\n"</tt>,
+                    <i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w -->-&gt;<i>idx</i><!-- /@w -->, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>size</i><!-- /@w -->);
+          <b>return</b><!-- /@w --> <i>p</i><!-- /@w -->;
+        }
+      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>fail</i><!-- /@w --> (<tt>"blocksize %lu too small for %lubyte allocation"</tt>,
+              (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w -->-&gt;<i>size</i><!-- /@w -->, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>size</i><!-- /@w -->);
+
+    <b>default</b><!-- /@w -->: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>assert</i><!-- /@w --> (0);
+    }
+}
+</pre>
+   <p>The corresponding function <i>mt_free</i><!-- /@w -->() searches the block list for the
+specified block, removes it, and frees the associated memory.  It
+reports an error if the block is not in the list:
+
+   <p><a name="index-memory-tracker-203"></a>
+<pre class="format"><a href="Memory_tracker.c.txt">132</a>. &lt;<a name="132" href="Memory_tracker.c.txt">Memory tracker 126</a>&gt; +=
+/* Releases <i>block</i><!-- /@w --> previously returned by <i>mt_allocate</i><!-- /@w -->(). */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>mt_free</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>block</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bmt_005ffree_007d-function-204"></a>  <b>struct</b><!-- /@w --> <b>mt_allocator</b> *<i>mt</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>mt_allocator</b> *) <i>allocator</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>block</b> *<i>iter</i><!-- /@w -->, *<i>prev</i><!-- /@w -->;
+
+  /* Special cases. */
+  <b>if</b><!-- /@w --> (<i>block</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>mt</i><!-- /@w -->-&gt;<i>policy</i><!-- /@w --> == <tt>MT_NO_TRACK</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>free</i><!-- /@w --> (<i>block</i><!-- /@w -->);
+      <b>return</b><!-- /@w -->;
+    }
+  <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>policy</i><!-- /@w --> == <tt>MT_SUBALLOC</tt><!-- /@w -->)
+    <b>return</b><!-- /@w -->;
+
+  /* Search for <i>block</i><!-- /@w --> within the list of allocated blocks. */
+  <b>for</b><!-- /@w --> (<i>prev</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->, <i>iter</i><!-- /@w --> = <i>mt</i><!-- /@w -->-&gt;<i>head</i><!-- /@w -->; <i>iter</i><!-- /@w -->; <i>prev</i><!-- /@w --> = <i>iter</i><!-- /@w -->, <i>iter</i><!-- /@w --> = <i>iter</i><!-- /@w -->-&gt;<i>next</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>iter</i><!-- /@w -->-&gt;<i>content</i><!-- /@w --> == <i>block</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          /* Block found.  Remove it from the list. */
+          <b>struct</b><!-- /@w --> <b>block</b> *<i>next</i><!-- /@w --> = <i>iter</i><!-- /@w -->-&gt;<i>next</i><!-- /@w -->;
+
+          <b>if</b><!-- /@w --> (<i>prev</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+            <i>mt</i><!-- /@w -->-&gt;<i>head</i><!-- /@w --> = <i>next</i><!-- /@w -->;
+          <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>prev</i><!-- /@w -->-&gt;<i>next</i><!-- /@w --> = <i>next</i><!-- /@w -->;
+          <b>if</b><!-- /@w --> (<i>next</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>mt</i><!-- /@w -->-&gt;<i>tail</i><!-- /@w --> = <i>prev</i><!-- /@w -->;
+
+          /* Alert user. */
+          <b>if</b><!-- /@w --> (<i>mt</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w --> &gt;= 4)
+            <i>printf</i><!-- /@w --> (<tt>"    block #%d: freed %lu bytes\n"</tt>,
+                    <i>iter</i><!-- /@w -->-&gt;<i>idx</i><!-- /@w -->, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>iter</i><!-- /@w -->-&gt;<i>size</i><!-- /@w -->);
+
+          /* Free block. */
+          <i>free</i><!-- /@w --> (<i>iter</i><!-- /@w -->-&gt;<i>content</i><!-- /@w -->);
+          <i>free</i><!-- /@w --> (<i>iter</i><!-- /@w -->);
+
+          /* Finish up and return. */	  
+          <i>mt</i><!-- /@w -->-&gt;<i>block_cnt</i><!-- /@w -->&ndash;;
+          <b>return</b><!-- /@w -->;
+        }
+    }
+
+  /* Block not in list. */
+  <i>printf</i><!-- /@w --> (<tt>"    attempt to free unknown block %p (already freed?)\n"</tt>, <i>block</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#ISO%201990">ISO 1990</a>], sections 6.3.8 and 6.3.9.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->As its first action, <i>mt_allocate</i><!-- /@w -->() checks for and special-cases a
+<i>size</i><!-- /@w --> of 0.  Why? 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d4%231">answer</a>]
+
+   </body></html>
+

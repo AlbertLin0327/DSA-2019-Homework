@@ -1,0 +1,51 @@
+/* Performs a compression transformation |count| times,
+   starting at |root|. */
+static void
+compress (struct pbst_node *root, unsigned long count)
+{
+  assert (root != NULL);
+
+  while (count--)
+    {
+      struct pbst_node *red = root->pbst_link[0];
+      struct pbst_node *black = red->pbst_link[0];
+
+      root->pbst_link[0] = black;
+      red->pbst_link[0] = black->pbst_link[1];
+      black->pbst_link[1] = red;
+      root = black;
+    }
+}
+
+/* Converts |tree|, which must be in the shape of a vine, into a balanced
+   tree. */
+static void
+vine_to_tree (struct pbst_table *tree)
+{
+  unsigned long vine;      /* Number of nodes in main vine. */
+  unsigned long leaves;    /* Nodes in incomplete bottom level, if any. */
+  int height;              /* Height of produced balanced tree. */
+
+  leaves = tree->pbst_count + 1;
+  for (;;)
+    {
+      unsigned long next = leaves & (leaves - 1);
+      if (next == 0)
+        break;
+      leaves = next;
+    }
+  leaves = tree->pbst_count + 1 - leaves;
+
+  compress ((struct pbst_node *) &tree->pbst_root, leaves);
+
+  vine = tree->pbst_count - leaves;
+  height = 1 + (leaves > 0);
+  while (vine > 1)
+    {
+      compress ((struct pbst_node *) &tree->pbst_root, vine / 2);
+      vine /= 2;
+      height++;
+    }
+
+}
+

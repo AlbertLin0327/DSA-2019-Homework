@@ -1,0 +1,23 @@
+assert (x->rtavl_balance == +1);
+w = x->rtavl_link[1];
+x->rtavl_link[1] = w->rtavl_link[0];
+w->rtavl_link[0] = x;
+y->rtavl_link[0] = w->rtavl_link[1];
+w->rtavl_link[1] = y;
+if (w->rtavl_balance == -1)
+  x->rtavl_balance = 0, y->rtavl_balance = +1;
+else if (w->rtavl_balance == 0)
+  x->rtavl_balance = y->rtavl_balance = 0;
+else /* |w->rtavl_balance == +1| */
+  x->rtavl_balance = -1, y->rtavl_balance = 0;
+w->rtavl_balance = 0;
+if (x->rtavl_link[1] == NULL)
+  {
+    x->rtavl_rtag = RTAVL_THREAD;
+    x->rtavl_link[1] = w;
+  }
+if (w->rtavl_rtag == RTAVL_THREAD)
+  {
+    y->rtavl_link[0] = NULL;
+    w->rtavl_rtag = RTAVL_CHILD;
+  }

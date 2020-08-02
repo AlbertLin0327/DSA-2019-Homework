@@ -1,0 +1,3 @@
+tree->pbst_alloc->libavl_free (tree->pbst_alloc, p);
+tree->pbst_count--;
+return (void *) item;

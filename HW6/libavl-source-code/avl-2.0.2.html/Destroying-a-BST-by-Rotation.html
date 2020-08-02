@@ -1,0 +1,154 @@
+<html lang="en">
+<head>
+<title>Destroying a BST by Rotation - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Destroying-a-BST.html" title="4.11 Destruction">
+<link rel=Next href="Destroying-a-BST-Recursively.html" title="4.11.2 Aside: Recursive Destruction">
+<link rel=Parent href="Destroying-a-BST.html" title="4.11 Destruction">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Destroying-a-BST-by-Rotation">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.11.1 Destruction by Rotation</b></big></td>
+<td align=right>
+<a href="index.html#Destroying-a-BST-by-Rotation.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Destroying-a-BST-Recursively.html" title="Skip Forward: 4.11.2 Aside: Recursive Destruction"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Destroying-a-BST.html" title="Prev: 4.11 Destruction"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Destroying-a-BST.html" title="Up: 4.11 Destruction"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Destroying-a-BST-Recursively.html" title="Next: 4.11.2 Aside: Recursive Destruction"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The method actually used in libavl for destruction of binary trees
+is somewhat novel.  This section will cover this method.  Later
+sections will cover more conventional techniques using recursive or
+iterative <dfn>postorder traversal</dfn> (see <a href="Glossary.html#postorder%20traversal">postorder traversal</a>).
+
+   <p>To destroy a binary tree, we must visit and free each node.  We have
+already covered one way to traverse a tree (inorder traversal) and used
+this technique for traversing and copying a binary tree.  But, both
+times before, we were subject to both the explicit constraint that we
+had to visit the nodes in sorted order and the implicit constraint that
+we were not to change the structure of the tree, or at least not to
+change it for the worse.
+
+   <p>Neither of these constraints holds for destruction of a binary tree.  As
+long as the tree finally ends up freed, it doesn't matter how much it is
+mangled in the process.  In this case, &ldquo;the end justifies the means&rdquo;
+and we are free to do it however we like.
+
+   <p>So let's consider why we needed a stack before.  It was to keep track of
+nodes whose left subtree we were currently visiting, in order to go back
+later and visit them and their right subtrees.  Hmm<small class="dots">...</small>what if we
+rearranged nodes so that they <em>didn't have</em> any left subtrees? 
+Then we could just descend to the right, without need to keep track of
+anything on a stack.
+
+   <p>We can do this.  For the case where the current node <i>p</i><!-- /@w --> has a left
+child <i>q</i><!-- /@w -->, consider the transformation below where we rotate right at
+<i>p</i><!-- /@w -->:
+
+<div align="center"><a href="destroy.txt"><img border=0 src="destroy.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">where <i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->, and <i>c</i><!-- /@w --> are arbitrary subtrees or even empty
+trees.  This transformation shifts nodes from the left to the right
+side of the root (which is now <i>q</i><!-- /@w -->).  If it is performed enough times,
+the root node will no longer have a left child.  After the
+transformation, <i>q</i><!-- /@w --> becomes the current node.
+
+   <p>For the case where the current node has no left child, we can just
+destroy the current node and descend to its right.  Because the
+transformation used does not change the tree's ordering, we end up
+destroying nodes in inorder.  It is instructive to verify this by
+simulating with paper and pencil the destruction of a few trees this
+way.
+
+   <p>The code to implement destruction in this manner is brief and
+straightforward:
+
+   <p><a name="catalogue_002dentry_002dbst_002d24"></a>
+<a name="index-BST-destruction-function-131"></a>
+<pre class="format"><a href="BST_destruction_function.c.txt">84</a>. &lt;<a name="84" href="BST_destruction_function.c.txt">BST destruction function 84</a>&gt; =
+<b>void</b><!-- /@w --> <br><i>bst_destroy</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>destroy</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fdestroy_007d-function-132"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->, *<i>q</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w --> = <i>q</i><!-- /@w -->)
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+        <b>if</b><!-- /@w --> (<i>destroy</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) 
+          <i>destroy</i><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+        <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+      } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+        <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->;
+      }
+
+  <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Operations.html#29">29</a>, <a href="AVL-Operations.html#145">145</a>, <a href="Operations-in-an-RB-Tree.html#196">196</a>, <a href="PBST-Operations.html#489">489</a>, <a href="PAVL-Operations.html#522">522</a>, and <a href="PRB-Operations.html#554">554</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Stout%201986">Stout 1986</a>], <i>tree_to_vine</i><!-- /@w --> procedure.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Before calling <i>destroy</i><!-- /@w -->() above, we first test that we are not passing
+it a <tt>NULL</tt><!-- /@w --> pointer, because we do not want <i>destroy</i><!-- /@w -->() to have to deal
+with this case.  How can such a pointer get into the tree in the first
+place, since <i>bst_probe</i><!-- /@w -->() refuses to insert such a pointer into a tree? 
+[<a href="Answers-for-Chapter-4.html#4%2d11%2d1%231">answer</a>]
+
+   </body></html>
+

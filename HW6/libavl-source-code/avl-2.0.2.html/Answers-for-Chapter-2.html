@@ -1,0 +1,500 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 2 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<link rel=Next href="Answers-for-Chapter-3.html" title="Chapter 3">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-2">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 2</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-2.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Answers-for-Chapter-3.html" title="Skip Forward: Chapter 3"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-to-All-the-Exercises.html" title="Prev: Appendix D Answers to All the Exercises"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-3.html" title="Next: Chapter 3"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 2.1</h4>
+
+<p><a name="2_002d1_00231"></a> <b>1.</b>
+If the table is not a dictionary, then we can just include a count along
+with each item recording the number of copies of it that would otherwise
+be included in the table.  If the table is a dictionary, then each data
+item can include a single key and possibly multiple values.
+
+<h4 class="subheading">Section 2.2</h4>
+
+<p><a name="2_002d2_00231"></a> <b>1.</b>
+Only macro parameter names can safely appear prefixless.  Macro
+parameter names are significant only in a scope from their declaration
+to the end of the macro definition.  Macro parameters may even be named
+as otherwise reserved C keywords such as <b>int</b><!-- /@w --> and <b>while</b><!-- /@w -->, although
+this is a bad idea.
+
+   <p>The main reason that the other kinds of identifiers must be prefixed is
+the possibility of a macro having the same name.  A surprise macro
+expansion in the midst of a function prototype can lead to puzzling
+compiler diagnostics.
+
+   <p><a name="2_002d2_00232"></a> <b>2.</b>
+The capitalized equivalent is <tt>ERR_</tt><!-- /@w -->, which is a reserved identifier. 
+All identifiers that begin with an uppercase <span class="samp">E</span> followed by a
+digit or capital letter are reserved in many contexts.  It is best to
+avoid them entirely.  There are other identifiers to avoid, too.  The
+article cited below has a handy list.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Brown%202001">Brown 2001</a>].
+
+<h4 class="subheading">Section 2.3</h4>
+
+<p><a name="2_002d3_00231"></a> <b>1.</b>
+C does not guarantee that an integer cast to a pointer and back retains
+its value.  In addition, there's a chance that an integer cast to a
+pointer becomes the null pointer value.  This latter is not limited to
+integers with value 0.  On the other hand, a nonconstant integer with
+value 0 is not guaranteed to become a null pointer when cast.
+
+   <p>Such a technique is only acceptable when the machine that the code is to
+run on is known in advance.  At best it is inelegant.  At worst, it will
+cause erroneous behavior.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Summit%201999">Summit 1999</a>], section 5;
+[<a href="References.html#ISO%201990">ISO 1990</a>], sections 6.2.2.3 and 6.3.4;
+[<a href="References.html#ISO%201999">ISO 1999</a>], section 6.3.2.3.
+
+   <p><a name="2_002d3_00232"></a> <b>2.</b>
+This definition would only cause problems if the subtraction overflowed. 
+It would be acceptable if it was known that the values to be compared
+would always be in a small enough range that overflow would never occur.
+
+   <p>Here are two more &ldquo;clever&rdquo; definitions for <i>compare_ints</i><!-- /@w -->() that work
+in all cases:
+
+<!-- tested 2000/7/8 -->
+<pre class="format">/* Credit: GNU C library reference manual. */
+<b>int</b><!-- /@w --> <br><i>compare_ints</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pa</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pb</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompare_005fints_007d-function-817"></a>  <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>a</i><!-- /@w --> = <i>pa</i><!-- /@w -->;
+  <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>b</i><!-- /@w --> = <i>pb</i><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> (*<i>a</i><!-- /@w --> &gt; *<i>b</i><!-- /@w -->) - (*<i>a</i><!-- /@w --> &lt; *<i>b</i><!-- /@w -->);
+}
+</pre>
+   <!-- tested 2000/12/13 -->
+<pre class="format"><b>int</b><!-- /@w --> <br><i>compare_ints</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pa</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pb</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompare_005fints_007d-function-818"></a>  <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>a</i><!-- /@w --> = <i>pa</i><!-- /@w -->;
+  <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>b</i><!-- /@w --> = <i>pb</i><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> (*<i>a</i><!-- /@w --> &lt; *<i>b</i><!-- /@w -->) ? -1 : (*<i>a</i><!-- /@w --> &gt; *<i>b</i><!-- /@w -->);
+}
+</pre>
+   <p><a name="2_002d3_00233"></a> <b>3.</b>
+No.  Not only does <i>strcmp</i><!-- /@w -->() take parameters of different types (<b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *s instead of <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *s), our comparison functions take an
+additional parameter.  Functions <i>strcmp</i><!-- /@w -->() and <i>compare_strings</i><!-- /@w -->()
+are not compatible.
+
+   <p><a name="2_002d3_00234"></a> <b>4.</b>
+<!-- tested 2000/12/13 -->
+<pre class="format"><b>int</b><!-- /@w --> <br><i>compare_fixed_strings</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pa</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pb</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompare_005ffixed_005fstrings_007d-function-819"></a>  <b>return</b><!-- /@w --> <i>memcmp</i><!-- /@w --> (<i>pa</i><!-- /@w -->, <i>pb</i><!-- /@w -->, *(<b>size_t</b><!-- /@w --> *) <i>param</i><!-- /@w -->);
+}
+</pre>
+   <p><a name="2_002d3_00235"></a> <b>5a.</b>
+Here's the blow-by-blow rundown:
+
+     <ul>
+<li>Irreflexivity: <i>a</i><!-- /@w --> == <i>a</i><!-- /@w --> is always true for integers.
+
+     <li>Antisymmetry: If <i>a</i><!-- /@w --> &gt; <i>b</i><!-- /@w --> then <i>b</i><!-- /@w --> &lt; <i>a</i><!-- /@w --> for integers.
+
+     <li>Transitivity: If <i>a</i><!-- /@w --> &gt; <i>b</i><!-- /@w --> and <i>b</i><!-- /@w --> &gt; <i>c</i><!-- /@w --> then <i>a</i><!-- /@w --> &gt; <i>c</i><!-- /@w --> for integers.
+
+     <li>Transitivity of equivalence: If <i>a</i><!-- /@w --> == <i>b</i><!-- /@w --> and <i>b</i><!-- /@w --> == <i>c</i><!-- /@w -->, then <i>a</i><!-- /@w --> == <i>c</i><!-- /@w --> for
+integers. 
+</ul>
+
+<p class="noindent"><b>5b.</b>
+Yes, <i>strcmp</i><!-- /@w -->() satisfies all of the points above.
+
+<p class="noindent"><b>5c.</b>
+Consider the domain of pairs of integers (<i>x0</i><!-- /@w -->,<i>x1</i><!-- /@w -->) with <i>x1</i><!-- /@w --> &gt;= <i>x0</i><!-- /@w -->. 
+Pair <i>x</i><!-- /@w -->, composed of (<i>x0</i><!-- /@w -->,<i>x1</i><!-- /@w -->), is less than pair <i>y</i><!-- /@w -->, composed of
+(<i>y0</i><!-- /@w -->,<i>y1</i><!-- /@w -->), if <i>x1</i><!-- /@w --> &lt; <i>y0</i><!-- /@w -->.  Alternatively, pair <i>x</i><!-- /@w --> is greater than pair
+<i>y</i><!-- /@w --> if <i>x0</i><!-- /@w --> &gt; <i>y1</i><!-- /@w -->.  Otherwise, the pairs are equal.
+
+   <p>This rule is irreflexive: for any given pair <i>a</i><!-- /@w -->, neither <i>a1</i><!-- /@w --> &lt; <i>a0</i><!-- /@w --> nor
+<i>a0</i><!-- /@w --> &gt; <i>a1</i><!-- /@w -->, so <i>a</i><!-- /@w --> == <i>a</i><!-- /@w -->.  It is antisymmetic: <i>a</i><!-- /@w --> &gt; <i>b</i><!-- /@w --> implies <i>a0</i><!-- /@w --> &gt; <i>b1</i><!-- /@w -->,
+therefore <i>b1</i><!-- /@w --> &lt; <i>a0</i><!-- /@w -->, and therefore <i>b</i><!-- /@w --> &lt; <i>a</i><!-- /@w -->.  It is transitive: <i>a</i><!-- /@w --> &gt; <i>b</i><!-- /@w -->
+implies <i>a0</i><!-- /@w --> &gt; <i>b1</i><!-- /@w -->, <i>b</i><!-- /@w --> &gt; <i>c</i><!-- /@w --> implies <i>b0</i><!-- /@w --> &gt; <i>c1</i><!-- /@w -->, and we know that <i>b1</i><!-- /@w --> &gt; <i>b0</i><!-- /@w -->, so <i>a0</i><!-- /@w --> &gt; <i>b1</i><!-- /@w --> &gt; <i>b0</i><!-- /@w --> &gt; <i>c1</i><!-- /@w --> and <i>a</i><!-- /@w --> &gt; <i>c</i><!-- /@w -->.  It does not have transitivity
+of equivalence: suppose that we have <i>a</i><!-- /@w --> == (1,2), <i>b</i><!-- /@w --> == (2,3), <i>c</i><!-- /@w --> == (3,4).  Then, <i>a</i><!-- /@w --> == <i>b</i><!-- /@w --> and <i>b</i><!-- /@w --> == <i>c</i><!-- /@w -->, but not <i>a</i><!-- /@w --> == <i>c</i><!-- /@w -->.
+
+   <p>A form of augmented binary search tree, called an &ldquo;interval tree&rdquo;,
+<em>can</em> be used to efficiently handle this data type.  The
+references have more details.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 15.3.
+
+   <p><a name="2_002d3_00236"></a> <b>6a.</b>
+!<i>f</i><!-- /@w -->(<i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->) &amp;&amp; !<i>f</i><!-- /@w -->(<i>b</i><!-- /@w -->, <i>a</i><!-- /@w -->) and !<i>f</i><!-- /@w -->(<i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->) &amp;&amp; <i>f</i><!-- /@w -->(<i>b</i><!-- /@w -->, <i>a</i><!-- /@w -->).
+
+<p class="noindent"><b>6b.</b>
+<pre class="format"><b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>bin_cmp</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>a</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>b</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->, <b>bst_comparison_func</b><!-- /@w --> <i>tern</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbin_005fcmp_007d-function-820"></a>  <b>return</b><!-- /@w --> <i>tern</i><!-- /@w --> (<i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->, <i>param</i><!-- /@w -->) &lt; 0;
+}
+</pre>
+   <p class="noindent"><b>6c.</b>
+This problem presents an interesting tradeoff.  We must choose between
+sometimes calling the comparison function twice per item to convert our
+&gt;= knowledge into &gt; or ==, or always traversing all the way to a
+leaf node, then making a final call to decide on equality.  The former
+choice doesn't provide any new insight, so we choose the latter here.
+
+   <p>In the code below, <i>p</i><!-- /@w --> traverses the tree and <i>q</i><!-- /@w --> keeps track of the
+current candidate for a match to <i>item</i><!-- /@w -->.  If the item in <i>p</i><!-- /@w --> is less
+than <i>item</i><!-- /@w -->, then the matching item, if any, must be in the left
+subtree of <i>p</i><!-- /@w -->, and we leave <i>q</i><!-- /@w --> as it was.  Otherwise, the item in
+<i>p</i><!-- /@w --> is greater than or equal to <i>p</i><!-- /@w --> and then matching item, if any, is
+either <i>p</i><!-- /@w --> itself or in its right subtree, so we set <i>q</i><!-- /@w --> to the
+potential match.  When we run off the bottom of the tree, we check
+whether <i>q</i><!-- /@w --> is really a match by making one additional comparison.
+
+<pre class="format"><b>void</b><!-- /@w --> *<br><i>bst_find</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005ffind_007d-function-821"></a>  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->;
+  <b>void</b><!-- /@w --> *<i>q</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <i>q</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+  <b>while</b><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+    <b>if</b><!-- /@w --> (!<i>bin_cmp</i><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>item</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+        <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+      }
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+
+  <b>if</b><!-- /@w --> (<i>q</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; !<i>bin_cmp</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>q</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w -->))
+    <b>return</b><!-- /@w --> <i>q</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+}
+</pre>
+   <h4 class="subheading">Section 2.5</h4>
+
+<p><a name="2_002d5_00231"></a> <b>1.</b>
+It's not necessary, for reasons of the C definition of type
+compatibility.  Within a C source file (more technically, a
+&ldquo;translation unit&rdquo;), two structures are compatible only if they are
+the same structure, regardless of how similar their members may be, so
+hypothetical structures <b>struct</b><!-- /@w --> <b>bst_allocator</b> and <b>struct</b><!-- /@w --> <b>avl_allocator</b> couldn't be mixed together without nasty-smelling casts. 
+On the other hand, prototyped function types are compatible if they have
+compatible return types and compatible parameter types, so
+<b>bst_item_func</b><!-- /@w --> and <b>avl_item_func</b><!-- /@w --> (say) are interchangeable.
+
+   <p><a name="2_002d5_00232"></a> <b>2.</b>
+This allocator uses the same function <i>tbl_free</i><!-- /@w -->() as
+<i>tbl_allocator_default</i><!-- /@w -->.
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-aborting-allocator-822"></a>
+<pre class="format"><a href="Aborting_allocator.c.txt">590</a>. &lt;<a name="590" href="Aborting_allocator.c.txt">Aborting allocator 590</a>&gt; =
+/* Allocates <i>size</i><!-- /@w --> bytes of space using <i>malloc</i><!-- /@w -->().  
+   Aborts if out of memory. */
+<b>void</b><!-- /@w --> *<br><i>tbl_malloc_abort</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->, <b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbl_005fmalloc_005fabort_007d-function-823"></a>  <b>void</b><!-- /@w --> *<i>block</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>allocator</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>size</i><!-- /@w --> &gt; 0);
+
+  <i>block</i><!-- /@w --> = <i>malloc</i><!-- /@w --> (<i>size</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>block</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <i>block</i><!-- /@w -->;
+
+  <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"out of memory\n"</tt>);
+  <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+}
+
+<b>struct</b><!-- /@w --> <b>libavl_allocator</b> <i>tbl_allocator_abort</i><!-- /@w --> = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>tbl_malloc_abort</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tbl_free</i><!-- /@w --><br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->};
+</pre>
+   <p><a name="2_002d5_00233"></a> <b>3.</b>
+Define a wrapper structure with <b>struct</b><!-- /@w --> <b>libavl_allocator</b> as its first
+member.  For instance, a hypothetical pool allocator might look like
+this:
+
+<pre class="format"><b>struct</b><!-- /@w --> <b>pool_allocator</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bpool_005fallocator_007d-structure-824"></a>    <b>struct</b><!-- /@w --> <b>libavl_allocator</b> <i>suballocator</i><!-- /@w -->;
+    <b>struct</b><!-- /@w --> <b>pool</b> *<i>pool</i><!-- /@w -->;
+  };
+</pre>
+   <p class="noindent">Because a pointer to the first member of a structure is a pointer to the
+structure itself, and vice versa, the allocate and free functions can
+use a cast to access the larger <b>struct</b><!-- /@w --> <b>pool_allocator</b> given a pointer
+to <b>struct</b><!-- /@w --> <b>libavl_allocator</b>.  If we assume the existence of functions
+<i>pool_malloc</i><!-- /@w -->() and <i>pool_free</i><!-- /@w -->() to allocate and free memory within a
+pool, then we can define the functions for <b>struct</b><!-- /@w --> <b>pool_allocator</b>'s
+<i>suballocator</i><!-- /@w --> like this:
+
+<pre class="format"><b>void</b><!-- /@w --> *<br><i>pool_allocator_malloc</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->, <b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpool_005fallocator_005fmalloc_007d-function-825"></a>  <b>struct</b><!-- /@w --> <b>pool_allocator</b> *<i>pa</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>pool_allocator</b> *) <i>allocator</i><!-- /@w -->;
+  <b>return</b><!-- /@w --> <i>pool_malloc</i><!-- /@w --> (<i>pa</i><!-- /@w -->-&gt;<i>pool</i><!-- /@w -->, <i>size</i><!-- /@w -->);
+}
+
+<b>void</b><!-- /@w --> <br><i>pool_allocator_free</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>ptr</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpool_005fallocator_005ffree_007d-function-826"></a>  <b>struct</b><!-- /@w --> <b>pool_allocator</b> *<i>pa</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>pool_allocator</b> *) <i>allocator</i><!-- /@w -->;
+  <i>pool_free</i><!-- /@w --> (<i>pa</i><!-- /@w -->-&gt;<i>pool</i><!-- /@w -->, <i>ptr</i><!-- /@w -->);
+}
+</pre>
+   <p>Finally, we want to actually allocate a table inside a pool.  The
+following function does this.  Notice the way that it uses the pool to
+store the <b>struct</b><!-- /@w --> <b>pool_allocator</b> as well; this trick comes in handy
+sometimes.
+
+<pre class="format"><b>struct</b><!-- /@w --> <b>tbl_table</b> *<br><i>pool_allocator_tbl_create</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_pool</b> *<i>pool</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpool_005fallocator_005ftbl_005fcreate_007d-function-827"></a>  <b>struct</b><!-- /@w --> <b>pool_allocator</b> *<i>pa</i><!-- /@w --> = <i>pool_malloc</i><!-- /@w --> (<i>pool</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>pa</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>pa</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  <i>pa</i><!-- /@w -->-&gt;<i>suballocator</i><!-- /@w -->.<i>tbl_malloc</i><!-- /@w --> = <i>pool_allocator_malloc</i><!-- /@w -->;
+  <i>pa</i><!-- /@w -->-&gt;<i>suballocator</i><!-- /@w -->.<i>tbl_free</i><!-- /@w --> = <i>pool_allocator_free</i><!-- /@w -->;
+  <i>pa</i><!-- /@w -->-&gt;<i>pool</i><!-- /@w --> = <i>pool</i><!-- /@w -->;
+  <b>return</b><!-- /@w --> <i>tbl_create</i><!-- /@w --> (<i>compare_ints</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, &amp;<i>pa</i><!-- /@w -->-&gt;<i>suballocator</i><!-- /@w -->);
+}
+</pre>
+   <h4 class="subheading">Section 2.7</h4>
+
+<p><a name="2_002d7_00231"></a> <b>1.</b>
+Notice the cast to <b>size_t</b><!-- /@w --> in the macro definition below.  This
+prevents the result of <i>tbl_count</i><!-- /@w -->() from being used as an lvalue (that
+is, on the left side of an assignment operator), because the result of a
+cast is never an lvalue.
+
+   <p><a name="index-table-count-macro-828"></a>
+<pre class="format"><a href="Table_count_macro.c.txt">591</a>. &lt;<a name="591" href="Table_count_macro.c.txt">Table count macro 591</a>&gt; =
+#<b>define</b> <a name="index-_0040w_007b_0040i_007btbl_005fcount_007d_007d-macro_0040c-829"></a><i>tbl_count</i><!-- /@w -->(<i>table</i><!-- /@w -->) ((<b>size_t</b><!-- /@w -->) (<i>table</i><!-- /@w -->)-&gt;<i>tbl_count</i><!-- /@w -->)
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Table-Headers.html#15">15</a>.</small>
+
+   <p>Another way to get the same effect is to use the unary + operator,
+like this:
+
+<pre class="format">#<b>define</b> <a name="index-_0040w_007b_0040i_007btbl_005fcount_007d_007d-macro_0040c-830"></a><i>tbl_count</i><!-- /@w -->(<i>table</i><!-- /@w -->) (+(<i>table</i><!-- /@w -->)-&gt;<i>tbl_count</i><!-- /@w -->)
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#ISO%201990">ISO 1990</a>], section 6.3.4;
+[<a href="References.html#Kernighan%201988">Kernighan 1988</a>], section A7.5.
+
+<h4 class="subheading">Section 2.8</h4>
+
+<p><a name="2_002d8_00231"></a> <b>1.</b>
+If a memory allocation function that never returns a null pointer is
+used, then it is reasonable to use these functions.  For instance,
+<i>tbl_allocator_abort</i><!-- /@w --> from Exercise 2.5-2 is such an
+allocator.
+
+   <p><a name="2_002d8_00232"></a> <b>2.</b>
+Among other reasons, <i>tbl_find</i><!-- /@w -->() returns a null pointer to indicate
+that no matching item was found in the table.  Null pointers in the
+table could therefore lead to confusing results.  It is better to
+entirely prevent them from being inserted.
+
+   <p><a name="2_002d8_00233"></a> <b>3.</b>
+<a name="index-table-insertion-convenience-functions-831"></a>
+<pre class="format"><a href="Table_insertion_convenience_functions.c.txt">592</a>. &lt;<a name="592" href="Table_insertion_convenience_functions.c.txt">Table insertion convenience functions 592</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>tbl_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_table</b> *<i>table</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbl_005finsert_007d-function-832"></a>  <b>void</b><!-- /@w --> **<i>p</i><!-- /@w --> = <i>tbl_probe</i><!-- /@w --> (<i>table</i><!-- /@w -->, <i>item</i><!-- /@w -->);
+  <b>return</b><!-- /@w --> <i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>p</i><!-- /@w --> == <i>item</i><!-- /@w --> ? <tt>NULL</tt><!-- /@w --> : *<i>p</i><!-- /@w -->;
+}
+
+<b>void</b><!-- /@w --> *<br><i>tbl_replace</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_table</b> *<i>table</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbl_005freplace_007d-function-833"></a>  <b>void</b><!-- /@w --> **<i>p</i><!-- /@w --> = <i>tbl_probe</i><!-- /@w --> (<i>table</i><!-- /@w -->, <i>item</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>p</i><!-- /@w --> == <i>item</i><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>void</b><!-- /@w --> *<i>r</i><!-- /@w --> = *<i>p</i><!-- /@w -->;
+      *<i>p</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+      <b>return</b><!-- /@w --> <i>r</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Operations.html#29">29</a>, <a href="AVL-Operations.html#145">145</a>, <a href="Operations-in-an-RB-Tree.html#196">196</a>, <a href="TBST-Operations.html#251">251</a>, <a href="TAVL-Operations.html#300">300</a>, <a href="TRB-Operations.html#336">336</a>, <a href="RTBST-Operations.html#375">375</a>, <a href="RTAVL-Operations.html#418">418</a>, <a href="RTRB-Operations.html#455">455</a>, <a href="PBST-Operations.html#489">489</a>, <a href="PAVL-Operations.html#522">522</a>, and <a href="PRB-Operations.html#554">554</a>.</small>
+
+<h4 class="subheading">Section 2.9</h4>
+
+<p><a name="2_002d9_00231"></a> <b>1.</b>
+Keep in mind that these directives have to be processed every time the
+header file is included.  (Typical header file are designed to be
+&ldquo;idempotent&rdquo;, i.e., processed by the compiler only on first
+inclusion and skipped on any later inclusions, because some C
+constructs cause errors if they are encountered twice during a
+compilation.)
+
+   <p><a name="index-table-assertion-function-control-directives-834"></a>
+<pre class="format"><a href="Table_assertion_function_control_directives.c.txt">593</a>. &lt;<a name="593" href="Table_assertion_function_control_directives.c.txt">Table assertion function control directives 593</a>&gt; =
+/* Table assertion functions. */
+#<b>ifndef</b> <tt>NDEBUG</tt><!-- /@w -->
+#<b>undef</b> <i>tbl_assert_insert</i><!-- /@w -->
+#<b>undef</b> <i>tbl_assert_delete</i><!-- /@w -->
+#<b>else</b>
+#<b>define</b> <a name="index-_0040w_007b_0040i_007btbl_005fassert_005finsert_007d_007d-macro_0040c-835"></a><i>tbl_assert_insert</i><!-- /@w -->(<i>table</i><!-- /@w -->, <i>item</i><!-- /@w -->) <i>tbl_insert</i><!-- /@w --> (<i>table</i><!-- /@w -->, <i>item</i><!-- /@w -->)
+#<b>define</b> <a name="index-_0040w_007b_0040i_007btbl_005fassert_005fdelete_007d_007d-macro_0040c-836"></a><i>tbl_assert_delete</i><!-- /@w -->(<i>table</i><!-- /@w -->, <i>item</i><!-- /@w -->) <i>tbl_delete</i><!-- /@w --> (<i>table</i><!-- /@w -->, <i>item</i><!-- /@w -->)
+#<b>endif</b>
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Binary-Search-Trees.html#24">24</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Summit%201999">Summit 1999</a>], section 10.7.
+
+   <p><a name="2_002d9_00232"></a> <b>2.</b>
+<i>tbl_assert_insert</i><!-- /@w -->() must be based on <i>tbl_probe</i><!-- /@w -->(), because
+<i>tbl_insert</i><!-- /@w -->() does not distinguish in its return value between
+successful insertion and memory allocation errors.
+
+   <p>Assertions must be enabled for these functions because we want them to
+verify success if assertions were enabled at the point from which they
+were called, not if assertions were enabled when the table was compiled.
+
+   <p>Notice the parentheses around the assertion function names before.  The
+parentheses prevent the macros by the same name from being expanded.  A
+function-like macro is only expanded when its name is followed by a left
+parenthesis, and the extra set of parentheses prevents this from being
+the case.  Alternatively #<b>undef</b> directives could be used to achieve
+the same effect.
+
+   <p><a name="index-table-assertion-functions-837"></a>
+<pre class="format"><a href="Table_assertion_functions.c.txt">594</a>. &lt;<a name="594" href="Table_assertion_functions.c.txt">Table assertion functions 594</a>&gt; =
+#<b>undef</b> <tt>NDEBUG</tt><!-- /@w -->
+#<b>include</b> &lt;assert.h&gt;
+
+<b>void</b><!-- /@w --> <br>(<i>tbl_assert_insert</i><!-- /@w -->) (<b>struct</b><!-- /@w --> <b>tbl_table</b> *<i>table</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbl_005fassert_005finsert_007d-function-838"></a>  <b>void</b><!-- /@w --> **<i>p</i><!-- /@w --> = <i>tbl_probe</i><!-- /@w --> (<i>table</i><!-- /@w -->, <i>item</i><!-- /@w -->);
+  <i>assert</i><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; *<i>p</i><!-- /@w --> == <i>item</i><!-- /@w -->);
+}
+
+<b>void</b><!-- /@w --> *<br>(<i>tbl_assert_delete</i><!-- /@w -->) (<b>struct</b><!-- /@w --> <b>tbl_table</b> *<i>table</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbl_005fassert_005fdelete_007d-function-839"></a>  <b>void</b><!-- /@w --> *<i>p</i><!-- /@w --> = <i>tbl_delete</i><!-- /@w --> (<i>table</i><!-- /@w -->, <i>item</i><!-- /@w -->);
+  <i>assert</i><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <b>return</b><!-- /@w --> <i>p</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Operations.html#29">29</a>, <a href="AVL-Operations.html#145">145</a>, <a href="Operations-in-an-RB-Tree.html#196">196</a>, <a href="TBST-Operations.html#251">251</a>, <a href="TAVL-Operations.html#300">300</a>, <a href="TRB-Operations.html#336">336</a>, <a href="RTBST-Operations.html#375">375</a>, <a href="RTAVL-Operations.html#418">418</a>, <a href="RTRB-Operations.html#455">455</a>, <a href="PBST-Operations.html#489">489</a>, <a href="PAVL-Operations.html#522">522</a>, and <a href="PRB-Operations.html#554">554</a>.</small>
+
+   <p><a name="2_002d9_00233"></a> <b>3.</b>
+The <i>assert</i><!-- /@w -->() macro is meant for testing for design errors and
+&ldquo;impossible&rdquo; conditions, not runtime errors like disk input/output
+errors or memory allocation failures.  If the memory allocator can fail,
+then the <i>assert</i><!-- /@w -->() call in <i>tbl_assert_insert</i><!-- /@w -->() effectively does this.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Summit%201999">Summit 1999</a>], section 20.24b.
+
+<h4 class="subheading">Section 2.12</h4>
+
+<p><a name="2_002d12_00231"></a> <b>1.</b>
+Both tables and <i>set</i><!-- /@w -->s store sorted arrangements of unique items.  Both
+require a strict weak ordering on the items that they contain. 
+libavl uses ternary comparison functions whereas the STL uses binary
+comparison functions (see Exercise 2.3-6).
+
+   <p>The description of tables here doesn't list any particular speed
+requirements for operations, whereas STL <i>set</i><!-- /@w -->s are constrained in the
+complexity of their operations.  It's worth noting, however, that the
+libavl implementation of AVL and RB trees meet all of the STL
+complexity requirements, for their equivalent operations, except one. 
+The exception is that <i>set</i><!-- /@w --> methods <i>begin</i><!-- /@w -->() and <i>rbegin</i><!-- /@w -->() must have
+constant-time complexity, whereas the equivalent libavl functions
+*<i>_t_first</i><!-- /@w -->() and *<i>_t_last</i><!-- /@w -->() on AVL and RB trees have logarithmic complexity.
+
+   <p>libavl traversers and STL iterators have similar semantics.  Both
+remain valid if new items are inserted, and both remain valid if old
+items are deleted, unless it's the iterator's current item that's
+deleted.
+
+   <p>The STL has a more complete selection of methods than libavl does
+of table functions, but many of the additional ones (e.g.,
+<i>distance</i><!-- /@w -->() or <i>erase</i><!-- /@w -->() each with two iterators as arguments) can be
+implemented easily in terms of existing libavl functions.  These
+might benefit from optimization possible with specialized
+implementations, but may not be worth it.  The SGI/HP implementation
+of the STL does not contain any such optimization.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#ISO%201998">ISO 1998</a>], sections 23.1, 23.1.2, and 23.3.3.
+
+   <p><a name="2_002d12_00232"></a> <b>2.</b>
+The nonessential functions are:
+
+     <ul>
+<li><i>tbl_probe</i><!-- /@w -->(), <i>tbl_insert</i><!-- /@w -->(), and <i>tbl_replace</i><!-- /@w -->(), which can be
+implemented in terms of <i>tbl_t_insert</i><!-- /@w -->() and <i>tbl_t_replace</i><!-- /@w -->().
+
+     <li><i>tbl_find</i><!-- /@w -->(), which can be implemented in terms of <i>tbl_t_find</i><!-- /@w -->().
+
+     <li><i>tbl_assert_insert</i><!-- /@w -->() and <i>tbl_assert_delete</i><!-- /@w -->().
+
+     <li><i>tbl_t_first</i><!-- /@w -->() and <i>tbl_t_last</i><!-- /@w -->(), which can be implemented with
+<i>tbl_t_init</i><!-- /@w -->() and <i>tbl_t_next</i><!-- /@w -->(). 
+</ul>
+
+   <p>If we allow it to know what allocator was used for the original table,
+which is, strictly speaking, cheating, then we can also implement
+<i>tbl_copy</i><!-- /@w -->() in terms of <i>tbl_create</i><!-- /@w -->(), <i>tbl_t_insert</i><!-- /@w -->(), and
+<i>tbl_destroy</i><!-- /@w -->().  Under similar restrictions we can also implement
+<i>tbl_t_prev</i><!-- /@w -->() and <i>tbl_t_copy</i><!-- /@w -->() in terms of <i>tbl_t_init</i><!-- /@w -->() and
+<i>tbl_t_next</i><!-- /@w -->(), though in a very inefficient way.
+
+   </body></html>
+

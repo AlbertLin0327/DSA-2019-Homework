@@ -1,0 +1,7 @@
+/* TBST traverser structure. */
+struct tbst_traverser
+  {
+    struct tbst_table *tbst_table;        /* Tree being traversed. */
+    struct tbst_node *tbst_node;          /* Current node in tree. */
+  };
+

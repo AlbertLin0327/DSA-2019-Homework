@@ -1,0 +1,55 @@
+/* Frees storage allocated for |tree|.
+   If |destroy != NULL|, applies it to each data item in indeterminate
+   order. */
+void
+bst_destroy (struct bst_table *tree, bst_item_func *destroy)
+{
+  struct bst_node *stack[BST_MAX_HEIGHT];
+  unsigned char state[BST_MAX_HEIGHT];
+  int height = 0;
+
+  struct bst_node *p;
+
+  assert (tree != NULL);
+  p = tree->bst_root;
+  for (;;)
+    {
+      while (p != NULL)
+        {
+          if (height >= BST_MAX_HEIGHT)
+            {
+              fprintf (stderr, "tree too deep\n");
+              exit (EXIT_FAILURE);
+            }
+          stack[height] = p;
+          state[height] = 0;
+          height++;
+
+          p = p->bst_link[0];
+        }
+
+      for (;;)
+        {
+          if (height == 0)
+            {
+              tree->bst_alloc->libavl_free (tree->bst_alloc, tree);
+              return;
+            }
+
+          height--;
+          p = stack[height];
+          if (state[height] == 0)
+            {
+              state[height++] = 1;
+              p = p->bst_link[1];
+              break;
+            }
+          else
+            {
+              if (destroy != NULL && p->bst_data != NULL)
+                destroy (p->bst_data, tree->bst_param);
+              tree->bst_alloc->libavl_free (tree->bst_alloc, p);
+            }
+        }
+    }
+}

@@ -1,0 +1,100 @@
+struct avl_node *w; /* New root of this subtree; replaces |*p|. */
+int cmp;
+
+cmp = tree->avl_compare (**data, y->avl_data, tree->avl_param);
+if (cmp < 0)
+  {
+    if (probe (tree, &y->avl_link[0], data) == 0)
+      return 0;
+
+    if (y->avl_balance == +1)
+      {
+        y->avl_balance = 0;
+        return 0;
+      }
+    else if (y->avl_balance == 0)
+      {
+        y->avl_balance = -1;
+        return 1;
+      }
+    else
+      {
+        struct avl_node *x = y->avl_link[0];
+        if (x->avl_balance == -1)
+          {
+            w = x;
+            y->avl_link[0] = x->avl_link[1];
+            x->avl_link[1] = y;
+            x->avl_balance = y->avl_balance = 0;
+          }
+        else
+          {
+            assert (x->avl_balance == +1);
+            w = x->avl_link[1];
+            x->avl_link[1] = w->avl_link[0];
+            w->avl_link[0] = x;
+            y->avl_link[0] = w->avl_link[1];
+            w->avl_link[1] = y;
+            if (w->avl_balance == -1)
+              x->avl_balance = 0, y->avl_balance = +1;
+            else if (w->avl_balance == 0)
+              x->avl_balance = y->avl_balance = 0;
+            else /* |w->avl_balance == +1| */
+              x->avl_balance = -1, y->avl_balance = 0;
+            w->avl_balance = 0;
+          }
+      }
+  }
+else if (cmp > 0)
+  {
+    struct avl_node *r; /* Right child of |y|, for rebalancing. */
+
+    if (probe (tree, &y->avl_link[1], data) == 0)
+      return 0;
+
+    if (y->avl_balance == -1)
+      {
+        y->avl_balance = 0;
+        return 0;
+      }
+    else if (y->avl_balance == 0)
+      {
+        y->avl_balance = +1;
+        return 1;
+      }
+    else
+      {
+        struct avl_node *x = y->avl_link[1];
+        if (x->avl_balance == +1)
+          {
+            w = x;
+            y->avl_link[1] = x->avl_link[0];
+            x->avl_link[0] = y;
+            x->avl_balance = y->avl_balance = 0;
+          }
+        else
+          {
+            assert (x->avl_balance == -1);
+            w = x->avl_link[0];
+            x->avl_link[0] = w->avl_link[1];
+            w->avl_link[1] = x;
+            y->avl_link[1] = w->avl_link[0];
+            w->avl_link[0] = y;
+            if (w->avl_balance == +1)
+              x->avl_balance = 0, y->avl_balance = -1;
+            else if (w->avl_balance == 0)
+              x->avl_balance = y->avl_balance = 0;
+            else /* |w->avl_balance == -1| */
+              x->avl_balance = +1, y->avl_balance = 0;
+            w->avl_balance = 0;
+          }
+      }
+  }
+else /* |cmp == 0| */
+  {
+    *data = &y->avl_data;
+    return 0;
+  }
+
+*p = w;
+return 0;

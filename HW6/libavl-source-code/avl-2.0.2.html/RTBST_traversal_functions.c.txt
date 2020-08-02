@@ -1,0 +1,220 @@
+/* Initializes |trav| for use with |tree|
+   and selects the null node. */
+void
+rtbst_t_init (struct rtbst_traverser *trav, struct rtbst_table *tree)
+{
+  trav->rtbst_table = tree;
+  trav->rtbst_node = NULL;
+}
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the least value,
+   or |NULL| if |tree| is empty. */
+void *
+rtbst_t_first (struct rtbst_traverser *trav, struct rtbst_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->rtbst_table = tree;
+  trav->rtbst_node = tree->rtbst_root;
+  if (trav->rtbst_node != NULL)
+    {
+      while (trav->rtbst_node->rtbst_link[0] != NULL)
+        trav->rtbst_node = trav->rtbst_node->rtbst_link[0];
+      return trav->rtbst_node->rtbst_data;
+    }
+  else
+    return NULL;
+}
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the greatest value,
+   or |NULL| if |tree| is empty. */
+void *
+rtbst_t_last (struct rtbst_traverser *trav, struct rtbst_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->rtbst_table = tree;
+  trav->rtbst_node = tree->rtbst_root;
+  if (trav->rtbst_node != NULL)
+    {
+      while (trav->rtbst_node->rtbst_rtag == RTBST_CHILD)
+        trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+      return trav->rtbst_node->rtbst_data;
+    }
+  else
+    return NULL;
+}
+
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+rtbst_t_find (struct rtbst_traverser *trav, struct rtbst_table *tree,
+              void *item)
+{
+  struct rtbst_node *p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->rtbst_table = tree;
+  trav->rtbst_node = NULL;
+
+  p = tree->rtbst_root;
+  if (p == NULL)
+    return NULL;
+
+  for (;;)
+    {
+      int cmp = tree->rtbst_compare (item, p->rtbst_data, tree->rtbst_param);
+      if (cmp == 0)
+        {
+          trav->rtbst_node = p;
+          return p->rtbst_data;
+        }
+
+      if (cmp < 0)
+        {
+          p = p->rtbst_link[0];
+          if (p == NULL)
+            return NULL;
+        }
+      else
+        {
+          if (p->rtbst_rtag == RTBST_THREAD)
+            return NULL;
+          p = p->rtbst_link[1];
+        }
+    }
+}
+
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+rtbst_t_insert (struct rtbst_traverser *trav,
+               struct rtbst_table *tree, void *item)
+{
+  void **p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  p = rtbst_probe (tree, item);
+  if (p != NULL)
+    {
+      trav->rtbst_table = tree;
+      trav->rtbst_node =
+        ((struct rtbst_node *)
+         ((char *) p - offsetof (struct rtbst_node, rtbst_data)));
+      return *p;
+    }
+  else
+    {
+      rtbst_t_init (trav, tree);
+      return NULL;
+    }
+}
+
+/* Initializes |trav| to have the same current node as |src|. */
+void *
+rtbst_t_copy (struct rtbst_traverser *trav, const struct rtbst_traverser *src)
+{
+  assert (trav != NULL && src != NULL);
+
+  trav->rtbst_table = src->rtbst_table;
+  trav->rtbst_node = src->rtbst_node;
+
+  return trav->rtbst_node != NULL ? trav->rtbst_node->rtbst_data : NULL;
+}
+
+/* Returns the next data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+rtbst_t_next (struct rtbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->rtbst_node == NULL)
+    return rtbst_t_first (trav, trav->rtbst_table);
+  else if (trav->rtbst_node->rtbst_rtag == RTBST_THREAD)
+    {
+      trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+      return trav->rtbst_node != NULL ? trav->rtbst_node->rtbst_data : NULL;
+    }
+  else
+    {
+      trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+      while (trav->rtbst_node->rtbst_link[0] != NULL)
+        trav->rtbst_node = trav->rtbst_node->rtbst_link[0];
+      return trav->rtbst_node->rtbst_data;
+    }
+}
+
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+rtbst_t_prev (struct rtbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->rtbst_node == NULL)
+    return rtbst_t_last (trav, trav->rtbst_table);
+  else if (trav->rtbst_node->rtbst_link[0] == NULL)
+    {
+      rtbst_comparison_func *cmp = trav->rtbst_table->rtbst_compare;
+      void *param = trav->rtbst_table->rtbst_param;
+      struct rtbst_node *node = trav->rtbst_node;
+      struct rtbst_node *i;
+
+      trav->rtbst_node = NULL;
+      for (i = trav->rtbst_table->rtbst_root; i != node; )
+        {
+          int dir = cmp (node->rtbst_data, i->rtbst_data, param) > 0;
+          if (dir == 1)
+            trav->rtbst_node = i;
+          i = i->rtbst_link[dir];
+        }
+
+      return trav->rtbst_node != NULL ? trav->rtbst_node->rtbst_data : NULL;
+    }
+  else
+    {
+      trav->rtbst_node = trav->rtbst_node->rtbst_link[0];
+      while (trav->rtbst_node->rtbst_rtag == RTBST_CHILD)
+        trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+      return trav->rtbst_node->rtbst_data;
+    }
+}
+
+/* Returns |trav|'s current item. */
+void *
+rtbst_t_cur (struct rtbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  return trav->rtbst_node != NULL ? trav->rtbst_node->rtbst_data : NULL;
+}
+
+/* Replaces the current item in |trav| by |new| and returns the item replaced.
+   |trav| must not have the null item selected.
+   The new item must not upset the ordering of the tree. */
+void *
+rtbst_t_replace (struct rtbst_traverser *trav, void *new)
+{
+  void *old;
+
+  assert (trav != NULL && trav->rtbst_node != NULL && new != NULL);
+  old = trav->rtbst_node->rtbst_data;
+  trav->rtbst_node->rtbst_data = new;
+  return old;
+}
+

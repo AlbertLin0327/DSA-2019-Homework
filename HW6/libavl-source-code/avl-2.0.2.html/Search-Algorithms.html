@@ -1,0 +1,93 @@
+<html lang="en">
+<head>
+<title>Search Algorithms - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Additional-Exercises-for-Tables.html" title="2.12 Additional Exercises">
+<link rel=Next href="Sequential-Search.html" title="3.1 Sequential Search">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Search-Algorithms">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>3 Search Algorithms</b></big></td>
+<td align=right>
+<a href="index.html#Search-Algorithms.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="The-Table-ADT.html" title="Skip Back: 2 The Table ADT"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Binary-Search-Trees.html" title="Skip Forward: 4 Binary Search Trees"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Additional-Exercises-for-Tables.html" title="Prev: 2.12 Additional Exercises"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Sequential-Search.html" title="Next: 3.1 Sequential Search"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>In libavl, we are primarily concerned with binary search trees and
+balanced binary trees.  If you're already familiar with these concepts,
+then you can move right into the code, starting from the next chapter. 
+But if you're not, then a little motivation and an explanation of
+exactly what a binary search tree is can't hurt.  That's the goal of
+this chapter.
+
+   <p>More particularly, this chapter concerns itself with algorithms for
+searching.  Searching is one of the core problems in organizing a table. 
+As it will turn out, arranging a table for fast searching also
+facilitates some other table features.
+
+<ul class="menu">
+<li><a accesskey="1" href="Sequential-Search.html">Sequential Search</a>
+<li><a accesskey="2" href="Sequential-Search-with-Sentinel.html">Sequential Search with Sentinel</a>
+<li><a accesskey="3" href="Sequential-Search-of-Ordered-Array.html">Sequential Search of Ordered Array</a>
+<li><a accesskey="4" href="Sequential-Search-of-Ordered-Array-with-Sentinel.html">Sequential Search of Ordered Array with Sentinel</a>
+<li><a accesskey="5" href="Binary-Search-of-Ordered-Array.html">Binary Search of Ordered Array</a>
+<li><a accesskey="6" href="Binary-Search-Tree-in-Array.html">Binary Search Tree in Array</a>
+<li><a accesskey="7" href="Dynamic-Lists.html">Dynamic Lists</a>
+</ul>
+
+   </body></html>
+

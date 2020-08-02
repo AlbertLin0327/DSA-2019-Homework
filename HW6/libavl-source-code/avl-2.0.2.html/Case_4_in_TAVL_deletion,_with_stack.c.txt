@@ -1,0 +1,40 @@
+struct tavl_node *s;
+int j = k++;
+
+for (;;)
+  {
+    da[k] = 0;
+    pa[k++] = r;
+    s = r->tavl_link[0];
+    if (s->tavl_tag[0] == TAVL_THREAD)
+      break;
+
+    r = s;
+  }
+
+da[j] = 1;
+pa[j] = pa[j - 1]->tavl_link[da[j - 1]] = s;
+
+if (s->tavl_tag[1] == TAVL_CHILD)
+  r->tavl_link[0] = s->tavl_link[1];
+else
+  {
+    r->tavl_link[0] = s;
+    r->tavl_tag[0] = TAVL_THREAD;
+  }
+
+s->tavl_balance = p->tavl_balance;
+
+s->tavl_link[0] = p->tavl_link[0];
+if (p->tavl_tag[0] == TAVL_CHILD)
+  {
+    struct tavl_node *x = p->tavl_link[0];
+    while (x->tavl_tag[1] == TAVL_CHILD)
+      x = x->tavl_link[1];
+    x->tavl_link[1] = s;
+
+    s->tavl_tag[0] = TAVL_CHILD;
+  }
+
+s->tavl_link[1] = p->tavl_link[1];
+s->tavl_tag[1] = TAVL_CHILD;

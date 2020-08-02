@@ -1,0 +1,14 @@
+struct pbst_node *s = r->pbst_link[0];
+while (s->pbst_link[0] != NULL)
+  s = s->pbst_link[0];
+r = s->pbst_parent;
+r->pbst_link[0] = s->pbst_link[1];
+s->pbst_link[0] = p->pbst_link[0];
+s->pbst_link[1] = p->pbst_link[1];
+q->pbst_link[dir] = s;
+if (s->pbst_link[0] != NULL)
+  s->pbst_link[0]->pbst_parent = s;
+s->pbst_link[1]->pbst_parent = s;
+s->pbst_parent = p->pbst_parent;
+if (r->pbst_link[0] != NULL)
+  r->pbst_link[0]->pbst_parent = r;

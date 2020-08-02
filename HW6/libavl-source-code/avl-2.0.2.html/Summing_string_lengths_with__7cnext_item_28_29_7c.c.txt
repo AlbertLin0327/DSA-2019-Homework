@@ -1,0 +1,11 @@
+size_t
+total_length (struct bst_table *tree)
+{
+  struct traverser t;
+  const char *string;
+  size_t total = 0;
+
+  for (string = first_item (tree, &t); string != NULL; string = next_item (&t))
+    total += strlen (string);
+  return total;
+}

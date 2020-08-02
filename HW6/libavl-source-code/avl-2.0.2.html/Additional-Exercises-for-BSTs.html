@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Additional Exercises for BSTs - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Main-Program.html" title="4.14.7 Main Program">
+<link rel=Next href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Parent href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Additional-Exercises-for-BSTs">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.15 Additional Exercises</b></big></td>
+<td align=right>
+<a href="index.html#Additional-Exercises-for-BSTs.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-BST-Functions.html" title="Skip Back: 4.14 Testing"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Main-Program.html" title="Prev: 4.14.7 Main Program"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Binary-Search-Trees.html" title="Up: 4 Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="AVL-Trees.html" title="Next: 5 AVL Trees"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="bstsentinel"></a>&nbsp;<!-- /@w -->Sentinels were a main theme of the chapter before this one.  Figure
+out how to apply sentinel techniques to binary search trees.  Write
+routines for search and insertion in such a binary search tree with
+sentinel.  Test your functions.  (You need not make your code fully
+generic; e.g., it is acceptable to &ldquo;hard-code&rdquo; the data type stored
+in the tree.) 
+[<a href="Answers-for-Chapter-4.html#4%2d15%231">answer</a>]
+
+<!-- *-texinfo-*- -->
+<!-- GNU libavl - library for manipulation of binary trees. -->
+<!-- Copyright (C) 1998-2002, 2004 Free Software Foundation, Inc. -->
+<!-- This program is free software; you can redistribute it and/or -->
+<!-- modify it under the terms of the GNU General Public License as -->
+<!-- published by the Free Software Foundation; either version 2 of -->
+<!-- the License, or (at your option) any later version. -->
+<!-- This program is distributed in the hope that it will be useful, -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU -->
+<!-- General Public License for more details. -->
+<!-- You should have received a copy of the GNU General Public License -->
+<!-- along with this program; if not, write to: Free Software -->
+<!-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA -->
+<!-- 02111-1307, USA. -->
+<!-- The author may be contacted as blp@gnu.org on the Internet, or -->
+<!-- write to Ben Pfaff, Stanford University, Computer Science Dept., -->
+<!-- 353 Serra Mall, Stanford CA 94305, USA. -->
+</p>
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr valign=middle>
+<td align=left width="33%">
+<a href="Main-Program.html"><img src="prev.png" border=0 alt="Prev:" align=middle></a>
+4.14.7 Main Program
+</td>
+<td align=center width="33%">
+<a href="Binary-Search-Trees.html"><img src="up.png" border=0 alt="Up:" align=middle></a>
+4 Binary Search Trees
+</td>
+<td align=right width="33%">
+5 AVL Trees
+<a href="AVL-Trees.html"><img src="next.png" border=0 alt="Next" align=middle></a>
+</td>
+</tr></table>
+</body></html>
+

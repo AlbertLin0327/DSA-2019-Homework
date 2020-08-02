@@ -1,0 +1,32 @@
+/* Initializes |trav| for |tree|
+   and selects and returns a pointer to its least-valued item.
+   Returns |NULL| if |tree| contains no nodes. */
+void *
+bst_t_first (struct bst_traverser *trav, struct bst_table *tree)
+{
+  struct bst_node *x;
+
+  assert (tree != NULL && trav != NULL);
+
+  trav->bst_table = tree;
+  trav->bst_height = 0;
+  trav->bst_generation = tree->bst_generation;
+
+  x = tree->bst_root;
+  if (x != NULL)
+    while (x->bst_link[0] != NULL)
+      {
+        if (trav->bst_height >= BST_MAX_HEIGHT)
+          {
+            bst_balance (tree);
+            return bst_t_first (trav, tree);
+          }
+
+        trav->bst_stack[trav->bst_height++] = x;
+        x = x->bst_link[0];
+      }
+  trav->bst_node = x;
+
+  return x != NULL ? x->bst_data : NULL;
+}
+

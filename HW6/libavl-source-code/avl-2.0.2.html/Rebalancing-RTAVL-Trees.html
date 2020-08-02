@@ -1,0 +1,218 @@
+<html lang="en">
+<head>
+<title>Rebalancing RTAVL Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Steps-1_002d1-in-RTAVL-Insertion.html" title="11.4.1 Steps 1&ndash;2: Search and Insert">
+<link rel=Next href="Deleting-from-an-RTAVL-Tree.html" title="11.5 Deletion">
+<link rel=Parent href="Inserting-into-an-RTAVL-Tree.html" title="11.4 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Rebalancing-RTAVL-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>11.4.2 Step 4: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Rebalancing-RTAVL-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Steps-1_002d1-in-RTAVL-Insertion.html" title="Skip Back: 11.4.1 Steps 1&ndash;2: Search and Insert"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Steps-1_002d1-in-RTAVL-Insertion.html" title="Prev: 11.4.1 Steps 1&ndash;2: Search and Insert"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-an-RTAVL-Tree.html" title="Up: 11.4 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-from-an-RTAVL-Tree.html" title="Next: 11.5 Deletion"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Unlike all of the AVL rebalancing algorithms we've seen so far,
+rebalancing of a right-threaded AVL tree is not symmetric.  This means
+that we cannot single out left-side rebalancing or right-side
+rebalancing as we did before, hand-waving the rest of it as a symmetric
+case.  But both cases are very similar, if not exactly symmetric, so we
+will present the corresponding cases together.  The theory is exactly
+the same as before (see <a href="Rebalancing-AVL-Trees.html">Rebalancing AVL Trees</a>).  Here is the code
+to choose between left-side and right-side rebalancing:
+
+   <p><a name="index-rebalance-after-RTAVL-insertion-598"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_after_RTAVL_insertion.c.txt">422</a>. &lt;<a name="422" href="Step_4_3a_Rebalance_after_RTAVL_insertion.c.txt">Step 4: Rebalance after RTAVL insertion 422</a>&gt; =
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == -2)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-RTAVL-Trees.html#423">Step 4: Rebalance RTAVL tree after insertion to left 423</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == +2)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-RTAVL-Trees.html#424">Step 4: Rebalance RTAVL tree after insertion to right 424</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>rtavl_data</i><!-- /@w -->;
+
+<i>z</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[<i>y</i><!-- /@w --> != <i>z</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0]] = <i>w</i><!-- /@w -->;
+<b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>rtavl_data</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-an-RTAVL-Tree.html#419">419</a>.</small>
+
+   <p>The code to choose between the two subcases within the left-side and
+right-side rebalancing cases follows below.  As usual during
+rebalancing, <i>y</i><!-- /@w --> is the node at which rebalancing occurs, <i>x</i><!-- /@w --> is its
+child on the same side as the inserted node, and cases are
+distinguished on the basis of <i>x</i><!-- /@w -->'s balance factor:
+
+   <p><a name="index-rebalance-RTAVL-tree-after-insertion-to-left-599"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_RTAVL_tree_after_insertion_to_left.c.txt">423</a>. &lt;<a name="423" href="Step_4_3a_Rebalance_RTAVL_tree_after_insertion_to_left.c.txt">Step 4: Rebalance RTAVL tree after insertion to left 423</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == -1)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-RTAVL-Trees.html#425">Rebalance for - balance factor in RTAVL insertion in left subtree 425</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->} 
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-RTAVL-Trees.html#427">Rebalance for + balance factor in RTAVL insertion in left subtree 427</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-RTAVL-Trees.html#422">422</a>.</small>
+
+   <p><a name="index-rebalance-RTAVL-tree-after-insertion-to-right-600"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_RTAVL_tree_after_insertion_to_right.c.txt">424</a>. &lt;<a name="424" href="Step_4_3a_Rebalance_RTAVL_tree_after_insertion_to_right.c.txt">Step 4: Rebalance RTAVL tree after insertion to right 424</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> == +1)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-RTAVL-Trees.html#426">Rebalance for + balance factor in RTAVL insertion in right subtree 426</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->} 
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-RTAVL-Trees.html#428">Rebalance for - balance factor in RTAVL insertion in right subtree 428</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-RTAVL-Trees.html#422">422</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>x</i><!-- /@w --> has taller subtree on side of insertion</h5>
+
+<p>If node <i>x</i><!-- /@w -->'s taller subtree is on the same side as the inserted node,
+then we perform a rotation at <i>y</i><!-- /@w --> in the opposite direction.  That is,
+if the insertion occurred in the left subtree of <i>y</i><!-- /@w --> and <i>x</i><!-- /@w --> has a -
+balance factor, we rotate right at <i>y</i><!-- /@w -->, and if the insertion was to
+the right and <i>x</i><!-- /@w --> has a + balance factor, we rotate left at <i>y</i><!-- /@w -->. 
+This changes the balance of both <i>x</i><!-- /@w --> and <i>y</i><!-- /@w --> to zero.  None of this is
+a change from unthreaded or fully threaded rebalancing.  The
+difference is in the handling of empty subtrees, that is, in the
+rotation itself (see <a href="RTBST-Rotations.html">RTBST Rotations</a>).
+
+   <p>Here is a diagram of left-side rebalancing for the interesting case
+where <i>x</i><!-- /@w --> has a right thread.  Taken along with <i>x</i><!-- /@w -->'s - balance
+factor, this means that <i>n</i><!-- /@w -->, the newly inserted node, must be <i>x</i><!-- /@w -->'s left
+child.  Therefore, subtree <i>x</i><!-- /@w --> has height 2, so <i>y</i><!-- /@w --> has no right child
+(because it has a -2 balance factor).  This chain of logic means that
+we know exactly what the tree looks like in this particular subcase:
+
+<div align="center"><a href="rtavlins1.txt"><img border=0 src="rtavlins1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-rebalance-for-_0040math_007b_002d_007d-balance-factor-in-RTAVL-insertion-in-left-subtree-601"></a>
+<pre class="format"><a href="Rebalance_for__7c-_7c_balance_factor_in_RTAVL_insertion_in_left_subtree.c.txt">425</a>. &lt;<a name="425" href="Rebalance_for__7c-_7c_balance_factor_in_RTAVL_insertion_in_left_subtree.c.txt">Rebalance for - balance factor in RTAVL insertion in left subtree 425</a>&gt; =
+<i>w</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_CHILD</tt><!-- /@w -->;
+    <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+  }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1];
+<i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+<i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-RTAVL-Trees.html#423">423</a>.</small>
+
+   <p>Here is the diagram and code for the similar right-side case:
+
+<div align="center"><a href="rtavlins2.txt"><img border=0 src="rtavlins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-rebalance-for-_0040math_007b_002b_007d-balance-factor-in-RTAVL-insertion-in-right-subtree-602"></a>
+<pre class="format"><a href="Rebalance_for__7c_2b_7c_balance_factor_in_RTAVL_insertion_in_right_subtree.c.txt">426</a>. &lt;<a name="426" href="Rebalance_for__7c_2b_7c_balance_factor_in_RTAVL_insertion_in_right_subtree.c.txt">Rebalance for + balance factor in RTAVL insertion in right subtree 426</a>&gt; =
+<i>w</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_THREAD</tt><!-- /@w -->;
+    <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->;
+  }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0];
+<i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+<i>x</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>rtavl_balance</i><!-- /@w --> = 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-RTAVL-Trees.html#424">424</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>x</i><!-- /@w --> has taller subtree on side opposite insertion</h5>
+
+<p><a name="rtavlinscase2"></a>
+
+   <p>If node <i>x</i><!-- /@w -->'s taller subtree is on the side opposite the newly inserted
+node, then we perform a double rotation: first rotate at <i>x</i><!-- /@w --> in the same
+direction as the inserted node, then in the opposite direction at <i>y</i><!-- /@w -->. 
+This is the same as in a threaded or unthreaded tree, and indeed we can
+reuse much of the code.
+
+   <p>The case where the details differ is, as usual, where threads or null
+child pointers are moved around.  In the most extreme case for insertion
+to the left, where <i>w</i><!-- /@w --> is a leaf, we know that <i>x</i><!-- /@w --> has no left child and
+<i>s</i><!-- /@w --> no right child, and the situation looks like the diagram below
+before and after the rebalancing step:
+
+<div align="center"><a href="rtavlins3.txt"><img border=0 src="rtavlins3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-rebalance-for-_0040math_007b_002b_007d-balance-factor-in-RTAVL-insertion-in-left-subtree-603"></a>
+<pre class="format"><a href="Rebalance_for__7c_2b_7c_balance_factor_in_RTAVL_insertion_in_left_subtree.c.txt">427</a>. &lt;<a name="427" href="Rebalance_for__7c_2b_7c_balance_factor_in_RTAVL_insertion_in_left_subtree.c.txt">Rebalance for + balance factor in RTAVL insertion in left subtree 427</a>&gt; =
+&lt;<a href="Rebalancing-AVL-Trees.html#156">Rotate left at <i>x</i><!-- /@w --> then right at <i>y</i><!-- /@w --> in AVL tree; avl =&gt; rtavl 156</a>&gt;
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_THREAD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->;
+  }
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+    <i>w</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_CHILD</tt><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-RTAVL-Trees.html#423">423</a> and <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#442">442</a>.</small>
+
+   <p>Here is the code and diagram for right-side insertion rebalancing:
+
+<div align="center"><a href="rtavlins4.txt"><img border=0 src="rtavlins4.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-rebalance-for-_0040math_007b_002d_007d-balance-factor-in-RTAVL-insertion-in-right-subtree-604"></a>
+<pre class="format"><a href="Rebalance_for__7c-_7c_balance_factor_in_RTAVL_insertion_in_right_subtree.c.txt">428</a>. &lt;<a name="428" href="Rebalance_for__7c-_7c_balance_factor_in_RTAVL_insertion_in_right_subtree.c.txt">Rebalance for - balance factor in RTAVL insertion in right subtree 428</a>&gt; =
+&lt;<a href="AVL-Insertion-Symmetric-Case.html#159">Rotate right at <i>x</i><!-- /@w --> then left at <i>y</i><!-- /@w --> in AVL tree; avl =&gt; rtavl 159</a>&gt;
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_THREAD</tt><!-- /@w -->;
+    <i>y</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->;
+  }
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> == <tt>RTAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>x</i><!-- /@w -->-&gt;<i>rtavl_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+    <i>w</i><!-- /@w -->-&gt;<i>rtavl_rtag</i><!-- /@w --> = <tt>RTAVL_CHILD</tt><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Rebalancing-RTAVL-Trees.html#424">424</a> and <a href="Deleting-a-RTAVL-Node-Step-4-_002d-Rebalance.html#441">441</a>.</small>
+
+   </body></html>
+

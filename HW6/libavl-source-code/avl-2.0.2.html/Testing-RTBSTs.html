@@ -1,0 +1,229 @@
+<html lang="en">
+<head>
+<title>Testing RTBSTs - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Balancing-an-RTBST.html" title="10.9 Balance">
+<link rel=Next href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Parent href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Testing-RTBSTs">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>10.10 Testing</b></big></td>
+<td align=right>
+<a href="index.html#Testing-RTBSTs.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-an-RTBST.html" title="Skip Back: 10.9 Balance"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-an-RTBST.html" title="Prev: 10.9 Balance"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Right_002dThreaded-Binary-Search-Trees.html" title="Up: 10 Right-Threaded Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Right_002dThreaded-AVL-Trees.html" title="Next: 11 Right-Threaded AVL Trees"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>There's nothing new or interesting in the test code.
+
+   <p><a name="index-_0040t_007brtbst_002dtest_002ec_007d-579"></a>
+<pre class="format"><a href="rtbst-test.c.txt">411</a>. &lt;<a name="411" href="rtbst-test.c.txt"><tt>rtbst-test.c</tt> 411</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;limits.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> "rtbst.h"
+#<b>include</b> "test.h"
+
+&lt;<a href="Testing-RTBSTs.html#412">RTBST print function 412</a>&gt;
+&lt;<a href="Testing-BSTs.html#104">BST traverser check function; bst =&gt; rtbst 104</a>&gt;
+&lt;<a href="Testing-RTBSTs.html#413">Compare two RTBSTs for structure and content 413</a>&gt;
+&lt;<a href="Testing-RTBSTs.html#414">Recursively verify RTBST structure 414</a>&gt;
+&lt;<a href="BST-Verification.html#109">BST verify function; bst =&gt; rtbst 109</a>&gt;
+&lt;<a href="Testing-TBSTs.html#295">TBST test function; tbst =&gt; rtbst 295</a>&gt;
+&lt;<a href="Testing-Overflow.html#122">BST overflow test function; bst =&gt; rtbst 122</a>&gt;
+</pre>
+   <p><a name="index-RTBST-print-function-580"></a>
+<pre class="format"><a href="RTBST_print_function.c.txt">412</a>. &lt;<a name="412" href="RTBST_print_function.c.txt">RTBST print function 412</a>&gt; =
+<b>void</b><!-- /@w --> <br><i>print_tree_structure</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>node</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>level</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bprint_005ftree_005fstructure_007d-function-581"></a>  <b>if</b><!-- /@w --> (<i>level</i><!-- /@w --> &gt; 16) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>"[...]"</tt>);
+      <b>return</b><!-- /@w -->;
+    }
+
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>"&lt;nil&gt;"</tt>);
+      <b>return</b><!-- /@w -->;
+    }
+
+  <i>printf</i><!-- /@w --> (<tt>"%d("</tt>, <i>node</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w --> ? *(<b>int</b><!-- /@w --> *) <i>node</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w --> : -1);
+
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+    <i>print_tree_structure</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0], <i>level</i><!-- /@w --> + 1);
+
+  <i>fputs</i><!-- /@w --> (<tt>", "</tt>, <i>stdout</i><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] == <i>node</i><!-- /@w -->) 
+        <i>printf</i><!-- /@w --> (<tt>"loop"</tt>);
+      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>print_tree_structure</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1], <i>level</i><!-- /@w --> + 1);
+    } 
+  <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"&gt;%d"</tt>, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->(<i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1]-&gt;<i>rtbst_data</i><!-- /@w -->
+             ? *(<b>int</b><!-- /@w --> *) <i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1]-&gt;<i>rtbst_data</i><!-- /@w --> : -1));
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"&gt;&gt;"</tt>);
+
+  <i>putchar</i><!-- /@w --> (<tt>')'</tt>);
+}
+
+<b>void</b><!-- /@w --> <br><i>print_whole_tree</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>rtbst_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>title</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bprint_005fwhole_005ftree_007d-function-582"></a>  <i>printf</i><!-- /@w --> (<tt>"%s: "</tt>, <i>title</i><!-- /@w -->);
+  <i>print_tree_structure</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>rtbst_root</i><!-- /@w -->, 0);
+  <i>putchar</i><!-- /@w --> (<tt>'\n'</tt>);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-RTBSTs.html#411">411</a>, <a href="Testing-RTAVL-Trees.html#449">449</a>, and <a href="Testing-RTRB-Trees.html#482">482</a>.</small>
+
+   <p><a name="index-compare-two-RTBSTs-for-structure-and-content-583"></a>
+<pre class="format"><a href="Compare_two_RTBSTs_for_structure_and_content.c.txt">413</a>. &lt;<a name="413" href="Compare_two_RTBSTs_for_structure_and_content.c.txt">Compare two RTBSTs for structure and content 413</a>&gt; =
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>compare_trees</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>a</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>b</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompare_005ftrees_007d-function-584"></a>  <b>int</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>b</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>a</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> || <i>b</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>printf</i><!-- /@w --> (<tt>" a=%d b=%d\n"</tt>,
+                  <i>a</i><!-- /@w --> ? *(<b>int</b><!-- /@w --> *) <i>a</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w --> : -1, 
+                  <i>b</i><!-- /@w --> ? *(<b>int</b><!-- /@w --> *) <i>b</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w --> : -1);
+          <i>assert</i><!-- /@w --> (0);
+        }
+      <b>return</b><!-- /@w --> 1;
+    }
+  <i>assert</i><!-- /@w --> (<i>a</i><!-- /@w --> != <i>b</i><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (*(<b>int</b><!-- /@w --> *) <i>a</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w --> != *(<b>int</b><!-- /@w --> *) <i>b</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w -->
+      || <i>a</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> != <i>b</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>" Copied nodes differ: a=%d b=%d a:"</tt>,
+              *(<b>int</b><!-- /@w --> *) <i>a</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w -->, *(<b>int</b><!-- /@w --> *) <i>b</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w -->);
+
+      <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"r"</tt>);
+
+      <i>printf</i><!-- /@w --> (<tt>" b:"</tt>);
+      <b>if</b><!-- /@w --> (<i>b</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"r"</tt>);
+
+      <i>printf</i><!-- /@w --> (<tt>"\n"</tt>);
+      <b>return</b><!-- /@w --> 0;
+    }
+
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_THREAD</tt><!-- /@w -->)
+    <i>assert</i><!-- /@w --> ((<i>a</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->)
+            != (<i>a</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] != <i>b</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1]));
+
+  <i>okay</i><!-- /@w --> = <i>compare_trees</i><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0], <i>b</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0]);
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_CHILD</tt><!-- /@w -->)
+    <i>okay</i><!-- /@w --> &amp;= <i>compare_trees</i><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1], <i>b</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1]);
+  <b>return</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-RTBSTs.html#411">411</a>.</small>
+
+   <p><a name="index-recursively-verify-RTBST-structure-585"></a>
+<pre class="format"><a href="Recursively_verify_RTBST_structure.c.txt">414</a>. &lt;<a name="414" href="Recursively_verify_RTBST_structure.c.txt">Recursively verify RTBST structure 414</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>recurse_verify_tree</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>node</i><!-- /@w -->, <b>int</b><!-- /@w --> *<i>okay</i><!-- /@w -->, <b>size_t</b><!-- /@w --> *<i>count</i><!-- /@w -->, 
+                     <b>int</b><!-- /@w --> <i>min</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>max</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brecurse_005fverify_005ftree_007d-function-586"></a>  <b>int</b><!-- /@w --> <i>d</i><!-- /@w -->;                /* Value of this node's data. */
+  <b>size_t</b><!-- /@w --> <i>subcount</i><!-- /@w -->[2];   /* Number of nodes in subtrees. */
+
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      *<i>count</i><!-- /@w --> = 0;
+      <b>return</b><!-- /@w -->;
+    }
+  <i>d</i><!-- /@w --> = *(<b>int</b><!-- /@w --> *) <i>node</i><!-- /@w -->-&gt;<i>rtbst_data</i><!-- /@w -->;
+
+  &lt;<a href="BST-Verification.html#114">Verify binary search tree ordering 114</a>&gt;
+
+  <i>subcount</i><!-- /@w -->[0] = <i>subcount</i><!-- /@w -->[1] = 0;
+  <i>recurse_verify_tree</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0], <i>okay</i><!-- /@w -->, &amp;<i>subcount</i><!-- /@w -->[0], <i>min</i><!-- /@w -->, <i>d</i><!-- /@w --> - 1);
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_CHILD</tt><!-- /@w -->)
+    <i>recurse_verify_tree</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1], <i>okay</i><!-- /@w -->, &amp;<i>subcount</i><!-- /@w -->[1], <i>d</i><!-- /@w --> + 1, <i>max</i><!-- /@w -->);
+  *<i>count</i><!-- /@w --> = 1 + <i>subcount</i><!-- /@w -->[0] + <i>subcount</i><!-- /@w -->[1];
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-RTBSTs.html#411">411</a>.</small>
+
+<!-- *-texinfo-*- -->
+<!-- GNU libavl - library for manipulation of binary trees. -->
+<!-- Copyright (C) 1998-2002, 2004 Free Software Foundation, Inc. -->
+<!-- This program is free software; you can redistribute it and/or -->
+<!-- modify it under the terms of the GNU General Public License as -->
+<!-- published by the Free Software Foundation; either version 2 of -->
+<!-- the License, or (at your option) any later version. -->
+<!-- This program is distributed in the hope that it will be useful, -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU -->
+<!-- General Public License for more details. -->
+<!-- You should have received a copy of the GNU General Public License -->
+<!-- along with this program; if not, write to: Free Software -->
+<!-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA -->
+<!-- 02111-1307, USA. -->
+<!-- The author may be contacted as blp@gnu.org on the Internet, or -->
+<!-- write to Ben Pfaff, Stanford University, Computer Science Dept., -->
+<!-- 353 Serra Mall, Stanford CA 94305, USA. -->
+</p>
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr valign=middle>
+<td align=left width="33%">
+<a href="Balancing-an-RTBST.html"><img src="prev.png" border=0 alt="Prev:" align=middle></a>
+10.9 Balance
+</td>
+<td align=center width="33%">
+<a href="Right_002dThreaded-Binary-Search-Trees.html"><img src="up.png" border=0 alt="Up:" align=middle></a>
+10 Right-Threaded Binary Search Trees
+</td>
+<td align=right width="33%">
+11 Right-Threaded AVL Trees
+<a href="Right_002dThreaded-AVL-Trees.html"><img src="next.png" border=0 alt="Next" align=middle></a>
+</td>
+</tr></table>
+</body></html>
+

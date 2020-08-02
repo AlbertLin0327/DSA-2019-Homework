@@ -1,0 +1,182 @@
+<html lang="en">
+<head>
+<title>Deleting a TRB Node Step 3 - Rebalance - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-a-TRB-Node-Step-2-_002d-Delete.html" title="9.4.2 Step 2: Delete">
+<link rel=Next href="Deleting-a-TRB-Node-Step-4-_002d-Finish-Up.html" title="9.4.4 Step 4: Finish Up">
+<link rel=Parent href="Deleting-from-a-TRB-Tree.html" title="9.4 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-a-TRB-Node-Step-3-_002d-Rebalance">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>9.4.3 Step 3: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-a-TRB-Node-Step-2-_002d-Delete.html" title="Skip Back: 9.4.2 Step 2: Delete"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-a-TRB-Node-Step-4-_002d-Finish-Up.html" title="Skip Forward: 9.4.4 Step 4: Finish Up"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-a-TRB-Node-Step-2-_002d-Delete.html" title="Prev: 9.4.2 Step 2: Delete"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-a-TRB-Tree.html" title="Up: 9.4 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-a-TRB-Node-Step-4-_002d-Finish-Up.html" title="Next: 9.4.4 Step 4: Finish Up"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The outline for rebalancing after threaded RB deletion is the same as
+for the unthreaded case (see <a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html">Deleting an RB Node Step 3 - Rebalance</a>):
+
+   <p><a name="index-rebalance-tree-after-TRB-deletion-506"></a>
+<pre class="format"><a href="Step_3_3a_Rebalance_tree_after_TRB_deletion.c.txt">356</a>. &lt;<a name="356" href="Step_3_3a_Rebalance_tree_after_TRB_deletion.c.txt">Step 3: Rebalance tree after TRB deletion 356</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>for</b><!-- /@w --> (; <i>k</i><!-- /@w --> &gt; 1; <i>k</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>if</b><!-- /@w --> (<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>trb_tag</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] == <tt>TRB_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>x</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>trb_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]];
+            <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                <i>x</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+                <b>break</b><!-- /@w -->;
+              }
+          }
+
+        <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 0)
+          { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#357">Left-side rebalancing after TRB deletion 357</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+        <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="TRB-Deletion-Symmetric-Case.html#363">Right-side rebalancing after TRB deletion 363</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+      }
+
+    <b>if</b><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+      <i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-TRB-Tree.html#349">349</a>.</small>
+
+   <p>The rebalancing cases are the same, too.  We need to check for thread
+tags, not for null pointers, though, in some places:
+
+   <p><a name="index-left_002dside-rebalancing-after-TRB-deletion-507"></a>
+<pre class="format"><a href="Left-side_rebalancing_after_TRB_deletion.c.txt">357</a>. &lt;<a name="357" href="Left-side_rebalancing_after_TRB_deletion.c.txt">Left-side rebalancing after TRB deletion 357</a>&gt; =
+<b>struct</b><!-- /@w --> <b>trb_node</b> *<i>w</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>trb_link</i><!-- /@w -->[1];
+
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->) 
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#358">Ensure <i>w</i><!-- /@w --> is black in left-side TRB deletion rebalancing 358</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+<b>if</b><!-- /@w --> ((<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->|| <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->)
+    &amp;&amp; (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->|| <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->))
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#359">Case 1 in left-side TRB deletion rebalancing 359</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->|| <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_BLACK</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#361">Transform left-side TRB deletion rebalancing case 3 into case 2 361</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#360">Case 2 in left-side TRB deletion rebalancing 360</a>&gt;
+    <b>break</b><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#356">356</a>.</small>
+
+<h5 class="subsubheading">Case Reduction: Ensure <i>w</i><!-- /@w --> is black</h5>
+
+<p>This transformation does not move around any subtrees that might be
+threads, so there is no need for it to change.
+
+   <p><a name="index-ensure-_0040w_007b_0040i_007bw_007d_007d-is-black-in-left_002dside-TRB-deletion-rebalancing-508"></a>
+<pre class="format"><a href="Ensure__7cw_7c_is_black_in_left-side_TRB_deletion_rebalancing.c.txt">358</a>. &lt;<a name="358" href="Ensure__7cw_7c_is_black_in_left-side_TRB_deletion_rebalancing.c.txt">Ensure <i>w</i><!-- /@w --> is black in left-side TRB deletion rebalancing 358</a>&gt; =
+&lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#228">Ensure <i>w</i><!-- /@w --> is black in left-side RB deletion rebalancing; rb =&gt; trb 228</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#357">357</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>w</i><!-- /@w --> has no red children</h5>
+
+<p>This transformation just recolors nodes, so it also does not need any
+changes.
+
+   <p><a name="index-case-1-in-left_002dside-TRB-deletion-rebalancing-509"></a>
+<pre class="format"><a href="Case_1_in_left-side_TRB_deletion_rebalancing.c.txt">359</a>. &lt;<a name="359" href="Case_1_in_left-side_TRB_deletion_rebalancing.c.txt">Case 1 in left-side TRB deletion rebalancing 359</a>&gt; =
+&lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#229">Case 1 in left-side RB deletion rebalancing; rb =&gt; trb 229</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#357">357</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>w</i><!-- /@w -->'s right child is red</h5>
+
+<p>If <i>w</i><!-- /@w --> has a red right child and a left thread, then it is necessary to
+adjust tags and links after the left rotation at <i>w</i><!-- /@w --> and recoloring, as
+shown in this diagram:
+
+<div align="center"><a href="trbdel.txt"><img border=0 src="trbdel.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-2-in-left_002dside-TRB-deletion-rebalancing-510"></a>
+<pre class="format"><a href="Case_2_in_left-side_TRB_deletion_rebalancing.c.txt">360</a>. &lt;<a name="360" href="Case_2_in_left-side_TRB_deletion_rebalancing.c.txt">Case 2 in left-side TRB deletion rebalancing 360</a>&gt; =
+&lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#230">Case 2 in left-side RB deletion rebalancing; rb =&gt; trb 230</a>&gt;
+
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_CHILD</tt><!-- /@w -->;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_THREAD</tt><!-- /@w -->;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>w</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#357">357</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>w</i><!-- /@w -->'s left child is red</h5>
+
+<p>If <i>w</i><!-- /@w --> has a red left child, which has a right thread, then we again need
+to adjust tags and links after right rotation at <i>w</i><!-- /@w --> and recoloring, as
+shown here:
+
+<div align="center"><a href="trbdel2.txt"><img border=0 src="trbdel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-transform-left_002dside-TRB-deletion-rebalancing-case-3-into-case-2-511"></a>
+<pre class="format"><a href="Transform_left-side_TRB_deletion_rebalancing_case_3_into_case_2.c.txt">361</a>. &lt;<a name="361" href="Transform_left-side_TRB_deletion_rebalancing_case_3_into_case_2.c.txt">Transform left-side TRB deletion rebalancing case 3 into case 2 361</a>&gt; =
+&lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#231">Transform left-side RB deletion rebalancing case 3 into case 2; rb =&gt; trb 231</a>&gt;
+
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>w</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_CHILD</tt><!-- /@w -->;
+    <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_THREAD</tt><!-- /@w -->;
+    <i>w</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1]-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>w</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-a-TRB-Node-Step-3-_002d-Rebalance.html#357">357</a>.</small>
+
+   </body></html>
+

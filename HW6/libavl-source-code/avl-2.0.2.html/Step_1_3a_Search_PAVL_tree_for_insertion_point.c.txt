@@ -1,0 +1,12 @@
+y = tree->pavl_root;
+for (q = NULL, p = tree->pavl_root; p != NULL; q = p, p = p->pavl_link[dir])
+  {
+    int cmp = tree->pavl_compare (item, p->pavl_data, tree->pavl_param);
+    if (cmp == 0)
+      return &p->pavl_data;
+    dir = cmp > 0;
+
+    if (p->pavl_balance != 0)
+      y = p;
+  }
+

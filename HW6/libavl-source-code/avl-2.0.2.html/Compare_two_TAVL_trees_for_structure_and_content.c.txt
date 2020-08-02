@@ -1,0 +1,57 @@
+/* Compares binary trees rooted at |a| and |b|,
+   making sure that they are identical. */
+static int
+compare_trees (struct tavl_node *a, struct tavl_node *b)
+{
+  int okay;
+
+  if (a == NULL || b == NULL)
+    {
+      if (a != NULL || b != NULL)
+        {
+          printf (" a=%d b=%d\n",
+                  a ? *(int *) a->tavl_data : -1,
+                  b ? *(int *) b->tavl_data : -1);
+          assert (0);
+        }
+      return 1;
+    }
+  assert (a != b);
+
+  if (*(int *) a->tavl_data != *(int *) b->tavl_data
+      || a->tavl_tag[0] != b->tavl_tag[0]
+      || a->tavl_tag[1] != b->tavl_tag[1]
+      || a->tavl_balance != b->tavl_balance)
+    {
+      printf (" Copied nodes differ: a=%d (bal=%d) b=%d (bal=%d) a:",
+              *(int *) a->tavl_data, a->tavl_balance,
+              *(int *) b->tavl_data, b->tavl_balance);
+
+      if (a->tavl_tag[0] == TAVL_CHILD)
+        printf ("l");
+      if (a->tavl_tag[1] == TAVL_CHILD)
+        printf ("r");
+
+      printf (" b:");
+      if (b->tavl_tag[0] == TAVL_CHILD)
+        printf ("l");
+      if (b->tavl_tag[1] == TAVL_CHILD)
+        printf ("r");
+
+      printf ("\n");
+      return 0;
+    }
+
+  if (a->tavl_tag[0] == TAVL_THREAD)
+    assert ((a->tavl_link[0] == NULL) != (a->tavl_link[0] != b->tavl_link[0]));
+  if (a->tavl_tag[1] == TAVL_THREAD)
+    assert ((a->tavl_link[1] == NULL) != (a->tavl_link[1] != b->tavl_link[1]));
+
+  okay = 1;
+  if (a->tavl_tag[0] == TAVL_CHILD)
+    okay &= compare_trees (a->tavl_link[0], b->tavl_link[0]);
+  if (a->tavl_tag[1] == TAVL_CHILD)
+    okay &= compare_trees (a->tavl_link[1], b->tavl_link[1]);
+  return okay;
+}
+

@@ -1,0 +1,8 @@
+struct avl_node *y, *z; /* Top node to update balance factor, and parent. */
+struct avl_node *p, *q; /* Iterator, and parent. */
+struct avl_node *n;     /* Newly inserted node. */
+struct avl_node *w;     /* New root of rebalanced subtree. */
+int dir;                /* Direction to descend. */
+
+unsigned char da[AVL_MAX_HEIGHT]; /* Cached comparison results. */
+int k = 0;              /* Number of cached results. */

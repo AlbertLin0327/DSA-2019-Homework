@@ -1,0 +1,329 @@
+<html lang="en">
+<head>
+<title>Deleting from a TBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Inserting-into-a-TBST.html" title="7.6 Insertion">
+<link rel=Next href="Traversing-a-TBST.html" title="7.8 Traversal">
+<link rel=Parent href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-from-a-TBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>7.7 Deletion</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-from-a-TBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-into-a-TBST.html" title="Skip Back: 7.6 Insertion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Traversing-a-TBST.html" title="Skip Forward: 7.8 Traversal"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-into-a-TBST.html" title="Prev: 7.6 Insertion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Threaded-Binary-Search-Trees.html" title="Up: 7 Threaded Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Traversing-a-TBST.html" title="Next: 7.8 Traversal"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>When we delete a node from a threaded tree, we have to update one or two
+more pointers than if it were an unthreaded BST.  What's more, we
+sometimes have to go to a bit of effort to track down what pointers
+these are, because they are in the predecessor and successor of the node
+being deleted.
+
+   <p>The outline is the same as for deleting a BST node:
+
+   <p><a name="catalogue_002dentry_002dtbst_002d3"></a>
+<a name="index-TBST-item-deletion-function-368"></a>
+<pre class="format"><a href="TBST_item_deletion_function.c.txt">257</a>. &lt;<a name="257" href="TBST_item_deletion_function.c.txt">TBST item deletion function 257</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>tbst_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbst_005fdelete_007d-function-369"></a>  <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>p</i><!-- /@w -->;	/* Node to delete. */
+  <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>q</i><!-- /@w -->;	/* Parent of <i>p</i><!-- /@w -->. */
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;              /* Index into <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[] that leads to <i>p</i><!-- /@w -->. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Deleting-from-a-TBST.html#258">Find TBST node to delete 258</a>&gt;
+  &lt;<a href="Deleting-from-a-TBST.html#259">Delete TBST node 259</a>&gt;
+  &lt;<a href="Deleting-from-a-TBST.html#266">Finish up after deleting TBST node 266</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="TBST-Operations.html#251">251</a>.</small>
+
+   <p>We search down the tree to find the item to delete, <i>p</i><!-- /@w -->.  As we do it we
+keep track of its parent <i>q</i><!-- /@w --> and the direction <i>dir</i><!-- /@w --> that we descended
+from it.  The initial value of <i>q</i><!-- /@w --> and <i>dir</i><!-- /@w --> use the trick seen
+originally in copying a BST (see <a href="Copying-a-BST-Iteratively.html">Copying a BST Iteratively</a>).
+
+   <p>There are nicer ways to do the same thing, though they are not
+necessarily as efficient.  See the exercises for one possibility.
+
+   <p><a name="index-find-TBST-node-to-delete-370"></a>
+<pre class="format"><a href="Find_TBST_node_to_delete.c.txt">258</a>. &lt;<a name="258" href="Find_TBST_node_to_delete.c.txt">Find TBST node to delete 258</a>&gt; =
+<b>if</b><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->;
+<i>q</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>tbst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->;
+<i>dir</i><!-- /@w --> = 0;
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>tbst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>tbst_param</i><!-- /@w -->);
+    <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> == 0) 
+      <b>break</b><!-- /@w -->;
+
+    <i>dir</i><!-- /@w --> = <i>cmp</i><!-- /@w --> &gt; 0;
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[<i>dir</i><!-- /@w -->] == <tt>TBST_THREAD</tt><!-- /@w -->)
+      <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+    <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+    <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+  }
+<i>item</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-TBST.html#257">257</a>.</small>
+
+   <p>The cases for deletion from a threaded tree are a bit different from
+those for an unthreaded tree.  The key point to keep in mind is that a
+node with <i>n</i><!-- /@w --> children has <i>n</i><!-- /@w --> threads pointing to it that must be
+updated when it is deleted.  Let's look at the cases in detail now.
+
+   <p>Here's the outline:
+
+   <p><a name="index-delete-TBST-node-371"></a>
+<pre class="format"><a href="Delete_TBST_node.c.txt">259</a>. &lt;<a name="259" href="Delete_TBST_node.c.txt">Delete TBST node 259</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-from-a-TBST.html#260">Case 1 in TBST deletion 260</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-from-a-TBST.html#261">Case 2 in TBST deletion 261</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+    <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_THREAD</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-from-a-TBST.html#262">Case 3 in TBST deletion 262</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-from-a-TBST.html#263">Case 4 in TBST deletion 263</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-TBST.html#257">257</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>p</i><!-- /@w --> has a right thread and a left child</h5>
+
+<p>If <i>p</i><!-- /@w --> has a right thread and a left child, then we replace it by its
+left child.  We also replace its predecessor <i>t</i><!-- /@w -->'s right thread by
+<i>p</i><!-- /@w -->'s right thread.  In the most general subcase, the whole operation
+looks something like this:
+
+<div align="center"><a href="tbstdel1.txt"><img border=0 src="tbstdel1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">On the other hand, it can be as simple as this:
+
+<div align="center"><a href="tbstdel1triv.txt"><img border=0 src="tbstdel1triv.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">Both of these subcases, and subcases in between them in complication,
+are handled by the same code:
+
+   <p><a name="index-case-1-in-TBST-deletion-372"></a>
+<pre class="format"><a href="Case_1_in_TBST_deletion.c.txt">260</a>. &lt;<a name="260" href="Case_1_in_TBST_deletion.c.txt">Case 1 in TBST deletion 260</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>t</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+<b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_CHILD</tt><!-- /@w -->)
+  <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+<i>t</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+<i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-TBST.html#259">259</a> and <a href="Deleting-a-TAVL-Node-Step-2-_002d-Delete.html#314">314</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>p</i><!-- /@w --> has a right thread and a left thread</h5>
+
+<p>If <i>p</i><!-- /@w --> is a leaf, then no threads point to it, but we must change its
+parent <i>q</i><!-- /@w -->'s pointer to <i>p</i><!-- /@w --> to a thread, pointing to the same place that
+the corresponding thread of <i>p</i><!-- /@w --> pointed.  This is easy, and typically
+looks something like this:
+
+<div align="center"><a href="tbstdel2.txt"><img border=0 src="tbstdel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">There is one special case, which comes up when <i>q</i><!-- /@w --> is the pseudo-node
+used for the parent of the root.  We can't access <i>tbst_tag</i><!-- /@w -->[] in this
+&ldquo;node&rdquo;.  Here's the code:
+
+   <p><a name="index-case-2-in-TBST-deletion-373"></a>
+<pre class="format"><a href="Case_2_in_TBST_deletion.c.txt">261</a>. &lt;<a name="261" href="Case_2_in_TBST_deletion.c.txt">Case 2 in TBST deletion 261</a>&gt; =
+<i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+<b>if</b><!-- /@w --> (<i>q</i><!-- /@w --> != (<b>struct</b><!-- /@w --> <b>tbst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->)
+  <i>q</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <tt>TBST_THREAD</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-TBST.html#259">259</a> and <a href="Deleting-a-TAVL-Node-Step-2-_002d-Delete.html#315">315</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>p</i><!-- /@w -->'s right child has a left thread</h5>
+
+<p>If <i>p</i><!-- /@w --> has a right child <i>r</i><!-- /@w -->, and <i>r</i><!-- /@w --> itself has a left thread, then
+we delete <i>p</i><!-- /@w --> by moving <i>r</i><!-- /@w --> into its place.  Here's an example where
+the root node is deleted:
+
+<div align="center"><a href="tbstdel3.txt"><img border=0 src="tbstdel3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>This just involves changing <i>q</i><!-- /@w -->'s right link to point to <i>r</i><!-- /@w -->, copying
+<i>p</i><!-- /@w -->'s left link and tag into <i>r</i><!-- /@w -->, and fixing any thread that pointed to
+<i>p</i><!-- /@w --> so that it now points to <i>r</i><!-- /@w -->.  The code is straightforward:
+
+   <p><a name="index-case-3-in-TBST-deletion-374"></a>
+<pre class="format"><a href="Case_3_in_TBST_deletion.c.txt">262</a>. &lt;<a name="262" href="Case_3_in_TBST_deletion.c.txt">Case 3 in TBST deletion 262</a>&gt; =
+<i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+<i>r</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0];
+<b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>t</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+    <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_CHILD</tt><!-- /@w -->)
+      <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+    <i>t</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] = <i>r</i><!-- /@w -->;
+  }
+<i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>r</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-TBST.html#259">259</a> and <a href="Deleting-a-TAVL-Node-Step-2-_002d-Delete.html#316">316</a>.</small>
+
+<h5 class="subsubheading">Case 4: <i>p</i><!-- /@w -->'s right child has a left child</h5>
+
+<p>If <i>p</i><!-- /@w --> has a right child, which in turn has a left child, we arrive at
+the most complicated case.  It corresponds to case 3 in deletion from
+an unthreaded BST.  The solution is to find <i>p</i><!-- /@w -->'s successor <i>s</i><!-- /@w --> and
+move it in place of <i>p</i><!-- /@w -->.  In this case, <i>r</i><!-- /@w --> is <i>s</i><!-- /@w -->'s parent node, not
+necessarily <i>p</i><!-- /@w -->'s right child.
+
+   <p>There are two subcases here.  In the first, <i>s</i><!-- /@w --> has a right child.  In
+that subcase, <i>s</i><!-- /@w -->'s own successor's left thread already points to <i>s</i><!-- /@w -->,
+so we need not adjust any threads.  Here's an example of this subcase. 
+Notice how the left thread of node 3, <i>s</i><!-- /@w -->'s successor, already points
+to <i>s</i><!-- /@w -->.
+
+<div align="center"><a href="tbstdel4.txt"><img border=0 src="tbstdel4.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The second subcase comes up when <i>s</i><!-- /@w --> has a right thread.  Because <i>s</i><!-- /@w -->
+also has a left thread, this means that <i>s</i><!-- /@w --> is a leaf.  This subcase
+requires us to change <i>r</i><!-- /@w -->'s left link to a thread to its predecessor,
+which is now <i>s</i><!-- /@w -->.  Here's a continuation of the previous example,
+showing deletion of the new root, node 2:
+
+<div align="center"><a href="tbstdel4-2.txt"><img border=0 src="tbstdel4-2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The first part of the code handles finding <i>r</i><!-- /@w --> and <i>s</i><!-- /@w -->:
+
+   <p><a name="index-case-4-in-TBST-deletion-375"></a>
+<pre class="format"><a href="Case_4_in_TBST_deletion.c.txt">263</a>. &lt;<a name="263" href="Case_4_in_TBST_deletion.c.txt">Case 4 in TBST deletion 263</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>s</i><!-- /@w -->;
+
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_THREAD</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>See also <a href="Deleting-from-a-TBST.html#264">264</a> and <a href="Deleting-from-a-TBST.html#265">265</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Deleting-from-a-TBST.html#259">259</a> and <a href="Deleting-a-TAVL-Node-Step-2-_002d-Delete.html#317">317</a>.</small></div>
+
+   <p>Next, we update <i>r</i><!-- /@w -->, handling each of the subcases:
+
+   <p><a name="index-case-4-in-TBST-deletion-376"></a>
+<pre class="format"><a href="Case_4_in_TBST_deletion.c.txt">264</a>. &lt;<a name="264" href="Case_4_in_TBST_deletion.c.txt">Case 4 in TBST deletion 263</a>&gt; +=
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_CHILD</tt><!-- /@w -->)
+  <i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->;
+    <i>r</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] = <tt>TBST_THREAD</tt><!-- /@w -->;
+  }
+</pre>
+   <p>Finally, we copy <i>p</i><!-- /@w -->'s links and tags into <i>s</i><!-- /@w --> and chase down and update
+any right thread in <i>s</i><!-- /@w -->'s left subtree, then replace the pointer from
+<i>q</i><!-- /@w --> down to <i>s</i><!-- /@w -->:
+
+   <p><a name="index-case-4-in-TBST-deletion-377"></a>
+<pre class="format"><a href="Case_4_in_TBST_deletion.c.txt">265</a>. &lt;<a name="265" href="Case_4_in_TBST_deletion.c.txt">Case 4 in TBST deletion 263</a>&gt; +=
+<i>s</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>t</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+    <b>while</b><!-- /@w --> (<i>t</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_CHILD</tt><!-- /@w -->)
+      <i>t</i><!-- /@w --> = <i>t</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+    <i>t</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] = <i>s</i><!-- /@w -->;
+
+    <i>s</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] = <tt>TBST_CHILD</tt><!-- /@w -->;
+  }
+
+<i>s</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] = <tt>TBST_CHILD</tt><!-- /@w -->;
+
+<i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>s</i><!-- /@w -->;    
+</pre>
+   <p>We finish up by deallocating the node, decrementing the tree's item
+count, and returning the deleted item's data:
+
+   <p><a name="index-finish-up-after-deleting-TBST-node-378"></a>
+<pre class="format"><a href="Finish_up_after_deleting_TBST_node.c.txt">266</a>. &lt;<a name="266" href="Finish_up_after_deleting_TBST_node.c.txt">Finish up after deleting TBST node 266</a>&gt; =
+<i>tree</i><!-- /@w -->-&gt;<i>tbst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>tbst_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+<i>tree</i><!-- /@w -->-&gt;<i>tbst_count</i><!-- /@w -->&ndash;;
+<b>return</b><!-- /@w --> (<b>void</b><!-- /@w --> *) <i>item</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-a-TBST.html#257">257</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>*1.</b><a name="tbstparent"></a>&nbsp;<!-- /@w -->In a threaded BST, there is an efficient algorithm to find the parent of
+a given node.  Use this algorithm to reimplement &lt;<a href="Deleting-from-a-TBST.html#258">Find TBST node to delete 258</a>&gt;. 
+[<a href="Answers-for-Chapter-7.html#7%2d7%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="ptrtaglink"></a>&nbsp;<!-- /@w -->In case 2, we must handle <i>q</i><!-- /@w --> as the pseudo-root as a special case.  Can
+we rearrange the TBST data structures to avoid this? 
+[<a href="Answers-for-Chapter-7.html#7%2d7%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->Rewrite case 4 to replace the deleted node's <i>tbst_data</i><!-- /@w --> by its
+successor and actually delete the successor, instead of moving around
+pointers.  (Refer back to Exercise 4.8-3 for an explanation of why
+this approach cannot be used in libavl.) 
+[<a href="Answers-for-Chapter-7.html#7%2d7%233">answer</a>]
+
+<p class="noindent"><b>*4.</b><a name="tbstthreadsearch"></a>&nbsp;<!-- /@w -->Many of the cases in deletion from a TBST require searching down the
+tree for the nodes with threads to the deleted node.  Show that this
+adds only a constant number of operations to the deletion of a randomly
+selected node, compared to a similar deletion in an unthreaded tree. 
+[<a href="Answers-for-Chapter-7.html#7%2d7%234">answer</a>]
+
+   </body></html>
+

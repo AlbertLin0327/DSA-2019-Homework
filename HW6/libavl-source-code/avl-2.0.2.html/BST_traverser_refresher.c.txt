@@ -1,0 +1,28 @@
+/* Refreshes the stack of parent pointers in |trav|
+   and updates its generation number. */
+static void
+trav_refresh (struct bst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  trav->bst_generation = trav->bst_table->bst_generation;
+
+  if (trav->bst_node != NULL)
+    {
+      bst_comparison_func *cmp = trav->bst_table->bst_compare;
+      void *param = trav->bst_table->bst_param;
+      struct bst_node *node = trav->bst_node;
+      struct bst_node *i;
+
+      trav->bst_height = 0;
+      for (i = trav->bst_table->bst_root; i != node; )
+        {
+          assert (trav->bst_height < BST_MAX_HEIGHT);
+          assert (i != NULL);
+
+          trav->bst_stack[trav->bst_height++] = i;
+          i = i->bst_link[cmp (node->bst_data, i->bst_data, param) > 0];
+        }
+    }
+}
+

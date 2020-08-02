@@ -1,0 +1,33 @@
+/* Search |tree| for an item matching |item|, and return it if found.
+   Otherwise return |NULL|. */
+void *
+rtbst_find (const struct rtbst_table *tree, const void *item)
+{
+  const struct rtbst_node *p;
+  int dir;
+
+  assert (tree != NULL && item != NULL);
+
+  if (tree->rtbst_root == NULL)
+    return NULL;
+
+  for (p = tree->rtbst_root; ; p = p->rtbst_link[dir])
+    {
+      int cmp = tree->rtbst_compare (item, p->rtbst_data, tree->rtbst_param);
+      if (cmp == 0)
+        return p->rtbst_data;
+      dir = cmp > 0;
+
+      if (dir == 0)
+        {
+          if (p->rtbst_link[0] == NULL)
+            return NULL;
+        }
+      else /* |dir == 1| */
+        {
+          if (p->rtbst_rtag == RTBST_THREAD)
+            return NULL;
+        }
+    }
+}
+

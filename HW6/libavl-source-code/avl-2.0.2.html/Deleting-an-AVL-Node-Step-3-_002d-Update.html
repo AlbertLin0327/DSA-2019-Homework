@@ -1,0 +1,189 @@
+<html lang="en">
+<head>
+<title>Deleting an AVL Node Step 3 - Update - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html" title="5.5.2 Step 2: Delete">
+<link rel=Next href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html" title="5.5.4 Step 4: Rebalance">
+<link rel=Parent href="Deleting-from-an-AVL-Tree.html" title="5.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-an-AVL-Node-Step-3-_002d-Update">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.5.3 Step 3: Update Balance Factors</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-an-AVL-Node-Step-3-_002d-Update.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html" title="Skip Back: 5.5.2 Step 2: Delete"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html" title="Skip Forward: 5.5.4 Step 4: Rebalance"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-an-AVL-Node-Step-2-_002d-Delete.html" title="Prev: 5.5.2 Step 2: Delete"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-an-AVL-Tree.html" title="Up: 5.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html" title="Next: 5.5.4 Step 4: Rebalance"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>When we updated balance factors in insertion, we were lucky enough to
+know in advance which ones we'd need to update.  Moreover, we never
+needed to rebalance at more than one level in the tree for any one
+insertion.  These two factors conspired in our favor to let us do all
+the updating of balance factors at once from the top down.
+
+   <p>Everything is not quite so simple in AVL deletion.  We don't have any
+easy way to figure out during the search process which balance factors
+will need to be updated, and for that matter we may need to perform
+rebalancing at multiple levels.  Our strategy must change.
+
+   <p>This new approach is not fundamentally different from the previous
+one.  We work from the bottom up instead of from the top down.  We
+potentially look at each of the nodes along the direct path from the
+deleted node to the tree's root, starting at <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1], the parent
+of the deleted node.  For each of these nodes, we adjust its balance
+factor and possibly perform rebalancing.  After that, if we're lucky,
+this was enough to restore the tree's balancing rule, and we are
+finished with updating balance factors and rebalancing.  Otherwise,
+we look at the next node, repeating the process.
+
+   <p>Here is the loop itself with the details abstracted out:
+
+   <p><a name="index-update-balance-factors-and-rebalance-after-AVL-deletion-255"></a>
+<pre class="format"><a href="Steps_3--4_3a_Update_balance_factors_and_rebalance_after_AVL_deletion.c.txt">171</a>. &lt;<a name="171" href="Steps_3--4_3a_Update_balance_factors_and_rebalance_after_AVL_deletion.c.txt">Steps 3&ndash;4: Update balance factors and rebalance after AVL deletion 171</a>&gt; =
+<i>assert</i><!-- /@w --> (<i>k</i><!-- /@w --> &gt; 0);
+<b>while</b><!-- /@w --> (&ndash;<i>k</i><!-- /@w --> &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->];
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] == 0)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-AVL-Node-Step-3-_002d-Update.html#172">Update <i>y</i><!-- /@w -->'s balance factor after left-side AVL deletion 172</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="AVL-Deletion-Symmetric-Case.html#177">Update <i>y</i><!-- /@w -->'s balance factor after right-side AVL deletion 177</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-an-AVL-Tree.html#164">164</a>.</small>
+
+   <p>The reason this works is the loop invariants.  That is, because each
+time we look at a node in order to update its balance factor, the
+situation is the same.  In particular, if we're looking at a node
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->], then we know that it's because the height of its subtree on
+side <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] decreased, so that the balance factor of node <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->]
+needs to be updated.  The rebalancing operations we choose reflect
+this invariant: there are sometimes multiple valid ways to rebalance
+at a given node and propagate the results up the tree, but only one
+way to do this while maintaining the invariant.  (This is especially
+true in red-black trees, for which we will develop code for two
+possible invariants under insertion and deletion.)
+
+   <p>Updating the balance factor of a node after deletion from its left
+side and right side are symmetric, so we'll discuss only the left-side
+case here and construct the code for the right-side case later. 
+Suppose we have a node <i>y</i><!-- /@w --> whose left subtree has decreased in height. 
+In general, this increases its balance factor, because the balance
+factor of a node is the height of its right subtree minus the height
+of its left subtree.  More specifically, there are three cases,
+treated individually below.
+
+<h5 class="subsubheading">Case 1: <i>y</i><!-- /@w --> has - balance factor</h5>
+
+<p>If <i>y</i><!-- /@w --> started with a - balance factor, then its left subtree was
+taller than its right subtree.  Its left subtree has decreased in
+height, so the two subtrees must now be the same height and we set
+<i>y</i><!-- /@w -->'s balance factor to 0.  This is between -1 and +1, so there
+is no need to rebalance at <i>y</i><!-- /@w -->.  However, binary tree <i>y</i><!-- /@w --> has itself
+decreased in height, so that means that we must rebalance the AVL tree
+above <i>y</i><!-- /@w --> as well, so we continue to the next iteration of the loop.
+
+   <p>The diagram below may help in visualization.  On the left is shown the
+original configuration of a subtree, where subtree <i>a</i><!-- /@w --> has height <i>h</i><!-- /@w -->
+and subtree <i>b</i><!-- /@w --> has height <i>h</i><!-- /@w --> - 1.  The height of a nonempty binary
+tree is one plus the larger of its subtrees' heights, so tree <i>y</i><!-- /@w --> has
+height <i>h</i><!-- /@w --> + 1.  The diagram on the right shows the situation after
+a node has been deleted from <i>a</i><!-- /@w -->, reducing that subtree's height.  The
+new height of tree <i>y</i><!-- /@w --> is (<i>h</i><!-- /@w --> - 1) + 1 == <i>h</i><!-- /@w -->.
+
+<div align="center"><a href="avldelre1.txt"><img border=0 src="avldelre1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<h5 class="subsubheading">Case 2: <i>y</i><!-- /@w --> has 0 balance factor</h5>
+
+<p>If <i>y</i><!-- /@w --> started with a 0 balance factor, and its left subtree decreased in
+height, then the result is that its right subtree is now taller than its
+left subtree, so the new balance factor is +.  However, the overall
+height of binary tree <i>y</i><!-- /@w --> has not changed, so no balance factors above
+<i>y</i><!-- /@w --> need to be changed, and we are done, hence we <b>break</b><!-- /@w --> to exit the
+loop.
+
+   <p>Here's the corresponding diagram, similar to the one for the previous
+case.  The height of tree <i>y</i><!-- /@w --> on both sides of the diagram is <i>h</i><!-- /@w --> + 1,
+since <i>y</i><!-- /@w -->'s taller subtree in both cases has height <i>h</i><!-- /@w -->.
+
+<div align="center"><a href="avldelre2.txt"><img border=0 src="avldelre2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<h5 class="subsubheading">Case 3: <i>y</i><!-- /@w --> has + balance factor</h5>
+
+<p>Otherwise, <i>y</i><!-- /@w --> started with a + balance factor, so the decrease in
+height of its left subtree, which was already shorter than its right
+subtree, causes a violation of the AVL constraint with a +2 balance
+factor.  We need to rebalance.  After rebalancing, we may or may not
+have to rebalance further up the tree.
+
+   <p>Here's a diagram of what happens to forcing rebalancing:
+
+<div align="center"><a href="avldelre3.txt"><img border=0 src="avldelre3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<h5 class="subsubheading">Implementation</h5>
+
+<p>The implementation is straightforward:
+
+   <p><a name="index-update-_0040w_007b_0040i_007by_007d_007d_0027s-balance-factor-after-left_002dside-AVL-deletion-256"></a>
+<pre class="format"><a href="Update__7cy_7c_27s_balance_factor_after_left-side_AVL_deletion.c.txt">172</a>. &lt;<a name="172" href="Update__7cy_7c_27s_balance_factor_after_left-side_AVL_deletion.c.txt">Update <i>y</i><!-- /@w -->'s balance factor after left-side AVL deletion 172</a>&gt; =
+<i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w -->++;
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == +1)
+  <b>break</b><!-- /@w -->;
+<b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == +2)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Deleting-an-AVL-Node-Step-4-_002d-Rebalance.html#173">Step 4: Rebalance after AVL deletion 173</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-an-AVL-Node-Step-3-_002d-Update.html#171">171</a>.</small>
+
+   </body></html>
+

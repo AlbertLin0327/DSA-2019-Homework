@@ -1,0 +1,94 @@
+/* Adds to |tree| all the nodes in the tree rooted at |p|. */
+static void
+fallback_join (struct bst_table *tree, struct bst_node *p)
+{
+  struct bst_node *q;
+
+  for (; p != NULL; p = q)
+    if (p->bst_link[0] == NULL)
+      {
+        q = p->bst_link[1];
+        p->bst_link[0] = p->bst_link[1] = NULL;
+        root_insert (tree, &tree->bst_root, p);
+      }
+    else
+      {
+        q = p->bst_link[0];
+        p->bst_link[0] = q->bst_link[1];
+        q->bst_link[1] = p;
+      }
+}
+
+/* Joins |a| and |b|, which must be disjoint and have compatible
+   comparison functions.
+   |b| is destroyed in the process. */
+void
+bst_join (struct bst_table *ta, struct bst_table *tb)
+{
+  size_t count = ta->bst_count + tb->bst_count;
+
+  if (ta->bst_root == NULL)
+    ta->bst_root = tb->bst_root;
+  else if (tb->bst_root != NULL)
+    {
+      struct bst_node **pa[BST_MAX_HEIGHT];
+      struct bst_node *qa[BST_MAX_HEIGHT];
+      int k = 0;
+
+      pa[k] = &ta->bst_root;
+      qa[k++] = tb->bst_root;
+      while (k > 0)
+        {
+          struct bst_node **a = pa[--k];
+          struct bst_node *b = qa[k];
+
+          for (;;)
+            {
+              struct bst_node *b0 = b->bst_link[0];
+              struct bst_node *b1 = b->bst_link[1];
+              b->bst_link[0] = b->bst_link[1] = NULL;
+              root_insert (ta, a, b);
+
+              if (b1 != NULL)
+                {
+                  if (k < BST_MAX_HEIGHT)
+                    {
+                      pa[k] = &(*a)->bst_link[1];
+                      qa[k] = b1;
+                      if (*pa[k] != NULL)
+                        k++;
+                      else
+                        *pa[k] = qa[k];
+                    }
+                  else
+                    {
+                      int j;
+
+                      fallback_join (ta, b0);
+                      fallback_join (ta, b1);
+                      for (j = 0; j < k; j++)
+                        fallback_join (ta, qa[j]);
+
+                      ta->bst_count = count;
+                      free (tb);
+                      bst_balance (ta);
+                      return;
+                    }
+                }
+
+              a = &(*a)->bst_link[0];
+              b = b0;
+              if (*a == NULL)
+                {
+                  *a = b;
+                  break;
+                }
+              else if (b == NULL)
+                break;
+            }
+        }
+    }
+
+  ta->bst_count = count;
+  free (tb);
+}

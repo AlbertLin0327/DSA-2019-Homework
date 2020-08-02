@@ -1,0 +1,43 @@
+struct rtrb_node *y = pa[k - 2]->rtrb_link[1];
+if (pa[k - 2]->rtrb_rtag == RTRB_CHILD && y->rtrb_color == RTRB_RED)
+  {
+    pa[k - 1]->rtrb_color = y->rtrb_color = RTRB_BLACK;
+    pa[k - 2]->rtrb_color = RTRB_RED;
+    k -= 2;
+  }
+else
+  {
+    struct rtrb_node *x;
+
+    if (da[k - 1] == 0)
+      y = pa[k - 1];
+    else
+      {
+        x = pa[k - 1];
+        y = x->rtrb_link[1];
+        x->rtrb_link[1] = y->rtrb_link[0];
+        y->rtrb_link[0] = x;
+        pa[k - 2]->rtrb_link[0] = y;
+
+        if (x->rtrb_link[1] == NULL)
+          {
+            x->rtrb_rtag = RTRB_THREAD;
+            x->rtrb_link[1] = y;
+          }
+      }
+
+    x = pa[k - 2];
+    x->rtrb_color = RTRB_RED;
+    y->rtrb_color = RTRB_BLACK;
+
+    x->rtrb_link[0] = y->rtrb_link[1];
+    y->rtrb_link[1] = x;
+    pa[k - 3]->rtrb_link[da[k - 3]] = y;
+
+    if (y->rtrb_rtag == RTRB_THREAD)
+      {
+        y->rtrb_rtag = RTRB_CHILD;
+        x->rtrb_link[0] = NULL;
+      }
+    break;
+  }

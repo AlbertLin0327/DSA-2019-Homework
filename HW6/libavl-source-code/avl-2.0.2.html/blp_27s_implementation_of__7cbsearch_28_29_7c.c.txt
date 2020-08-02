@@ -1,0 +1,24 @@
+/* Plug-compatible with standard C library |bsearch()|. */
+static void *
+blp_bsearch (const void *key, const void *array, size_t count,
+             size_t size, int (*compare) (const void *, const void *))
+{
+  int min = 0;
+  int max = count;
+
+  while (max >= min)
+    {
+      int i = (min + max) / 2;
+      void *item = ((char *) array) + size * i;
+      int cmp = compare (key, item);
+
+      if (cmp < 0)
+        max = i - 1;
+      else if (cmp > 0)
+        min = i + 1;
+      else
+        return item;
+    }
+
+  return NULL;
+}

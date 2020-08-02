@@ -1,0 +1,106 @@
+<html lang="en">
+<head>
+<title>Deleting from a PRB Tree - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="PRB-Insertion-Symmetric-Case.html" title="15.3.3 Symmetric Case">
+<link rel=Next href="Deleting-a-PRB-Node-Step-2-_002d-Delete.html" title="15.4.1 Step 2: Delete">
+<link rel=Parent href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-from-a-PRB-Tree">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>15.4 Deletion</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-from-a-PRB-Tree.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-into-a-PRB-Tree.html" title="Skip Back: 15.3 Insertion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Testing-PRB-Trees.html" title="Skip Forward: 15.5 Testing"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="PRB-Insertion-Symmetric-Case.html" title="Prev: 15.3.3 Symmetric Case"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="Up: 15 Red-Black Trees with Parent Pointers"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-a-PRB-Node-Step-2-_002d-Delete.html" title="Next: 15.4.1 Step 2: Delete"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The RB item deletion algorithm needs the same kind of changes to
+handle parent pointers that the RB item insertion algorithm did.  We
+can reuse the code from PBST trees for finding the node to delete. 
+The rest of the code will be presented in the following sections.
+
+   <p><a name="catalogue_002dentry_002dprb_002d1"></a>
+<a name="index-PRB-item-deletion-function-782"></a>
+<pre class="format"><a href="PRB_item_deletion_function.c.txt">566</a>. &lt;<a name="566" href="PRB_item_deletion_function.c.txt">PRB item deletion function 566</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>prb_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>prb_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bprb_005fdelete_007d-function-783"></a>  <b>struct</b><!-- /@w --> <b>prb_node</b> *<i>p</i><!-- /@w -->; /* Node to delete. */
+  <b>struct</b><!-- /@w --> <b>prb_node</b> *<i>q</i><!-- /@w -->; /* Parent of <i>p</i><!-- /@w -->. */
+  <b>struct</b><!-- /@w --> <b>prb_node</b> *<i>f</i><!-- /@w -->; /* Node at which we are rebalancing. */
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;            /* Side of <i>q</i><!-- /@w --> on which <i>p</i><!-- /@w --> is a child;
+                         side of <i>f</i><!-- /@w --> from which node was deleted. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Deleting-from-a-PBST.html#494">Step 1: Find PBST node to delete; pbst =&gt; prb 494</a>&gt;
+  &lt;<a href="Deleting-a-PRB-Node-Step-2-_002d-Delete.html#567">Step 2: Delete item from PRB tree 567</a>&gt;
+  &lt;<a href="Deleting-a-PRB-Node-Step-3-_002d-Rebalance.html#571">Step 3: Rebalance tree after PRB deletion 571</a>&gt;
+  &lt;<a href="Deleting-a-PRB-Node-Step-4-_002d-Finish-Up.html#577">Step 4: Finish up after PRB deletion 577</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="PRB-Operations.html#554">554</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 14.4.
+
+<ul class="menu">
+<li><a accesskey="1" href="Deleting-a-PRB-Node-Step-2-_002d-Delete.html">Deleting a PRB Node Step 2 - Delete</a>
+<li><a accesskey="2" href="Deleting-a-PRB-Node-Step-3-_002d-Rebalance.html">Deleting a PRB Node Step 3 - Rebalance</a>
+<li><a accesskey="3" href="Deleting-a-PRB-Node-Step-4-_002d-Finish-Up.html">Deleting a PRB Node Step 4 - Finish Up</a>
+<li><a accesskey="4" href="PRB-Deletion-Symmetric-Case.html">PRB Deletion Symmetric Case</a>
+</ul>
+
+   </body></html>
+

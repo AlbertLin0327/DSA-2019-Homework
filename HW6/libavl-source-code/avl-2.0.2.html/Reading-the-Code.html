@@ -1,0 +1,183 @@
+<html lang="en">
+<head>
+<title>Reading the Code - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Audience.html" title="1.1 Audience">
+<link rel=Next href="Code-Conventions.html" title="1.3 Code Conventions">
+<link rel=Parent href="Introduction.html" title="1 Introduction">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Reading-the-Code">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>1.2 Reading the Code</b></big></td>
+<td align=right>
+<a href="index.html#Reading-the-Code.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Audience.html" title="Skip Back: 1.1 Audience"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Code-Conventions.html" title="Skip Forward: 1.3 Code Conventions"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Audience.html" title="Prev: 1.1 Audience"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Introduction.html" title="Up: 1 Introduction"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Code-Conventions.html" title="Next: 1.3 Code Conventions"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>This book contains all the source code to libavl.  Conversely, much
+of the source code presented in this book is part of libavl.
+
+   <p>libavl is written in ANSI/ISO C89 using TexiWEB, a <dfn>literate
+programming</dfn> (see <a href="Glossary.html#literate%20programming">literate programming</a>) system.  Literate programming is a philosophy that regards
+software as a kind of literature.  The ideas behind literate programming
+have been around for a long time, but the term itself was invented by
+computer scientist Donald Knuth in 1984, who wrote two of his most
+famous programs (TeX and METAFONT) with a literate programming system of
+his own design.  That system, called <tt>WEB</tt>, inspired the form and much
+of the syntax of TexiWEB.
+
+   <p>A TexiWEB document is a C program that has been cut into sections,
+rearranged, and annotated, with the goal to make the program as a whole
+as comprehensible as possible to a reader who starts at the beginning
+and reads the entire program in order.  Of course, understanding large,
+complex programs cannot be trivial, but TexiWEB tries to make it as
+easy as possible.
+
+   <p>Each section of a TexiWEB program is assigned both a number and a
+name.  Section numbers are assigned sequentially, starting from 1 with
+the first section, and they are used for cross-references between
+sections.  Section names are words or phrases assigned by the TexiWEB
+program's author to describe the role of the section's code.
+
+   <p>Here's a sample TexiWEB section:
+
+<pre class="format">19. &lt;Clear hash table entries 19&gt; =
+<b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>hash</i><!-- /@w -->-&gt;<i>m</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+  <i>hash</i><!-- /@w -->-&gt;<i>entry</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <tt>NULL</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in 15.</small>
+
+   <p>The first line of a section, as shown here, gives the section's name and
+its number within angle brackets. 
+The section number is also given at the left margin to make individual
+sections easy to find.
+
+   <p>In TexiWEB, C's reserved words are shown like this: <b>int</b><!-- /@w -->, <b>struct</b><!-- /@w -->,
+<b>while</b><!-- /@w --><small class="enddots">....</small> Types defined with <b>typedef</b><!-- /@w --> or with <b>struct</b><!-- /@w -->,
+<b>union</b><!-- /@w -->, and <b>enum</b><!-- /@w --> tags are shown the same way.  Identifiers in all
+capital letters (often names of macros) are shown like this: <tt>BUFSIZ</tt><!-- /@w -->,
+<tt>EOF</tt><!-- /@w -->, <tt>ERANGE</tt><!-- /@w --><small class="enddots">....</small> Other identifiers are shown like this: <i>getc</i><!-- /@w -->,
+<i>argv</i><!-- /@w -->, <i>strlen</i><!-- /@w --><small class="enddots">....</small>
+
+   <p>Code segments often contain references to other code segments, shown as
+a section name and number within angle brackets.  These act something
+like macros, in that they stand for the corresponding replacement text. 
+For instance, consider the following segment:
+
+<pre class="format">15. &lt;Initialize hash table 15&gt; =
+<i>hash</i><!-- /@w -->-&gt;<i>m</i><!-- /@w --> = 13;
+&lt;Clear hash table entries 19&gt;
+</pre>
+   <p class="noindent"><small>See also 16.</small>
+
+   <p>This means that the code for `Clear hash table entries' should be
+inserted as part of `Initialize hash table'.  Because the name of a
+section explains what it does, it's often unnecessary to know anything
+more.  If you do want more detail, the section number <small>19</small> in
+&lt;<a href="Sequential-Search-of-Ordered-Array-with-Sentinel.html#19">Clear hash table entries 19</a>&gt; can easily be used to find the
+full text and annotations for `Clear hash table entries'. 
+You can also view the fully expanded code in a code segment by
+following the link from the segment name or number (our example does
+not include this feature). 
+At the bottom of section 19 you will find a note reading `<small>This
+code is included in 15.</small>', making it easy to move back to
+section 15 that includes it.
+
+   <p>There's also a note following the code in the section above:
+`<small>See also 16.</small>'.  This demonstrates how TexiWEB
+handles multiple sections that have the same name.  When a name that
+corresponds to multiple sections is referenced, code from all the
+sections with that name is substituted, in order of appearance.  The
+first section with the name ends with a note listing the numbers of
+all other same-named sections.  Later sections show their own numbers
+in the left margin, but the number of the first section within angle
+brackets, to make the first section easy to find.  For example, here's
+another line of code for &lt;<a href="Table-Headers.html#15">Clear hash table entries 15</a>&gt;:
+
+<pre class="format">16. &lt;Initialize hash table 15&gt; +=
+<i>hash</i><!-- /@w -->-&gt;<i>n</i><!-- /@w --> = 0;
+</pre>
+   <p>Code segment references have one more feature: the ability to do special
+macro replacements within the referenced code.  These replacements are
+made on all words within the code segment referenced and recursively
+within code segments that the segment references, and so on.  Word
+prefixes as well as full words are replaced, as are even occurrences
+within comments in the referenced code.  Replacements take place
+regardless of case, and the case of the replacement mirrors the case of
+the replaced text. This odd feature is useful for adapting a section of
+code written for one library having a particular identifier prefix for
+use in a different library with another identifier prefix.  For
+instance, the reference `&lt;BST types; bst =&gt;
+avl&gt;' inserts the contents of the segment named `BST types',
+replacing `bst' by `avl' wherever the former appears at the beginning of
+a word.
+
+   <p>When a TexiWEB program is converted to C, conversion conceptually
+begins from sections named for files; e.g., &lt;<span class="file">foo.c</span>
+37&gt;.  Within these sections, all section references
+are expanded, then references within those sections are expanded, and so
+on.  When expansion is complete, the specified files are written out.
+
+   <p>A final resource in reading a TexiWEB is the index, which contains an
+entry for the points of declaration of every section name, function,
+type, structure, union, global variable, and macro.  Declarations within
+functions are not indexed.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201992">Knuth 1992</a>], &ldquo;How to read a <tt>WEB</tt>&rdquo;.
+
+   </body></html>
+

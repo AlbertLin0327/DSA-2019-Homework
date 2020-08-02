@@ -1,0 +1,16 @@
+/* Returns the smallest |i| such that |array[i] == key|,
+   or |-1| if |key| is not in |array[]|.
+   |array[]| must be an array of |n int|s,
+   sorted in ascending order,
+   with room for an |(n + 1)|th element to set to |INT_MAX|. */
+int
+seq_sorted_sentinel_search_2 (int array[], int n, int key)
+{
+  int *p;
+
+  array[n] = INT_MAX;
+  for (p = array; *p < key; p++)
+    /* Nothing to do. */;
+  return p - array < n && *p == key ? p - array : -1;
+}
+

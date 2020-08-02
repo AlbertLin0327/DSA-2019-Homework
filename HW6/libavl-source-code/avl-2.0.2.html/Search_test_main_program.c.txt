@@ -1,0 +1,73 @@
+/* Prints a message to the console explaining how to use this program. */
+static void
+usage (void)
+{
+  size_t i;
+
+  fputs ("usage: srch-test <algorithm> <array-size> <n-iterations>\n"
+         "where <algorithm> is one of the following:\n", stdout);
+
+  for (i = 0; i < n_search_func; i++)
+    printf ("        %u for %s\n", (unsigned) i + 1, search_func_tab[i].name);
+
+  fputs ("      <array-size> is the size of the array to search, and\n"
+         "      <n-iterations> is the number of times to iterate.\n", stdout);
+
+  exit (EXIT_FAILURE);
+}
+
+/* |s| should point to a decimal representation of an integer.
+   Returns the value of |s|, if successful, or 0 on failure. */
+static int
+stoi (const char *s)
+{
+  long x = strtol (s, NULL, 10);
+  return x >= INT_MIN && x <= INT_MAX ? x : 0;
+}
+
+
+int
+main (int argc, char *argv[])
+{
+  struct search_func *f;        /* Search function. */
+  int *array, n;                /* Array and its size. */
+  int n_iter;                   /* Number of iterations. */
+
+  if (argc != 4)
+    usage ();
+
+  {
+    long algorithm = stoi (argv[1]) - 1;
+    if (algorithm < 0 || algorithm > (long) n_search_func)
+      usage ();
+    f = &search_func_tab[algorithm];
+  }
+
+  n = stoi (argv[2]);
+  n_iter = stoi (argv[3]);
+  if (n < 1 || n_iter < 1)
+    usage ();
+
+  array = malloc ((n + 2) * sizeof *array);
+  if (array == NULL)
+    {
+      fprintf (stderr, "out of memory\n");
+      exit (EXIT_FAILURE);
+    }
+  array++;
+
+  {
+    int i;
+
+    for (i = 0; i < n; i++)
+      array[i] = i;
+  }
+
+  test_search_func (f, array, n);
+  time_successful_search (f, array, n, n_iter);
+  time_unsuccessful_search (f, array, n, n_iter);
+
+  free (array - 1);
+
+  return 0;
+}

@@ -1,0 +1,157 @@
+<html lang="en">
+<head>
+<title>Inserting into a BST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Searching-a-BST.html" title="4.6 Search">
+<link rel=Next href="Root-Insertion-in-a-BST.html" title="4.7.1 Aside: Root Insertion">
+<link rel=Parent href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Inserting-into-a-BST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.7 Insertion</b></big></td>
+<td align=right>
+<a href="index.html#Inserting-into-a-BST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Searching-a-BST.html" title="Skip Back: 4.6 Search"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-from-a-BST.html" title="Skip Forward: 4.8 Deletion"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Searching-a-BST.html" title="Prev: 4.6 Search"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Binary-Search-Trees.html" title="Up: 4 Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Root-Insertion-in-a-BST.html" title="Next: 4.7.1 Aside: Root Insertion"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Inserting new nodes into a binary search tree is easy.  To start out,
+we work the same way as in a search, traversing the tree from the top
+down, as if we were searching for the item that we're inserting.  If
+we find one, the item is already in the tree, and we need not insert
+it again.  But if the new item is not in the tree, eventually we
+&ldquo;fall off&rdquo; the bottom of the tree.  At this point we graft the new
+item as a child of the node that we last examined.
+
+   <p>An example is in order.  Consider this binary search tree:
+
+<div align="center"><a href="preins.txt"><img border=0 src="preins.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Suppose that we wish to insert a new item, 7, into the tree.  7 is
+greater than 5, so examine 5's right child, 8.  7 is less than 8, so
+examine 8's left child, 6.  7 is greater than 6, but 6 has no right
+child.  So, make 7 the right child of 6:
+
+<div align="center"><a href="postins.txt"><img border=0 src="postins.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>We cast this in a form compatible with the abstract description as
+follows:
+
+   <p><a name="catalogue_002dentry_002dbst_002d2"></a>
+<a name="index-BST-item-insertion-function-47"></a>
+<pre class="format"><a href="BST_item_insertion_function.c.txt">32</a>. &lt;<a name="32" href="BST_item_insertion_function.c.txt">BST item insertion function 32</a>&gt; =
+<b>void</b><!-- /@w --> **<br><i>bst_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fprobe_007d-function-48"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->, *<i>q</i><!-- /@w -->; /* Current node in search and its parent. */
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;                /* Side of <i>q</i><!-- /@w --> on which <i>p</i><!-- /@w --> is located. */
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>n</i><!-- /@w -->;     /* Newly inserted node. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>for</b><!-- /@w --> (<i>q</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->, <i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->, <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> == 0)
+        <b>return</b><!-- /@w --> &amp;<i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+      <i>dir</i><!-- /@w --> = <i>cmp</i><!-- /@w --> &gt; 0;
+    }
+
+  <i>n</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>p</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>n</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->++;
+  <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>n</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+  <i>n</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>q</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+    <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>n</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w --> = <i>n</i><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Operations.html#29">29</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998b">Knuth 1998b</a>], algorithm 6.2.2T;
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 13.3;
+[<a href="References.html#Bentley%202000">Bentley 2000</a>], section 13.3;
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], program 12.7.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="rootcast"></a>&nbsp;<!-- /@w -->Explain the expression <i>p</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->. 
+Suggest an alternative. 
+[<a href="Answers-for-Chapter-4.html#4%2d7%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="bstprobedblptr"></a>&nbsp;<!-- /@w -->Rewrite <i>bst_probe</i><!-- /@w -->() to use only a single local variable of type
+<b>struct</b><!-- /@w --> <b>bst_node</b> **. 
+[<a href="Answers-for-Chapter-4.html#4%2d7%232">answer</a>]
+
+<p class="noindent"><b>3.</b><a name="copyinsorder"></a>&nbsp;<!-- /@w -->Suppose we want to make a new copy of an existing binary search tree,
+preserving the original tree's shape, by inserting items into a new,
+currently empty tree.  What constraints are there on the order of item
+insertion? 
+[<a href="Answers-for-Chapter-4.html#4%2d7%233">answer</a>]
+
+<p class="noindent"><b>4.</b><a name="levelorder"></a>&nbsp;<!-- /@w -->Write a function that calls a provided <b>bst_item_func</b><!-- /@w --> for each node
+in a provided BST in an order suitable for reproducing the original
+BST, as discussed in Exercise 3. 
+[<a href="Answers-for-Chapter-4.html#4%2d7%234">answer</a>]
+
+<ul class="menu">
+<li><a accesskey="1" href="Root-Insertion-in-a-BST.html">Root Insertion in a BST</a>
+</ul>
+
+   </body></html>
+

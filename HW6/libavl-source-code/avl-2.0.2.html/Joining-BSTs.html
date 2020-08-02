@@ -1,0 +1,204 @@
+<html lang="en">
+<head>
+<title>Joining BSTs - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Implementing-Compression.html" title="4.12.2.3 Implementing Compression">
+<link rel=Next href="Testing-BST-Functions.html" title="4.14 Testing">
+<link rel=Parent href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Joining-BSTs">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.13 Aside: Joining BSTs</b></big></td>
+<td align=right>
+<a href="index.html#Joining-BSTs.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-a-BST.html" title="Skip Back: 4.12 Balance"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Testing-BST-Functions.html" title="Skip Forward: 4.14 Testing"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Implementing-Compression.html" title="Prev: 4.12.2.3 Implementing Compression"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Binary-Search-Trees.html" title="Up: 4 Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Testing-BST-Functions.html" title="Next: 4.14 Testing"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Occasionally we may want to take a pair of BSTs and merge or &ldquo;join&rdquo;
+their contents, forming a single BST that contains all the items in
+the two original BSTs.  It's easy to do this with a series of calls to
+<i>bst_insert</i><!-- /@w -->(), but we can optimize the process if we write a function
+exclusively for the purpose.  We'll write such a function in this
+section.
+
+   <p>There are two restrictions on the trees to be joined.  First, the
+BSTs' contents must be disjoint.  That is, no item in one may match
+any item in the other.  Second, the BSTs must have compatible
+comparison functions.  Typically, they are the same.  Speaking more
+precisely, if <i>f</i><!-- /@w -->() and <i>g</i><!-- /@w -->() are the comparison functions, <i>p</i><!-- /@w --> and
+<i>q</i><!-- /@w --> are nodes in either BST, and <i>r</i><!-- /@w --> and <i>s</i><!-- /@w --> are the BSTs'
+user-provided extra comparison parameters, then the expressions
+<i>f</i><!-- /@w -->(<i>p</i><!-- /@w -->,&nbsp;<i>q</i><!-- /@w -->,&nbsp;<i>r</i><!-- /@w -->)<!-- /@w -->, <i>f</i><!-- /@w -->(<i>p</i><!-- /@w -->,&nbsp;<i>q</i><!-- /@w -->,&nbsp;<i>s</i><!-- /@w -->)<!-- /@w -->, <i>g</i><!-- /@w -->(<i>p</i><!-- /@w -->,&nbsp;<i>q</i><!-- /@w -->,&nbsp;<i>r</i><!-- /@w -->)<!-- /@w -->, and <i>g</i><!-- /@w -->(<i>p</i><!-- /@w -->,&nbsp;<i>q</i><!-- /@w -->,&nbsp;<i>s</i><!-- /@w -->)<!-- /@w --> must all have the same value for all possible choices of <i>p</i><!-- /@w --> and
+<i>q</i><!-- /@w -->.
+
+   <p>Suppose we're trying to join the trees shown below:
+
+<div align="center"><a href="bstjoin.txt"><img border=0 src="bstjoin.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">Our first inclination is to try a &ldquo;divide and conquer&rdquo; approach by
+reducing the problem of joining <i>a</i><!-- /@w --> and <i>b</i><!-- /@w --> to the subproblems of
+joining <i>a</i><!-- /@w -->'s left subtree with <i>b</i><!-- /@w -->'s left subtree and joining <i>a</i><!-- /@w -->'s
+right subtree with <i>b</i><!-- /@w -->'s right subtree.  Let us postulate for the
+moment that we are able to solve these subproblems and that the
+solutions that we come up with are the following:
+
+<div align="center"><a href="bstjoin2.txt"><img border=0 src="bstjoin2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">To convert this partial solution into a full solution we must combine
+these two subtrees into a single tree and at the same time reintroduce
+the nodes <i>a</i><!-- /@w --> and <i>b</i><!-- /@w --> into the combined tree.  It is easy enough to do
+this by making <i>a</i><!-- /@w --> (or <i>b</i><!-- /@w -->) the root of the combined tree with these
+two subtrees as its children, then inserting <i>b</i><!-- /@w --> (or <i>a</i><!-- /@w -->) into the
+combined tree.  Unfortunately, in neither case will this actually work
+out properly for our example.  The diagram below illustrates one
+possibility, the result of combining the two subtrees as the child of
+node 4, then inserting node 7 into the final tree.  As you can see,
+nodes 4 and 5 are out of order:<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+
+<div align="center"><a href="bstjoin3.txt"><img border=0 src="bstjoin3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Now let's step back and analyze why this attempt failed.  It was
+essentially because, when we recombined the subtrees, a node in the
+combined tree's left subtree had a value larger than the root.  If we
+trace it back to the original trees to be joined, we see that this was
+because node 5 in the left subtree of <i>b</i><!-- /@w --> is greater than <i>a</i><!-- /@w -->.  (If we
+had chosen 7 as the root of the combined tree we would have found
+instead node 6 in the right subtree of <i>b</i><!-- /@w --> to be the culprit.)
+
+   <p>On the other hand, if every node in the left subtree of <i>a</i><!-- /@w --> had a
+value less than <i>b</i><!-- /@w -->'s value, and every node in the right subtree of
+<i>a</i><!-- /@w --> had a value greater than <i>b</i><!-- /@w -->'s value, there would be no problem. 
+Hey, wait a second<small class="dots">...</small> we can force that condition.  If we perform
+a root insertion (see <a href="Root-Insertion-in-a-BST.html">Root Insertion in a BST</a>) of <i>b</i><!-- /@w --> into subtree
+<i>a</i><!-- /@w -->, then we end up with one pair of subtrees whose node values are
+all less than 7 (the new and former left subtrees of node 7) and one
+pair of subtrees whose node values are all greater than 7 (the new and
+former right subtrees of node 7).  Conceptually it looks like this,
+although in reality we would need to remove node 7 from the tree on
+the right as we inserted it into the tree on the left:
+
+<div align="center"><a href="bstjoin4.txt"><img border=0 src="bstjoin4.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">We can then combine the two subtrees with values less than 7 with each
+other, and similarly for the ones with values greater than 7, using
+the same algorithm recursively, and safely set the resulting subtrees
+as the left and right subtrees of node 7, respectively.  The final
+product is a correctly joined binary tree:
+
+<div align="center"><a href="bstjoin5.txt"><img border=0 src="bstjoin5.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Of course, since we've defined a join recursively in terms of itself,
+there must be some maximum depth to the recursion, some simple case
+that can be defined without further recursion.  This is easy: the join
+of an empty tree with another tree is the second tree.
+
+<h5 class="subsubheading">Implementation</h5>
+
+<p>It's easy to implement this algorithm recursively.  The only
+nonobvious part of the code below is the treatment of node <i>b</i><!-- /@w -->.  We
+want to insert node <i>b</i><!-- /@w -->, but not <i>b</i><!-- /@w -->'s children, into the subtree
+rooted at <i>a</i><!-- /@w -->.  However, we still need to keep track of <i>b</i><!-- /@w -->'s
+children.  So we temporarily save <i>b</i><!-- /@w -->'s children as <i>b0</i><!-- /@w --> and <i>b1</i><!-- /@w --> and
+set its child pointers to <tt>NULL</tt><!-- /@w --> before the root insertion.
+
+   <p>This code makes use of <i>root_insert</i><!-- /@w -->() from &lt;<a href="Answers-for-Chapter-4.html#625">Robust root insertion of existing node in arbitrary subtree 625</a>&gt;.
+
+   <p><a name="catalogue_002dentry_002dbst_002d31"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-BST-join-function_002c-recursive-version-148"></a>
+<pre class="format"><a href="BST_join_function,_recursive_version.c.txt">96</a>. &lt;<a name="96" href="BST_join_function,_recursive_version.c.txt">BST join function, recursive version 96</a>&gt; =
+/* Joins <i>a</i><!-- /@w --> and <i>b</i><!-- /@w -->, which are subtrees of <i>tree</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->and returns the resulting tree. */
+<b>static</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>bst_node</b> *<br><i>join</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>a</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>b</i><!-- /@w -->) <br>{
+  <b>if</b><!-- /@w --> (<i>b</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <i>a</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>a</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <i>b</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>b0</i><!-- /@w --> = <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>b1</i><!-- /@w --> = <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+      <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+      <i>root_insert</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->);
+      <i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>join</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>b0</i><!-- /@w -->, <i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+      <i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>join</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>b1</i><!-- /@w -->, <i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+      <b>return</b><!-- /@w --> <i>a</i><!-- /@w -->;
+    }
+}
+
+/* Joins <i>a</i><!-- /@w --> and <i>b</i><!-- /@w -->, which must be disjoint and have compatible <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->comparison functions.
+   <i>b</i><!-- /@w --> is destroyed in the process. */
+<b>void</b><!-- /@w --> <br><i>bst_join</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>a</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>b</i><!-- /@w -->) <br>{
+  <i>a</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w --> = <i>join</i><!-- /@w --> (<i>a</i><!-- /@w -->, <i>a</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, <i>b</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->);
+  <i>a</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> += <i>b</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->;
+  <i>free</i><!-- /@w --> (<i>b</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], program 12.16.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Rewrite <i>bst_join</i><!-- /@w -->() to avoid use of recursion. 
+[<a href="Answers-for-Chapter-4.html#4%2d13%231">answer</a>]
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> The ** notation in the
+diagram emphasizes that this is a counterexample.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

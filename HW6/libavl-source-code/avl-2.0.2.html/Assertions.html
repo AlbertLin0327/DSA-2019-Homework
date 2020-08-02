@@ -1,0 +1,110 @@
+<html lang="en">
+<head>
+<title>Assertions - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Insertion-and-Deletion.html" title="2.8 Insertion and Deletion">
+<link rel=Next href="Traversers.html" title="2.10 Traversers">
+<link rel=Parent href="The-Table-ADT.html" title="2 The Table ADT">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Assertions">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>2.9 Assertions</b></big></td>
+<td align=right>
+<a href="index.html#Assertions.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Insertion-and-Deletion.html" title="Skip Back: 2.8 Insertion and Deletion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Traversers.html" title="Skip Forward: 2.10 Traversers"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Insertion-and-Deletion.html" title="Prev: 2.8 Insertion and Deletion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="The-Table-ADT.html" title="Up: 2 The Table ADT"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Traversers.html" title="Next: 2.10 Traversers"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Sometimes an insertion or deletion must succeed because it is known in
+advance that there is no way that it can fail.  For instance, we might
+be inserting into a table from a list of items known to be unique, using
+a memory allocator that cannot return a null pointer.  In this case, we
+want to make sure that the operation succeeded, and abort if not,
+because that indicates a program bug.  We also would like to be able to
+turn off these tests for success in our production versions, because we
+don't want them slowing down the code.
+
+   <p><a name="index-table-assertion-function-prototypes-19"></a>
+<pre class="format"><a href="Table_assertion_function_prototypes.c.txt">11</a>. &lt;<a name="11" href="Table_assertion_function_prototypes.c.txt">Table assertion function prototypes 11</a>&gt; =
+<b>void</b><!-- /@w --> <i>tbl_assert_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_table</b> *, <b>void</b><!-- /@w --> *);
+<b>void</b><!-- /@w --> *<i>tbl_assert_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbl_table</b> *, <b>void</b><!-- /@w --> *);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Table-Headers.html#15">15</a>.</small>
+
+   <p>These functions provide assertions for <i>tbl_insert</i><!-- /@w -->() and
+<i>tbl_delete</i><!-- /@w -->().  They expand, via macros, directly into calls to those
+functions when <tt>NDEBUG</tt><!-- /@w -->, the same symbol used to turn off <i>assert</i><!-- /@w -->()
+checks, is declared.  As for the standard C header
+&lt;assert.h&gt;, header files for tables may be
+included multiple times in order to turn these assertions on or off.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="tblassert"></a>&nbsp;<!-- /@w -->Write a set of preprocessor directives for a table header file that
+implement the behavior described in the final paragraph above. 
+[<a href="Answers-for-Chapter-2.html#2%2d9%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="genericassertions"></a>&nbsp;<!-- /@w -->Write a generic implementation of <i>tbl_assert_insert</i><!-- /@w -->() and
+<i>tbl_assert_delete</i><!-- /@w -->() in terms of existing table functions.  Consider
+the base functions carefully.  Why must we make sure that assertions are
+always enabled for these functions? 
+[<a href="Answers-for-Chapter-2.html#2%2d9%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->Why must <i>tbl_assert_insert</i><!-- /@w -->() not be used if the table's memory
+allocator can fail?  (See also Exercise 2.8-1.) 
+[<a href="Answers-for-Chapter-2.html#2%2d9%233">answer</a>]
+
+   </body></html>
+

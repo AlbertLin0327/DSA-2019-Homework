@@ -1,0 +1,60 @@
+if (y->avl_balance == -2)
+  {
+    struct avl_node *x = y->avl_link[0];
+    if (x->avl_balance == -1)
+      {
+        w = x;
+        y->avl_link[0] = x->avl_link[1];
+        x->avl_link[1] = y;
+        x->avl_balance = y->avl_balance = 0;
+      }
+    else
+      {
+        assert (x->avl_balance == +1);
+        w = x->avl_link[1];
+        x->avl_link[1] = w->avl_link[0];
+        w->avl_link[0] = x;
+        y->avl_link[0] = w->avl_link[1];
+        w->avl_link[1] = y;
+        if (w->avl_balance == -1)
+          x->avl_balance = 0, y->avl_balance = +1;
+        else if (w->avl_balance == 0)
+          x->avl_balance = y->avl_balance = 0;
+        else /* |w->avl_balance == +1| */
+          x->avl_balance = -1, y->avl_balance = 0;
+        w->avl_balance = 0;
+      }
+  }
+else if (y->avl_balance == +2)
+  {
+    struct avl_node *x = y->avl_link[1];
+    if (x->avl_balance == +1)
+      {
+        w = x;
+        y->avl_link[1] = x->avl_link[0];
+        x->avl_link[0] = y;
+        x->avl_balance = y->avl_balance = 0;
+      }
+    else
+      {
+        assert (x->avl_balance == -1);
+        w = x->avl_link[0];
+        x->avl_link[0] = w->avl_link[1];
+        w->avl_link[1] = x;
+        y->avl_link[1] = w->avl_link[0];
+        w->avl_link[0] = y;
+        if (w->avl_balance == +1)
+          x->avl_balance = 0, y->avl_balance = -1;
+        else if (w->avl_balance == 0)
+          x->avl_balance = y->avl_balance = 0;
+        else /* |w->avl_balance == -1| */
+          x->avl_balance = +1, y->avl_balance = 0;
+        w->avl_balance = 0;
+      }
+  }
+else
+  return &n->avl_data;
+z->avl_link[y != z->avl_link[0]] = w;
+
+tree->avl_generation++;
+return &n->avl_data;

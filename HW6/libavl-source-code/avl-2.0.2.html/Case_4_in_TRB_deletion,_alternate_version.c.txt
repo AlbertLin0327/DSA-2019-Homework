@@ -1,0 +1,31 @@
+struct trb_node *s;
+
+da[k] = 1;
+pa[k++] = p;
+for (;;)
+  {
+    da[k] = 0;
+    pa[k++] = r;
+    s = r->trb_link[0];
+    if (s->trb_tag[0] == TRB_THREAD)
+      break;
+
+    r = s;
+  }
+
+p->trb_data = s->trb_data;
+
+if (s->trb_tag[1] == TRB_THREAD)
+  {
+    r->trb_tag[0] = TRB_THREAD;
+    r->trb_link[0] = p;
+  }
+else
+  {
+    struct trb_node *t = r->trb_link[0] = s->trb_link[1];
+    while (t->trb_tag[0] == TRB_CHILD)
+      t = t->trb_link[0];
+    t->trb_link[0] = p;
+  }
+
+p = s;

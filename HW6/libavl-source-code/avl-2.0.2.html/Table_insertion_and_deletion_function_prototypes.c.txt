@@ -1,0 +1,5 @@
+void **tbl_probe (struct tbl_table *, void *);
+void *tbl_insert (struct tbl_table *, void *);
+void *tbl_replace (struct tbl_table *, void *);
+void *tbl_delete (struct tbl_table *, const void *);
+void *tbl_find (const struct tbl_table *, const void *);

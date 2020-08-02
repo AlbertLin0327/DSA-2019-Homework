@@ -1,0 +1,9 @@
+struct prb_node *y = w->prb_link[1];
+y->prb_color = PRB_BLACK;
+w->prb_color = PRB_RED;
+w->prb_link[1] = y->prb_link[0];
+y->prb_link[0] = w;
+if (w->prb_link[1] != NULL)
+  w->prb_link[1]->prb_parent = w;
+w = f->prb_link[0] = y;
+w->prb_link[0]->prb_parent = w;

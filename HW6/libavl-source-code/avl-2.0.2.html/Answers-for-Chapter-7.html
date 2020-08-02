@@ -1,0 +1,257 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 7 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-6.html" title="Chapter 6">
+<link rel=Next href="Answers-for-Chapter-8.html" title="Chapter 8">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-7">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 7</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-7.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-6.html" title="Skip Back: Chapter 6"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-8.html" title="Skip Forward: Chapter 8"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-6.html" title="Prev: Chapter 6"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-8.html" title="Next: Chapter 8"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 7.2</h4>
+
+<p><a name="7_002d2_00231"></a> <b>1.</b>
+An enumerated type is compatible with some C integer type, but the
+particular type is up to the C compiler.  Many C compilers will always
+pick <b>int</b><!-- /@w --> as the type of an enumeration type.  But we want to
+conserve space in the structure (see Exercise 1), so we
+specify <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> explicitly as the type.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#ISO%201990">ISO 1990</a>], section 6.5.2.2;
+[<a href="References.html#ISO%201999">ISO 1999</a>], section 6.7.2.2.
+
+<h4 class="subheading">Section 7.6</h4>
+
+<p><a name="7_002d6_00231"></a> <b>1.</b>
+When we add a node to a formerly empty tree, this statement will set
+<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->, thereby breaking the <b>if</b><!-- /@w --> statement's test.
+
+<h4 class="subheading">Section 7.7</h4>
+
+<p><a name="7_002d7_00231"></a> <b>1.</b>
+See <a href="Finding-the-Parent-of-a-TBST-Node.html">Finding the Parent of a TBST Node</a>.  Function <i>find_parent</i><!-- /@w -->() is
+implemented in &lt;<a href="Finding-the-Parent-of-a-TBST-Node.html#327">Find parent of a TBST node 327</a>&gt;.
+
+   <p><a name="catalogue_002dentry_002dtbst_002d20"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-find-TBST-node-to-delete_002c-with-parent-node-algorithm-950"></a>
+<pre class="format"><a href="Find_TBST_node_to_delete,_with_parent_node_algorithm.c.txt">655</a>. &lt;<a name="655" href="Find_TBST_node_to_delete,_with_parent_node_algorithm.c.txt">Find TBST node to delete, with parent node algorithm 655</a>&gt; =
+<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>tbst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>tbst_param</i><!-- /@w -->);
+    <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> == 0) 
+      <b>break</b><!-- /@w -->;
+
+    <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>cmp</i><!-- /@w --> &gt; 0];
+  }
+
+<i>q</i><!-- /@w --> = <i>find_parent</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+<i>dir</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] != <i>p</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201997">Knuth 1997</a>], exercise 2.3.1-19.
+
+   <p><a name="7_002d7_00232"></a> <b>2.</b>
+Yes.  We can bind a pointer and a tag into a single structure, then use
+that structure for our links and for the root in the table structure.
+
+<!-- tested 2001/7/16 -->
+<pre class="format">/* A tagged link. */
+<b>struct</b><!-- /@w --> <b>tbst_link</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007btbst_005flink_007d-structure-951"></a>    <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>tbst_ptr</i><!-- /@w -->;     /* Child pointer or thread. */
+    <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>tbst_tag</i><!-- /@w -->;         /* Tag. */
+  };
+
+/* A threaded binary search tree node. */
+<b>struct</b><!-- /@w --> <b>tbst_node</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007btbst_005fnode_007d-structure-952"></a>    <b>struct</b><!-- /@w --> <b>tbst_link</b> <i>tbst_link</i><!-- /@w -->[2];  /* Links. */
+    <b>void</b><!-- /@w --> *<i>tbst_data</i><!-- /@w -->;                /* Pointer to data. */
+  };
+
+/* Tree data structure. */
+<b>struct</b><!-- /@w --> <b>tbst_table</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007btbst_005ftable_007d-structure-953"></a>    <b>struct</b><!-- /@w --> <b>tbst_link</b> <i>tbst_root</i><!-- /@w -->;         /* Tree's root; tag is unused. */
+    <b>tbst_comparison_func</b><!-- /@w --> *<i>tbst_compare</i><!-- /@w -->; /* Comparison function. */
+    <b>void</b><!-- /@w --> *<i>tbst_param</i><!-- /@w -->;                   /* Extra argument to <i>tbst_compare</i><!-- /@w -->. */
+    <b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>tbst_alloc</i><!-- /@w -->; /* Memory allocator. */
+    <b>size_t</b><!-- /@w --> <i>tbst_count</i><!-- /@w -->;                  /* Number of items in tree. */
+  };
+</pre>
+   <p>The main disadvantage of this approach is in storage space: many
+machines have alignment restrictions for pointers, so the
+nonadjacent <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w -->s cause space to be wasted.  Alternatively,
+we could keep the current arrangement of the node structure and change
+<i>tbst_root</i><!-- /@w --> in <b>struct</b><!-- /@w --> <b>tbst_table</b> from a pointer to an instance of
+<b>struct</b><!-- /@w --> <b>tbst_node</b>.
+
+   <p><a name="7_002d7_00233"></a> <b>3.</b>
+Much simpler than the implementation given before:
+
+   <p><a name="catalogue_002dentry_002dtbst_002d21"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-case-4-in-TBST-deletion_002c-alternate-version-954"></a>
+<pre class="format"><a href="Case_4_in_TBST_deletion,_alternate_version.c.txt">656</a>. &lt;<a name="656" href="Case_4_in_TBST_deletion,_alternate_version.c.txt">Case 4 in TBST deletion, alternate version 656</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+<b>while</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+  }
+
+<i>p</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w -->;
+
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>r</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] = <tt>TBST_THREAD</tt><!-- /@w -->;
+    <i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->;
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>q</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+    <b>while</b><!-- /@w --> (<i>q</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->)
+      <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+    <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->;
+  }
+
+<i>p</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#658">658</a>.</small>
+
+   <p><a name="7_002d7_00234"></a> <b>4.</b>
+If all the possible deletions from a given TBST are considered, then
+no link will be followed more than once to update a left thread, and
+similarly for right threads.  Averaged over all the possible
+deletions, this is a constant.  For example, take the following TBST:
+
+<div align="center"><a href="tbstdel6.txt"><img border=0 src="tbstdel6.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">Consider right threads that must be updated on deletion.  Nodes 2, 3, 5,
+and 6 have right threads pointing to them.  To update the right thread
+to node 2, we follow the link to node 1; to update node 3's, we move to
+0, then 2; for node 5, we move to node 4; and for node 6, we move to 3,
+then 5.  No link is followed more than once.  Here's a summary table:
+
+   <p><table summary=""><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">Node
+</td><td valign="top" width="20%">Right Thread <br> Follows
+</td><td valign="top" width="20%">Left Thread <br> Follows
+
+<p><br></td></tr><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">0:
+</td><td valign="top" width="20%">(none)
+</td><td valign="top" width="20%">2, 1
+
+<p><br></td></tr><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">1:
+</td><td valign="top" width="20%">(none)
+</td><td valign="top" width="20%">(none)
+
+<p><br></td></tr><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">2:
+</td><td valign="top" width="20%">1
+</td><td valign="top" width="20%">(none)
+
+<p><br></td></tr><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">3:
+</td><td valign="top" width="20%">0, 2
+</td><td valign="top" width="20%">5, 4
+
+<p><br></td></tr><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">4:
+</td><td valign="top" width="20%">(none)
+</td><td valign="top" width="20%">(none)
+
+<p><br></td></tr><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">5:
+</td><td valign="top" width="20%">4
+</td><td valign="top" width="20%">(none)
+
+<p><br></td></tr><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">6:
+</td><td valign="top" width="20%">3, 5
+</td><td valign="top" width="20%">7
+
+<p><br></td></tr><tr align="left"><td valign="top" width="25%"></td><td valign="top" width="10%">7:
+</td><td valign="top" width="20%">(none)
+</td><td valign="top" width="20%">(none)
+   <br></td></tr></table>
+
+   <p>The important point here is that no number appears twice within a
+column.
+
+<h4 class="subheading">Section 7.9</h4>
+
+<p><a name="7_002d9_00231"></a> <b>1.</b>
+Suppose a node has a right thread.  If the node has no left subtree,
+then the thread will be followed immediately when the node is reached. 
+If the node does have a left subtree, then the left subtree will be
+traversed, and when the traversal is finished the node's predecessor's
+right thread will be followed back to the node, then its right thread
+will be followed.  The node cannot be skipped, because all the nodes in
+its left subtree are less than it, so none of the right threads in its
+left subtree can skip beyond it.
+
+   <p><a name="7_002d9_00232"></a> <b>2.</b>
+The biggest potential for optimization probably comes from
+<i>tbst_copy</i><!-- /@w -->()'s habit of always keeping the TBST fully consistent as it
+builds it, which causes repeated assignments to link fields in order to
+keep threads correct at all times.  The unthreaded BST copy function
+<i>bst_copy</i><!-- /@w -->() waited to initialize fields until it was ready for them. 
+It may be possible, though difficult, to do this in <i>tbst_copy</i><!-- /@w -->() as
+well.
+
+   <p>Inlining and specializing <i>copy_node</i><!-- /@w -->() is a cheaper potential speedup.
+
+   </body></html>
+

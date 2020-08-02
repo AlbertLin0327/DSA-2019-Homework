@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Informal Definition - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Next href="Identifiers.html" title="2.2 Identifiers">
+<link rel=Parent href="The-Table-ADT.html" title="2 The Table ADT">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Informal-Definition">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>2.1 Informal Definition</b></big></td>
+<td align=right>
+<a href="index.html#Informal-Definition.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Identifiers.html" title="Skip Forward: 2.2 Identifiers"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="The-Table-ADT.html" title="Prev: 2 The Table ADT"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="The-Table-ADT.html" title="Up: 2 The Table ADT"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Identifiers.html" title="Next: 2.2 Identifiers"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>If you've written even a few programs, you've probably noticed the
+necessity for searchable collections of data.  Compilers search their
+symbol tables for identifiers and network servers often search tables to
+match up data with users.  Many applications with graphical user
+interfaces deal with mouse and keyboard activity by searching a table of
+possible actions.  In fact, just about every nontrivial program,
+regardless of application domain, needs to maintain and search tables of
+some kind.
+
+   <p>In this book, the term &ldquo;table&rdquo; does not refer to any particular data
+structure.  Rather, it is the name for a abstract data structure or ADT,
+defined in terms of the operations that can be performed on it.  A table
+ADT can be implemented in any number of ways.  Later chapters will show
+how to implement tables in terms of various binary tree data structures.
+
+   <p>The purpose of a table is to keep track of a collection of items, all of
+the same type.  Items can be inserted into and deleted from a table,
+with no arbitrary limit on the number of items in the table.  We can
+also search a table for items that match a given item.
+
+   <p>Other operations are supported, too.  Traversal is the most important of
+these: all of the items in a table can be visited, in sorted order from
+smallest to largest, or from largest to smallest.  Traversals can also
+start from an item in the middle, or a newly inserted item, and move in
+either direction.
+
+   <p>The data in a table may be of any C type, but all the items in a table
+must be of the same type.  Structure types are common.  Often, only part
+of each data item is used in item lookup, with the rest for storage of
+auxiliary information.  A table that contains two-part data items like
+this is called a &ldquo;dictionary&rdquo; or an &ldquo;associative array&rdquo;.  The part
+of table data used for lookup, whether the table is a dictionary or not,
+is the <dfn>key</dfn>.  In a dictionary, the remainder is the <dfn>value</dfn>.
+
+   <p>Our tables cannot contain duplicates.  An attempt to insert an item into
+a table that already contains a matching item will fail.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Suggest a way to simulate the ability to insert duplicate items in a
+table. 
+[<a href="Answers-for-Chapter-2.html#2%2d1%231">answer</a>]
+
+   </body></html>
+

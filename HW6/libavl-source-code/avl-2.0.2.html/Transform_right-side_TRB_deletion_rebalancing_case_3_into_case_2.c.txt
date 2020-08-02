@@ -1,0 +1,13 @@
+struct trb_node *y = w->trb_link[1];
+y->trb_color = TRB_BLACK;
+w->trb_color = TRB_RED;
+w->trb_link[1] = y->trb_link[0];
+y->trb_link[0] = w;
+w = pa[k - 1]->trb_link[0] = y;
+
+if (w->trb_tag[0] == TRB_THREAD)
+  {
+    w->trb_tag[0] = TRB_CHILD;
+    w->trb_link[0]->trb_tag[1] = TRB_THREAD;
+    w->trb_link[0]->trb_link[1] = w;
+  }

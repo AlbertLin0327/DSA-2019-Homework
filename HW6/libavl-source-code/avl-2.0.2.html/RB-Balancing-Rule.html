@@ -1,0 +1,149 @@
+<html lang="en">
+<head>
+<title>RB Balancing Rule - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Next href="Analysis-of-Red_002dBlack-Balancing-Rule.html" title="6.1.1 Analysis">
+<link rel=Parent href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="RB-Balancing-Rule">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6.1 Balancing Rule</b></big></td>
+<td align=right>
+<a href="index.html#RB-Balancing-Rule.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="RB-Data-Types.html" title="Skip Forward: 6.2 Data Types"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Red_002dBlack-Trees.html" title="Prev: 6 Red-Black Trees"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Red_002dBlack-Trees.html" title="Up: 6 Red-Black Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Analysis-of-Red_002dBlack-Balancing-Rule.html" title="Next: 6.1.1 Analysis"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>To most clearly express the red-black balancing rule, we need a few
+new vocabulary terms.  First, define a <dfn>non-branching node</dfn> as a
+node that does not &ldquo;branch&rdquo; the binary tree in different directions,
+i.e., a node with exactly zero or one children.
+
+   <p>Second, a <dfn>path</dfn> is a list of one or more nodes in a binary tree
+where every node in the list (except the last node, of course) is
+<dfn>adjacent</dfn> (see <a href="Glossary.html#adjacent">adjacent</a>) in the tree to the one after it.  Two nodes in a tree
+are considered to be adjacent for this purpose if one is the child of
+the other.  Furthermore, a <dfn>simple path</dfn> is a path that does not
+contain any given node more than once.
+
+   <p>Finally, a node <i>p</i><!-- /@w --> is a <dfn>descendant</dfn> of a second node <i>q</i><!-- /@w --> if both
+<i>p</i><!-- /@w --> and <i>q</i><!-- /@w --> are the same node, or if <i>p</i><!-- /@w --> is located in one of the
+subtrees of <i>q</i><!-- /@w -->.
+
+   <p>With these definitions in mind, a red-black tree is a binary search
+tree in which every node has been labeled with a <dfn>color</dfn> (see <a href="Glossary.html#color">color</a>), either
+&ldquo;red&rdquo; or &ldquo;black&rdquo;, with those colors distributed according to these
+two simple rules, which are called the &ldquo;red-black balancing rules&rdquo;
+and often referenced by number:
+
+     <ol type=1 start=1>
+<li>No red node has a red child.
+
+     <li>Every simple path from a given node to one of its non-branching node
+descendants contains the same number of black nodes.
+        </ol>
+
+   <p>Any binary search tree that conforms to these rules is a red-black tree. 
+Additionally, all red-black trees in libavl share a simple additional
+property: their roots are black.  This property is not essential, but it
+does slightly simplify insertion and deletion operations.
+
+   <p>To aid in digestion of all these definitions, here are some red-black
+trees that might be produced by libavl:
+
+<div align="center"><a href="rbex.txt"><img border=0 src="rbex.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">In this book, black nodes are colored black and red nodes are colored
+gray, as shown here.
+
+   <p>The three colored BSTs below are <strong>not</strong> red-black trees.  The
+one on the left violates rule 1, because red node 2 is a child of red
+node 4.  The one in the middle violates rule 2, because one path from
+the root has two black nodes (4-2-3) and the other paths from the root
+down to a non-branching node (4-2-1, 4-5, 4-5-6) have only one black node. 
+The one on the right violates rule 2, because the path consisting of
+only node 1 has only one black node but path 1-2 has two black nodes.
+
+<div align="center"><a href="rbctrex.txt"><img border=0 src="rbctrex.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 14.1;
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], definitions 13.3 and 13.4.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>*1.</b>&nbsp;<!-- /@w -->A red-black tree contains only black nodes.  Describe the tree's shape. 
+[<a href="Answers-for-Chapter-6.html#6%2d1%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="blackenroot"></a>&nbsp;<!-- /@w -->Suppose that a red-black tree's root is red.  How can it be transformed
+into a equivalent red-black tree with a black root?  Does a similar
+procedure work for changing a RB's root from black to red? 
+[<a href="Answers-for-Chapter-6.html#6%2d1%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->Suppose we have a perfectly balanced red-black tree with exactly
+<i>pow</i><!-- /@w --> (2, <i>n</i><!-- /@w -->) - 1 nodes and a black root.  Is
+it possible there is another way to arrange colors in a tree of the
+same shape that obeys the red-black rules while keeping the root
+black?  Is it possible if we drop the requirement that the tree be
+balanced? 
+[<a href="Answers-for-Chapter-6.html#6%2d1%233">answer</a>]
+
+<ul class="menu">
+<li><a accesskey="1" href="Analysis-of-Red_002dBlack-Balancing-Rule.html">Analysis of Red-Black Balancing Rule</a>
+</ul>
+
+   </body></html>
+

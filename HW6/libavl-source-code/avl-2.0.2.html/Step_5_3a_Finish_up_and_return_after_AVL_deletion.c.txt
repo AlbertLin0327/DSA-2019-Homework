@@ -1,0 +1,3 @@
+tree->avl_count--;
+tree->avl_generation++;
+return (void *) item;

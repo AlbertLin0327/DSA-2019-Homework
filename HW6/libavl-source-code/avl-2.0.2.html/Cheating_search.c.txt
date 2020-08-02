@@ -1,0 +1,11 @@
+/* Cheating search function that knows that |array[i] == i|.
+   |n| must be the array size and |key| the item to search for.
+   |array[]| is not used.
+   Returns the index in |array[]| where |key| is found,
+   or |-1| if |key| is not in |array[]|. */
+int
+cheat_search (int array[], int n, int key)
+{
+  return key >= 0 && key < n ? key : -1;
+}
+

@@ -1,0 +1,372 @@
+<html lang="en">
+<head>
+<title>Testing BSTs - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Testing-BST-Functions.html" title="4.14 Testing">
+<link rel=Next href="BST-Verification.html" title="4.14.1.1 BST Verification">
+<link rel=Parent href="Testing-BST-Functions.html" title="4.14 Testing">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Testing-BSTs">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14.1 Testing BSTs</b></big></td>
+<td align=right>
+<a href="index.html#Testing-BSTs.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Test-Set-Generation.html" title="Skip Forward: 4.14.2 Test Set Generation"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-BST-Functions.html" title="Prev: 4.14 Testing"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Testing-BST-Functions.html" title="Up: 4.14 Testing"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="BST-Verification.html" title="Next: 4.14.1.1 BST Verification"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>As suggested above, the main way we will test the BST routines is by
+using them and checking the results, with checks performed by slow but
+simple routines.  The idea is that bugs in the BST routines are unlikely
+to be mirrored in the check routines, and vice versa.  This way,
+identical results from the BST and checks tend to indicate that both
+implementations are correct.
+
+   <p>The main test routine is designed to exercise as many of the BST
+functions as possible.  It starts by creating a BST and inserting nodes
+into it, then deleting the nodes.  Midway, various traversals are
+tested, including the ability to traverse a tree while its content is
+changing.  After each operation that modifies the tree, its structure
+and content are verified for correspondence with expectations.  The
+function for copying a BST is also tested.  This function, <i>test</i><!-- /@w -->(), has
+the following outline:
+
+   <p><a name="index-BST-test-function-153"></a>
+<pre class="format"><a href="BST_test_function.c.txt">100</a>. &lt;<a name="100" href="BST_test_function.c.txt">BST test function 100</a>&gt; =
+/* Tests tree functions.  
+   <i>insert</i><!-- /@w -->[] and <i>delete</i><!-- /@w -->[] must contain some permutation of values <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->0<small class="dots">...</small><i>n</i><!-- /@w --> - 1.
+   Uses <i>allocator</i><!-- /@w --> as the allocator for tree and node data.
+   Higher values of <i>verbosity</i><!-- /@w --> produce more debug output. */
+<b>int</b><!-- /@w --> <br><i>test_correctness</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->,
+                  <b>int</b><!-- /@w --> <i>insert</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>delete</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fcorrectness_007d-function-154"></a>  <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->;
+  <b>int</b><!-- /@w --> <i>okay</i><!-- /@w --> = 1;
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  &lt;<a href="Testing-BSTs.html#102">Test creating a BST and inserting into it 102</a>&gt;
+  &lt;<a href="Testing-BSTs.html#103">Test BST traversal during modifications 103</a>&gt;
+  &lt;<a href="Testing-BSTs.html#105">Test deleting nodes from the BST and making copies of it 105</a>&gt;
+  &lt;<a href="Testing-BSTs.html#107">Test deleting from an empty tree 107</a>&gt;
+  &lt;<a href="Testing-BSTs.html#108">Test destroying the tree 108</a>&gt;
+
+  <b>return</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#98">98</a>, <a href="Testing-AVL-Trees.html#186">186</a>, <a href="Testing-RB-Trees.html#238">238</a>, <a href="Testing-TAVL-Trees.html#330">330</a>, <a href="Testing-TRB-Trees.html#368">368</a>, <a href="Testing-RTAVL-Trees.html#449">449</a>, <a href="Testing-RTRB-Trees.html#482">482</a>, <a href="Testing-PAVL-Trees.html#548">548</a>, and <a href="Testing-PRB-Trees.html#583">583</a>.</small>
+
+   <p><a name="index-test-prototypes-155"></a>
+<pre class="format"><a href="Test_prototypes.c.txt">101</a>. &lt;<a name="101" href="Test_prototypes.c.txt">Test prototypes 101</a>&gt; =
+<b>int</b><!-- /@w --> <i>test_correctness</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->,
+                      <b>int</b><!-- /@w --> <i>insert</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>delete</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>See also <a href="Testing-Overflow.html#123">123</a> and <a href="Utility-Functions.html#135">135</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Testing-BST-Functions.html#99">99</a>.</small></div>
+
+   <p>The first step is to create a BST and insert items into it in the order
+specified by the caller.  We use the comparison function
+<i>compare_ints</i><!-- /@w -->() from &lt;<a href="Comparison-Function.html#3">Comparison function for <b>int</b><!-- /@w -->s 3</a>&gt; to put the
+tree's items into ordinary numerical order.  After each insertion we
+call <i>verify_tree</i><!-- /@w -->(), which we'll write later and which checks that the
+tree actually contains the items that it should:
+
+   <p><a name="index-test-creating-a-BST-and-inserting-into-it-156"></a>
+<pre class="format"><a href="Test_creating_a_BST_and_inserting_into_it.c.txt">102</a>. &lt;<a name="102" href="Test_creating_a_BST_and_inserting_into_it.c.txt">Test creating a BST and inserting into it 102</a>&gt; =
+<i>tree</i><!-- /@w --> = <i>bst_create</i><!-- /@w --> (<i>compare_ints</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, <i>allocator</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>tree</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"  Out of memory creating tree.\n"</tt>);
+    <b>return</b><!-- /@w --> 1;
+  }
+
+<b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 2) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"  Inserting %d...\n"</tt>, <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+
+    /* Add the <i>i</i><!-- /@w -->th element to the tree. */
+    {
+      <b>void</b><!-- /@w --> **<i>p</i><!-- /@w --> = <i>bst_probe</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+      <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"    Out of memory in insertion.\n"</tt>);
+          <i>bst_destroy</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+          <b>return</b><!-- /@w --> 1;
+        }
+      <b>if</b><!-- /@w --> (*<i>p</i><!-- /@w --> != &amp;<i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"    Duplicate item in tree!\n"</tt>);
+    }
+
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 3) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>print_whole_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>"    Afterward"</tt>);
+
+    <b>if</b><!-- /@w --> (!<i>verify_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>insert</i><!-- /@w -->, <i>i</i><!-- /@w --> + 1))
+      <b>return</b><!-- /@w --> 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BSTs.html#100">100</a> and <a href="Testing-TBSTs.html#295">295</a>.</small>
+
+   <p>If the tree is being modified during traversal, that causes a little
+more stress on the tree routines, so we should test this specially.  We
+initialize one traverser, <i>x</i><!-- /@w -->, at a selected item, then delete and
+reinsert a different item in order to invalidate that traverser.  We
+make a copy, <i>y</i><!-- /@w -->, of the traverser in order to check that <i>bst_t_copy</i><!-- /@w -->()
+works properly and initialize a third traverser, <i>z</i><!-- /@w -->, with the inserted
+item.  After the deletion and reinsertion we check that all three of the
+traversers behave properly.
+
+   <p><a name="index-test-BST-traversal-during-modifications-157"></a>
+<pre class="format"><a href="Test_BST_traversal_during_modifications.c.txt">103</a>. &lt;<a name="103" href="Test_BST_traversal_during_modifications.c.txt">Test BST traversal during modifications 103</a>&gt; =
+<b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>x</i><!-- /@w -->, <i>y</i><!-- /@w -->, <i>z</i><!-- /@w -->;
+    <b>int</b><!-- /@w --> *<i>deleted</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->])
+      <b>continue</b><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 2)
+      <i>printf</i><!-- /@w --> (<tt>"   Checking traversal from item %d...\n"</tt>, <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+
+    <b>if</b><!-- /@w --> (<i>bst_t_find</i><!-- /@w --> (&amp;<i>x</i><!-- /@w -->, <i>tree</i><!-- /@w -->, &amp;<i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]) == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>printf</i><!-- /@w --> (<tt>"    Can't find item %d in tree!\n"</tt>, <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+        <b>continue</b><!-- /@w -->;
+      }
+
+    <i>okay</i><!-- /@w --> &amp;= <i>check_traverser</i><!-- /@w --> (&amp;<i>x</i><!-- /@w -->, <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->], <i>n</i><!-- /@w -->, <tt>"Predeletion"</tt>);
+
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 3) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"    Deleting item %d.\n"</tt>, <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+
+    <i>deleted</i><!-- /@w --> = <i>bst_delete</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+    <b>if</b><!-- /@w --> (<i>deleted</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>deleted</i><!-- /@w --> != <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>okay</i><!-- /@w --> = 0;
+        <b>if</b><!-- /@w --> (<i>deleted</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+          <i>printf</i><!-- /@w --> (<tt>"    Deletion failed.\n"</tt>);
+        <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"    Wrong node %d returned.\n"</tt>, *<i>deleted</i><!-- /@w -->);
+      }
+
+    <i>bst_t_copy</i><!-- /@w --> (&amp;<i>y</i><!-- /@w -->, &amp;<i>x</i><!-- /@w -->);
+
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 3) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"    Reinserting item %d.\n"</tt>, <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+    <b>if</b><!-- /@w --> (<i>bst_t_insert</i><!-- /@w --> (&amp;<i>z</i><!-- /@w -->, <i>tree</i><!-- /@w -->, &amp;<i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]) == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"    Out of memory reinserting item.\n"</tt>);
+        <i>bst_destroy</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+        <b>return</b><!-- /@w --> 1;
+      }
+
+    <i>okay</i><!-- /@w --> &amp;= <i>check_traverser</i><!-- /@w --> (&amp;<i>x</i><!-- /@w -->, <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->], <i>n</i><!-- /@w -->, <tt>"Postdeletion"</tt>);
+    <i>okay</i><!-- /@w --> &amp;= <i>check_traverser</i><!-- /@w --> (&amp;<i>y</i><!-- /@w -->, <i>insert</i><!-- /@w -->[<i>i</i><!-- /@w -->], <i>n</i><!-- /@w -->, <tt>"Copied"</tt>);
+    <i>okay</i><!-- /@w --> &amp;= <i>check_traverser</i><!-- /@w --> (&amp;<i>z</i><!-- /@w -->, <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->], <i>n</i><!-- /@w -->, <tt>"Insertion"</tt>);
+
+    <b>if</b><!-- /@w --> (!<i>verify_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>insert</i><!-- /@w -->, <i>n</i><!-- /@w -->))
+      <b>return</b><!-- /@w --> 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BSTs.html#100">100</a> and <a href="Testing-TBSTs.html#295">295</a>.</small>
+
+   <p>The <i>check_traverser</i><!-- /@w -->() function used above checks that a traverser
+behaves properly, by checking that the traverser is at the correct item
+and that the previous and next items are correct as well.
+
+   <p><a name="index-BST-traverser-check-function-158"></a>
+<pre class="format"><a href="BST_traverser_check_function.c.txt">104</a>. &lt;<a name="104" href="BST_traverser_check_function.c.txt">BST traverser check function 104</a>&gt; =
+/* Checks that the current item at <i>trav</i><!-- /@w --> is <i>i</i><!-- /@w -->
+   and that its previous and next items are as they should be.
+   <i>label</i><!-- /@w --> is a name for the traverser used in reporting messages.
+   There should be <i>n</i><!-- /@w --> items in the tree numbered 0<small class="dots">...</small><i>n</i><!-- /@w --> - 1.
+   Returns nonzero only if there is an error. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>check_traverser</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_traverser</b> *<i>trav</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>label</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcheck_005ftraverser_007d-function-159"></a>  <b>int</b><!-- /@w --> <i>okay</i><!-- /@w --> = 1;
+  <b>int</b><!-- /@w --> *<i>cur</i><!-- /@w -->, *<i>prev</i><!-- /@w -->, *<i>next</i><!-- /@w -->;
+
+  <i>prev</i><!-- /@w --> = <i>bst_t_prev</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> ((<i>i</i><!-- /@w --> == 0 &amp;&amp; <i>prev</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->|| (<i>i</i><!-- /@w --> &gt; 0 &amp;&amp; (<i>prev</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>prev</i><!-- /@w --> != <i>i</i><!-- /@w --> - 1))) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>"   %s traverser ahead of %d, but should be ahead of %d.\n"</tt>,
+              <i>label</i><!-- /@w -->, <i>prev</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>prev</i><!-- /@w --> : -1, <i>i</i><!-- /@w --> == 0 ? -1 : <i>i</i><!-- /@w --> - 1);
+      <i>okay</i><!-- /@w --> = 0;
+    }
+  <i>bst_t_next</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+
+  <i>cur</i><!-- /@w --> = <i>bst_t_cur</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>cur</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>cur</i><!-- /@w --> != <i>i</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>"   %s traverser at %d, but should be at %d.\n"</tt>,
+              <i>label</i><!-- /@w -->, <i>cur</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>cur</i><!-- /@w --> : -1, <i>i</i><!-- /@w -->);
+      <i>okay</i><!-- /@w --> = 0;
+    }
+
+  <i>next</i><!-- /@w --> = <i>bst_t_next</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> ((<i>i</i><!-- /@w --> == <i>n</i><!-- /@w --> - 1 &amp;&amp; <i>next</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+      || (<i>i</i><!-- /@w --> != <i>n</i><!-- /@w --> - 1 &amp;&amp; (<i>next</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>next</i><!-- /@w --> != <i>i</i><!-- /@w --> + 1))) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>"   %s traverser behind %d, but should be behind %d.\n"</tt>,
+              <i>label</i><!-- /@w -->, <i>next</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>next</i><!-- /@w --> : -1, <i>i</i><!-- /@w --> == <i>n</i><!-- /@w --> - 1 ? -1 : <i>i</i><!-- /@w --> + 1);
+      <i>okay</i><!-- /@w --> = 0;
+    }
+  <i>bst_t_prev</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+
+  <b>return</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#98">98</a>, <a href="Testing-AVL-Trees.html#186">186</a>, <a href="Testing-RB-Trees.html#238">238</a>, <a href="Testing-TBSTs.html#290">290</a>, <a href="Testing-TAVL-Trees.html#330">330</a>, <a href="Testing-TRB-Trees.html#368">368</a>, <a href="Testing-RTBSTs.html#411">411</a>, <a href="Testing-RTAVL-Trees.html#449">449</a>, <a href="Testing-RTRB-Trees.html#482">482</a>, <a href="Testing-PBSTs.html#515">515</a>, <a href="Testing-PAVL-Trees.html#548">548</a>, and <a href="Testing-PRB-Trees.html#583">583</a>.</small>
+
+   <p>We also need to test deleting nodes from the tree and making copies of a
+tree.  Here's the code to do that:
+
+   <p><a name="index-test-deleting-nodes-from-the-BST-and-making-copies-of-it-160"></a>
+<pre class="format"><a href="Test_deleting_nodes_from_the_BST_and_making_copies_of_it.c.txt">105</a>. &lt;<a name="105" href="Test_deleting_nodes_from_the_BST_and_making_copies_of_it.c.txt">Test deleting nodes from the BST and making copies of it 105</a>&gt; =
+<b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>int</b><!-- /@w --> *<i>deleted</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 2) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"  Deleting %d...\n"</tt>, <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+
+    <i>deleted</i><!-- /@w --> = <i>bst_delete</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+    <b>if</b><!-- /@w --> (<i>deleted</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>deleted</i><!-- /@w --> != <i>delete</i><!-- /@w -->[<i>i</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>okay</i><!-- /@w --> = 0;
+        <b>if</b><!-- /@w --> (<i>deleted</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+          <i>printf</i><!-- /@w --> (<tt>"    Deletion failed.\n"</tt>);
+        <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"    Wrong node %d returned.\n"</tt>, *<i>deleted</i><!-- /@w -->);
+      }
+
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 3) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>print_whole_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>"    Afterward"</tt>);
+
+    <b>if</b><!-- /@w --> (!<i>verify_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>delete</i><!-- /@w --> + <i>i</i><!-- /@w --> + 1, <i>n</i><!-- /@w --> - <i>i</i><!-- /@w --> - 1))
+      <b>return</b><!-- /@w --> 0;
+
+    <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 2) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"  Copying tree and comparing...\n"</tt>);
+
+    /* Copy the tree and make sure it's identical. */
+    {
+      <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>copy</i><!-- /@w --> = <i>bst_copy</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>copy</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"  Out of memory in copy\n"</tt>);
+          <i>bst_destroy</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+          <b>return</b><!-- /@w --> 1;
+        }
+
+      <i>okay</i><!-- /@w --> &amp;= <i>compare_trees</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, <i>copy</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->);
+      <i>bst_destroy</i><!-- /@w --> (<i>copy</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+    }
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BSTs.html#100">100</a> and <a href="Testing-TBSTs.html#295">295</a>.</small>
+
+   <p>The actual comparison of trees is done recursively for simplicity:
+
+   <p><a name="index-compare-two-BSTs-for-structure-and-content-161"></a>
+<pre class="format"><a href="Compare_two_BSTs_for_structure_and_content.c.txt">106</a>. &lt;<a name="106" href="Compare_two_BSTs_for_structure_and_content.c.txt">Compare two BSTs for structure and content 106</a>&gt; =
+/* Compares binary trees rooted at <i>a</i><!-- /@w --> and <i>b</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->making sure that they are identical. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>compare_trees</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>a</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>b</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>b</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>assert</i><!-- /@w --> (<i>a</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>b</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->);
+      <b>return</b><!-- /@w --> 1;
+    }
+
+  <b>if</b><!-- /@w --> (*(<b>int</b><!-- /@w --> *) <i>a</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w --> != *(<b>int</b><!-- /@w --> *) <i>b</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->
+      || ((<i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) != (<i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->))
+      || ((<i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) != (<i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->))) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>" Copied nodes differ: a=%d b=%d a:"</tt>,
+              *(<b>int</b><!-- /@w --> *) <i>a</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, *(<b>int</b><!-- /@w --> *) <i>b</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->);
+
+      <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"l"</tt>);
+      <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"r"</tt>);
+
+      <i>printf</i><!-- /@w --> (<tt>" b:"</tt>);
+      <b>if</b><!-- /@w --> (<i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"l"</tt>);
+      <b>if</b><!-- /@w --> (<i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"r"</tt>);
+
+      <i>printf</i><!-- /@w --> (<tt>"\n"</tt>);
+      <b>return</b><!-- /@w --> 0;
+    }
+
+  <i>okay</i><!-- /@w --> = 1;
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>okay</i><!-- /@w --> &amp;= <i>compare_trees</i><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0], <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>okay</i><!-- /@w --> &amp;= <i>compare_trees</i><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1], <i>b</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+  <b>return</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#98">98</a>.</small>
+
+   <p>As a simple extra check, we make sure that attempting to delete from
+an empty tree fails in the expected way:
+
+   <p><a name="index-test-deleting-from-an-empty-tree-162"></a>
+<pre class="format"><a href="Test_deleting_from_an_empty_tree.c.txt">107</a>. &lt;<a name="107" href="Test_deleting_from_an_empty_tree.c.txt">Test deleting from an empty tree 107</a>&gt; =
+<b>if</b><!-- /@w --> (<i>bst_delete</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>insert</i><!-- /@w -->[0]) != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Deletion from empty tree succeeded.\n"</tt>);
+    <i>okay</i><!-- /@w --> = 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BSTs.html#100">100</a>.</small>
+
+   <p>Finally, we're done with the tree and can get rid of it.
+
+   <p><a name="index-test-destroying-the-tree-163"></a>
+<pre class="format"><a href="Test_destroying_the_tree.c.txt">108</a>. &lt;<a name="108" href="Test_destroying_the_tree.c.txt">Test destroying the tree 108</a>&gt; =
+/* Test destroying the tree. */
+<i>bst_destroy</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BSTs.html#100">100</a> and <a href="Testing-TBSTs.html#295">295</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Which functions in &lt;<a href="Binary-Search-Trees.html#25"><tt>bst.c</tt> 25</a>&gt; are not exercised by <i>test</i><!-- /@w -->()? 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d1%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Some errors within <i>test</i><!-- /@w -->() just set the <i>okay</i><!-- /@w --> flag to zero, whereas
+others cause an immediate unsuccessful return to the caller without
+performing any cleanup.  A third class of errors causes cleanup followed
+by a successful return.  Why and how are these distinguished? 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d1%232">answer</a>]
+
+<ul class="menu">
+<li><a accesskey="1" href="BST-Verification.html">BST Verification</a>
+<li><a accesskey="2" href="Displaying-BST-Structures.html">Displaying BST Structures</a>
+</ul>
+
+   </body></html>
+

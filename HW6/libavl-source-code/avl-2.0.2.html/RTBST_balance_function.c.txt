@@ -1,0 +1,121 @@
+static void
+tree_to_vine (struct rtbst_table *tree)
+{
+  struct rtbst_node *p;
+
+  if (tree->rtbst_root == NULL)
+    return;
+
+  p = tree->rtbst_root;
+  while (p->rtbst_link[0] != NULL)
+    p = p->rtbst_link[0];
+
+  for (;;)
+    {
+      struct rtbst_node *q = p->rtbst_link[1];
+      if (p->rtbst_rtag == RTBST_CHILD)
+        {
+          while (q->rtbst_link[0] != NULL)
+            q = q->rtbst_link[0];
+          p->rtbst_rtag = RTBST_THREAD;
+          p->rtbst_link[1] = q;
+        }
+
+      if (q == NULL)
+        break;
+
+      q->rtbst_link[0] = p;
+      p = q;
+    }
+
+  tree->rtbst_root = p;
+}
+
+/* Performs a compression transformation |count| times,
+   starting at |root|. */
+static void
+compress (struct rtbst_node *root,
+          unsigned long nonthread, unsigned long thread)
+{
+  assert (root != NULL);
+
+  while (nonthread--)
+    {
+      struct rtbst_node *red = root->rtbst_link[0];
+      struct rtbst_node *black = red->rtbst_link[0];
+
+      root->rtbst_link[0] = black;
+      red->rtbst_link[0] = black->rtbst_link[1];
+      black->rtbst_link[1] = red;
+      root = black;
+    }
+
+  while (thread--)
+    {
+      struct rtbst_node *red = root->rtbst_link[0];
+      struct rtbst_node *black = red->rtbst_link[0];
+
+      root->rtbst_link[0] = black;
+      red->rtbst_link[0] = NULL;
+      black->rtbst_rtag = RTBST_CHILD;
+      root = black;
+    }
+}
+
+/* Converts |tree|, which must be in the shape of a vine, into a balanced
+   tree. */
+static void
+vine_to_tree (struct rtbst_table *tree)
+{
+  unsigned long vine;   /* Number of nodes in main vine. */
+  unsigned long leaves; /* Nodes in incomplete bottom level, if any. */
+  int height;           /* Height of produced balanced tree. */
+
+  leaves = tree->rtbst_count + 1;
+  for (;;)
+    {
+      unsigned long next = leaves & (leaves - 1);
+      if (next == 0)
+        break;
+      leaves = next;
+    }
+  leaves = tree->rtbst_count + 1 - leaves;
+
+  compress ((struct rtbst_node *) &tree->rtbst_root, 0, leaves);
+
+  vine = tree->rtbst_count - leaves;
+  height = 1 + (leaves > 0);
+  if (vine > 1)
+    {
+      unsigned long nonleaves = vine / 2;
+      leaves /= 2;
+      if (leaves > nonleaves)
+        {
+          leaves = nonleaves;
+          nonleaves = 0;
+        }
+      else
+        nonleaves -= leaves;
+
+      compress ((struct rtbst_node *) &tree->rtbst_root, leaves, nonleaves);
+      vine /= 2;
+      height++;
+    }
+  while (vine > 1)
+    {
+      compress ((struct rtbst_node *) &tree->rtbst_root, vine / 2, 0);
+      vine /= 2;
+      height++;
+    }
+}
+
+/* Balances |tree|. */
+void
+rtbst_balance (struct rtbst_table *tree)
+{
+  assert (tree != NULL);
+
+  tree_to_vine (tree);
+  vine_to_tree (tree);
+}
+

@@ -1,0 +1,318 @@
+<html lang="en">
+<head>
+<title>BST Verification - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Testing-BSTs.html" title="4.14.1 Testing BSTs">
+<link rel=Next href="Displaying-BST-Structures.html" title="4.14.1.2 Displaying BST Structures">
+<link rel=Parent href="Testing-BSTs.html" title="4.14.1 Testing BSTs">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="BST-Verification">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14.1.1 BST Verification</b></big></td>
+<td align=right>
+<a href="index.html#BST-Verification.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Displaying-BST-Structures.html" title="Skip Forward: 4.14.1.2 Displaying BST Structures"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-BSTs.html" title="Prev: 4.14.1 Testing BSTs"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Testing-BSTs.html" title="Up: 4.14.1 Testing BSTs"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Displaying-BST-Structures.html" title="Next: 4.14.1.2 Displaying BST Structures"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>After each change to the tree in the testing program, we call
+<i>verify_tree</i><!-- /@w -->() to check that the tree's structure and content are what
+we think they should be.  This function runs through a full gamut of
+checks, with the following outline:
+
+   <p><a name="index-BST-verify-function-164"></a>
+<pre class="format"><a href="BST_verify_function.c.txt">109</a>. &lt;<a name="109" href="BST_verify_function.c.txt">BST verify function 109</a>&gt; =
+/* Checks that <i>tree</i><!-- /@w --> is well-formed
+   and verifies that the values in <i>array</i><!-- /@w -->[] are actually in <i>tree</i><!-- /@w -->.  
+   There must be <i>n</i><!-- /@w --> elements in <i>array</i><!-- /@w -->[] and <i>tree</i><!-- /@w -->.
+   Returns nonzero only if no errors detected. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>verify_tree</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>size_t</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bverify_005ftree_007d-function-165"></a>  <b>int</b><!-- /@w --> <i>okay</i><!-- /@w --> = 1;
+
+  &lt;<a href="BST-Verification.html#110">Check <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> is correct 110</a>&gt;
+
+  <b>if</b><!-- /@w --> (<i>okay</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="BST-Verification.html#111">Check BST structure 111</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+  <b>if</b><!-- /@w --> (<i>okay</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="BST-Verification.html#115">Check that the tree contains all the elements it should 115</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+  <b>if</b><!-- /@w --> (<i>okay</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="BST-Verification.html#116">Check that forward traversal works 116</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+  <b>if</b><!-- /@w --> (<i>okay</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="BST-Verification.html#117">Check that backward traversal works 117</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+  <b>if</b><!-- /@w --> (<i>okay</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="BST-Verification.html#118">Check that traversal from the null element works 118</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+  <b>return</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#98">98</a>, <a href="Testing-RTBSTs.html#411">411</a>, and <a href="Testing-PBSTs.html#515">515</a>.</small>
+
+   <p>The first step just checks that the number of items passed in as <i>n</i><!-- /@w --> is
+the same as <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --><!-- /@w -->.
+
+   <p><a name="index-check-_0040w_007b_0040i_007btree_007d_007d_0040value_007bRARR_007d_0040w_007b_0040i_007bbst_005fcount_007d_007d-is-correct-166"></a>
+<pre class="format"><a href="Check__7ctree-_3ebst_count_7c_is_correct.c.txt">110</a>. &lt;<a name="110" href="Check__7ctree-_3ebst_count_7c_is_correct.c.txt">Check <i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w --> is correct 110</a>&gt; =
+/* Check <i>tree</i><!-- /@w -->'s bst_count against that supplied. */
+<b>if</b><!-- /@w --> (<i>bst_count</i><!-- /@w --> (<i>tree</i><!-- /@w -->) != <i>n</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Tree count is %lu, but should be %lu.\n"</tt>,
+            (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>bst_count</i><!-- /@w --> (<i>tree</i><!-- /@w -->), (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>n</i><!-- /@w -->);
+    <i>okay</i><!-- /@w --> = 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Verification.html#109">109</a>, <a href="Testing-AVL-Trees.html#190">190</a>, <a href="Testing-RB-Trees.html#244">244</a>, and <a href="Testing-TBSTs.html#294">294</a>.</small>
+
+   <p>Next, we verify that the BST has proper structure and that it has the
+proper number of items.  We'll do this recursively because that's
+easiest and most obviously correct way.  Function
+<i>recurse_verify_tree</i><!-- /@w -->() for this returns the number of nodes in the BST. 
+After it returns, we verify that this is the expected number.
+
+   <p><a name="index-check-BST-structure-167"></a>
+<pre class="format"><a href="Check_BST_structure.c.txt">111</a>. &lt;<a name="111" href="Check_BST_structure.c.txt">Check BST structure 111</a>&gt; =
+/* Recursively verify tree structure. */
+<b>size_t</b><!-- /@w --> <i>count</i><!-- /@w -->;
+
+<i>recurse_verify_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, &amp;<i>okay</i><!-- /@w -->, &amp;<i>count</i><!-- /@w -->, 0, <tt>INT_MAX</tt><!-- /@w -->);
+&lt;<a href="BST-Verification.html#112">Check counted nodes 112</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Verification.html#109">109</a> and <a href="Testing-TBSTs.html#294">294</a>.</small>
+
+   <p><a name="index-check-counted-nodes-168"></a>
+<pre class="format"><a href="Check_counted_nodes.c.txt">112</a>. &lt;<a name="112" href="Check_counted_nodes.c.txt">Check counted nodes 112</a>&gt; =
+<b>if</b><!-- /@w --> (<i>count</i><!-- /@w --> != <i>n</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Tree has %lu nodes, but should have %lu.\n"</tt>, 
+            (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>count</i><!-- /@w -->, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>n</i><!-- /@w -->);
+    <i>okay</i><!-- /@w --> = 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Verification.html#111">111</a>, <a href="Testing-AVL-Trees.html#191">191</a>, and <a href="Testing-RB-Trees.html#246">246</a>.</small>
+
+   <p>The function <i>recurse_verify_tree</i><!-- /@w -->() does the recursive verification. 
+It checks that nodes' values increase down to the right and decrease
+down to the left.  We also use it to count the number of nodes actually
+in the tree:
+
+   <p><a name="index-recursively-verify-BST-structure-169"></a>
+<pre class="format"><a href="Recursively_verify_BST_structure.c.txt">113</a>. &lt;<a name="113" href="Recursively_verify_BST_structure.c.txt">Recursively verify BST structure 113</a>&gt; =
+/* Examines the binary tree rooted at <i>node</i><!-- /@w -->.  
+   Zeroes *<i>okay</i><!-- /@w --> if an error occurs.  <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->Otherwise, does not modify *<i>okay</i><!-- /@w -->.
+   Sets *<i>count</i><!-- /@w --> to the number of nodes in that tree, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->including <i>node</i><!-- /@w --> itself if <i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->.
+   All the nodes in the tree are verified to be at least <i>min</i><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->but no greater than <i>max</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>recurse_verify_tree</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>int</b><!-- /@w --> *<i>okay</i><!-- /@w -->, <b>size_t</b><!-- /@w --> *<i>count</i><!-- /@w -->, 
+                     <b>int</b><!-- /@w --> <i>min</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>max</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brecurse_005fverify_005ftree_007d-function-170"></a>  <b>int</b><!-- /@w --> <i>d</i><!-- /@w -->;                /* Value of this node's data. */
+  <b>size_t</b><!-- /@w --> <i>subcount</i><!-- /@w -->[2];   /* Number of nodes in subtrees. */
+
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      *<i>count</i><!-- /@w --> = 0;
+      <b>return</b><!-- /@w -->;
+    }
+  <i>d</i><!-- /@w --> = *(<b>int</b><!-- /@w --> *) <i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+
+  &lt;<a href="BST-Verification.html#114">Verify binary search tree ordering 114</a>&gt;
+
+  <i>recurse_verify_tree</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0], <i>okay</i><!-- /@w -->, &amp;<i>subcount</i><!-- /@w -->[0], <i>min</i><!-- /@w -->, <i>d</i><!-- /@w --> - 1);
+  <i>recurse_verify_tree</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1], <i>okay</i><!-- /@w -->, &amp;<i>subcount</i><!-- /@w -->[1], <i>d</i><!-- /@w --> + 1, <i>max</i><!-- /@w -->);
+  *<i>count</i><!-- /@w --> = 1 + <i>subcount</i><!-- /@w -->[0] + <i>subcount</i><!-- /@w -->[1];
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#98">98</a>.</small>
+
+   <p><a name="index-verify-binary-search-tree-ordering-171"></a>
+<pre class="format"><a href="Verify_binary_search_tree_ordering.c.txt">114</a>. &lt;<a name="114" href="Verify_binary_search_tree_ordering.c.txt">Verify binary search tree ordering 114</a>&gt; =
+<b>if</b><!-- /@w --> (<i>min</i><!-- /@w --> &gt; <i>max</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Parents of node %d constrain it to empty range %d...%d.\n"</tt>,
+            <i>d</i><!-- /@w -->, <i>min</i><!-- /@w -->, <i>max</i><!-- /@w -->);
+    *<i>okay</i><!-- /@w --> = 0;
+  } <br><b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>d</i><!-- /@w --> &lt; <i>min</i><!-- /@w --> || <i>d</i><!-- /@w --> &gt; <i>max</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Node %d is not in range %d...%d implied by its parents.\n"</tt>,
+            <i>d</i><!-- /@w -->, <i>min</i><!-- /@w -->, <i>max</i><!-- /@w -->);
+    *<i>okay</i><!-- /@w --> = 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Verification.html#113">113</a>, <a href="Testing-AVL-Trees.html#188">188</a>, <a href="Testing-RB-Trees.html#240">240</a>, <a href="Testing-TBSTs.html#293">293</a>, <a href="Testing-TAVL-Trees.html#332">332</a>, <a href="Testing-TRB-Trees.html#370">370</a>, <a href="Testing-RTBSTs.html#414">414</a>, <a href="Testing-RTAVL-Trees.html#451">451</a>, <a href="Testing-RTRB-Trees.html#484">484</a>, <a href="Testing-PBSTs.html#517">517</a>, <a href="Testing-PAVL-Trees.html#550">550</a>, and <a href="Testing-PRB-Trees.html#585">585</a>.</small>
+
+   <p>The third step is to check that the BST indeed contains all of the items
+that it should:
+
+   <p><a name="index-check-that-the-tree-contains-all-the-elements-it-should-172"></a>
+<pre class="format"><a href="Check_that_the_tree_contains_all_the_elements_it_should.c.txt">115</a>. &lt;<a name="115" href="Check_that_the_tree_contains_all_the_elements_it_should.c.txt">Check that the tree contains all the elements it should 115</a>&gt; =
+/* Check that all the values in <i>array</i><!-- /@w -->[] are in <i>tree</i><!-- /@w -->. */
+<b>size_t</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+<b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+  <b>if</b><!-- /@w --> (<i>bst_find</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]) == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>" Tree does not contain expected value %d.\n"</tt>, <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+      <i>okay</i><!-- /@w --> = 0;
+    }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Verification.html#109">109</a>, <a href="Testing-AVL-Trees.html#190">190</a>, <a href="Testing-RB-Trees.html#244">244</a>, and <a href="Testing-TBSTs.html#294">294</a>.</small>
+
+   <p>The final steps all check traversal of the BST, first by traversing in
+forward order from the beginning to the end, then in reverse order, then
+by checking that the null item behaves correctly.  The forward traversal
+checks that the proper number of items are in the BST.  It could appear
+to have too few items if the tree's pointers are screwed up in one way,
+or it could appear to have too many items if they are screwed up in
+another way.  We try to figure out how many items actually appear in the
+tree during traversal, but give up if the count gets to be more than
+twice that expected, assuming that this indicates a &ldquo;loop&rdquo; that will
+cause traversal to never terminate.
+
+   <p><a name="index-check-that-forward-traversal-works-173"></a>
+<pre class="format"><a href="Check_that_forward_traversal_works.c.txt">116</a>. &lt;<a name="116" href="Check_that_forward_traversal_works.c.txt">Check that forward traversal works 116</a>&gt; =
+/* Check that <i>bst_t_first</i><!-- /@w -->() and <i>bst_t_next</i><!-- /@w -->() work properly. */
+<b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>trav</i><!-- /@w -->;
+<b>size_t</b><!-- /@w --> <i>i</i><!-- /@w -->;
+<b>int</b><!-- /@w --> <i>prev</i><!-- /@w --> = -1;
+<b>int</b><!-- /@w --> *<i>item</i><!-- /@w -->;
+
+<b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0, <i>item</i><!-- /@w --> = <i>bst_t_first</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->); <i>i</i><!-- /@w --> &lt; 2 * <i>n</i><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->;
+     <i>i</i><!-- /@w -->++, <i>item</i><!-- /@w --> = <i>bst_t_next</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (*<i>item</i><!-- /@w --> &lt;= <i>prev</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>printf</i><!-- /@w --> (<tt>" Tree out of order: %d follows %d in traversal\n"</tt>, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->*<i>item</i><!-- /@w -->, <i>prev</i><!-- /@w -->);
+        <i>okay</i><!-- /@w --> = 0;
+      }
+
+    <i>prev</i><!-- /@w --> = *<i>item</i><!-- /@w -->;
+  }
+
+<b>if</b><!-- /@w --> (<i>i</i><!-- /@w --> != <i>n</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Tree should have %lu items, but has %lu in traversal\n"</tt>,
+            (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>n</i><!-- /@w -->, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>i</i><!-- /@w -->);
+    <i>okay</i><!-- /@w --> = 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Verification.html#109">109</a>, <a href="Testing-AVL-Trees.html#190">190</a>, <a href="Testing-RB-Trees.html#244">244</a>, and <a href="Testing-TBSTs.html#294">294</a>.</small>
+
+   <p>We do a similar traversal in the reverse order:
+
+   <p><a name="index-check-that-backward-traversal-works-174"></a>
+<pre class="format"><a href="Check_that_backward_traversal_works.c.txt">117</a>. &lt;<a name="117" href="Check_that_backward_traversal_works.c.txt">Check that backward traversal works 117</a>&gt; =
+/* Check that <i>bst_t_last</i><!-- /@w -->() and <i>bst_t_prev</i><!-- /@w -->() work properly. */
+<b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>trav</i><!-- /@w -->;
+<b>size_t</b><!-- /@w --> <i>i</i><!-- /@w -->;
+<b>int</b><!-- /@w --> <i>next</i><!-- /@w --> = <tt>INT_MAX</tt><!-- /@w -->;
+<b>int</b><!-- /@w --> *<i>item</i><!-- /@w -->;
+
+<b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0, <i>item</i><!-- /@w --> = <i>bst_t_last</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->); <i>i</i><!-- /@w --> &lt; 2 * <i>n</i><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->;
+     <i>i</i><!-- /@w -->++, <i>item</i><!-- /@w --> = <i>bst_t_prev</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (*<i>item</i><!-- /@w --> &gt;= <i>next</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>printf</i><!-- /@w --> (<tt>" Tree out of order: %d precedes %d in traversal\n"</tt>, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->*<i>item</i><!-- /@w -->, <i>next</i><!-- /@w -->);
+        <i>okay</i><!-- /@w --> = 0;
+      }
+
+    <i>next</i><!-- /@w --> = *<i>item</i><!-- /@w -->;
+  }
+
+<b>if</b><!-- /@w --> (<i>i</i><!-- /@w --> != <i>n</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Tree should have %lu items, but has %lu in reverse\n"</tt>,
+            (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>n</i><!-- /@w -->, (<b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->) <i>i</i><!-- /@w -->);
+    <i>okay</i><!-- /@w --> = 0;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Verification.html#109">109</a>, <a href="Testing-AVL-Trees.html#190">190</a>, <a href="Testing-RB-Trees.html#244">244</a>, and <a href="Testing-TBSTs.html#294">294</a>.</small>
+
+   <p>The final check to perform on the traverser is to make sure that the
+traverser null item works properly.  We start out a traverser at the
+null item with <i>bst_t_init</i><!-- /@w -->(), then make sure that the next item after
+that, as reported by <i>bst_t_next</i><!-- /@w -->(), is the same as the item returned by
+<i>bst_t_init</i><!-- /@w -->(), and similarly for the previous item:
+
+   <p><a name="index-check-that-traversal-from-the-null-element-works-175"></a>
+<pre class="format"><a href="Check_that_traversal_from_the_null_element_works.c.txt">118</a>. &lt;<a name="118" href="Check_that_traversal_from_the_null_element_works.c.txt">Check that traversal from the null element works 118</a>&gt; =
+/* Check that <i>bst_t_init</i><!-- /@w -->() works properly. */
+<b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>init</i><!-- /@w -->, <i>first</i><!-- /@w -->, <i>last</i><!-- /@w -->;
+<b>int</b><!-- /@w --> *<i>cur</i><!-- /@w -->, *<i>prev</i><!-- /@w -->, *<i>next</i><!-- /@w -->;
+
+<i>bst_t_init</i><!-- /@w --> (&amp;<i>init</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+<i>bst_t_first</i><!-- /@w --> (&amp;<i>first</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+<i>bst_t_last</i><!-- /@w --> (&amp;<i>last</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+
+<i>cur</i><!-- /@w --> = <i>bst_t_cur</i><!-- /@w --> (&amp;<i>init</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>cur</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Inited traverser should be null, but is actually %d.\n"</tt>, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->*<i>cur</i><!-- /@w -->);
+    <i>okay</i><!-- /@w --> = 0;
+  }
+
+<i>next</i><!-- /@w --> = <i>bst_t_next</i><!-- /@w --> (&amp;<i>init</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>next</i><!-- /@w --> != <i>bst_t_cur</i><!-- /@w --> (&amp;<i>first</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Next after null should be %d, but is actually %d.\n"</tt>,
+            *(<b>int</b><!-- /@w --> *) <i>bst_t_cur</i><!-- /@w --> (&amp;<i>first</i><!-- /@w -->), *<i>next</i><!-- /@w -->);
+    <i>okay</i><!-- /@w --> = 0;
+  }
+<i>bst_t_prev</i><!-- /@w --> (&amp;<i>init</i><!-- /@w -->);
+
+<i>prev</i><!-- /@w --> = <i>bst_t_prev</i><!-- /@w --> (&amp;<i>init</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>prev</i><!-- /@w --> != <i>bst_t_cur</i><!-- /@w --> (&amp;<i>last</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>printf</i><!-- /@w --> (<tt>" Previous before null should be %d, but is actually %d.\n"</tt>,
+            *(<b>int</b><!-- /@w --> *) <i>bst_t_cur</i><!-- /@w --> (&amp;<i>last</i><!-- /@w -->), *<i>prev</i><!-- /@w -->);
+    <i>okay</i><!-- /@w --> = 0;
+  }
+<i>bst_t_next</i><!-- /@w --> (&amp;<i>init</i><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Verification.html#109">109</a>, <a href="Testing-AVL-Trees.html#190">190</a>, <a href="Testing-RB-Trees.html#244">244</a>, and <a href="Testing-TBSTs.html#294">294</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Many of the segments of code in this section cast <b>size_t</b><!-- /@w --> arguments to
+<i>printf</i><!-- /@w -->() to <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w -->.  Why? 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d1%2d1%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Does <i>test</i><!-- /@w -->() work properly for testing trees with only one item in
+them?  Zero items? 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d1%2d1%232">answer</a>]
+
+   </body></html>
+

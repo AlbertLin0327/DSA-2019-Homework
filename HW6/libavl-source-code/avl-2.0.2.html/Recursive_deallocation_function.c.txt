@@ -1,0 +1,10 @@
+static void
+bst_deallocate_recursive (struct bst_node *node)
+{
+  if (node == NULL)
+    return;
+
+  bst_deallocate_recursive (node->bst_link[0]);
+  bst_deallocate_recursive (node->bst_link[1]);
+  free (node);
+}

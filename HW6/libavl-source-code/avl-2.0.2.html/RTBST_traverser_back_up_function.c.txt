@@ -1,0 +1,37 @@
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+rtbst_t_prev (struct rtbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->rtbst_node == NULL)
+    return rtbst_t_last (trav, trav->rtbst_table);
+  else if (trav->rtbst_node->rtbst_link[0] == NULL)
+    {
+      rtbst_comparison_func *cmp = trav->rtbst_table->rtbst_compare;
+      void *param = trav->rtbst_table->rtbst_param;
+      struct rtbst_node *node = trav->rtbst_node;
+      struct rtbst_node *i;
+
+      trav->rtbst_node = NULL;
+      for (i = trav->rtbst_table->rtbst_root; i != node; )
+        {
+          int dir = cmp (node->rtbst_data, i->rtbst_data, param) > 0;
+          if (dir == 1)
+            trav->rtbst_node = i;
+          i = i->rtbst_link[dir];
+        }
+
+      return trav->rtbst_node != NULL ? trav->rtbst_node->rtbst_data : NULL;
+    }
+  else
+    {
+      trav->rtbst_node = trav->rtbst_node->rtbst_link[0];
+      while (trav->rtbst_node->rtbst_rtag == RTBST_CHILD)
+        trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+      return trav->rtbst_node->rtbst_data;
+    }
+}
+

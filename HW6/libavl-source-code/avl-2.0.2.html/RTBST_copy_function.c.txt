@@ -1,0 +1,124 @@
+/* Creates a new node as a child of |dst| on side |dir|.
+   Copies data from |src| into the new node, applying |copy()|, if non-null.
+   Returns nonzero only if fully successful.
+   Regardless of success, integrity of the tree structure is assured,
+   though failure may leave a null pointer in a |rtbst_data| member. */
+static int
+copy_node (struct rtbst_table *tree,
+           struct rtbst_node *dst, int dir,
+           const struct rtbst_node *src, rtbst_copy_func *copy)
+{
+  struct rtbst_node *new =
+    tree->rtbst_alloc->libavl_malloc (tree->rtbst_alloc, sizeof *new);
+  if (new == NULL)
+    return 0;
+
+  new->rtbst_link[0] = NULL;
+  new->rtbst_rtag = RTBST_THREAD;
+  if (dir == 0)
+    new->rtbst_link[1] = dst;
+  else
+    {
+      new->rtbst_link[1] = dst->rtbst_link[1];
+      dst->rtbst_rtag = RTBST_CHILD;
+    }
+  dst->rtbst_link[dir] = new;
+
+  if (copy == NULL)
+    new->rtbst_data = src->rtbst_data;
+  else
+    {
+      new->rtbst_data = copy (src->rtbst_data, tree->rtbst_param);
+      if (new->rtbst_data == NULL)
+        return 0;
+    }
+
+  return 1;
+}
+
+/* Destroys |new| with |rtbst_destroy (new, destroy)|,
+   first initializing right links in |new| that have
+   not yet been initialized at time of call. */
+static void
+copy_error_recovery (struct rtbst_table *new, rtbst_item_func *destroy)
+{
+  struct rtbst_node *p = new->rtbst_root;
+  if (p != NULL)
+    {
+      while (p->rtbst_rtag == RTBST_CHILD)
+        p = p->rtbst_link[1];
+      p->rtbst_link[1] = NULL;
+    }
+  rtbst_destroy (new, destroy);
+}
+
+/* Copies |org| to a newly created tree, which is returned.
+   If |copy != NULL|, each data item in |org| is first passed to |copy|,
+   and the return values are inserted into the tree,
+   with |NULL| return values are taken as indications of failure.
+   On failure, destroys the partially created new tree,
+   applying |destroy|, if non-null, to each item in the new tree so far,
+   and returns |NULL|.
+   If |allocator != NULL|, it is used for allocation in the new tree.
+   Otherwise, the same allocator used for |org| is used. */
+struct rtbst_table *
+rtbst_copy (const struct rtbst_table *org, rtbst_copy_func *copy,
+            rtbst_item_func *destroy, struct libavl_allocator *allocator)
+{
+  struct rtbst_table *new;
+
+  const struct rtbst_node *p;
+  struct rtbst_node *q;
+
+  assert (org != NULL);
+  new = rtbst_create (org->rtbst_compare, org->rtbst_param,
+                     allocator != NULL ? allocator : org->rtbst_alloc);
+  if (new == NULL)
+    return NULL;
+
+  new->rtbst_count = org->rtbst_count;
+  if (new->rtbst_count == 0)
+    return new;
+
+  p = (struct rtbst_node *) &org->rtbst_root;
+  q = (struct rtbst_node *) &new->rtbst_root;
+  for (;;)
+    {
+      if (p->rtbst_link[0] != NULL)
+        {
+          if (!copy_node (new, q, 0, p->rtbst_link[0], copy))
+            {
+              copy_error_recovery (new, destroy);
+              return NULL;
+            }
+
+          p = p->rtbst_link[0];
+          q = q->rtbst_link[0];
+        }
+      else
+        {
+          while (p->rtbst_rtag == RTBST_THREAD)
+            {
+              p = p->rtbst_link[1];
+              if (p == NULL)
+                {
+                  q->rtbst_link[1] = NULL;
+                  return new;
+                }
+
+              q = q->rtbst_link[1];
+            }
+
+          p = p->rtbst_link[1];
+          q = q->rtbst_link[1];
+        }
+
+      if (p->rtbst_rtag == RTBST_CHILD)
+        if (!copy_node (new, q, 1, p->rtbst_link[1], copy))
+          {
+            copy_error_recovery (new, destroy);
+            return NULL;
+          }
+    }
+}
+

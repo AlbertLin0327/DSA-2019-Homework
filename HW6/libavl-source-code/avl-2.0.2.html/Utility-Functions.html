@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>Utility Functions - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="User-Interaction.html" title="4.14.5 User Interaction">
+<link rel=Next href="Main-Program.html" title="4.14.7 Main Program">
+<link rel=Parent href="Testing-BST-Functions.html" title="4.14 Testing">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Utility-Functions">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14.6 Utility Functions</b></big></td>
+<td align=right>
+<a href="index.html#Utility-Functions.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="User-Interaction.html" title="Skip Back: 4.14.5 User Interaction"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Main-Program.html" title="Skip Forward: 4.14.7 Main Program"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="User-Interaction.html" title="Prev: 4.14.5 User Interaction"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Testing-BST-Functions.html" title="Up: 4.14 Testing"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Main-Program.html" title="Next: 4.14.7 Main Program"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The first utility function is <i>compare_ints</i><!-- /@w -->().  This function is not
+used by &lt;<a href="Testing-BST-Functions.html#97"><tt>test.c</tt> 97</a>&gt; but it is included there because it is used by the
+test modules for all the individual tree structures.
+
+   <p><a name="index-test-utility-functions-207"></a>
+<pre class="format"><a href="Test_utility_functions.c.txt">134</a>. &lt;<a name="134" href="Test_utility_functions.c.txt">Test utility functions 134</a>&gt; =
+/* Utility functions. */
+
+&lt;<a href="Comparison-Function.html#3">Comparison function for <b>int</b><!-- /@w -->s 3</a>&gt;
+</pre>
+   <p class="noindent"><small>See also <a href="Utility-Functions.html#136">136</a> and <a href="Utility-Functions.html#137">137</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Testing-BST-Functions.html#97">97</a>.</small></div>
+
+   <p>It is prototyped in &lt;<a href="Testing-BST-Functions.html#99"><tt>test.h</tt> 99</a>&gt;:
+
+   <p><a name="index-test-prototypes-208"></a>
+<pre class="format"><a href="Test_prototypes.c.txt">135</a>. &lt;<a name="135" href="Test_prototypes.c.txt">Test prototypes 101</a>&gt; +=
+<b>int</b><!-- /@w --> <i>compare_ints</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pa</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pb</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->);
+</pre>
+   <p>The <i>fail</i><!-- /@w -->() function prints a provided error message to <i>stderr</i><!-- /@w -->,
+formatting it as with <i>printf</i><!-- /@w -->(), and terminates the program
+unsuccessfully:
+
+   <p><a name="index-test-utility-functions-209"></a>
+<pre class="format"><a href="Test_utility_functions.c.txt">136</a>. &lt;<a name="136" href="Test_utility_functions.c.txt">Test utility functions 134</a>&gt; +=
+/* Prints <i>message</i><!-- /@w --> on <i>stderr</i><!-- /@w -->, which is formatted as for <i>printf</i><!-- /@w -->(), 
+   and terminates the program unsuccessfully. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>fail</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>message</i><!-- /@w -->, <small class="dots">...</small>) <br>{
+<a name="index-_0040i_007bfail_007d-function-210"></a>  <b>va_list</b><!-- /@w --> <i>args</i><!-- /@w -->;
+
+  <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"%s: "</tt>, <i>pgm_name</i><!-- /@w -->);
+
+  <i>va_start</i><!-- /@w --> (<i>args</i><!-- /@w -->, <i>message</i><!-- /@w -->);
+  <i>vfprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <i>message</i><!-- /@w -->, <i>args</i><!-- /@w -->);
+  <i>va_end</i><!-- /@w --> (<i>args</i><!-- /@w -->);
+
+  <i>putchar</i><!-- /@w --> (<tt>'\n'</tt>);
+
+  <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+}
+</pre>
+   <p>Finally, the <i>xmalloc</i><!-- /@w -->() function is a <i>malloc</i><!-- /@w -->() wrapper that aborts
+the program if allocation fails:
+
+   <p><a name="index-test-utility-functions-211"></a>
+<pre class="format"><a href="Test_utility_functions.c.txt">137</a>. &lt;<a name="137" href="Test_utility_functions.c.txt">Test utility functions 134</a>&gt; +=
+/* Allocates and returns a pointer to <i>size</i><!-- /@w --> bytes of memory.
+   Aborts if allocation fails. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> *<br><i>xmalloc</i><!-- /@w --> (<b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bxmalloc_007d-function-212"></a>  <b>void</b><!-- /@w --> *<i>block</i><!-- /@w --> = <i>malloc</i><!-- /@w --> (<i>size</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>block</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>size</i><!-- /@w --> != 0)
+    <i>fail</i><!-- /@w --> (<tt>"out of memory"</tt>);
+  <b>return</b><!-- /@w --> <i>block</i><!-- /@w -->;
+}
+</pre>
+   </body></html>
+

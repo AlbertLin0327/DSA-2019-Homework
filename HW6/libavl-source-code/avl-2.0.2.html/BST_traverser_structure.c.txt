@@ -1,0 +1,11 @@
+/* BST traverser structure. */
+struct bst_traverser
+  {
+    struct bst_table *bst_table;        /* Tree being traversed. */
+    struct bst_node *bst_node;          /* Current node in tree. */
+    struct bst_node *bst_stack[BST_MAX_HEIGHT];
+                                        /* All the nodes above |bst_node|. */
+    size_t bst_height;                  /* Number of nodes in |bst_parent|. */
+    unsigned long bst_generation;       /* Generation number. */
+  };
+

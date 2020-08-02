@@ -1,0 +1,10 @@
+r->tbst_link[0] = p->tbst_link[0];
+r->tbst_tag[0] = p->tbst_tag[0];
+if (r->tbst_tag[0] == TBST_CHILD)
+  {
+    struct tbst_node *t = r->tbst_link[0];
+    while (t->tbst_tag[1] == TBST_CHILD)
+      t = t->tbst_link[1];
+    t->tbst_link[1] = r;
+  }
+q->tbst_link[dir] = r;

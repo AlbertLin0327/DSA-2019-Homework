@@ -1,0 +1,130 @@
+<html lang="en">
+<head>
+<title>Sequential Search of Ordered Array with Sentinel - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Sequential-Search-of-Ordered-Array.html" title="3.3 Sequential Search of Ordered Array">
+<link rel=Next href="Binary-Search-of-Ordered-Array.html" title="3.5 Binary Search of Ordered Array">
+<link rel=Parent href="Search-Algorithms.html" title="3 Search Algorithms">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Sequential-Search-of-Ordered-Array-with-Sentinel">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>3.4 Sequential Search of Ordered Array with Sentinel</b></big></td>
+<td align=right>
+<a href="index.html#Sequential-Search-of-Ordered-Array-with-Sentinel.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Sequential-Search-of-Ordered-Array.html" title="Skip Back: 3.3 Sequential Search of Ordered Array"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Binary-Search-of-Ordered-Array.html" title="Skip Forward: 3.5 Binary Search of Ordered Array"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Sequential-Search-of-Ordered-Array.html" title="Prev: 3.3 Sequential Search of Ordered Array"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Search-Algorithms.html" title="Up: 3 Search Algorithms"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Binary-Search-of-Ordered-Array.html" title="Next: 3.5 Binary Search of Ordered Array"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>When we implemented sequential search in a sorted array, we lost the
+benefits of having a sentinel.  But we can reintroduce a sentinel in the
+same way we did before, and obtain some of the same benefits.  It's
+pretty clear how to proceed:
+
+   <p><a name="index-sequentially-search-a-sorted-array-of-_0040w_007b_0040b_007bint_007d_007ds-using-a-sentinel-27"></a>
+<pre class="format"><a href="Sequentially_search_a_sorted_array_of__7cint_7cs_using_a_sentinel.c.txt">19</a>. &lt;<a name="19" href="Sequentially_search_a_sorted_array_of__7cint_7cs_using_a_sentinel.c.txt">Sequentially search a sorted array of <b>int</b><!-- /@w -->s using a sentinel 19</a>&gt; =
+/* Returns the smallest <i>i</i><!-- /@w --> such that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[].  
+   <i>array</i><!-- /@w -->[] must be an modifiable array of <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->sorted in ascending order,
+   with room for a (<i>n</i><!-- /@w --> + 1)th element at the end. */
+<b>int</b><!-- /@w --> <br><i>seq_sorted_sentinel_search</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> *<i>p</i><!-- /@w -->;
+
+  <i>array</i><!-- /@w -->[<i>n</i><!-- /@w -->] = <i>key</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>array</i><!-- /@w -->; *<i>p</i><!-- /@w --> &lt; <i>key</i><!-- /@w -->; <i>p</i><!-- /@w -->++)
+    /* Nothing to do. */;
+  <b>return</b><!-- /@w --> <i>p</i><!-- /@w --> - <i>array</i><!-- /@w --> &lt; <i>n</i><!-- /@w --> &amp;&amp; *<i>p</i><!-- /@w --> == <i>key</i><!-- /@w --> ? <i>p</i><!-- /@w --> - <i>array</i><!-- /@w --> : -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+   <p>With a bit of additional cleverness we can eliminate one objection to
+this sentinel approach.  Suppose that instead of using the value being
+searched for as the sentinel value, we used the maximum possible value
+for the type in question.  If we did this, then we could use almost the
+same code for searching the array.
+
+   <p>The advantage of this approach is that there would be no need to modify
+the array in order to search for different values, because the sentinel
+is the same value for all searches.  This eliminates the potential
+problem of searching an array in multiple contexts, due to nested
+searches, threads, or signals, for instance.  (In the code below, we
+will still put the sentinel into the array, because our generic test
+program won't know to put it in for us in advance, but in real-world
+code we could avoid the assignment.)
+
+   <p>We can easily write code for implementation of this technique:
+
+   <p><a name="index-sequentially-search-a-sorted-array-of-_0040w_007b_0040b_007bint_007d_007ds-using-a-sentinel-_00282_0029-28"></a>
+<pre class="format"><a href="Sequentially_search_a_sorted_array_of__7cint_7cs_using_a_sentinel__282_29.c.txt">20</a>. &lt;<a name="20" href="Sequentially_search_a_sorted_array_of__7cint_7cs_using_a_sentinel__282_29.c.txt">Sequentially search a sorted array of <b>int</b><!-- /@w -->s using a sentinel (2) 20</a>&gt; =
+/* Returns the smallest <i>i</i><!-- /@w --> such that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[].  
+   <i>array</i><!-- /@w -->[] must be an array of <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->sorted in ascending order, 
+   with room for an (<i>n</i><!-- /@w --> + 1)th element to set to <tt>INT_MAX</tt><!-- /@w -->. */
+<b>int</b><!-- /@w --> <br><i>seq_sorted_sentinel_search_2</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> *<i>p</i><!-- /@w -->;
+
+  <i>array</i><!-- /@w -->[<i>n</i><!-- /@w -->] = <tt>INT_MAX</tt><!-- /@w -->;
+  <b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>array</i><!-- /@w -->; *<i>p</i><!-- /@w --> &lt; <i>key</i><!-- /@w -->; <i>p</i><!-- /@w -->++)
+    /* Nothing to do. */;
+  <b>return</b><!-- /@w --> <i>p</i><!-- /@w --> - <i>array</i><!-- /@w --> &lt; <i>n</i><!-- /@w --> &amp;&amp; *<i>p</i><!-- /@w --> == <i>key</i><!-- /@w --> ? <i>p</i><!-- /@w --> - <i>array</i><!-- /@w --> : -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->When can't the largest possible value for the type be used as a sentinel? 
+[<a href="Answers-for-Chapter-3.html#3%2d4%231">answer</a>]
+
+   </body></html>
+

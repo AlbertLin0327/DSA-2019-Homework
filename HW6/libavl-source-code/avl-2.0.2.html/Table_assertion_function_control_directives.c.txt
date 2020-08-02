@@ -1,0 +1,8 @@
+/* Table assertion functions. */
+#ifndef NDEBUG
+#undef tbl_assert_insert
+#undef tbl_assert_delete
+#else
+#define tbl_assert_insert(table, item) tbl_insert (table, item)
+#define tbl_assert_delete(table, item) tbl_delete (table, item)
+#endif

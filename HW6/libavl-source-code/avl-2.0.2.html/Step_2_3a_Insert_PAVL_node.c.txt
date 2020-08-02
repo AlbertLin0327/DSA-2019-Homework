@@ -1,0 +1,16 @@
+n = tree->pavl_alloc->libavl_malloc (tree->pavl_alloc, sizeof *p);
+if (n == NULL)
+  return NULL;
+
+tree->pavl_count++;
+n->pavl_link[0] = n->pavl_link[1] = NULL;
+n->pavl_parent = q;
+n->pavl_data = item;
+if (q != NULL)
+  q->pavl_link[dir] = n;
+else
+  tree->pavl_root = n;
+n->pavl_balance = 0;
+if (tree->pavl_root == n)
+  return &n->pavl_data;
+

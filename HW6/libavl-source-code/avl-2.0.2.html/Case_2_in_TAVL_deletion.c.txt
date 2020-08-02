@@ -1,0 +1,3 @@
+q->tavl_link[dir] = p->tavl_link[dir];
+if (q != (struct tavl_node *) &tree->tavl_root)
+  q->tavl_tag[dir] = TAVL_THREAD;

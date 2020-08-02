@@ -1,0 +1,150 @@
+if (p->trb_color == TRB_BLACK)
+  {
+    for (; k > 1; k--)
+      {
+        if (pa[k - 1]->trb_tag[da[k - 1]] == TRB_CHILD)
+          {
+            struct trb_node *x = pa[k - 1]->trb_link[da[k - 1]];
+            if (x->trb_color == TRB_RED)
+              {
+                x->trb_color = TRB_BLACK;
+                break;
+              }
+          }
+
+        if (da[k - 1] == 0)
+          {
+            struct trb_node *w = pa[k - 1]->trb_link[1];
+
+            if (w->trb_color == TRB_RED)
+              {
+                w->trb_color = TRB_BLACK;
+                pa[k - 1]->trb_color = TRB_RED;
+
+                pa[k - 1]->trb_link[1] = w->trb_link[0];
+                w->trb_link[0] = pa[k - 1];
+                pa[k - 2]->trb_link[da[k - 2]] = w;
+
+                pa[k] = pa[k - 1];
+                da[k] = 0;
+                pa[k - 1] = w;
+                k++;
+
+                w = pa[k - 1]->trb_link[1];
+              }
+
+            if ((w->trb_tag[0] == TRB_THREAD
+                 || w->trb_link[0]->trb_color == TRB_BLACK)
+                && (w->trb_tag[1] == TRB_THREAD
+                    || w->trb_link[1]->trb_color == TRB_BLACK))
+              {
+                w->trb_color = TRB_RED;
+              }
+            else
+              {
+                if (w->trb_tag[1] == TRB_THREAD
+                    || w->trb_link[1]->trb_color == TRB_BLACK)
+                  {
+                    struct trb_node *y = w->trb_link[0];
+                    y->trb_color = TRB_BLACK;
+                    w->trb_color = TRB_RED;
+                    w->trb_link[0] = y->trb_link[1];
+                    y->trb_link[1] = w;
+                    w = pa[k - 1]->trb_link[1] = y;
+
+                    if (w->trb_tag[1] == TRB_THREAD)
+                      {
+                        w->trb_tag[1] = TRB_CHILD;
+                        w->trb_link[1]->trb_tag[0] = TRB_THREAD;
+                        w->trb_link[1]->trb_link[0] = w;
+                      }
+                  }
+
+                w->trb_color = pa[k - 1]->trb_color;
+                pa[k - 1]->trb_color = TRB_BLACK;
+                w->trb_link[1]->trb_color = TRB_BLACK;
+
+                pa[k - 1]->trb_link[1] = w->trb_link[0];
+                w->trb_link[0] = pa[k - 1];
+                pa[k - 2]->trb_link[da[k - 2]] = w;
+
+                if (w->trb_tag[0] == TRB_THREAD)
+                  {
+                    w->trb_tag[0] = TRB_CHILD;
+                    pa[k - 1]->trb_tag[1] = TRB_THREAD;
+                    pa[k - 1]->trb_link[1] = w;
+                  }
+                break;
+              }
+          }
+        else
+          {
+            struct trb_node *w = pa[k - 1]->trb_link[0];
+
+            if (w->trb_color == TRB_RED)
+              {
+                w->trb_color = TRB_BLACK;
+                pa[k - 1]->trb_color = TRB_RED;
+
+                pa[k - 1]->trb_link[0] = w->trb_link[1];
+                w->trb_link[1] = pa[k - 1];
+                pa[k - 2]->trb_link[da[k - 2]] = w;
+
+                pa[k] = pa[k - 1];
+                da[k] = 1;
+                pa[k - 1] = w;
+                k++;
+
+                w = pa[k - 1]->trb_link[0];
+              }
+
+            if ((w->trb_tag[0] == TRB_THREAD
+                 || w->trb_link[0]->trb_color == TRB_BLACK)
+                && (w->trb_tag[1] == TRB_THREAD
+                    || w->trb_link[1]->trb_color == TRB_BLACK))
+              {
+                w->trb_color = TRB_RED;
+              }
+            else
+              {
+                if (w->trb_tag[0] == TRB_THREAD
+                    || w->trb_link[0]->trb_color == TRB_BLACK)
+                  {
+                    struct trb_node *y = w->trb_link[1];
+                    y->trb_color = TRB_BLACK;
+                    w->trb_color = TRB_RED;
+                    w->trb_link[1] = y->trb_link[0];
+                    y->trb_link[0] = w;
+                    w = pa[k - 1]->trb_link[0] = y;
+
+                    if (w->trb_tag[0] == TRB_THREAD)
+                      {
+                        w->trb_tag[0] = TRB_CHILD;
+                        w->trb_link[0]->trb_tag[1] = TRB_THREAD;
+                        w->trb_link[0]->trb_link[1] = w;
+                      }
+                  }
+
+                w->trb_color = pa[k - 1]->trb_color;
+                pa[k - 1]->trb_color = TRB_BLACK;
+                w->trb_link[0]->trb_color = TRB_BLACK;
+
+                pa[k - 1]->trb_link[0] = w->trb_link[1];
+                w->trb_link[1] = pa[k - 1];
+                pa[k - 2]->trb_link[da[k - 2]] = w;
+
+                if (w->trb_tag[1] == TRB_THREAD)
+                  {
+                    w->trb_tag[1] = TRB_CHILD;
+                    pa[k - 1]->trb_tag[0] = TRB_THREAD;
+                    pa[k - 1]->trb_link[0] = w;
+                  }
+                break;
+              }
+          }
+      }
+
+    if (tree->trb_root != NULL)
+      tree->trb_root->trb_color = TRB_BLACK;
+  }
+

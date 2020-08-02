@@ -1,0 +1,128 @@
+/* Fills the |n| elements of |array[]| with a random permutation of the
+   integers between |0| and |n - 1|. */
+static void
+permuted_integers (int array[], size_t n)
+{
+  size_t i;
+
+  for (i = 0; i < n; i++)
+    array[i] = i;
+
+  for (i = 0; i < n; i++)
+    {
+      size_t j = i + (unsigned) rand () / (RAND_MAX / (n - i) + 1);
+      int t = array[j];
+      array[j] = array[i];
+      array[i] = t;
+    }
+}
+
+/* Generates a list of integers that produce a balanced tree when
+   inserted in order into a binary tree in the usual way.
+   |min| and |max| inclusively bound the values to be inserted.
+   Output is deposited starting at |*array|. */
+static void
+gen_balanced_tree (int min, int max, int **array)
+{
+  int i;
+
+  if (min > max)
+    return;
+
+  i = (min + max + 1) / 2;
+  *(*array)++ = i;
+  gen_balanced_tree (min, i - 1, array);
+  gen_balanced_tree (i + 1, max, array);
+}
+
+
+/* Generates a permutation of the integers |0| to |n - 1| into
+   |insert[]| according to |insert_order|. */
+static void
+gen_insertions (size_t n, enum insert_order insert_order, int insert[])
+{
+  size_t i;
+
+  switch (insert_order)
+    {
+    case INS_RANDOM:
+      permuted_integers (insert, n);
+      break;
+
+    case INS_ASCENDING:
+      for (i = 0; i < n; i++)
+        insert[i] = i;
+      break;
+
+    case INS_DESCENDING:
+      for (i = 0; i < n; i++)
+        insert[i] = n - i - 1;
+      break;
+
+    case INS_BALANCED:
+      gen_balanced_tree (0, n - 1, &insert);
+      break;
+
+    case INS_ZIGZAG:
+      for (i = 0; i < n; i++)
+        if (i % 2 == 0)
+          insert[i] = i / 2;
+        else
+          insert[i] = n - i / 2 - 1;
+      break;
+
+    case INS_ASCENDING_SHIFTED:
+      for (i = 0; i < n; i++)
+        {
+           insert[i] = i + n / 2;
+           if ((size_t) insert[i] >= n)
+             insert[i] -= n;
+        }
+      break;
+
+    case INS_CUSTOM:
+      for (i = 0; i < n; i++)
+        if (scanf ("%d", &insert[i]) == 0)
+          fail ("error reading insertion order from stdin");
+      break;
+
+    default:
+      assert (0);
+    }
+}
+
+/* Generates a permutation of the integers |0| to |n - 1| into
+   |delete[]| according to |delete_order| and |insert[]|. */
+static void
+gen_deletions (size_t n, enum delete_order delete_order,
+               const int *insert, int *delete)
+{
+  size_t i;
+
+  switch (delete_order)
+    {
+    case DEL_RANDOM:
+      permuted_integers (delete, n);
+      break;
+
+    case DEL_REVERSE:
+      for (i = 0; i < n; i++)
+        delete[i] = insert[n - i - 1];
+      break;
+
+    case DEL_SAME:
+      for (i = 0; i < n; i++)
+        delete[i] = insert[i];
+      break;
+
+    case DEL_CUSTOM:
+      for (i = 0; i < n; i++)
+        if (scanf ("%d", &delete[i]) == 0)
+          fail ("error reading deletion order from stdin");
+      break;
+
+    default:
+      assert (0);
+    }
+}
+

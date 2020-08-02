@@ -1,0 +1,54 @@
+if (p->prb_link[1] == NULL)
+  {
+    q->prb_link[dir] = p->prb_link[0];
+    if (q->prb_link[dir] != NULL)
+      q->prb_link[dir]->prb_parent = p->prb_parent;
+
+    f = q;
+  }
+else
+  {
+    enum prb_color t;
+    struct prb_node *r = p->prb_link[1];
+
+    if (r->prb_link[0] == NULL)
+      {
+        r->prb_link[0] = p->prb_link[0];
+        q->prb_link[dir] = r;
+        r->prb_parent = p->prb_parent;
+        if (r->prb_link[0] != NULL)
+          r->prb_link[0]->prb_parent = r;
+
+        t = p->prb_color;
+        p->prb_color = r->prb_color;
+        r->prb_color = t;
+
+        f = r;
+        dir = 1;
+      }
+    else
+      {
+        struct prb_node *s = r->prb_link[0];
+        while (s->prb_link[0] != NULL)
+          s = s->prb_link[0];
+        r = s->prb_parent;
+        r->prb_link[0] = s->prb_link[1];
+        s->prb_link[0] = p->prb_link[0];
+        s->prb_link[1] = p->prb_link[1];
+        q->prb_link[dir] = s;
+        if (s->prb_link[0] != NULL)
+          s->prb_link[0]->prb_parent = s;
+        s->prb_link[1]->prb_parent = s;
+        s->prb_parent = p->prb_parent;
+        if (r->prb_link[0] != NULL)
+          r->prb_link[0]->prb_parent = r;
+
+        t = p->prb_color;
+        p->prb_color = s->prb_color;
+        s->prb_color = t;
+
+        f = r;
+        dir = 0;
+      }
+  }
+

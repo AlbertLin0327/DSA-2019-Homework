@@ -1,0 +1,30 @@
+/* Frees storage allocated for |tree|.
+   If |destroy != NULL|, applies it to each data item in inorder. */
+void
+rtbst_destroy (struct rtbst_table *tree, rtbst_item_func *destroy)
+{
+  struct rtbst_node *p; /* Current node. */
+  struct rtbst_node *n; /* Next node. */
+
+  p = tree->rtbst_root;
+  if (p != NULL)
+    while (p->rtbst_link[0] != NULL)
+      p = p->rtbst_link[0];
+
+  while (p != NULL)
+    {
+      n = p->rtbst_link[1];
+      if (p->rtbst_rtag == RTBST_CHILD)
+        while (n->rtbst_link[0] != NULL)
+          n = n->rtbst_link[0];
+
+      if (destroy != NULL && p->rtbst_data != NULL)
+        destroy (p->rtbst_data, tree->rtbst_param);
+      tree->rtbst_alloc->libavl_free (tree->rtbst_alloc, p);
+
+      p = n;
+    }
+
+  tree->rtbst_alloc->libavl_free (tree->rtbst_alloc, tree);
+}
+

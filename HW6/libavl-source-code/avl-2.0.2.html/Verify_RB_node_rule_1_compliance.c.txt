@@ -1,0 +1,18 @@
+/* Verify compliance with rule 1. */
+if (node->rb_color == RB_RED)
+  {
+    if (node->rb_link[0] != NULL && node->rb_link[0]->rb_color == RB_RED)
+      {
+        printf (" Red node %d has red left child %d\n",
+                d, *(int *) node->rb_link[0]->rb_data);
+        *okay = 0;
+      }
+
+    if (node->rb_link[1] != NULL && node->rb_link[1]->rb_color == RB_RED)
+      {
+        printf (" Red node %d has red right child %d\n",
+                d, *(int *) node->rb_link[1]->rb_data);
+        *okay = 0;
+      }
+  }
+

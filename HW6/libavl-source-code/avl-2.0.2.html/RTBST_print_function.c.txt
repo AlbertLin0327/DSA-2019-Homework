@@ -1,0 +1,53 @@
+/* Prints the structure of |node|,
+   which is |level| levels from the top of the tree. */
+void
+print_tree_structure (struct rtbst_node *node, int level)
+{
+  /* You can set the maximum level as high as you like.
+     Most of the time, you'll want to debug code using small trees,
+     so that a large |level| indicates a ``loop'', which is a bug. */
+  if (level > 16)
+    {
+      printf ("[...]");
+      return;
+    }
+
+  if (node == NULL)
+    {
+      printf ("<nil>");
+      return;
+    }
+
+  printf ("%d(", node->rtbst_data ? *(int *) node->rtbst_data : -1);
+
+  if (node->rtbst_link[0] != NULL)
+    print_tree_structure (node->rtbst_link[0], level + 1);
+
+  fputs (", ", stdout);
+
+  if (node->rtbst_rtag == RTBST_CHILD)
+    {
+      if (node->rtbst_link[1] == node)
+        printf ("loop");
+      else
+        print_tree_structure (node->rtbst_link[1], level + 1);
+    }
+  else if (node->rtbst_link[1] != NULL)
+    printf (">%d",
+            (node->rtbst_link[1]->rtbst_data
+             ? *(int *) node->rtbst_link[1]->rtbst_data : -1));
+  else
+    printf (">>");
+
+  putchar (')');
+}
+
+/* Prints the entire structure of |tree| with the given |title|. */
+void
+print_whole_tree (const struct rtbst_table *tree, const char *title)
+{
+  printf ("%s: ", title);
+  print_tree_structure (tree->rtbst_root, 0);
+  putchar ('\n');
+}
+

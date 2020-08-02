@@ -1,0 +1,8 @@
+struct rb_node *pa[RB_MAX_HEIGHT]; /* Nodes on stack. */
+unsigned char da[RB_MAX_HEIGHT];   /* Directions moved from stack nodes. */
+int k;                             /* Stack height. */
+
+struct rb_node *p; /* Traverses tree looking for insertion point. */
+struct rb_node *n; /* Newly inserted node. */
+
+assert (tree != NULL && item != NULL);

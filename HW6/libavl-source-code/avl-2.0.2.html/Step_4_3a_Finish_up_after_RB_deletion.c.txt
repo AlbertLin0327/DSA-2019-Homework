@@ -1,0 +1,4 @@
+tree->rb_alloc->libavl_free (tree->rb_alloc, p);
+tree->rb_count--;
+tree->rb_generation++;
+return (void *) item;

@@ -1,0 +1,8 @@
+r->rtrb_link[1] = p->rtrb_link[1];
+r->rtrb_rtag = p->rtrb_rtag;
+t = r->rtrb_color;
+r->rtrb_color = p->rtrb_color;
+p->rtrb_color = t;
+pa[k - 1]->rtrb_link[da[k - 1]] = r;
+da[k] = 0;
+pa[k++] = r;

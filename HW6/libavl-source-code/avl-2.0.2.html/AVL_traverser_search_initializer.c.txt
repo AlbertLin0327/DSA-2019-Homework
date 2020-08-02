@@ -1,0 +1,37 @@
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+avl_t_find (struct avl_traverser *trav, struct avl_table *tree, void *item)
+{
+  struct avl_node *p, *q;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+  trav->avl_table = tree;
+  trav->avl_height = 0;
+  trav->avl_generation = tree->avl_generation;
+  for (p = tree->avl_root; p != NULL; p = q)
+    {
+      int cmp = tree->avl_compare (item, p->avl_data, tree->avl_param);
+
+      if (cmp < 0)
+        q = p->avl_link[0];
+      else if (cmp > 0)
+        q = p->avl_link[1];
+      else /* |cmp == 0| */
+        {
+          trav->avl_node = p;
+          return p->avl_data;
+        }
+
+      assert (trav->avl_height < AVL_MAX_HEIGHT);
+      trav->avl_stack[trav->avl_height++] = p;
+    }
+
+  trav->avl_height = 0;
+  trav->avl_node = NULL;
+  return NULL;
+}
+

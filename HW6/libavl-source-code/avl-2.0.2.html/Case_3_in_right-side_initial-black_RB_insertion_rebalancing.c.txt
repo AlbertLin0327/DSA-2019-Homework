@@ -1,0 +1,4 @@
+x = pa[k - 1];
+y = pa[k - 2]->rb_link[1] = q;
+x->rb_link[0] = y->rb_link[1];
+q = y->rb_link[1] = x;

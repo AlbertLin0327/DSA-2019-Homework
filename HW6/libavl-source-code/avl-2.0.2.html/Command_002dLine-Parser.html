@@ -1,0 +1,344 @@
+<html lang="en">
+<head>
+<title>Command-Line Parser - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Option-Parser.html" title="B.1 Option Parser">
+<link rel=Next href="Glossary.html" title="Appendix C Glossary">
+<link rel=Parent href="Supplementary-Code.html" title="Appendix B Supplementary Code">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Command_002dLine-Parser">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>B.2 Command-Line Parser</b></big></td>
+<td align=right>
+<a href="index.html#Command_002dLine-Parser.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Option-Parser.html" title="Skip Back: B.1 Option Parser"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Option-Parser.html" title="Prev: B.1 Option Parser"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Supplementary-Code.html" title="Up: Appendix B Supplementary Code"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Glossary.html" title="Next: Appendix C Glossary"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The option parser in the previous section handles the general form of
+command-line options.  The code in this section applies that option
+parser to the specific options used by the BST test program.  It has
+helper functions for argument parsing and advice to users.  Here is all
+of it together:
+
+   <p><a name="index-command-line-parser-813"></a>
+<pre class="format"><a href="Command_line_parser.c.txt">589</a>. &lt;<a name="589" href="Command_line_parser.c.txt">Command line parser 589</a>&gt; =
+/* Command line parser. */
+
+/* If <i>a</i><!-- /@w --> is a prefix for <i>b</i><!-- /@w --> or vice versa, returns the length of the <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->match.
+   Otherwise, returns 0. */
+<b>size_t</b><!-- /@w --> <br><i>match_len</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>a</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>b</i><!-- /@w -->) <br>{
+  <b>size_t</b><!-- /@w --> <i>cnt</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>cnt</i><!-- /@w --> = 0; *<i>a</i><!-- /@w --> == *<i>b</i><!-- /@w --> &amp;&amp; *<i>a</i><!-- /@w --> != <tt>'\0'</tt>; <i>a</i><!-- /@w -->++, <i>b</i><!-- /@w -->++)
+    <i>cnt</i><!-- /@w -->++;
+
+  <b>return</b><!-- /@w --> (*<i>a</i><!-- /@w --> != *<i>b</i><!-- /@w --> &amp;&amp; *<i>a</i><!-- /@w --> != <tt>'\0'</tt> &amp;&amp; *<i>b</i><!-- /@w --> != <tt>'\0'</tt>) ? 0 : <i>cnt</i><!-- /@w -->;
+}
+
+/* <i>s</i><!-- /@w --> should point to a decimal representation of an integer.
+   Returns the value of <i>s</i><!-- /@w -->, if successful, or 0 on failure. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>stoi</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>s</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bstoi_007d-function-814"></a>  <b>long</b><!-- /@w --> <i>x</i><!-- /@w --> = <i>strtol</i><!-- /@w --> (<i>s</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, 10);
+  <b>return</b><!-- /@w --> <i>x</i><!-- /@w --> &gt;= <tt>INT_MIN</tt><!-- /@w --> &amp;&amp; <i>x</i><!-- /@w --> &lt;= <tt>INT_MAX</tt><!-- /@w --> ? <i>x</i><!-- /@w --> : 0;
+}
+
+/* Print helpful syntax message and exit. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>usage</i><!-- /@w --> (<b>void</b><!-- /@w -->) <br>{
+<a name="index-_0040i_007busage_007d-function-815"></a>  <b>static</b><!-- /@w --> <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>help</i><!-- /@w -->[] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <tt>"bsttest, unit test for GNU libavl.\n\n"</tt>,
+      <tt>"Usage: %s [OPTION]...\n\n"</tt>,
+      <tt>"In the option descriptions below, CAPITAL denote arguments.\n"</tt>,
+      <tt>"If a long option shows an argument as mandatory, then it is\n"</tt>,
+      <tt>"mandatory for the equivalent short option also.  See the GNU\n"</tt>,
+      <tt>"libavl manual for more information.\n\n"</tt>,
+      <tt>"t, -test=TEST     Sets test to perform.  TEST is one of:\n"</tt>,
+      <tt>"                      correctness insert/delete/... (default)\n"</tt>,
+      <tt>"                      overflow    stack overflow test\n"</tt>,
+      <tt>"                      benchmark   benchmark test\n"</tt>,
+      <tt>"                      null        no test\n"</tt>,
+      <tt>"s, -size=TREESIZE  Sets tree size in nodes (default 16).\n"</tt>,
+      <tt>"r, -repeat=COUNT  Repeats operation COUNT times (default 16).\n"</tt>,
+      <tt>"i, -insert=ORDER  Sets the insertion order.  ORDER is one of:\n"</tt>,
+      <tt>"                      random      random permutation (default)\n"</tt>,
+      <tt>"                      ascending   ascending order 0...n1\n"</tt>,
+      <tt>"                      descending  descending order n1...0\n"</tt>,
+      <tt>"                      balanced    balanced tree order\n"</tt>,
+      <tt>"                      zigzag      zigzag tree\n"</tt>,
+      <tt>"                      ascshifted n/2...n1, 0...n/21\n"</tt>,
+      <tt>"                      custom      custom, read from stdin\n"</tt>,
+      <tt>"d, -delete=ORDER  Sets the deletion order.  ORDER is one of:\n"</tt>,
+      <tt>"                      random   random permutation (default)\n"</tt>,
+      <tt>"                      reverse  reverse order of insertion\n"</tt>,
+      <tt>"                      same     same as insertion order\n"</tt>,
+      <tt>"                      custom   custom, read from stdin\n"</tt>,
+      <tt>"a, -alloc=POLICY  Sets allocation policy.  POLICY is one of:\n"</tt>,
+      <tt>"                      track     track memory leaks (default)\n"</tt>,
+      <tt>"                      notrack  turn off leak detection\n"</tt>,
+      <tt>"                      failCNT  fail after CNT allocations\n"</tt>,
+      <tt>"                      fail%%PCT  fail random PCT%% of allocations\n"</tt>,
+      <tt>"                      subB,A   divide Bbyte blocks in Abyte units\n"</tt>,
+      <tt>"                    (Ignored for `benchmark' test.)\n"</tt>,
+      <tt>"A, -incr=INC      Fail policies: arg increment per repetition.\n"</tt>,
+      <tt>"S, -seed=SEED     Sets initial number seed to SEED.\n"</tt>,
+      <tt>"                    (default based on system time)\n"</tt>,
+      <tt>"n, -nonstop       Don't stop after a single error.\n"</tt>,
+      <tt>"q, -quiet         Turns down verbosity level.\n"</tt>,
+      <tt>"v, -verbose       Turns up verbosity level.\n"</tt>,
+      <tt>"h, -help          Displays this help screen.\n"</tt>,
+      <tt>"V, -version       Reports version and copyright information.\n"</tt>,
+      <tt>NULL</tt><!-- /@w -->,
+    };
+
+  <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> **<i>p</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>help</i><!-- /@w -->; *<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w -->++)
+    <i>printf</i><!-- /@w --> (*<i>p</i><!-- /@w -->, <i>pgm_name</i><!-- /@w -->);
+
+  <i>exit</i><!-- /@w --> (<tt>EXIT_SUCCESS</tt><!-- /@w -->);
+}
+
+/* Parses command-line arguments from null-terminated array <i>args</i><!-- /@w -->.
+   Sets up <i>options</i><!-- /@w --> appropriately to correspond. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>parse_command_line</i><!-- /@w --> (<b>char</b><!-- /@w --> **<i>args</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>test_options</b> *<i>options</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bparse_005fcommand_005fline_007d-function-816"></a>  <b>static</b><!-- /@w --> <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>option</b> <i>option_tab</i><!-- /@w -->[] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      {<tt>"test"</tt>, <tt>'t'</tt>, 1}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"insert"</tt>, <tt>'i'</tt>, 1}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"delete"</tt>, <tt>'d'</tt>, 1},
+      {<tt>"alloc"</tt>, <tt>'a'</tt>, 1}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"incr"</tt>, <tt>'A'</tt>, 1}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"size"</tt>, <tt>'s'</tt>, 1},
+      {<tt>"repeat"</tt>, <tt>'r'</tt>, 1}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"operation"</tt>, <tt>'o'</tt>, 1}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"seed"</tt>, <tt>'S'</tt>, 1},
+      {<tt>"nonstop"</tt>, <tt>'n'</tt>, 0}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"quiet"</tt>, <tt>'q'</tt>, 0}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"verbose"</tt>, <tt>'v'</tt>, 0},
+      {<tt>"help"</tt>, <tt>'h'</tt>, 0}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>"version"</tt>, <tt>'V'</tt>, 0}, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<tt>NULL</tt><!-- /@w -->, 0, 0},
+    };
+
+  <b>struct</b><!-- /@w --> <b>option_state</b> *<i>state</i><!-- /@w -->;
+
+  /* Default options. */
+  <i>options</i><!-- /@w -->-&gt;<i>test</i><!-- /@w --> = <tt>TST_CORRECTNESS</tt><!-- /@w -->; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>insert_order</i><!-- /@w --> = <tt>INS_RANDOM</tt><!-- /@w -->;
+  <i>options</i><!-- /@w -->-&gt;<i>delete_order</i><!-- /@w --> = <tt>DEL_RANDOM</tt><!-- /@w -->; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>alloc_policy</i><!-- /@w --> = <tt>MT_TRACK</tt><!-- /@w -->;
+  <i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[0] = 0; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[1] = 0;
+  <i>options</i><!-- /@w -->-&gt;<i>alloc_incr</i><!-- /@w --> = 0; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>node_cnt</i><!-- /@w --> = 15; 
+  <i>options</i><!-- /@w -->-&gt;<i>iter_cnt</i><!-- /@w --> = 15; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>seed_given</i><!-- /@w --> = 0;
+  <i>options</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w --> = 0; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>nonstop</i><!-- /@w --> = 0;
+
+  <b>if</b><!-- /@w --> (*<i>args</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w -->;
+
+  <i>state</i><!-- /@w --> = <i>option_init</i><!-- /@w --> (<i>option_tab</i><!-- /@w -->, <i>args</i><!-- /@w --> + 1);
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>char</b><!-- /@w --> *<i>arg</i><!-- /@w -->;
+      <b>int</b><!-- /@w --> <i>id</i><!-- /@w --> = <i>option_get</i><!-- /@w --> (<i>state</i><!-- /@w -->, &amp;<i>arg</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>id</i><!-- /@w --> == -1)
+        <b>break</b><!-- /@w -->;
+
+      <b>switch</b><!-- /@w --> (<i>id</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>case</b><!-- /@w --> <tt>'t'</tt>:
+          <b>if</b><!-- /@w --> (<i>match_len</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>"correctness"</tt>) &gt;= 3)
+            <i>options</i><!-- /@w -->-&gt;<i>test</i><!-- /@w --> = <tt>TST_CORRECTNESS</tt><!-- /@w -->;
+          <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>match_len</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>"overflow"</tt>) &gt;= 3)
+            <i>options</i><!-- /@w -->-&gt;<i>test</i><!-- /@w --> = <tt>TST_OVERFLOW</tt><!-- /@w -->;
+          <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>match_len</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>"null"</tt>) &gt;= 3)
+            <i>options</i><!-- /@w -->-&gt;<i>test</i><!-- /@w --> = <tt>TST_NULL</tt><!-- /@w -->;
+          <b>else</b><!-- /@w -->
+            <i>fail</i><!-- /@w --> (<tt>"unknown test \"%s\""</tt>, <i>arg</i><!-- /@w -->);
+          <b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'i'</tt>: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <b>static</b><!-- /@w --> <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>orders</i><!-- /@w -->[<tt>INS_CNT</tt><!-- /@w -->] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                <tt>"random"</tt>, <tt>"ascending"</tt>, <tt>"descending"</tt>,
+                <tt>"balanced"</tt>, <tt>"zigzag"</tt>, <tt>"ascshifted"</tt>, <tt>"custom"</tt>,
+              };
+
+            <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> **<i>iter</i><!-- /@w -->;
+
+            <i>assert</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> <i>orders</i><!-- /@w --> / <b>sizeof</b><!-- /@w --> *<i>orders</i><!-- /@w --> == <tt>INS_CNT</tt><!-- /@w -->);
+            <b>for</b><!-- /@w --> (<i>iter</i><!-- /@w --> = <i>orders</i><!-- /@w -->; ; <i>iter</i><!-- /@w -->++)
+              <b>if</b><!-- /@w --> (<i>iter</i><!-- /@w --> &gt;= <i>orders</i><!-- /@w --> + <tt>INS_CNT</tt><!-- /@w -->)
+                <i>fail</i><!-- /@w --> (<tt>"unknown order \"%s\""</tt>, <i>arg</i><!-- /@w -->);
+              <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>match_len</i><!-- /@w --> (*<i>iter</i><!-- /@w -->, <i>arg</i><!-- /@w -->) &gt;= 3) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>options</i><!-- /@w -->-&gt;<i>insert_order</i><!-- /@w --> = <i>iter</i><!-- /@w --> - <i>orders</i><!-- /@w -->;
+                  <b>break</b><!-- /@w -->;
+                }
+          }
+          <b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'d'</tt>: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <b>static</b><!-- /@w --> <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>orders</i><!-- /@w -->[<tt>DEL_CNT</tt><!-- /@w -->] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                <tt>"random"</tt>, <tt>"reverse"</tt>, <tt>"same"</tt>, <tt>"custom"</tt>,
+              };
+
+            <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> **<i>iter</i><!-- /@w -->;
+
+            <i>assert</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> <i>orders</i><!-- /@w --> / <b>sizeof</b><!-- /@w --> *<i>orders</i><!-- /@w --> == <tt>DEL_CNT</tt><!-- /@w -->);
+            <b>for</b><!-- /@w --> (<i>iter</i><!-- /@w --> = <i>orders</i><!-- /@w -->; ; <i>iter</i><!-- /@w -->++)
+              <b>if</b><!-- /@w --> (<i>iter</i><!-- /@w --> &gt;= <i>orders</i><!-- /@w --> + <tt>DEL_CNT</tt><!-- /@w -->)
+                <i>fail</i><!-- /@w --> (<tt>"unknown order \"%s\""</tt>, <i>arg</i><!-- /@w -->);
+              <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>match_len</i><!-- /@w --> (*<i>iter</i><!-- /@w -->, <i>arg</i><!-- /@w -->) &gt;= 3) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>options</i><!-- /@w -->-&gt;<i>delete_order</i><!-- /@w --> = <i>iter</i><!-- /@w --> - <i>orders</i><!-- /@w -->;
+                  <b>break</b><!-- /@w -->;
+                }
+          }
+          <b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'a'</tt>:
+          <b>if</b><!-- /@w --> (<i>match_len</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>"track"</tt>) &gt;= 3)
+            <i>options</i><!-- /@w -->-&gt;<i>alloc_policy</i><!-- /@w --> = <tt>MT_TRACK</tt><!-- /@w -->;
+          <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>match_len</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>"notrack"</tt>) &gt;= 3)
+            <i>options</i><!-- /@w -->-&gt;<i>alloc_policy</i><!-- /@w --> = <tt>MT_NO_TRACK</tt><!-- /@w -->;
+          <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (!<i>strncmp</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>"fail"</tt>, 3)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>p</i><!-- /@w --> = <i>arg</i><!-- /@w --> + <i>strcspn</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>"%"</tt>);
+              <b>if</b><!-- /@w --> (*<i>p</i><!-- /@w --> == <tt>&rdquo;</tt>) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>alloc_policy</i><!-- /@w --> = <tt>MT_FAIL_COUNT</tt><!-- /@w -->;
+              <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (*<i>p</i><!-- /@w --> == <tt>'%'</tt>) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>alloc_policy</i><!-- /@w --> = <tt>MT_FAIL_PERCENT</tt><!-- /@w -->;
+              <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>fail</i><!-- /@w --> (<tt>"invalid allocation policy \"%s\""</tt>, <i>arg</i><!-- /@w -->);
+
+              <i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[0] = <i>stoi</i><!-- /@w --> (<i>p</i><!-- /@w --> + 1);
+            }
+          <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (!<i>strncmp</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>"suballoc"</tt>, 3)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>p</i><!-- /@w --> = <i>strchr</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>&rdquo;</tt>);
+              <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>q</i><!-- /@w --> = <i>strchr</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>','</tt>);
+              <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>q</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+                <i>fail</i><!-- /@w --> (<tt>"invalid allocation policy \"%s\""</tt>, <i>arg</i><!-- /@w -->);
+
+              <i>options</i><!-- /@w -->-&gt;<i>alloc_policy</i><!-- /@w --> = <tt>MT_SUBALLOC</tt><!-- /@w -->;
+              <i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[0] = <i>stoi</i><!-- /@w --> (<i>p</i><!-- /@w --> + 1);
+              <i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[1] = <i>stoi</i><!-- /@w --> (<i>q</i><!-- /@w --> + 1);
+              <b>if</b><!-- /@w --> (<i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[<tt>MT_BLOCK_SIZE</tt><!-- /@w -->] &lt; 32)
+                <i>fail</i><!-- /@w --> (<tt>"block size too small"</tt>);
+              <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[<tt>MT_ALIGN</tt><!-- /@w -->] 
+                       &gt; <i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[<tt>MT_BLOCK_SIZE</tt><!-- /@w -->])
+                <i>fail</i><!-- /@w --> (<tt>"alignment cannot be greater than block size"</tt>);
+              <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>options</i><!-- /@w -->-&gt;<i>alloc_arg</i><!-- /@w -->[<tt>MT_ALIGN</tt><!-- /@w -->] &lt; 1)
+                <i>fail</i><!-- /@w --> (<tt>"alignment must be at least 1"</tt>);
+            }
+          <b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'A'</tt>: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>alloc_incr</i><!-- /@w --> = <i>stoi</i><!-- /@w --> (<i>arg</i><!-- /@w -->); <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'s'</tt>:
+          <i>options</i><!-- /@w -->-&gt;<i>node_cnt</i><!-- /@w --> = <i>stoi</i><!-- /@w --> (<i>arg</i><!-- /@w -->);
+          <b>if</b><!-- /@w --> (<i>options</i><!-- /@w -->-&gt;<i>node_cnt</i><!-- /@w --> &lt; 1)
+            <i>fail</i><!-- /@w --> (<tt>"bad tree size \"%s\""</tt>, <i>arg</i><!-- /@w -->);
+          <b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'r'</tt>:
+          <i>options</i><!-- /@w -->-&gt;<i>iter_cnt</i><!-- /@w --> = <i>stoi</i><!-- /@w --> (<i>arg</i><!-- /@w -->);
+          <b>if</b><!-- /@w --> (<i>options</i><!-- /@w -->-&gt;<i>iter_cnt</i><!-- /@w --> &lt; 1)
+            <i>fail</i><!-- /@w --> (<tt>"bad repeat count \"%s\""</tt>, <i>arg</i><!-- /@w -->);
+          <b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'S'</tt>:
+          <i>options</i><!-- /@w -->-&gt;<i>seed_given</i><!-- /@w --> = 1;
+          <i>options</i><!-- /@w -->-&gt;<i>seed</i><!-- /@w --> = <i>strtoul</i><!-- /@w --> (<i>arg</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, 0);
+          <b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'n'</tt>: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>nonstop</i><!-- /@w --> = 1; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'q'</tt>: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w -->&ndash;; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'v'</tt>: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>options</i><!-- /@w -->-&gt;<i>verbosity</i><!-- /@w -->++; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'h'</tt>: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>usage</i><!-- /@w --> (); <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>break</b><!-- /@w -->;
+
+        <b>case</b><!-- /@w --> <tt>'V'</tt>:
+          <i>fputs</i><!-- /@w --> (<tt>"GNU libavl 2.0.2\n"</tt>
+                 <tt>"Copyright (C) 19982002, 2004 "</tt>
+                 <tt>"Free Software Foundation, Inc.\n"</tt>
+                 <tt>"This program comes with NO WARRANTY, not even for\n"</tt>
+                 <tt>"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"</tt>
+                 <tt>"You may redistribute copies under the terms of the\n"</tt>
+                 <tt>"GNU General Public License.  For more information on\n"</tt>
+                 <tt>"these matters, see the file named COPYING.\n"</tt>,
+                 <i>stdout</i><!-- /@w -->);
+          <i>exit</i><!-- /@w --> (<tt>EXIT_SUCCESS</tt><!-- /@w -->);
+
+        <b>default</b><!-- /@w -->: <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>assert</i><!-- /@w --> (0);
+        }
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#97">97</a>.</small>
+
+<!-- *-texinfo-*- -->
+<!-- GNU libavl - library for manipulation of binary trees. -->
+<!-- Copyright (C) 1998-2002, 2004 Free Software Foundation, Inc. -->
+<!-- This program is free software; you can redistribute it and/or -->
+<!-- modify it under the terms of the GNU General Public License as -->
+<!-- published by the Free Software Foundation; either version 2 of -->
+<!-- the License, or (at your option) any later version. -->
+<!-- This program is distributed in the hope that it will be useful, -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU -->
+<!-- General Public License for more details. -->
+<!-- You should have received a copy of the GNU General Public License -->
+<!-- along with this program; if not, write to: Free Software -->
+<!-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA -->
+<!-- 02111-1307, USA. -->
+<!-- The author may be contacted as blp@gnu.org on the Internet, or -->
+<!-- write to Ben Pfaff, Stanford University, Computer Science Dept., -->
+<!-- 353 Serra Mall, Stanford CA 94305, USA. -->
+</p>
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr valign=middle>
+<td align=left width="33%">
+<a href="Option-Parser.html"><img src="prev.png" border=0 alt="Prev:" align=middle></a>
+B.1 Option Parser
+</td>
+<td align=center width="33%">
+<a href="Supplementary-Code.html"><img src="up.png" border=0 alt="Up:" align=middle></a>
+Appendix B Supplementary Code
+</td>
+<td align=right width="33%">
+Appendix C Glossary
+<a href="Glossary.html"><img src="next.png" border=0 alt="Next" align=middle></a>
+</td>
+</tr></table>
+</body></html>
+

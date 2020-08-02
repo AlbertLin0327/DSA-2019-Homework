@@ -1,0 +1,3 @@
+
+/* Special PBST functions. */
+void pbst_balance (struct pbst_table *tree);

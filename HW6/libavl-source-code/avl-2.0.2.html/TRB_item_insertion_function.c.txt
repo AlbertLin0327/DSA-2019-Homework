@@ -1,0 +1,163 @@
+/* Inserts |item| into |tree| and returns a pointer to |item|'s address.
+   If a duplicate item is found in the tree,
+   returns a pointer to the duplicate without inserting |item|.
+   Returns |NULL| in case of memory allocation failure. */
+void **
+trb_probe (struct trb_table *tree, void *item)
+{
+  struct trb_node *pa[TRB_MAX_HEIGHT]; /* Nodes on stack. */
+  unsigned char da[TRB_MAX_HEIGHT];    /* Directions moved from stack nodes. */
+  int k;                               /* Stack height. */
+
+  struct trb_node *p; /* Traverses tree looking for insertion point. */
+  struct trb_node *n; /* Newly inserted node. */
+  int dir;            /* Side of |p| on which |n| is inserted. */
+
+  assert (tree != NULL && item != NULL);
+
+  da[0] = 0;
+  pa[0] = (struct trb_node *) &tree->trb_root;
+  k = 1;
+  if (tree->trb_root != NULL)
+    {
+      for (p = tree->trb_root; ; p = p->trb_link[dir])
+        {
+          int cmp = tree->trb_compare (item, p->trb_data, tree->trb_param);
+          if (cmp == 0)
+            return &p->trb_data;
+
+          pa[k] = p;
+          da[k++] = dir = cmp > 0;
+
+          if (p->trb_tag[dir] == TRB_THREAD)
+            break;
+        }
+    }
+  else
+    {
+      p = (struct trb_node *) &tree->trb_root;
+      dir = 0;
+    }
+
+  n = tree->trb_alloc->libavl_malloc (tree->trb_alloc, sizeof *n);
+  if (n == NULL)
+    return NULL;
+
+  tree->trb_count++;
+  n->trb_data = item;
+  n->trb_tag[0] = n->trb_tag[1] = TRB_THREAD;
+  n->trb_link[dir] = p->trb_link[dir];
+  if (tree->trb_root != NULL)
+    {
+      p->trb_tag[dir] = TRB_CHILD;
+      n->trb_link[!dir] = p;
+    }
+  else
+    n->trb_link[1] = NULL;
+  p->trb_link[dir] = n;
+  n->trb_color = TRB_RED;
+
+  while (k >= 3 && pa[k - 1]->trb_color == TRB_RED)
+    {
+      if (da[k - 2] == 0)
+        {
+          struct trb_node *y = pa[k - 2]->trb_link[1];
+          if (pa[k - 2]->trb_tag[1] == TRB_CHILD && y->trb_color == TRB_RED)
+            {
+              pa[k - 1]->trb_color = y->trb_color = TRB_BLACK;
+              pa[k - 2]->trb_color = TRB_RED;
+              k -= 2;
+            }
+          else
+            {
+              struct trb_node *x;
+
+              if (da[k - 1] == 0)
+                y = pa[k - 1];
+              else
+                {
+                  x = pa[k - 1];
+                  y = x->trb_link[1];
+                  x->trb_link[1] = y->trb_link[0];
+                  y->trb_link[0] = x;
+                  pa[k - 2]->trb_link[0] = y;
+
+                  if (y->trb_tag[0] == TRB_THREAD)
+                    {
+                      y->trb_tag[0] = TRB_CHILD;
+                      x->trb_tag[1] = TRB_THREAD;
+                      x->trb_link[1] = y;
+                    }
+                }
+
+              x = pa[k - 2];
+              x->trb_color = TRB_RED;
+              y->trb_color = TRB_BLACK;
+
+              x->trb_link[0] = y->trb_link[1];
+              y->trb_link[1] = x;
+              pa[k - 3]->trb_link[da[k - 3]] = y;
+
+              if (y->trb_tag[1] == TRB_THREAD)
+                {
+                  y->trb_tag[1] = TRB_CHILD;
+                  x->trb_tag[0] = TRB_THREAD;
+                  x->trb_link[0] = y;
+                }
+              break;
+            }
+        }
+      else
+        {
+          struct trb_node *y = pa[k - 2]->trb_link[0];
+          if (pa[k - 2]->trb_tag[0] == TRB_CHILD && y->trb_color == TRB_RED)
+            {
+              pa[k - 1]->trb_color = y->trb_color = TRB_BLACK;
+              pa[k - 2]->trb_color = TRB_RED;
+              k -= 2;
+            }
+          else
+            {
+              struct trb_node *x;
+
+              if (da[k - 1] == 1)
+                y = pa[k - 1];
+              else
+                {
+                  x = pa[k - 1];
+                  y = x->trb_link[0];
+                  x->trb_link[0] = y->trb_link[1];
+                  y->trb_link[1] = x;
+                  pa[k - 2]->trb_link[1] = y;
+
+                  if (y->trb_tag[1] == TRB_THREAD)
+                    {
+                      y->trb_tag[1] = TRB_CHILD;
+                      x->trb_tag[0] = TRB_THREAD;
+                      x->trb_link[0] = y;
+                    }
+                }
+
+              x = pa[k - 2];
+              x->trb_color = TRB_RED;
+              y->trb_color = TRB_BLACK;
+
+              x->trb_link[1] = y->trb_link[0];
+              y->trb_link[0] = x;
+              pa[k - 3]->trb_link[da[k - 3]] = y;
+
+              if (y->trb_tag[0] == TRB_THREAD)
+                {
+                  y->trb_tag[0] = TRB_CHILD;
+                  x->trb_tag[1] = TRB_THREAD;
+                  x->trb_link[1] = y;
+                }
+              break;
+            }
+        }
+    }
+  tree->trb_root->trb_color = TRB_BLACK;
+
+  return &n->trb_data;
+}
+

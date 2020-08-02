@@ -1,0 +1,3 @@
+q->tbst_link[dir] = p->tbst_link[dir];
+if (q != (struct tbst_node *) &tree->tbst_root)
+  q->tbst_tag[dir] = TBST_THREAD;

@@ -1,0 +1,704 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 3 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-2.html" title="Chapter 2">
+<link rel=Next href="Answers-for-Chapter-4.html" title="Chapter 4">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-3">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 3</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-3.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-2.html" title="Skip Back: Chapter 2"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-4.html" title="Skip Forward: Chapter 4"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-2.html" title="Prev: Chapter 2"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-4.html" title="Next: Chapter 4"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 3.1</h4>
+
+<p><a name="3_002d1_00231"></a> <b>1.</b>
+The following program can be improved in many ways.  However, we will
+implement a much better testing framework later, so this is fine for
+now.
+
+   <p><a name="index-_0040t_007bseq_002dtest_002ec_007d-840"></a>
+<pre class="format"><a href="seq-test.c.txt">595</a>. &lt;<a name="595" href="seq-test.c.txt"><tt>seq-test.c</tt> 595</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;stdio.h&gt;
+
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bMAX_005fINPUT_007d_007d-macro_0040c-841"></a><tt>MAX_INPUT</tt><!-- /@w --> 1024
+
+&lt;<a href="Sequential-Search.html#16">Sequentially search an array of <b>int</b><!-- /@w -->s 16</a>&gt;
+
+<b>int</b><!-- /@w --> <br><i>main</i><!-- /@w --> (<b>void</b><!-- /@w -->) <br>{
+<a name="index-_0040i_007bmain_007d-function-842"></a>  <b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[<tt>MAX_INPUT</tt><!-- /@w -->];
+  <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <i>i</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>n</i><!-- /@w --> = 0; <i>n</i><!-- /@w --> &lt; <tt>MAX_INPUT</tt><!-- /@w -->; <i>n</i><!-- /@w -->++)
+    <b>if</b><!-- /@w --> (<i>scanf</i><!-- /@w --> (<tt>"%d"</tt>, &amp;<i>array</i><!-- /@w -->[<i>n</i><!-- /@w -->]) != 1)
+      <b>break</b><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>result</i><!-- /@w --> = <i>seq_search</i><!-- /@w --> (<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]);
+      <b>if</b><!-- /@w --> (<i>result</i><!-- /@w --> != <i>i</i><!-- /@w -->)
+        <i>printf</i><!-- /@w --> (<tt>"seq_search() returned %d looking for %d  expected %d\n"</tt>,
+                <i>result</i><!-- /@w -->, <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->], <i>i</i><!-- /@w -->);
+    }
+
+  <b>return</b><!-- /@w --> 0;
+}
+</pre>
+   <h4 class="subheading">Section 3.4</h4>
+
+<p><a name="3_002d4_00231"></a> <b>1.</b>
+Some types don't have a largest possible value; e.g., arbitrary-length
+strings.
+
+<h4 class="subheading">Section 3.5</h4>
+
+<p><a name="3_002d5_00231"></a> <b>1.</b>
+Knuth's name for this procedure is &ldquo;uniform binary search.&rdquo;  The code
+below is an almost-literal implementation of his Algorithm U.  The fact
+that Knuth's arrays are 1-based, but C arrays are 0-based, accounts for
+most of the differences.
+
+   <p>The code below uses <b>for</b><!-- /@w --> (;;) to assemble an &ldquo;infinite&rdquo; loop, a
+common C idiom.
+
+   <p><a name="index-uniform-binary-search-of-ordered-array-843"></a>
+<pre class="format"><a href="Uniform_binary_search_of_ordered_array.c.txt">596</a>. &lt;<a name="596" href="Uniform_binary_search_of_ordered_array.c.txt">Uniform binary search of ordered array 596</a>&gt; =
+/* Returns the offset within <i>array</i><!-- /@w -->[] of an element equal to <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[].  
+   <i>array</i><!-- /@w -->[] must be an array of <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s sorted in ascending order, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->with <i>array</i><!-- /@w -->[-1] modifiable. */
+<b>int</b><!-- /@w --> <br><i>uniform_binary_search</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w --> = (<i>n</i><!-- /@w --> + 1) / 2 - 1;
+  <b>int</b><!-- /@w --> <i>m</i><!-- /@w --> = <i>n</i><!-- /@w --> / 2;
+
+  <i>array</i><!-- /@w -->[-1] = <tt>INT_MIN</tt><!-- /@w -->;
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>key</i><!-- /@w --> &lt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>m</i><!-- /@w --> == 0)
+            <b>return</b><!-- /@w --> -1;
+          <i>i</i><!-- /@w --> -= (<i>m</i><!-- /@w --> + 1) / 2;
+          <i>m</i><!-- /@w --> /= 2;
+        }
+      <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>key</i><!-- /@w --> &gt; <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>m</i><!-- /@w --> == 0)
+            <b>return</b><!-- /@w --> -1;
+          <i>i</i><!-- /@w --> += (<i>m</i><!-- /@w --> + 1) / 2;
+          <i>m</i><!-- /@w --> /= 2;
+        }
+      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <i>i</i><!-- /@w --> &gt;= 0 ? <i>i</i><!-- /@w --> : -1;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998b">Knuth 1998b</a>], section 6.2.1, Algorithm U.
+
+   <p><a name="3_002d5_00232"></a> <b>2a.</b>
+This actually uses <i>blp_bsearch</i><!-- /@w -->(), implemented in part (b) below, in
+order to allow that function to be tested.  You can replace the
+reference to <i>blp_bsearch</i><!-- /@w -->() by <i>bsearch</i><!-- /@w -->() without problem.
+
+   <p><a name="index-binary-search-using-_0040w_007b_0040i_007bbsearch_007d_007d_0028_0029-844"></a>
+<pre class="format"><a href="Binary_search_using__7cbsearch_28_29_7c.c.txt">597</a>. &lt;<a name="597" href="Binary_search_using__7cbsearch_28_29_7c.c.txt">Binary search using <i>bsearch</i><!-- /@w -->() 597</a>&gt; =
+&lt;<a href="Answers-for-Chapter-3.html#598">blp's implementation of <i>bsearch</i><!-- /@w -->() 598</a>&gt;
+
+/* Compares the <b>int</b><!-- /@w -->s pointed to by <i>pa</i><!-- /@w --> and <i>pb</i><!-- /@w --> and returns positive
+   if *<i>pa</i><!-- /@w --> &gt; *<i>pb</i><!-- /@w -->, negative if *<i>pa</i><!-- /@w --> &lt; *<i>pb</i><!-- /@w -->, or zero if *<i>pa</i><!-- /@w --> == *<i>pb</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>compare_ints</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pa</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pb</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompare_005fints_007d-function-845"></a>  <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>a</i><!-- /@w --> = <i>pa</i><!-- /@w -->;
+  <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>b</i><!-- /@w --> = <i>pb</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (*<i>a</i><!-- /@w --> &gt; *<i>b</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> 1;
+  <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (*<i>a</i><!-- /@w --> &lt; *<i>b</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> -1;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> 0;
+}
+
+/* Returns the offset within <i>array</i><!-- /@w -->[] of an element equal to <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[].  
+   <i>array</i><!-- /@w -->[] must be an array of <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s sorted in ascending order. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>binary_search_bsearch</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> *<i>p</i><!-- /@w --> = <i>blp_bsearch</i><!-- /@w --> (&amp;<i>key</i><!-- /@w -->, <i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>array</i><!-- /@w -->, <i>compare_ints</i><!-- /@w -->);
+  <b>return</b><!-- /@w --> <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? <i>p</i><!-- /@w --> - <i>array</i><!-- /@w --> : -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+<p class="noindent"><b>2b.</b>
+This function is named using the author of this book's initials.  Note
+that the implementation below assumes that <i>count</i><!-- /@w -->, a <b>size_t</b><!-- /@w -->, won't
+exceed the range of an <b>int</b><!-- /@w -->.  Some systems provide a type called
+<b>ssize_t</b> for this purpose, but we won't assume that here.  (<b>long</b><!-- /@w --> is
+perhaps a better choice than <b>int</b><!-- /@w -->.)
+
+   <p><a name="index-blp_0027s-implementation-of-_0040w_007b_0040i_007bbsearch_007d_007d_0028_0029-846"></a>
+<pre class="format"><a href="blp_27s_implementation_of__7cbsearch_28_29_7c.c.txt">598</a>. &lt;<a name="598" href="blp_27s_implementation_of__7cbsearch_28_29_7c.c.txt">blp's implementation of <i>bsearch</i><!-- /@w -->() 598</a>&gt; =
+/* Plug-compatible with standard C library <i>bsearch</i><!-- /@w -->(). */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> *<br><i>blp_bsearch</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>key</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>array</i><!-- /@w -->, <b>size_t</b><!-- /@w --> <i>count</i><!-- /@w -->,
+             <b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->, <b>int</b><!-- /@w --> (*<i>compare</i><!-- /@w -->) (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *)) <br>{
+<a name="index-_0040i_007bblp_005fbsearch_007d-function-847"></a>  <b>int</b><!-- /@w --> <i>min</i><!-- /@w --> = 0;
+  <b>int</b><!-- /@w --> <i>max</i><!-- /@w --> = <i>count</i><!-- /@w -->;
+
+  <b>while</b><!-- /@w --> (<i>max</i><!-- /@w --> &gt;= <i>min</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>i</i><!-- /@w --> = (<i>min</i><!-- /@w --> + <i>max</i><!-- /@w -->) / 2;
+      <b>void</b><!-- /@w --> *<i>item</i><!-- /@w --> = ((<b>char</b><!-- /@w --> *) <i>array</i><!-- /@w -->) + <i>size</i><!-- /@w --> * <i>i</i><!-- /@w -->;
+      <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>compare</i><!-- /@w --> (<i>key</i><!-- /@w -->, <i>item</i><!-- /@w -->);
+
+      <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> &lt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>max</i><!-- /@w --> = <i>i</i><!-- /@w --> - 1;
+      <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>min</i><!-- /@w --> = <i>i</i><!-- /@w --> + 1;
+      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <i>item</i><!-- /@w -->;
+    }
+
+  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#597">597</a>.</small>
+
+   <p><a name="3_002d5_00233"></a> <b>3.</b>
+Here's an outline of the entire program:
+
+   <p><a name="index-_0040t_007bsrch_002dtest_002ec_007d-848"></a>
+<pre class="format"><a href="srch-test.c.txt">599</a>. &lt;<a name="599" href="srch-test.c.txt"><tt>srch-test.c</tt> 599</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;limits.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> &lt;time.h&gt;
+
+&lt;<a href="Answers-for-Chapter-3.html#600">Search functions 600</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#601">Array of search functions 601</a>&gt;
+
+&lt;<a href="Answers-for-Chapter-3.html#604">Timer functions 604</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#606">Search test functions 606</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#609">Search test main program 609</a>&gt;
+</pre>
+   <p>We need to include all the search functions we're going to use:
+
+   <p><a name="index-search-functions-849"></a>
+<pre class="format"><a href="Search_functions.c.txt">600</a>. &lt;<a name="600" href="Search_functions.c.txt">Search functions 600</a>&gt; =
+&lt;<a href="Sequential-Search.html#16">Sequentially search an array of <b>int</b><!-- /@w -->s 16</a>&gt;
+&lt;<a href="Sequential-Search-with-Sentinel.html#17">Sequentially search an array of <b>int</b><!-- /@w -->s using a sentinel 17</a>&gt;
+&lt;<a href="Sequential-Search-of-Ordered-Array.html#18">Sequentially search a sorted array of <b>int</b><!-- /@w -->s 18</a>&gt;
+&lt;<a href="Sequential-Search-of-Ordered-Array-with-Sentinel.html#19">Sequentially search a sorted array of <b>int</b><!-- /@w -->s using a sentinel 19</a>&gt;
+&lt;<a href="Sequential-Search-of-Ordered-Array-with-Sentinel.html#20">Sequentially search a sorted array of <b>int</b><!-- /@w -->s using a sentinel (2) 20</a>&gt;
+&lt;<a href="Binary-Search-of-Ordered-Array.html#21">Binary search of ordered array 21</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#596">Uniform binary search of ordered array 596</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#597">Binary search using <i>bsearch</i><!-- /@w -->() 597</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#603">Cheating search 603</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#599">599</a>.</small>
+
+   <p>We need to make a list of the search functions.  We start by defining
+the array's element type:
+
+   <p><a name="index-array-of-search-functions-850"></a>
+<pre class="format"><a href="Array_of_search_functions.c.txt">601</a>. &lt;<a name="601" href="Array_of_search_functions.c.txt">Array of search functions 601</a>&gt; =
+/* Description of a search function. */
+<b>struct</b><!-- /@w --> <b>search_func</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bsearch_005ffunc_007d-structure-851"></a>    <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>name</i><!-- /@w -->;
+    <b>int</b><!-- /@w --> (*<i>search</i><!-- /@w -->) (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->);
+  };
+</pre>
+   <p class="noindent"><small>See also <a href="Answers-for-Chapter-3.html#602">602</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Answers-for-Chapter-3.html#599">599</a>.</small></div>
+
+   <p>Then we define the list as an array:
+
+   <p><a name="index-array-of-search-functions-852"></a>
+<pre class="format"><a href="Array_of_search_functions.c.txt">602</a>. &lt;<a name="602" href="Array_of_search_functions.c.txt">Array of search functions 601</a>&gt; +=
+/* Array of all the search functions we know. */
+<b>struct</b><!-- /@w --> <b>search_func</b> <i>search_func_tab</i><!-- /@w -->[] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    {<tt>"seq_search()"</tt>, <i>seq_search</i><!-- /@w -->},
+    {<tt>"seq_sentinel_search()"</tt>, <i>seq_sentinel_search</i><!-- /@w -->},
+    {<tt>"seq_sorted_search()"</tt>, <i>seq_sorted_search</i><!-- /@w -->},
+    {<tt>"seq_sorted_sentinel_search()"</tt>, <i>seq_sorted_sentinel_search</i><!-- /@w -->},
+    {<tt>"seq_sorted_sentinel_search_2()"</tt>, <i>seq_sorted_sentinel_search_2</i><!-- /@w -->},
+    {<tt>"binary_search()"</tt>, <i>binary_search</i><!-- /@w -->},
+    {<tt>"uniform_binary_search()"</tt>, <i>uniform_binary_search</i><!-- /@w -->},
+    {<tt>"binary_search_bsearch()"</tt>, <i>binary_search_bsearch</i><!-- /@w -->},
+    {<tt>"cheat_search()"</tt>, <i>cheat_search</i><!-- /@w -->},
+  };
+
+/* Number of search functions. */
+<b>const</b><!-- /@w --> <b>size_t</b><!-- /@w --> <i>n_search_func</i><!-- /@w --> = <b>sizeof</b><!-- /@w --> <i>search_func_tab</i><!-- /@w --> / <b>sizeof</b><!-- /@w --> *<i>search_func_tab</i><!-- /@w -->;
+</pre>
+   <p>We've added previously unseen function <i>cheat_search</i><!-- /@w -->() to the array. 
+This is a function that &ldquo;cheats&rdquo; on the search because it knows that
+we are only going to search in a array such that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>i</i><!-- /@w -->.  The
+purpose of <i>cheat_search</i><!-- /@w -->() is to allow us to find out how much of the
+search time is overhead imposed by the framework and the function
+calls and how much is actual search time.  Here's <i>cheat_search</i><!-- /@w -->():
+
+   <p><a name="index-cheating-search-853"></a>
+<pre class="format"><a href="Cheating_search.c.txt">603</a>. &lt;<a name="603" href="Cheating_search.c.txt">Cheating search 603</a>&gt; =
+/* Cheating search function that knows that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>i</i><!-- /@w -->.
+   <i>n</i><!-- /@w --> must be the array size and <i>key</i><!-- /@w --> the item to search for.
+   <i>array</i><!-- /@w -->[] is not used.
+   Returns the index in <i>array</i><!-- /@w -->[] where <i>key</i><!-- /@w --> is found, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[]. */
+<b>int</b><!-- /@w --> <br><i>cheat_search</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcheat_005fsearch_007d-function-854"></a>  <b>return</b><!-- /@w --> <i>key</i><!-- /@w --> &gt;= 0 &amp;&amp; <i>key</i><!-- /@w --> &lt; <i>n</i><!-- /@w --> ? <i>key</i><!-- /@w --> : -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+   <p>We're going to need some functions for timing operations.  First, a
+function to &ldquo;start&rdquo; a timer:
+
+   <p><a name="index-timer-functions-855"></a>
+<pre class="format"><a href="Timer_functions.c.txt">604</a>. &lt;<a name="604" href="Timer_functions.c.txt">Timer functions 604</a>&gt; =
+/* &ldquo;Starts&rdquo; a timer by recording the current time in *<i>t</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>start_timer</i><!-- /@w --> (<b>clock_t</b><!-- /@w --> *<i>t</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bstart_005ftimer_007d-function-856"></a>  <b>clock_t</b><!-- /@w --> <i>now</i><!-- /@w --> = <i>clock</i><!-- /@w --> ();
+  <b>while</b><!-- /@w --> (<i>now</i><!-- /@w --> == <i>clock</i><!-- /@w --> ())
+    /* Do nothing. */;
+  *<i>t</i><!-- /@w --> = <i>clock</i><!-- /@w --> ();
+}
+</pre>
+   <p class="noindent"><small>See also <a href="Answers-for-Chapter-3.html#605">605</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Answers-for-Chapter-3.html#599">599</a>.</small></div>
+
+   <p>Function <i>start_timer</i><!-- /@w -->() waits for the value returned by <i>clock</i><!-- /@w -->() to
+change before it records the value.  On systems with a slow timer
+(such as PCs running MS-DOS, where the clock ticks only 18.2 times per
+second), this gives more stable timing results because it means that
+timing always starts near the beginning of a clock tick.
+
+   <p>We also need a function to &ldquo;stop&rdquo; the timer and report the results:
+
+   <p><a name="index-timer-functions-857"></a>
+<pre class="format"><a href="Timer_functions.c.txt">605</a>. &lt;<a name="605" href="Timer_functions.c.txt">Timer functions 604</a>&gt; +=
+/* Prints the elapsed time since <i>start</i><!-- /@w -->, set by <i>start_timer</i><!-- /@w -->(). */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>stop_timer</i><!-- /@w --> (<b>clock_t</b><!-- /@w --> <i>start</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bstop_005ftimer_007d-function-858"></a>  <b>clock_t</b><!-- /@w --> <i>end</i><!-- /@w --> = <i>clock</i><!-- /@w --> ();
+
+  <i>printf</i><!-- /@w --> (<tt>"%.2f seconds\n"</tt>, ((<b>double</b><!-- /@w -->) (<i>end</i><!-- /@w --> - <i>start</i><!-- /@w -->)) / <tt>CLOCKS_PER_SEC</tt><!-- /@w -->);
+}
+</pre>
+   <p>The value reported by <i>clock</i><!-- /@w -->() can &ldquo;wrap around&rdquo; to zero from a
+large value.  <i>stop_timer</i><!-- /@w -->() does not allow for this possibility.
+
+   <p>We will write three tests for the search functions.  The first of these
+just checks that the search function works properly:
+
+   <p><a name="index-search-test-functions-859"></a>
+<pre class="format"><a href="Search_test_functions.c.txt">606</a>. &lt;<a name="606" href="Search_test_functions.c.txt">Search test functions 606</a>&gt; =
+/* Tests that <i>f</i><!-- /@w -->-&gt;<i>search</i><!-- /@w --> returns <i>expect</i><!-- /@w --> when called to search for <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>key</i><!-- /@w --> within <i>array</i><!-- /@w -->[], 
+   which has <i>n</i><!-- /@w --> elements such that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>i</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>test_search_func_at</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>search_func</b> *<i>f</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->,
+                     <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>expect</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> <i>result</i><!-- /@w --> = <i>f</i><!-- /@w -->-&gt;<i>search</i><!-- /@w --> (<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>key</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>result</i><!-- /@w --> != <i>expect</i><!-- /@w -->)
+    <i>printf</i><!-- /@w --> (<tt>"%s returned %d looking for %d  expected %d\n"</tt>,
+            <i>f</i><!-- /@w -->-&gt;<i>name</i><!-- /@w -->, <i>result</i><!-- /@w -->, <i>key</i><!-- /@w -->, <i>expect</i><!-- /@w -->);
+}
+
+/* Tests searches for each element in <i>array</i><!-- /@w -->[] having <i>n</i><!-- /@w --> elements such that <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>i</i><!-- /@w -->,
+   and some unsuccessful searches too, all using function <i>f</i><!-- /@w -->-&gt;<i>search</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>test_search_func</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>search_func</b> *<i>f</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+  <b>static</b><!-- /@w --> <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> <i>shouldnt_find</i><!-- /@w -->[] = {<tt>INT_MIN</tt><!-- /@w -->, -20, -1, <tt>INT_MAX</tt><!-- /@w -->};
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <i>printf</i><!-- /@w --> (<tt>"Testing integrity of %s...  "</tt>, <i>f</i><!-- /@w -->-&gt;<i>name</i><!-- /@w -->);
+  <i>fflush</i><!-- /@w --> (<i>stdout</i><!-- /@w -->);
+
+  /* Verify that the function finds values that it should. */
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <i>test_search_func_at</i><!-- /@w --> (<i>f</i><!-- /@w -->, <i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>i</i><!-- /@w -->, <i>i</i><!-- /@w -->);
+
+  /* Verify that the function doesn't find values it shouldn't. */
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; (<b>int</b><!-- /@w -->) (<b>sizeof</b><!-- /@w --> <i>shouldnt_find</i><!-- /@w --> / <b>sizeof</b><!-- /@w --> *<i>shouldnt_find</i><!-- /@w -->); <i>i</i><!-- /@w -->++)
+    <i>test_search_func_at</i><!-- /@w --> (<i>f</i><!-- /@w -->, <i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>shouldnt_find</i><!-- /@w -->[<i>i</i><!-- /@w -->], -1);
+
+  <i>printf</i><!-- /@w --> (<tt>"done\n"</tt>);
+}
+</pre>
+   <p class="noindent"><small>See also <a href="Answers-for-Chapter-3.html#607">607</a> and <a href="Answers-for-Chapter-3.html#608">608</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Answers-for-Chapter-3.html#599">599</a>.</small></div>
+
+   <p>The second test function finds the time required for searching for
+elements in the array:
+
+   <p><a name="index-search-test-functions-860"></a>
+<pre class="format"><a href="Search_test_functions.c.txt">607</a>. &lt;<a name="607" href="Search_test_functions.c.txt">Search test functions 606</a>&gt; +=
+/* Times a search for each element in <i>array</i><!-- /@w -->[] having <i>n</i><!-- /@w --> elements such that
+   <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>i</i><!-- /@w -->, repeated <i>n_iter</i><!-- /@w --> times, using function <i>f</i><!-- /@w -->-&gt;<i>search</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>time_successful_search</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>search_func</b> *<i>f</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n_iter</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btime_005fsuccessful_005fsearch_007d-function-861"></a>  <b>clock_t</b><!-- /@w --> <i>timer</i><!-- /@w -->;
+
+  <i>printf</i><!-- /@w --> (<tt>"Timing %d sets of successful searches...  "</tt>, <i>n_iter</i><!-- /@w -->);
+  <i>fflush</i><!-- /@w --> (<i>stdout</i><!-- /@w -->);
+
+  <i>start_timer</i><!-- /@w --> (&amp;<i>timer</i><!-- /@w -->);
+  <b>while</b><!-- /@w --> (<i>n_iter</i><!-- /@w -->&ndash; &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <i>f</i><!-- /@w -->-&gt;<i>search</i><!-- /@w --> (<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>i</i><!-- /@w -->);
+    }
+  <i>stop_timer</i><!-- /@w --> (<i>timer</i><!-- /@w -->);
+}
+</pre>
+   <p>The last test function finds the time required for searching for
+values that don't appear in the array:
+
+   <p><a name="index-search-test-functions-862"></a>
+<pre class="format"><a href="Search_test_functions.c.txt">608</a>. &lt;<a name="608" href="Search_test_functions.c.txt">Search test functions 606</a>&gt; +=
+/* Times <i>n</i><!-- /@w --> search for elements not in <i>array</i><!-- /@w -->[] having <i>n</i><!-- /@w --> elements such that
+   <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>i</i><!-- /@w -->, repeated <i>n_iter</i><!-- /@w --> times, using function <i>f</i><!-- /@w -->-&gt;<i>search</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>time_unsuccessful_search</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>search_func</b> *<i>f</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n_iter</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btime_005funsuccessful_005fsearch_007d-function-863"></a>  <b>clock_t</b><!-- /@w --> <i>timer</i><!-- /@w -->;
+
+  <i>printf</i><!-- /@w --> (<tt>"Timing %d sets of unsuccessful searches...  "</tt>, <i>n_iter</i><!-- /@w -->);
+  <i>fflush</i><!-- /@w --> (<i>stdout</i><!-- /@w -->);
+
+  <i>start_timer</i><!-- /@w --> (&amp;<i>timer</i><!-- /@w -->);
+  <b>while</b><!-- /@w --> (<i>n_iter</i><!-- /@w -->&ndash; &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+        <i>f</i><!-- /@w -->-&gt;<i>search</i><!-- /@w --> (<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, -<i>i</i><!-- /@w -->);
+    }
+  <i>stop_timer</i><!-- /@w --> (<i>timer</i><!-- /@w -->);
+}
+</pre>
+   <p>Here's the main program:
+
+   <p><a name="index-search-test-main-program-864"></a>
+<pre class="format"><a href="Search_test_main_program.c.txt">609</a>. &lt;<a name="609" href="Search_test_main_program.c.txt">Search test main program 609</a>&gt; =
+&lt;<a href="Answers-for-Chapter-3.html#615">Usage printer for search test program 615</a>&gt;
+
+&lt;<a href="Answers-for-Chapter-3.html#611">String to integer function <i>stoi</i><!-- /@w -->() 611</a>&gt;
+
+<b>int</b><!-- /@w --> <br><i>main</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>argc</i><!-- /@w -->, <b>char</b><!-- /@w --> *<i>argv</i><!-- /@w -->[]) <br>{
+<a name="index-_0040i_007bmain_007d-function-865"></a>  <b>struct</b><!-- /@w --> <b>search_func</b> *<i>f</i><!-- /@w -->;        /* Search function. */
+  <b>int</b><!-- /@w --> *<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->;                /* Array and its size. */
+  <b>int</b><!-- /@w --> <i>n_iter</i><!-- /@w -->;                   /* Number of iterations. */
+
+  &lt;<a href="Answers-for-Chapter-3.html#610">Parse search test command line 610</a>&gt;
+  &lt;<a href="Answers-for-Chapter-3.html#612">Initialize search test array 612</a>&gt;
+  &lt;<a href="Answers-for-Chapter-3.html#613">Run search tests 613</a>&gt;
+  &lt;<a href="Answers-for-Chapter-3.html#614">Clean up after search tests 614</a>&gt;
+
+  <b>return</b><!-- /@w --> 0;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#599">599</a>.</small>
+
+   <p><a name="index-parse-search-test-command-line-866"></a>
+<pre class="format"><a href="Parse_search_test_command_line.c.txt">610</a>. &lt;<a name="610" href="Parse_search_test_command_line.c.txt">Parse search test command line 610</a>&gt; =
+<b>if</b><!-- /@w --> (<i>argc</i><!-- /@w --> != 4) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>usage</i><!-- /@w --> ();
+
+{
+  <b>long</b><!-- /@w --> <i>algorithm</i><!-- /@w --> = <i>stoi</i><!-- /@w --> (<i>argv</i><!-- /@w -->[1]) - 1;
+  <b>if</b><!-- /@w --> (<i>algorithm</i><!-- /@w --> &lt; 0 || <i>algorithm</i><!-- /@w --> &gt; (<b>long</b><!-- /@w -->) <i>n_search_func</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>usage</i><!-- /@w --> ();
+  <i>f</i><!-- /@w --> = &amp;<i>search_func_tab</i><!-- /@w -->[<i>algorithm</i><!-- /@w -->];
+}
+
+<i>n</i><!-- /@w --> = <i>stoi</i><!-- /@w --> (<i>argv</i><!-- /@w -->[2]);
+<i>n_iter</i><!-- /@w --> = <i>stoi</i><!-- /@w --> (<i>argv</i><!-- /@w -->[3]);
+<b>if</b><!-- /@w --> (<i>n</i><!-- /@w --> &lt; 1 || <i>n_iter</i><!-- /@w --> &lt; 1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>usage</i><!-- /@w --> ();
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#609">609</a>.</small>
+
+   <p><a name="index-string-to-integer-function-_0040w_007b_0040i_007bstoi_007d_007d_0028_0029-867"></a>
+<pre class="format"><a href="String_to_integer_function__7cstoi_28_29_7c.c.txt">611</a>. &lt;<a name="611" href="String_to_integer_function__7cstoi_28_29_7c.c.txt">String to integer function <i>stoi</i><!-- /@w -->() 611</a>&gt; =
+/* <i>s</i><!-- /@w --> should point to a decimal representation of an integer.
+   Returns the value of <i>s</i><!-- /@w -->, if successful, or 0 on failure. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>stoi</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>s</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bstoi_007d-function-868"></a>  <b>long</b><!-- /@w --> <i>x</i><!-- /@w --> = <i>strtol</i><!-- /@w --> (<i>s</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, 10);
+  <b>return</b><!-- /@w --> <i>x</i><!-- /@w --> &gt;= <tt>INT_MIN</tt><!-- /@w --> &amp;&amp; <i>x</i><!-- /@w --> &lt;= <tt>INT_MAX</tt><!-- /@w --> ? <i>x</i><!-- /@w --> : 0;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#609">609</a> and <a href="Answers-for-Chapter-3.html#617">617</a>.</small>
+
+   <p>When reading the code below, keep in mind that some of our algorithms
+use a sentinel at the end and some use a sentinel at the beginning, so
+we allocate two extra integers and take the middle part.
+
+   <p><a name="index-initialize-search-test-array-869"></a>
+<pre class="format"><a href="Initialize_search_test_array.c.txt">612</a>. &lt;<a name="612" href="Initialize_search_test_array.c.txt">Initialize search test array 612</a>&gt; =
+<i>array</i><!-- /@w --> = <i>malloc</i><!-- /@w --> ((<i>n</i><!-- /@w --> + 2) * <b>sizeof</b><!-- /@w --> *<i>array</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>array</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"out of memory\n"</tt>);
+    <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+  }
+<i>array</i><!-- /@w -->++;
+
+{
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] = <i>i</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#609">609</a>.</small>
+
+   <p><a name="index-run-search-tests-870"></a>
+<pre class="format"><a href="Run_search_tests.c.txt">613</a>. &lt;<a name="613" href="Run_search_tests.c.txt">Run search tests 613</a>&gt; =
+<i>test_search_func</i><!-- /@w --> (<i>f</i><!-- /@w -->, <i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->);
+<i>time_successful_search</i><!-- /@w --> (<i>f</i><!-- /@w -->, <i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>n_iter</i><!-- /@w -->);
+<i>time_unsuccessful_search</i><!-- /@w --> (<i>f</i><!-- /@w -->, <i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>n_iter</i><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#609">609</a>.</small>
+
+   <p><a name="index-clean-up-after-search-tests-871"></a>
+<pre class="format"><a href="Clean_up_after_search_tests.c.txt">614</a>. &lt;<a name="614" href="Clean_up_after_search_tests.c.txt">Clean up after search tests 614</a>&gt; =
+<i>free</i><!-- /@w --> (<i>array</i><!-- /@w --> - 1);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#609">609</a>.</small>
+
+   <p><a name="index-usage-printer-for-search-test-program-872"></a>
+<pre class="format"><a href="Usage_printer_for_search_test_program.c.txt">615</a>. &lt;<a name="615" href="Usage_printer_for_search_test_program.c.txt">Usage printer for search test program 615</a>&gt; =
+/* Prints a message to the console explaining how to use this program. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>usage</i><!-- /@w --> (<b>void</b><!-- /@w -->) <br>{
+<a name="index-_0040i_007busage_007d-function-873"></a>  <b>size_t</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <i>fputs</i><!-- /@w --> (<tt>"usage: srchtest &lt;algorithm&gt; &lt;arraysize&gt; &lt;niterations&gt;\n"</tt>
+         <tt>"where &lt;algorithm&gt; is one of the following:\n"</tt>, <i>stdout</i><!-- /@w -->);
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n_search_func</i><!-- /@w -->; <i>i</i><!-- /@w -->++) 
+    <i>printf</i><!-- /@w --> (<tt>"        %u for %s\n"</tt>, (<b>unsigned</b><!-- /@w -->) <i>i</i><!-- /@w --> + 1, <i>search_func_tab</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>name</i><!-- /@w -->);
+
+  <i>fputs</i><!-- /@w --> (<tt>"      &lt;arraysize&gt; is the size of the array to search, and\n"</tt>
+         <tt>"      &lt;niterations&gt; is the number of times to iterate.\n"</tt>, <i>stdout</i><!-- /@w -->);
+
+  <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#609">609</a>.</small>
+
+   <p><a name="3_002d5_00234"></a> <b>4.</b>
+Here are the results on the author's computer, a Pentium II at 233 MHz,
+using GNU C 2.95.2, for 1024 iterations using arrays of size 1024 with
+no optimization.  All values are given in seconds rounded to tenths.
+
+   <p><table summary=""><tr align="left"><td valign="top" width="33%"><strong>Function</strong>
+</td><td valign="top" width="33%"><strong>Successful searches</strong>
+</td><td valign="top" width="33%"><strong>Unsuccessful searches</strong>
+
+<p><br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_search</i><!-- /@w -->()                    </td><td valign="top" width="33%">18.4       </td><td valign="top" width="33%">36.3
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sentinel_search</i><!-- /@w -->()           </td><td valign="top" width="33%">16.5       </td><td valign="top" width="33%">32.8
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_search</i><!-- /@w -->()             </td><td valign="top" width="33%">18.6       </td><td valign="top" width="33%">0.1
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_sentinel_search</i><!-- /@w -->()    </td><td valign="top" width="33%">16.4       </td><td valign="top" width="33%">0.2
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_sentinel_search_2</i><!-- /@w -->()  </td><td valign="top" width="33%">16.6       </td><td valign="top" width="33%">0.2
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>binary_search</i><!-- /@w -->()                 </td><td valign="top" width="33%">1.3       </td><td valign="top" width="33%">1.2
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>uniform_binary_search</i><!-- /@w -->()         </td><td valign="top" width="33%">1.1       </td><td valign="top" width="33%">1.1
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>binary_search_bsearch</i><!-- /@w -->()         </td><td valign="top" width="33%">2.6       </td><td valign="top" width="33%">2.4
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>cheat_search</i><!-- /@w -->()                  </td><td valign="top" width="33%">0.1       </td><td valign="top" width="33%">0.1
+   <br></td></tr></table>
+
+   <p>Results of similar tests using full optimization were as follows:
+
+   <p><table summary=""><tr align="left"><td valign="top" width="33%"><strong>Function</strong>
+</td><td valign="top" width="33%"><strong>Successful searches</strong>
+</td><td valign="top" width="33%"><strong>Unsuccessful searches</strong>
+
+<p><br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_search</i><!-- /@w -->()                    </td><td valign="top" width="33%">6.3        </td><td valign="top" width="33%">12.4
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sentinel_search</i><!-- /@w -->()           </td><td valign="top" width="33%">4.8        </td><td valign="top" width="33%">9.4
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_search</i><!-- /@w -->()             </td><td valign="top" width="33%">9.3        </td><td valign="top" width="33%">0.1
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_sentinel_search</i><!-- /@w -->()    </td><td valign="top" width="33%">4.8        </td><td valign="top" width="33%">0.2
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_sentinel_search_2</i><!-- /@w -->()  </td><td valign="top" width="33%">4.8        </td><td valign="top" width="33%">0.2
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>binary_search</i><!-- /@w -->()                 </td><td valign="top" width="33%">0.7        </td><td valign="top" width="33%">0.5
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>uniform_binary_search</i><!-- /@w -->()         </td><td valign="top" width="33%">0.7        </td><td valign="top" width="33%">0.6
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>binary_search_bsearch</i><!-- /@w -->()         </td><td valign="top" width="33%">1.5        </td><td valign="top" width="33%">1.2
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>cheat_search</i><!-- /@w -->()                  </td><td valign="top" width="33%">0.1        </td><td valign="top" width="33%">0.1
+   <br></td></tr></table>
+
+   <p>Observations:
+
+     <ul>
+<li>In general, the times above are about what we might expect them to be:
+they decrease as we go down the table.
+
+     <li>Within sequential searches, the sentinel-based searches have better
+search times than non-sentinel searches, and other search
+characteristics (whether the array was sorted, for instance) had little
+impact on performance.
+
+     <li>Unsuccessful searches were very fast for sorted sequential searches,
+but the particular test set used always allowed such searches to
+terminate after a single comparison.  For other test sets one might
+expect these numbers to be similar to those for unordered sequential
+search.
+
+     <li>Either of the first two forms of binary search had the best overall
+performance.  They also have the best performance for successful
+searches and might be expected to have the best performance for
+unsuccessful searches in other test sets, for the reason given before.
+
+     <li>Binary search using the general interface <i>bsearch</i><!-- /@w -->() was significantly
+slower than either of the other binary searches, probably because of the
+cost of the extra function calls.  Items that are more expensive to
+compare (for instance, long text strings) might be expected to show less
+of a penalty. 
+</ul>
+
+   <p>Here are the results on the same machine for 1,048,576 iterations on arrays of
+size 8 with full optimization:
+
+   <p><table summary=""><tr align="left"><td valign="top" width="33%"><strong>Function</strong>
+</td><td valign="top" width="33%"><strong>Successful searches</strong>
+</td><td valign="top" width="33%"><strong>Unsuccessful searches</strong>
+
+<p><br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_search</i><!-- /@w -->()                    </td><td valign="top" width="33%">1.7        </td><td valign="top" width="33%">2.0
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sentinel_search</i><!-- /@w -->()           </td><td valign="top" width="33%">1.7        </td><td valign="top" width="33%">2.0
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_search</i><!-- /@w -->()             </td><td valign="top" width="33%">2.0        </td><td valign="top" width="33%">1.1
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_sentinel_search</i><!-- /@w -->()    </td><td valign="top" width="33%">1.9        </td><td valign="top" width="33%">1.1
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>seq_sorted_sentinel_search_2</i><!-- /@w -->()  </td><td valign="top" width="33%">1.8        </td><td valign="top" width="33%">1.2
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>binary_search</i><!-- /@w -->()                 </td><td valign="top" width="33%">2.5        </td><td valign="top" width="33%">1.9
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>uniform_binary_search</i><!-- /@w -->()         </td><td valign="top" width="33%">2.4        </td><td valign="top" width="33%">2.3
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>binary_search_bsearch</i><!-- /@w -->()         </td><td valign="top" width="33%">4.5        </td><td valign="top" width="33%">3.9
+<br></td></tr><tr align="left"><td valign="top" width="33%"><i>cheat_search</i><!-- /@w -->()                  </td><td valign="top" width="33%">0.7        </td><td valign="top" width="33%">0.7
+   <br></td></tr></table>
+
+   <p>For arrays this small, simple algorithms are the clear winners.  The
+additional complications of binary search make it slower.  Similar
+patterns can be expected on most architectures, although the &ldquo;break
+even&rdquo; array size where binary search and sequential search are equally
+fast can be expected to differ.
+
+<h4 class="subheading">Section 3.6</h4>
+
+<p><a name="3_002d6_00231"></a> <b>1.</b>
+Here is one easy way to do it:
+
+   <p><a name="index-initialize-_0040w_007b_0040i_007bsmaller_007d_007d-and-_0040w_007b_0040i_007blarger_007d_007d-within-binary-search-tree-874"></a>
+<pre class="format"><a href="Initialize__7csmaller_7c_and__7clarger_7c_within_binary_search_tree.c.txt">616</a>. &lt;<a name="616" href="Initialize__7csmaller_7c_and__7clarger_7c_within_binary_search_tree.c.txt">Initialize <i>smaller</i><!-- /@w --> and <i>larger</i><!-- /@w --> within binary search tree 616</a>&gt; =
+/* Initializes <i>larger</i><!-- /@w --> and <i>smaller</i><!-- /@w --> within range <i>min</i><!-- /@w --><small class="dots">...</small><i>max</i><!-- /@w --> of <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>array</i><!-- /@w -->[], 
+   which has <i>n</i><!-- /@w --> real elements plus a (<i>n</i><!-- /@w --> + 1)th sentinel element. */
+<b>int</b><!-- /@w --> <br><i>init_binary_tree_array</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>binary_tree_entry</b> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>int</b><!-- /@w --> <i>min</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>max</i><!-- /@w -->) <br>{
+  <b>if</b><!-- /@w --> (<i>min</i><!-- /@w --> &lt;= <i>max</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      /* The `+ 1' is necessary because the tree root must be at <i>n</i><!-- /@w --> / 2,
+         and on the first call we have <i>min</i><!-- /@w --> == 0 and <i>max</i><!-- /@w --> == <i>n</i><!-- /@w --> - 1. */
+      <b>int</b><!-- /@w --> <i>i</i><!-- /@w --> = (<i>min</i><!-- /@w --> + <i>max</i><!-- /@w --> + 1) / 2;
+      <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>larger</i><!-- /@w --> = <i>init_binary_tree_array</i><!-- /@w --> (<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>i</i><!-- /@w --> + 1, <i>max</i><!-- /@w -->);
+      <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>smaller</i><!-- /@w --> = <i>init_binary_tree_array</i><!-- /@w --> (<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>min</i><!-- /@w -->, <i>i</i><!-- /@w --> - 1);
+      <b>return</b><!-- /@w --> <i>i</i><!-- /@w -->;
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> <i>n</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#617">617</a>.</small>
+
+   <p><a name="3_002d6_00232"></a> <b>2.</b>
+<a name="index-_0040t_007bbin_002dary_002dtest_002ec_007d-875"></a>
+<pre class="format"><a href="bin-ary-test.c.txt">617</a>. &lt;<a name="617" href="bin-ary-test.c.txt"><tt>bin-ary-test.c</tt> 617</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;limits.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+
+&lt;<a href="Binary-Search-Tree-in-Array.html#22">Binary search tree entry 22</a>&gt;
+&lt;<a href="Binary-Search-Tree-in-Array.html#23">Search of binary search tree stored as array 23</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#616">Initialize <i>smaller</i><!-- /@w --> and <i>larger</i><!-- /@w --> within binary search tree 616</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#619">Show <span class="file">bin-ary-test</span> usage message 619</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#611">String to integer function <i>stoi</i><!-- /@w -->() 611</a>&gt;
+&lt;<a href="Answers-for-Chapter-3.html#618">Main program to test <i>binary_search_tree_array</i><!-- /@w -->() 618</a>&gt;
+</pre>
+   <p><a name="index-main-program-to-test-_0040w_007b_0040i_007bbinary_005fsearch_005ftree_005farray_007d_007d_0028_0029-876"></a>
+<pre class="format"><a href="Main_program_to_test__7cbinary_search_tree_array_28_29_7c.c.txt">618</a>. &lt;<a name="618" href="Main_program_to_test__7cbinary_search_tree_array_28_29_7c.c.txt">Main program to test <i>binary_search_tree_array</i><!-- /@w -->() 618</a>&gt; =
+<b>int</b><!-- /@w --> <br><i>main</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>argc</i><!-- /@w -->, <b>char</b><!-- /@w --> *<i>argv</i><!-- /@w -->[]) <br>{
+<a name="index-_0040i_007bmain_007d-function-877"></a>  <b>struct</b><!-- /@w --> <b>binary_tree_entry</b> *<i>array</i><!-- /@w -->;
+  <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <i>i</i><!-- /@w -->;
+
+  /* Parse command line. */
+  <b>if</b><!-- /@w --> (<i>argc</i><!-- /@w --> != 2) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>usage</i><!-- /@w --> ();
+  <i>n</i><!-- /@w --> = <i>stoi</i><!-- /@w --> (<i>argv</i><!-- /@w -->[1]);
+  <b>if</b><!-- /@w --> (<i>n</i><!-- /@w --> &lt; 1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>usage</i><!-- /@w --> ();
+
+  /* Allocate memory. */
+  <i>array</i><!-- /@w --> = <i>malloc</i><!-- /@w --> ((<i>n</i><!-- /@w --> + 1) * <b>sizeof</b><!-- /@w --> *<i>array</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>array</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"out of memory\n"</tt>);
+      <b>return</b><!-- /@w --> <tt>EXIT_FAILURE</tt><!-- /@w -->;
+    }
+
+  /* Initialize array. */
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->].<i>value</i><!-- /@w --> = <i>i</i><!-- /@w -->;
+  <i>init_binary_tree_array</i><!-- /@w --> (<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, 0, <i>n</i><!-- /@w --> - 1);
+
+  /* Test successful and unsuccessful searches. */
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = -1; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>result</i><!-- /@w --> = <i>binary_search_tree_array</i><!-- /@w --> (<i>array</i><!-- /@w -->, <i>n</i><!-- /@w -->, <i>i</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>result</i><!-- /@w --> != <i>i</i><!-- /@w -->)
+        <i>printf</i><!-- /@w --> (<tt>"Searching for %d: expected %d, but received %d\n"</tt>,
+                <i>i</i><!-- /@w -->, <i>i</i><!-- /@w -->, <i>result</i><!-- /@w -->);
+    }
+
+  /* Clean up. */
+  <i>free</i><!-- /@w --> (<i>array</i><!-- /@w -->);
+
+  <b>return</b><!-- /@w --> <tt>EXIT_SUCCESS</tt><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#617">617</a>.</small>
+
+   <p><a name="index-show-_0040file_007bbin_002dary_002dtest_007d-usage-message-878"></a>
+<pre class="format"><a href="Show__40file_7bbin-ary-test_7d_usage_message.c.txt">619</a>. &lt;<a name="619" href="Show__40file_7bbin-ary-test_7d_usage_message.c.txt">Show <span class="file">bin-ary-test</span> usage message 619</a>&gt; =
+/* Print a helpful usage message and abort execution. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>usage</i><!-- /@w --> (<b>void</b><!-- /@w -->) <br>{
+<a name="index-_0040i_007busage_007d-function-879"></a>  <i>fputs</i><!-- /@w --> (<tt>"Usage: binarytest &lt;arraysize&gt;\n"</tt>
+         <tt>"where &lt;arraysize&gt; is the size of the array to test.\n"</tt>,
+         <i>stdout</i><!-- /@w -->);
+  <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#617">617</a>.</small>
+
+   </body></html>
+

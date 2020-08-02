@@ -1,0 +1,25 @@
+struct rb_node *s;
+int j = k++;
+
+for (;;)
+  {
+    da[k] = 0;
+    pa[k++] = r;
+    s = r->rb_link[0];
+    if (s->rb_link[0] == NULL)
+      break;
+
+    r = s;
+  }
+
+da[j] = 1;
+pa[j] = s;
+pa[j - 1]->rb_link[da[j - 1]] = s;
+
+s->rb_link[0] = p->rb_link[0];
+r->rb_link[0] = s->rb_link[1];
+s->rb_link[1] = p->rb_link[1];
+
+t = s->rb_color;
+s->rb_color = p->rb_color;
+p->rb_color = t;

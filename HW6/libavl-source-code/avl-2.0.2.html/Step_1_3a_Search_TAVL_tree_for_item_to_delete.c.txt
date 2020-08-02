@@ -1,0 +1,20 @@
+if (tree->tavl_root == NULL)
+  return NULL;
+
+q = (struct tavl_node *) &tree->tavl_root;
+p = tree->tavl_root;
+dir = 0;
+for (;;)
+  {
+    cmp = tree->tavl_compare (item, p->tavl_data, tree->tavl_param);
+    if (cmp == 0)
+      break;
+    dir = cmp > 0;
+
+    q = p;
+    if (p->tavl_tag[dir] == TAVL_THREAD)
+      return NULL;
+    p = p->tavl_link[dir];
+  }
+item = p->tavl_data;
+

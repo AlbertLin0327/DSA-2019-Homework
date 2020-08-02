@@ -1,0 +1,3 @@
+f->prb_color = y->prb_color = PRB_BLACK;
+g->prb_color = PRB_RED;
+q = g;

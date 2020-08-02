@@ -1,0 +1,234 @@
+<html lang="en">
+<head>
+<title>Recursive Insertion - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="AVL-Insertion-Example.html" title="5.4.6 Example">
+<link rel=Next href="Deleting-from-an-AVL-Tree.html" title="5.5 Deletion">
+<link rel=Parent href="Inserting-into-an-AVL-Tree.html" title="5.4 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Recursive-Insertion">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.4.7 Aside: Recursive Insertion</b></big></td>
+<td align=right>
+<a href="index.html#Recursive-Insertion.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="AVL-Insertion-Example.html" title="Skip Back: 5.4.6 Example"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="AVL-Insertion-Example.html" title="Prev: 5.4.6 Example"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-an-AVL-Tree.html" title="Up: 5.4 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-from-an-AVL-Tree.html" title="Next: 5.5 Deletion"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>In previous sections we first looked at recursive approaches because
+they were simpler and more elegant than iterative solutions.  As it
+happens, the reverse is true for insertion into an AVL tree.  But just
+for completeness, we will now design a recursive implementation of
+<i>avl_probe</i><!-- /@w -->().
+
+   <p>Our first task in such a design is to figure out what arguments and
+return value the recursive core of the insertion function will have. 
+We'll begin by considering AVL insertion in the abstract.  Our existing
+function <i>avl_probe</i><!-- /@w -->() works by first moving down the tree, from the
+root to a leaf, then back up the tree, from leaf to root, as necessary
+to adjust balance factors or rebalance.  In the existing iterative
+version, down and up movement are implemented by pushing nodes onto and
+popping them off from a stack.  In a recursive version, moving down the
+tree becomes a recursive call, and moving up the tree becomes a function
+return.
+
+   <p>While descending the tree, the important pieces of information are the
+tree itself (to allow for comparisons to be made), the current node, and
+the data item we're inserting.  The latter two items need to be
+modifiable by the function, the former because the tree rooted at the
+node may need to be rearranged during a rebalance, and the latter
+because of <i>avl_probe</i><!-- /@w -->()'s return value.
+
+   <p>While ascending the tree, we'll still have access to all of this
+information, but, to allow for adjustment of balance factors and
+rebalancing, we also need to know whether the subtree visited in a
+nested call became taller.  We can use the function's return value for
+this.
+
+   <p>Finally, we know to stop moving down and start moving up when we find a
+null pointer in the tree, which is the place for the new node to be
+inserted.  This suggests itself naturally as the test used to stop the
+recursion.
+
+   <p>Here is an outline of a recursive insertion function directly
+corresponding to these considerations:
+
+   <p><a name="catalogue_002dentry_002davl_002d1"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-recursive-insertion-into-AVL-tree-242"></a>
+<pre class="format"><a href="Recursive_insertion_into_AVL_tree.c.txt">160</a>. &lt;<a name="160" href="Recursive_insertion_into_AVL_tree.c.txt">Recursive insertion into AVL tree 160</a>&gt; =
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_table</b> *<i>tree</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>avl_node</b> **<i>p</i><!-- /@w -->, <b>void</b><!-- /@w --> ***<i>data</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bprobe_007d-function-243"></a>  <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>y</i><!-- /@w -->; /* The current node; shorthand for *<i>p</i><!-- /@w -->. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>data</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>y</i><!-- /@w --> = *<i>p</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Recursive-Insertion.html#161">Found insertion point in recursive AVL insertion 161</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  <b>else</b><!-- /@w --> /* <i>y</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Recursive-Insertion.html#162">Move down then up in recursive AVL insertion 162</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+}
+</pre>
+   <p class="noindent"><small>See also <a href="Recursive-Insertion.html#163">163</a>.</small>
+
+   <p>Parameter <i>p</i><!-- /@w --> is declared as a double pointer (<b>struct</b><!-- /@w --> <b>avl_node</b> **) and
+<i>data</i><!-- /@w --> as a triple pointer (<b>void</b><!-- /@w --> ***).  In both cases, this is because
+C passes arguments by value, so that a function modifying one of its
+arguments produces no change in the value seen in the caller.  As a
+result, to allow a function to modify a scalar, a pointer to it must be
+passed as an argument; to modify a pointer, a double pointer must be
+passed; to modify a double pointer, a triple pointer must be passed. 
+This can result in difficult-to-understand code, so it is often
+advisable to copy the dereferenced argument into a local variable for
+read-only use, as *<i>p</i><!-- /@w --> is copied into <i>y</i><!-- /@w --> here.
+
+   <p>When the insertion point is found, a new node is created and a pointer
+to it stored into *<i>p</i><!-- /@w -->.  Because the insertion causes the subtree to
+increase in height (from 0 to 1), a value of 1 is then returned:
+
+   <p><a name="index-found-insertion-point-in-recursive-AVL-insertion-244"></a>
+<pre class="format"><a href="Found_insertion_point_in_recursive_AVL_insertion.c.txt">161</a>. &lt;<a name="161" href="Found_insertion_point_in_recursive_AVL_insertion.c.txt">Found insertion point in recursive AVL insertion 161</a>&gt; =
+<i>y</i><!-- /@w --> = *<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>avl_alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>y</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    *<i>data</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+    <b>return</b><!-- /@w --> 0;
+  }
+
+<i>y</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w --> = **<i>data</i><!-- /@w -->;
+*<i>data</i><!-- /@w --> = &amp;<i>y</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->;
+<i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+<i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+
+<i>tree</i><!-- /@w -->-&gt;<i>avl_count</i><!-- /@w -->++;
+<i>tree</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w -->++;
+
+<b>return</b><!-- /@w --> 1;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Recursive-Insertion.html#160">160</a>.</small>
+
+   <p>When we're not at the insertion point, we move down, then back up. 
+Whether to move down to the left or the right depends on the value of
+the item to insert relative to the value in the current node <i>y</i><!-- /@w -->. 
+Moving down is the domain of the recursive call to <i>probe</i><!-- /@w -->().  If the
+recursive call doesn't increase the height of a subtree of <i>y</i><!-- /@w -->, then
+there's nothing further to do, so we return immediately.  Otherwise, on
+the way back up, it is necessary to at least adjust <i>y</i><!-- /@w -->'s balance
+factor, and possibly to rebalance as well.  If only adjustment of the
+balance factor is necessary, it is done and the return value is based on
+whether this subtree has changed height in the process.  Rebalancing is
+accomplished using the same code used in iterative insertion.  A
+rebalanced subtree has the same height as before insertion, so the value
+returned is 0.  The details are in the code itself:
+
+   <p><a name="index-move-down-then-up-in-recursive-AVL-insertion-245"></a>
+<pre class="format"><a href="Move_down_then_up_in_recursive_AVL_insertion.c.txt">162</a>. &lt;<a name="162" href="Move_down_then_up_in_recursive_AVL_insertion.c.txt">Move down then up in recursive AVL insertion 162</a>&gt; =
+<b>struct</b><!-- /@w --> <b>avl_node</b> *<i>w</i><!-- /@w -->; /* New root of this subtree; replaces *<i>p</i><!-- /@w -->. */
+<b>int</b><!-- /@w --> <i>cmp</i><!-- /@w -->;
+
+<i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_compare</i><!-- /@w --> (**<i>data</i><!-- /@w -->, <i>y</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>avl_param</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> &lt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>probe</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0], <i>data</i><!-- /@w -->) == 0)
+      <b>return</b><!-- /@w --> 0;
+
+    <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == +1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+        <b>return</b><!-- /@w --> 0;
+      }
+    <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = -1;
+        <b>return</b><!-- /@w --> 1;
+      } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Rebalancing-AVL-Trees.html#152">Rebalance AVL tree after insertion in left subtree 152</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  } <br><b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>r</i><!-- /@w -->; /* Right child of <i>y</i><!-- /@w -->, for rebalancing. */
+
+    <b>if</b><!-- /@w --> (<i>probe</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>y</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1], <i>data</i><!-- /@w -->) == 0)
+      <b>return</b><!-- /@w --> 0;
+
+    <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == -1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+        <b>return</b><!-- /@w --> 0;
+      }
+    <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>y</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = +1;
+        <b>return</b><!-- /@w --> 1;
+      } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="AVL-Insertion-Symmetric-Case.html#157">Rebalance AVL tree after insertion in right subtree 157</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  } <br><b>else</b><!-- /@w --> /* <i>cmp</i><!-- /@w --> == 0 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    *<i>data</i><!-- /@w --> = &amp;<i>y</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->;
+    <b>return</b><!-- /@w --> 0;
+  }
+
+*<i>p</i><!-- /@w --> = <i>w</i><!-- /@w -->;
+<b>return</b><!-- /@w --> 0;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Recursive-Insertion.html#160">160</a>.</small>
+
+   <p>Finally, we need a wrapper function to start the recursion off correctly
+and deal with passing back the results:
+
+   <p><a name="index-recursive-insertion-into-AVL-tree-246"></a>
+<pre class="format"><a href="Recursive_insertion_into_AVL_tree.c.txt">163</a>. &lt;<a name="163" href="Recursive_insertion_into_AVL_tree.c.txt">Recursive insertion into AVL tree 160</a>&gt; +=
+/* Inserts <i>item</i><!-- /@w --> into <i>tree</i><!-- /@w --> and returns a pointer to <i>item</i><!-- /@w -->'s address.
+   If a duplicate item is found in the tree,
+   returns a pointer to the duplicate without inserting <i>item</i><!-- /@w -->.
+   Returns <tt>NULL</tt><!-- /@w --> in case of memory allocation failure. */
+<b>void</b><!-- /@w --> **<br><i>avl_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+  <b>void</b><!-- /@w --> **<i>ret</i><!-- /@w --> = &amp;<i>item</i><!-- /@w -->;
+
+  <i>probe</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>tree</i><!-- /@w -->-&gt;<i>avl_root</i><!-- /@w -->, &amp;<i>ret</i><!-- /@w -->);
+
+  <b>return</b><!-- /@w --> <i>ret</i><!-- /@w -->;
+}
+</pre>
+   </body></html>
+

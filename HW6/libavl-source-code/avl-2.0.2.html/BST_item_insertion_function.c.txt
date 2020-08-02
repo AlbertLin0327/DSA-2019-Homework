@@ -1,0 +1,36 @@
+/* Inserts |item| into |tree| and returns a pointer to |item|'s address.
+   If a duplicate item is found in the tree,
+   returns a pointer to the duplicate without inserting |item|.
+   Returns |NULL| in case of memory allocation failure. */
+void **
+bst_probe (struct bst_table *tree, void *item)
+{
+  struct bst_node *p, *q; /* Current node in search and its parent. */
+  int dir;                /* Side of |q| on which |p| is located. */
+  struct bst_node *n;     /* Newly inserted node. */
+
+  assert (tree != NULL && item != NULL);
+
+  for (q = NULL, p = tree->bst_root; p != NULL; q = p, p = p->bst_link[dir])
+    {
+      int cmp = tree->bst_compare (item, p->bst_data, tree->bst_param);
+      if (cmp == 0)
+        return &p->bst_data;
+      dir = cmp > 0;
+    }
+
+  n = tree->bst_alloc->libavl_malloc (tree->bst_alloc, sizeof *p);
+  if (n == NULL)
+    return NULL;
+
+  tree->bst_count++;
+  n->bst_link[0] = n->bst_link[1] = NULL;
+  n->bst_data = item;
+  if (q != NULL)
+    q->bst_link[dir] = n;
+  else
+    tree->bst_root = n;
+
+  return &n->bst_data;
+}
+

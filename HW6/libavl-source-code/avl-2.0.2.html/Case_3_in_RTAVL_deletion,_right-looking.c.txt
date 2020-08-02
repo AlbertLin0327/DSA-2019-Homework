@@ -1,0 +1,12 @@
+r->rtavl_link[0] = p->rtavl_link[0];
+if (r->rtavl_link[0] != NULL)
+  {
+    struct rtavl_node *t = r->rtavl_link[0];
+    while (t->rtavl_rtag == RTAVL_CHILD)
+      t = t->rtavl_link[1];
+    t->rtavl_link[1] = r;
+  }
+pa[k - 1]->rtavl_link[da[k - 1]] = r;
+r->rtavl_balance = p->rtavl_balance;
+da[k] = 1;
+pa[k++] = r;

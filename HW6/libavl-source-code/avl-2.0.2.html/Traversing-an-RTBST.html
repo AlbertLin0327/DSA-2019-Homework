@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+<title>Traversing an RTBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Comparing-Deletion-Algorithms.html" title="10.5.3 Aside: Comparison of Deletion Algorithms">
+<link rel=Next href="RTBST-Traverser-First-Initialization.html" title="10.6.1 Starting at the First Node">
+<link rel=Parent href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Traversing-an-RTBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>10.6 Traversal</b></big></td>
+<td align=right>
+<a href="index.html#Traversing-an-RTBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-from-an-RTBST.html" title="Skip Back: 10.5 Deletion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Copying-an-RTBST.html" title="Skip Forward: 10.7 Copying"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Comparing-Deletion-Algorithms.html" title="Prev: 10.5.3 Aside: Comparison of Deletion Algorithms"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Right_002dThreaded-Binary-Search-Trees.html" title="Up: 10 Right-Threaded Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="RTBST-Traverser-First-Initialization.html" title="Next: 10.6.1 Starting at the First Node"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Traversal in an RTBST is unusual due to its asymmetry.  Moving from
+smaller nodes to larger nodes is easy: we do it with the same algorithm
+used in a TBST.  Moving the other way is more difficult and inefficient
+besides: we have neither a stack of parent nodes to fall back on nor
+left threads to short-circuit.
+
+   <p>RTBSTs use the same traversal structure as TBSTs, so we can reuse some
+of the functions from TBST traversers.  We also get a few directly from
+the implementations for BSTs.  Other than that, everything has to be
+written anew here:
+
+   <p><a name="index-RTBST-traversal-functions-553"></a>
+<pre class="format"><a href="RTBST_traversal_functions.c.txt">395</a>. &lt;<a name="395" href="RTBST_traversal_functions.c.txt">RTBST traversal functions 395</a>&gt; =
+&lt;<a href="TBST-Traverser-Null-Initialization.html#269">TBST traverser null initializer; tbst =&gt; rtbst 269</a>&gt;
+&lt;<a href="RTBST-Traverser-First-Initialization.html#396">RTBST traverser first initializer 396</a>&gt;
+&lt;<a href="RTBST-Traverser-Last-Initialization.html#397">RTBST traverser last initializer 397</a>&gt;
+&lt;<a href="RTBST-Traverser-Find-Initialization.html#398">RTBST traverser search initializer 398</a>&gt;
+&lt;<a href="TBST-Traverser-Insert-Initialization.html#273">TBST traverser insertion initializer; tbst =&gt; rtbst 273</a>&gt;
+&lt;<a href="TBST-Traverser-Copying.html#274">TBST traverser copy initializer; tbst =&gt; rtbst 274</a>&gt;
+&lt;<a href="RTBST-Traverser-Advancing.html#399">RTBST traverser advance function 399</a>&gt;
+&lt;<a href="RTBST-Traverser-Retreating.html#400">RTBST traverser back up function 400</a>&gt;
+&lt;<a href="BST-Traversal-Current-Item.html#74">BST traverser current item function; bst =&gt; rtbst 74</a>&gt;
+&lt;<a href="BST-Traversal-Replacing-the-Current-Item.html#75">BST traverser replacement function; bst =&gt; rtbst 75</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="RTBST-Operations.html#375">375</a>, <a href="RTAVL-Operations.html#418">418</a>, and <a href="RTRB-Operations.html#455">455</a>.</small>
+
+<ul class="menu">
+<li><a accesskey="1" href="RTBST-Traverser-First-Initialization.html">RTBST Traverser First Initialization</a>
+<li><a accesskey="2" href="RTBST-Traverser-Last-Initialization.html">RTBST Traverser Last Initialization</a>
+<li><a accesskey="3" href="RTBST-Traverser-Find-Initialization.html">RTBST Traverser Find Initialization</a>
+<li><a accesskey="4" href="RTBST-Traverser-Advancing.html">RTBST Traverser Advancing</a>
+<li><a accesskey="5" href="RTBST-Traverser-Retreating.html">RTBST Traverser Retreating</a>
+</ul>
+
+   </body></html>
+

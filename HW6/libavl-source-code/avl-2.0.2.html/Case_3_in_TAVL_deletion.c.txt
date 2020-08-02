@@ -1,0 +1,13 @@
+r->tavl_link[0] = p->tavl_link[0];
+r->tavl_tag[0] = p->tavl_tag[0];
+if (r->tavl_tag[0] == TAVL_CHILD)
+  {
+    struct tavl_node *t = r->tavl_link[0];
+    while (t->tavl_tag[1] == TAVL_CHILD)
+      t = t->tavl_link[1];
+    t->tavl_link[1] = r;
+  }
+q->tavl_link[dir] = r;
+r->tavl_balance = p->tavl_balance;
+q = r;
+dir = 1;

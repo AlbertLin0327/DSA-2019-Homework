@@ -1,0 +1,8 @@
+w = x;
+y->pavl_link[0] = x->pavl_link[1];
+x->pavl_link[1] = y;
+x->pavl_balance = y->pavl_balance = 0;
+x->pavl_parent = y->pavl_parent;
+y->pavl_parent = x;
+if (y->pavl_link[0] != NULL)
+  y->pavl_link[0]->pavl_parent = y;

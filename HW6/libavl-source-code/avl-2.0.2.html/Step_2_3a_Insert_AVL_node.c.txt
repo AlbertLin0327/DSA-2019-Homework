@@ -1,0 +1,12 @@
+n = q->avl_link[dir] =
+  tree->avl_alloc->libavl_malloc (tree->avl_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+tree->avl_count++;
+n->avl_data = item;
+n->avl_link[0] = n->avl_link[1] = NULL;
+n->avl_balance = 0;
+if (y == NULL)
+  return &n->avl_data;
+

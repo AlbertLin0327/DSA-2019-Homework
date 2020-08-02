@@ -1,0 +1,301 @@
+<html lang="en">
+<head>
+<title>Traversal of an AVL Tree - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="AVL-Deletion-Symmetric-Case.html" title="5.5.6 Symmetric Case">
+<link rel=Next href="Copying-an-AVL-Tree.html" title="5.7 Copying">
+<link rel=Parent href="AVL-Trees.html" title="5 AVL Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Traversal-of-an-AVL-Tree">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.6 Traversal</b></big></td>
+<td align=right>
+<a href="index.html#Traversal-of-an-AVL-Tree.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-from-an-AVL-Tree.html" title="Skip Back: 5.5 Deletion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Copying-an-AVL-Tree.html" title="Skip Forward: 5.7 Copying"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="AVL-Deletion-Symmetric-Case.html" title="Prev: 5.5.6 Symmetric Case"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="AVL-Trees.html" title="Up: 5 AVL Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Copying-an-AVL-Tree.html" title="Next: 5.7 Copying"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Traversal is largely unchanged from BSTs.  However, we can be confident
+that the tree won't easily exceed the maximum stack height, because of
+the AVL balance condition, so we can omit checking for stack overflow.
+
+   <p><a name="index-AVL-traversal-functions-262"></a>
+<pre class="format"><a href="AVL_traversal_functions.c.txt">178</a>. &lt;<a name="178" href="AVL_traversal_functions.c.txt">AVL traversal functions 178</a>&gt; =
+&lt;<a href="Better-Iterative-Traversal.html#62">BST traverser refresher; bst =&gt; avl 62</a>&gt;
+&lt;<a href="BST-Traverser-Null-Initialization.html#64">BST traverser null initializer; bst =&gt; avl 64</a>&gt;
+&lt;<a href="Traversal-of-an-AVL-Tree.html#180">AVL traverser least-item initializer 180</a>&gt;
+&lt;<a href="Traversal-of-an-AVL-Tree.html#181">AVL traverser greatest-item initializer 181</a>&gt;
+&lt;<a href="Traversal-of-an-AVL-Tree.html#182">AVL traverser search initializer 182</a>&gt;
+&lt;<a href="Traversal-of-an-AVL-Tree.html#179">AVL traverser insertion initializer 179</a>&gt;
+&lt;<a href="BST-Traverser-Copying.html#69">BST traverser copy initializer; bst =&gt; avl 69</a>&gt;
+&lt;<a href="Traversal-of-an-AVL-Tree.html#183">AVL traverser advance function 183</a>&gt;
+&lt;<a href="Traversal-of-an-AVL-Tree.html#184">AVL traverser back up function 184</a>&gt;
+&lt;<a href="BST-Traversal-Current-Item.html#74">BST traverser current item function; bst =&gt; avl 74</a>&gt;
+&lt;<a href="BST-Traversal-Replacing-the-Current-Item.html#75">BST traverser replacement function; bst =&gt; avl 75</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="AVL-Operations.html#145">145</a> and <a href="Operations-in-an-RB-Tree.html#196">196</a>.</small>
+
+   <p>We do need to make a new implementation of the insertion traverser
+initializer.  Because insertion into an AVL tree is so complicated, we
+just write this as a wrapper to <i>avl_probe</i><!-- /@w -->().  There probably wouldn't
+be much of a speed improvement by inlining the code anyhow:
+
+   <p><a name="catalogue_002dentry_002davl_002d3"></a>
+<a name="index-AVL-traverser-insertion-initializer-263"></a>
+<pre class="format"><a href="AVL_traverser_insertion_initializer.c.txt">179</a>. &lt;<a name="179" href="AVL_traverser_insertion_initializer.c.txt">AVL traverser insertion initializer 179</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>avl_t_insert</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_traverser</b> *<i>trav</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>avl_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bavl_005ft_005finsert_007d-function-264"></a>  <b>void</b><!-- /@w --> **<i>p</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>p</i><!-- /@w --> = <i>avl_probe</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>item</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>trav</i><!-- /@w -->-&gt;<i>avl_table</i><!-- /@w --> = <i>tree</i><!-- /@w -->;
+      <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> =
+        ((<b>struct</b><!-- /@w --> <b>avl_node</b> *) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->((<b>char</b><!-- /@w --> *) <i>p</i><!-- /@w --> - <i>offsetof</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_node</b>, <i>avl_data</i><!-- /@w -->)));
+      <i>trav</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w --> - 1;
+      <b>return</b><!-- /@w --> *<i>p</i><!-- /@w -->;
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>avl_t_init</i><!-- /@w --> (<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+      <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Traversal-of-an-AVL-Tree.html#178">178</a>.</small>
+
+   <p>We will present the rest of the modified functions without further
+comment.
+
+   <p><a name="catalogue_002dentry_002davl_002d4"></a>
+<a name="index-AVL-traverser-least_002ditem-initializer-265"></a>
+<pre class="format"><a href="AVL_traverser_least-item_initializer.c.txt">180</a>. &lt;<a name="180" href="AVL_traverser_least-item_initializer.c.txt">AVL traverser least-item initializer 180</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>avl_t_first</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_traverser</b> *<i>trav</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>avl_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bavl_005ft_005ffirst_007d-function-266"></a>  <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>x</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_table</i><!-- /@w --> = <i>tree</i><!-- /@w -->;
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> = 0;
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w -->;
+
+  <i>x</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_root</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+    <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> &lt; <tt>AVL_MAX_HEIGHT</tt><!-- /@w -->);
+        <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->++] = <i>x</i><!-- /@w -->;
+        <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+      }
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> <i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? <i>x</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w --> : <tt>NULL</tt><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Traversal-of-an-AVL-Tree.html#178">178</a>.</small>
+
+   <p><a name="catalogue_002dentry_002davl_002d5"></a>
+<a name="index-AVL-traverser-greatest_002ditem-initializer-267"></a>
+<pre class="format"><a href="AVL_traverser_greatest-item_initializer.c.txt">181</a>. &lt;<a name="181" href="AVL_traverser_greatest-item_initializer.c.txt">AVL traverser greatest-item initializer 181</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>avl_t_last</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_traverser</b> *<i>trav</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>avl_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bavl_005ft_005flast_007d-function-268"></a>  <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>x</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_table</i><!-- /@w --> = <i>tree</i><!-- /@w -->;
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> = 0;
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w -->;
+
+  <i>x</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_root</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+    <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> &lt; <tt>AVL_MAX_HEIGHT</tt><!-- /@w -->);
+        <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->++] = <i>x</i><!-- /@w -->;
+        <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+      }
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> <i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? <i>x</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w --> : <tt>NULL</tt><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Traversal-of-an-AVL-Tree.html#178">178</a>.</small>
+
+   <p><a name="catalogue_002dentry_002davl_002d6"></a>
+<a name="index-AVL-traverser-search-initializer-269"></a>
+<pre class="format"><a href="AVL_traverser_search_initializer.c.txt">182</a>. &lt;<a name="182" href="AVL_traverser_search_initializer.c.txt">AVL traverser search initializer 182</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>avl_t_find</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_traverser</b> *<i>trav</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>avl_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bavl_005ft_005ffind_007d-function-270"></a>  <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>p</i><!-- /@w -->, *<i>q</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_table</i><!-- /@w --> = <i>tree</i><!-- /@w -->;
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> = 0;
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w -->;
+  <b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_root</i><!-- /@w -->; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>p</i><!-- /@w --> = <i>q</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>avl_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>avl_param</i><!-- /@w -->);
+
+      <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> &lt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+      <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>cmp</i><!-- /@w --> &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+      <b>else</b><!-- /@w --> /* <i>cmp</i><!-- /@w --> == 0 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+          <b>return</b><!-- /@w --> <i>p</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->;
+        }
+
+      <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> &lt; <tt>AVL_MAX_HEIGHT</tt><!-- /@w -->);
+      <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->++] = <i>p</i><!-- /@w -->;
+    }
+
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> = 0;
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Traversal-of-an-AVL-Tree.html#178">178</a>.</small>
+
+   <p><a name="catalogue_002dentry_002davl_002d7"></a>
+<a name="index-AVL-traverser-advance-function-271"></a>
+<pre class="format"><a href="AVL_traverser_advance_function.c.txt">183</a>. &lt;<a name="183" href="AVL_traverser_advance_function.c.txt">AVL traverser advance function 183</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>avl_t_next</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_traverser</b> *<i>trav</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bavl_005ft_005fnext_007d-function-272"></a>  <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>x</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w --> != <i>trav</i><!-- /@w -->-&gt;<i>avl_table</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w -->)
+    <i>trav_refresh</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+
+  <i>x</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>return</b><!-- /@w --> <i>avl_t_first</i><!-- /@w --> (<i>trav</i><!-- /@w -->, <i>trav</i><!-- /@w -->-&gt;<i>avl_table</i><!-- /@w -->);
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> &lt; <tt>AVL_MAX_HEIGHT</tt><!-- /@w -->);
+      <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->++] = <i>x</i><!-- /@w -->;
+      <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+
+      <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> &lt; <tt>AVL_MAX_HEIGHT</tt><!-- /@w -->);
+          <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->++] = <i>x</i><!-- /@w -->;
+          <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+        }
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>y</i><!-- /@w -->;
+
+      <b>do</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+              <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+            }
+
+          <i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+          <i>x</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[&ndash;<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->];
+        } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>while</b><!-- /@w --> (<i>y</i><!-- /@w --> == <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1]);
+    }
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> <i>x</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Traversal-of-an-AVL-Tree.html#178">178</a>.</small>
+
+   <p><a name="catalogue_002dentry_002davl_002d8"></a>
+<a name="index-AVL-traverser-back-up-function-273"></a>
+<pre class="format"><a href="AVL_traverser_back_up_function.c.txt">184</a>. &lt;<a name="184" href="AVL_traverser_back_up_function.c.txt">AVL traverser back up function 184</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>avl_t_prev</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_traverser</b> *<i>trav</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bavl_005ft_005fprev_007d-function-274"></a>  <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>x</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w --> != <i>trav</i><!-- /@w -->-&gt;<i>avl_table</i><!-- /@w -->-&gt;<i>avl_generation</i><!-- /@w -->)
+    <i>trav_refresh</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+
+  <i>x</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>return</b><!-- /@w --> <i>avl_t_last</i><!-- /@w --> (<i>trav</i><!-- /@w -->, <i>trav</i><!-- /@w -->-&gt;<i>avl_table</i><!-- /@w -->);
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> &lt; <tt>AVL_MAX_HEIGHT</tt><!-- /@w -->);
+      <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->++] = <i>x</i><!-- /@w -->;
+      <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+
+      <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> &lt; <tt>AVL_MAX_HEIGHT</tt><!-- /@w -->);
+          <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->++] = <i>x</i><!-- /@w -->;
+          <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+        }
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>avl_node</b> *<i>y</i><!-- /@w -->;
+
+      <b>do</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+              <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+            }
+
+          <i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+          <i>x</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>avl_stack</i><!-- /@w -->[&ndash;<i>trav</i><!-- /@w -->-&gt;<i>avl_height</i><!-- /@w -->];
+        } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>while</b><!-- /@w --> (<i>y</i><!-- /@w --> == <i>x</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0]);
+    }
+  <i>trav</i><!-- /@w -->-&gt;<i>avl_node</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> <i>x</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Traversal-of-an-AVL-Tree.html#178">178</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Explain the meaning of this ugly expression, used in <i>avl_t_insert</i><!-- /@w -->():
+
+<pre class="format">    (<b>struct</b><!-- /@w --> <b>avl_node</b> *) ((<b>char</b><!-- /@w --> *) <i>p</i><!-- /@w --> - <i>offsetof</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>avl_node</b>, <i>avl_data</i><!-- /@w -->))
+</pre>
+   <p>[<a href="Answers-for-Chapter-5.html#5%2d6%231">answer</a>]
+
+   </body></html>
+

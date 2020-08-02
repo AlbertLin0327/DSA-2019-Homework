@@ -1,0 +1,435 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 8 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-7.html" title="Chapter 7">
+<link rel=Next href="Answers-for-Chapter-9.html" title="Chapter 9">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-8">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 8</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-8.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-7.html" title="Skip Back: Chapter 7"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-9.html" title="Skip Forward: Chapter 9"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-7.html" title="Prev: Chapter 7"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-9.html" title="Next: Chapter 9"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 8.1</h4>
+
+<p><a name="8_002d1_00231"></a> <b>1.</b>
+No: the compiler may insert padding between or after structure members. 
+For example, today (2002) the most common desktop computers have 32-bit
+pointers and and 8-bit <b>char</b><!-- /@w -->s.  On these systems, most compilers will
+pad out structures to a multiple of 32 bits.  Under these circumstances,
+<b>struct</b><!-- /@w --> <b>tavl_node</b> is no larger than <b>struct</b><!-- /@w --> <b>avl_node</b>, because (32 + 32 + 8) and (32 + 32 + 8 + 8 + 8) both round up to the same multiple of
+32 bits, or 96 bits.
+
+<h4 class="subheading">Section 8.2</h4>
+
+<p><a name="8_002d2_00231"></a> <b>1.</b>
+We just have to special-case the possibility that subtree <i>b</i><!-- /@w --> is a
+thread.
+
+   <p><a name="catalogue_002dentry_002dtbst_002d22"></a>
+<!-- tested 2001/11/10 -->
+<pre class="format">/* Rotates right at *<i>yp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>rotate_right</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tavl_node</b> **<i>yp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brotate_005fright_007d-function-955"></a>  <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>y</i><!-- /@w --> = *<i>yp</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+      <i>y</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+      <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+  <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+  *<i>yp</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+}
+</pre>
+   <p><a name="catalogue_002dentry_002dtbst_002d23"></a>
+<!-- tested 2001/11/10 -->
+<pre class="format">/* Rotates left at *<i>xp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>rotate_left</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tavl_node</b> **<i>xp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brotate_005fleft_007d-function-956"></a>  <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>x</i><!-- /@w --> = *<i>xp</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+  <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>y</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+      <i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+      <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+    }
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+  <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->;
+  *<i>xp</i><!-- /@w --> = <i>y</i><!-- /@w -->;
+}
+</pre>
+   <h4 class="subheading">Section 8.4.2</h4>
+
+<p><a name="8_002d4_002d2_00231"></a> <b>1.</b>
+Besides this change, the statement
+
+<pre class="format"><i>z</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[<i>y</i><!-- /@w --> != <i>z</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0]] = <i>w</i><!-- /@w -->;
+</pre>
+   <p class="noindent">must be removed from &lt;<a href="Rebalancing-TAVL-Trees.html#304">Step 4: Rebalance after TAVL insertion 304</a>&gt;, and
+copies added to the end of &lt;<a href="TAVL-Insertion-Symmetric-Case.html#308">Rebalance TAVL tree after insertion in right subtree 308</a>&gt; and &lt;<a href="Rebalancing-TAVL-Trees.html#306">Rebalance for - balance factor in TAVL insertion in left subtree 306</a>&gt;.
+
+   <p><a name="catalogue_002dentry_002dtavl_002d5"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-rebalance-_0040math_007b_002b_007d-balance-in-TAVL-insertion-in-left-subtree_002c-alternate-version-957"></a>
+<pre class="format"><a href="Rebalance__7c_2b_7c_balance_in_TAVL_insertion_in_left_subtree,_alternate_version.c.txt">657</a>. &lt;<a name="657" href="Rebalance__7c_2b_7c_balance_in_TAVL_insertion_in_left_subtree,_alternate_version.c.txt">Rebalance + balance in TAVL insertion in left subtree, alternate version 657</a>&gt; =
+<i>w</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+<i>rotate_left</i><!-- /@w --> (&amp;<i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0]);
+<i>rotate_right</i><!-- /@w --> (&amp;<i>z</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[<i>y</i><!-- /@w --> != <i>z</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0]]);
+<b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == -1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = 0, <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = +1;
+<b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>w</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = 0;
+<b>else</b><!-- /@w --> /* <i>w</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == +1 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = -1, <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = 0;
+<i>w</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = 0;
+</pre>
+   <h4 class="subheading">Section 8.5.2</h4>
+
+<p><a name="8_002d5_002d2_00231"></a> <b>1.</b>
+We can just reuse the alternate implementation of case 4 for TBST
+deletion, following it by setting up <i>q</i><!-- /@w --> and <i>dir</i><!-- /@w --> as the rebalancing
+step expects them to be.
+
+   <p><a name="catalogue_002dentry_002dtavl_002d6"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-case-4-in-TAVL-deletion_002c-alternate-version-958"></a>
+<pre class="format"><a href="Case_4_in_TAVL_deletion,_alternate_version.c.txt">658</a>. &lt;<a name="658" href="Case_4_in_TAVL_deletion,_alternate_version.c.txt">Case 4 in TAVL deletion, alternate version 658</a>&gt; =
+&lt;<a href="Answers-for-Chapter-7.html#656">Case 4 in TBST deletion, alternate version; tbst =&gt; tavl 656</a>&gt;
+<i>q</i><!-- /@w --> = <i>r</i><!-- /@w -->;
+<i>dir</i><!-- /@w --> = 0;
+</pre>
+   <h4 class="subheading">Section 8.5.6</h4>
+
+<p><a name="8_002d5_002d6_00231"></a> <b>1.</b>
+Our argument here is similar to that in Exercise 7.7-4. 
+Consider the links that are traversed to successfully find the parent
+of each node, besides the root, in the tree shown below.  Do not
+include links followed on the side that does not lead to the node's
+parent.  Because there are never more of these than on the successful
+side, they add only a constant time to the algorithm and can be
+ignored.
+
+<div align="center"><a href="tbstdel6.txt"><img border=0 src="tbstdel6.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">The table below lists the links followed.  The important point is that
+no link is listed twice.
+
+   <p><table summary=""><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">Node
+</td><td valign="top" width="30%">Links Followed to Node's Parent
+
+<p><br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">0
+</td><td valign="top" width="30%">0-&gt;2, 2-&gt;3
+
+<p><br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">1
+</td><td valign="top" width="30%">1-&gt;2
+
+<p><br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">2
+</td><td valign="top" width="30%">2-&gt;1, 1-&gt;0
+
+<p><br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">3
+</td><td valign="top" width="30%">3-&gt;5, 5-&gt;6
+
+<p><br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">4
+</td><td valign="top" width="30%">4-&gt;5
+
+<p><br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">5
+</td><td valign="top" width="30%">5-&gt;4, 4-&gt;3
+
+<p><br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">6
+</td><td valign="top" width="30%">(root)
+
+<p><br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="10%">7
+</td><td valign="top" width="30%">7-&gt;6
+   <br></td></tr></table>
+
+   <p>This generalizes to all TBSTs.  Because a TBST with <i>n</i><!-- /@w --> nodes contains
+only 2<i>n</i><!-- /@w --> links, this means we have an upper bound on finding the parent
+of every node in a TBST of at most 2<i>n</i><!-- /@w --> successful link traversals plus
+2<i>n</i><!-- /@w --> unsuccessful link traversals.  Averaging 4<i>n</i><!-- /@w --> over <i>n</i><!-- /@w --> nodes, we
+get an upper bound of 4<i>n</i><!-- /@w -->/<i>n</i><!-- /@w --> == 4 link traversals, on average, to find
+the parent of a given node.
+
+   <p>This upper bound applies only to the average case, not to the case of
+any individual node.  In particular, it does not say that the usage of
+the algorithm in <i>tavl_delete</i><!-- /@w -->() will exhibit average behavior.  In
+practice, however, the performance of this algorithm in
+<i>tavl_delete</i><!-- /@w -->() seems quite acceptable.  See Exercise 3
+for an alternative with more certain behavior.
+
+   <p><a name="8_002d5_002d6_00232"></a> <b>2.</b>
+Instead of storing a null pointer in the left thread of the least node
+and the right thread of the greatest node, store a pointer to a node
+&ldquo;above the root&rdquo;.  To make this work properly, <i>tavl_root</i><!-- /@w --> will have
+to become an actual node, not just a node pointer, because otherwise
+trying to find its right child would invoke undefined behavior.  Also,
+both of <i>tavl_root</i><!-- /@w -->'s children would have to be the root node.
+
+   <p>This is probably not worth it.  On the surface it seems like a good idea
+but ugliness lurks beneath.
+
+   <p><a name="8_002d5_002d6_00233"></a> <b>3.</b>
+The necessary changes are pervasive, so the complete code for the
+modified function is presented below.  The search step is borrowed from
+TRB deletion, presented in the next chapter.
+
+   <p><a name="catalogue_002dentry_002dtavl_002d7"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-TAVL-item-deletion-function_002c-with-stack-959"></a>
+<pre class="format"><a href="TAVL_item_deletion_function,_with_stack.c.txt">659</a>. &lt;<a name="659" href="TAVL_item_deletion_function,_with_stack.c.txt">TAVL item deletion function, with stack 659</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>tavl_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tavl_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btavl_005fdelete_007d-function-960"></a>  /* Stack of nodes. */
+  <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>pa</i><!-- /@w -->[<tt>TAVL_MAX_HEIGHT</tt><!-- /@w -->]; /* Nodes. */
+  <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>da</i><!-- /@w -->[<tt>TAVL_MAX_HEIGHT</tt><!-- /@w -->];     /* <i>tavl_link</i><!-- /@w -->[] indexes. */
+  <b>int</b><!-- /@w --> <i>k</i><!-- /@w --> = 0;                             /* Stack pointer. */
+
+  <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>p</i><!-- /@w -->; /* Traverses tree to find node to delete. */
+  <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w -->;             /* Result of comparison between <i>item</i><!-- /@w --> and <i>p</i><!-- /@w -->. */
+  <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->;             /* Child of <i>p</i><!-- /@w --> to visit next. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Deleting-a-TRB-Node-Step-1-_002d-Search.html#350">Step 1: Search TRB tree for item to delete; trb =&gt; tavl 350</a>&gt;
+  &lt;<a href="Answers-for-Chapter-8.html#660">Step 2: Delete item from TAVL tree, with stack 660</a>&gt;
+  &lt;<a href="Answers-for-Chapter-8.html#665">Steps 3 and 4: Update balance factors and rebalance after TAVL deletion, with stack 665</a>&gt;
+
+  <b>return</b><!-- /@w --> (<b>void</b><!-- /@w --> *) <i>item</i><!-- /@w -->;
+}
+</pre>
+   <p><a name="index-delete-item-from-TAVL-tree_002c-with-stack-961"></a>
+<pre class="format"><a href="Step_2_3a_Delete_item_from_TAVL_tree,_with_stack.c.txt">660</a>. &lt;<a name="660" href="Step_2_3a_Delete_item_from_TAVL_tree,_with_stack.c.txt">Step 2: Delete item from TAVL tree, with stack 660</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_CHILD</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Answers-for-Chapter-8.html#661">Case 1 in TAVL deletion, with stack 661</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Answers-for-Chapter-8.html#662">Case 2 in TAVL deletion, with stack 662</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+    <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_THREAD</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Answers-for-Chapter-8.html#663">Case 3 in TAVL deletion, with stack 663</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Answers-for-Chapter-8.html#664">Case 4 in TAVL deletion, with stack 664</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+
+<i>tree</i><!-- /@w -->-&gt;<i>tavl_count</i><!-- /@w -->&ndash;;
+<i>tree</i><!-- /@w -->-&gt;<i>tavl_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>tavl_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#659">659</a>.</small>
+
+   <p><a name="index-case-1-in-TAVL-deletion_002c-with-stack-962"></a>
+<pre class="format"><a href="Case_1_in_TAVL_deletion,_with_stack.c.txt">661</a>. &lt;<a name="661" href="Case_1_in_TAVL_deletion,_with_stack.c.txt">Case 1 in TAVL deletion, with stack 661</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+<b>while</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_CHILD</tt><!-- /@w -->)
+  <i>r</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+<i>r</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#660">660</a>.</small>
+
+   <p><a name="index-case-2-in-TAVL-deletion_002c-with-stack-963"></a>
+<pre class="format"><a href="Case_2_in_TAVL_deletion,_with_stack.c.txt">662</a>. &lt;<a name="662" href="Case_2_in_TAVL_deletion,_with_stack.c.txt">Case 2 in TAVL deletion, with stack 662</a>&gt; =
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]];
+<b>if</b><!-- /@w --> (<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] != (<b>struct</b><!-- /@w --> <b>tavl_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>tavl_root</i><!-- /@w -->)
+  <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_tag</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#660">660</a>.</small>
+
+   <p><a name="index-case-3-in-TAVL-deletion_002c-with-stack-964"></a>
+<pre class="format"><a href="Case_3_in_TAVL_deletion,_with_stack.c.txt">663</a>. &lt;<a name="663" href="Case_3_in_TAVL_deletion,_with_stack.c.txt">Case 3 in TAVL deletion, with stack 663</a>&gt; =
+<i>r</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+<i>r</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0];
+<i>r</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w -->;
+<b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>x</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+    <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_CHILD</tt><!-- /@w -->)
+      <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>r</i><!-- /@w -->;
+  }
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>r</i><!-- /@w -->;
+<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#660">660</a>.</small>
+
+   <p><a name="index-case-4-in-TAVL-deletion_002c-with-stack-965"></a>
+<pre class="format"><a href="Case_4_in_TAVL_deletion,_with_stack.c.txt">664</a>. &lt;<a name="664" href="Case_4_in_TAVL_deletion,_with_stack.c.txt">Case 4 in TAVL deletion, with stack 664</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>s</i><!-- /@w -->;
+<b>int</b><!-- /@w --> <i>j</i><!-- /@w --> = <i>k</i><!-- /@w -->++;
+
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 0;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_THREAD</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+
+<i>da</i><!-- /@w -->[<i>j</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>j</i><!-- /@w -->] = <i>pa</i><!-- /@w -->[<i>j</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>j</i><!-- /@w --> - 1]] = <i>s</i><!-- /@w -->;
+
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_CHILD</tt><!-- /@w -->)
+  <i>r</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>r</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->;
+    <i>r</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+  }
+
+<i>s</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w -->;
+
+<i>s</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>x</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+    <b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_CHILD</tt><!-- /@w -->)
+      <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>s</i><!-- /@w -->;
+
+    <i>s</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+  }
+
+<i>s</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#660">660</a>.</small>
+
+   <p><a name="index-update-balance-factors-and-rebalance-after-TAVL-deletion_002c-with-stack-966"></a>
+<pre class="format"><a href="Steps_3_and_4_3a_Update_balance_factors_and_rebalance_after_TAVL_deletion,_with_stack.c.txt">665</a>. &lt;<a name="665" href="Steps_3_and_4_3a_Update_balance_factors_and_rebalance_after_TAVL_deletion,_with_stack.c.txt">Steps 3 and 4: Update balance factors and rebalance after TAVL deletion, with stack 665</a>&gt; =
+<i>assert</i><!-- /@w --> (<i>k</i><!-- /@w --> &gt; 0);
+<b>while</b><!-- /@w --> (&ndash;<i>k</i><!-- /@w --> &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->];
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w -->++;
+        <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == +1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>break</b><!-- /@w -->;
+        <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == +2) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            &lt;<a href="Answers-for-Chapter-8.html#666">Step 4: Rebalance after TAVL deletion, with stack 666</a>&gt;
+          }
+      } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        &lt;<a href="Answers-for-Chapter-8.html#667">Steps 3 and 4: Symmetric case in TAVL deletion, with stack 667</a>&gt;
+      }
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#659">659</a>.</small>
+
+   <p><a name="index-rebalance-after-TAVL-deletion_002c-with-stack-967"></a>
+<pre class="format"><a href="Step_4_3a_Rebalance_after_TAVL_deletion,_with_stack.c.txt">666</a>. &lt;<a name="666" href="Step_4_3a_Rebalance_after_TAVL_deletion,_with_stack.c.txt">Step 4: Rebalance after TAVL deletion, with stack 666</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+<i>assert</i><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == -1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>w</i><!-- /@w -->;
+
+    &lt;<a href="TAVL-Insertion-Symmetric-Case.html#310">Rebalance for - balance factor in TAVL insertion in right subtree 310</a>&gt;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>w</i><!-- /@w -->;
+  }
+<b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = -1;
+    <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = +1;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>x</i><!-- /@w -->;
+    <b>break</b><!-- /@w -->;
+  }
+<b>else</b><!-- /@w --> /* <i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == +1 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] == <tt>TAVL_CHILD</tt><!-- /@w -->)
+      <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>y</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+        <i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+      }
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;  
+    <i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = 0;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>x</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#665">665</a>.</small>
+
+   <p><a name="index-symmetric-case-in-TAVL-deletion_002c-with-stack-968"></a>
+<pre class="format"><a href="Steps_3_and_4_3a_Symmetric_case_in_TAVL_deletion,_with_stack.c.txt">667</a>. &lt;<a name="667" href="Steps_3_and_4_3a_Symmetric_case_in_TAVL_deletion,_with_stack.c.txt">Steps 3 and 4: Symmetric case in TAVL deletion, with stack 667</a>&gt; =
+<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w -->&ndash;;
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == -1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>break</b><!-- /@w -->;
+<b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == -2) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0];
+    <i>assert</i><!-- /@w --> (<i>x</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+    <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == +1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>struct</b><!-- /@w --> <b>tavl_node</b> *<i>w</i><!-- /@w -->;
+
+        &lt;<a href="Rebalancing-TAVL-Trees.html#307">Rebalance for + balance factor in TAVL insertion in left subtree 307</a>&gt;
+        <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>w</i><!-- /@w -->;
+      }
+    <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+        <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+        <i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = +1;
+        <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = -1;
+        <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>x</i><!-- /@w -->;
+        <b>break</b><!-- /@w -->;
+      }
+    <b>else</b><!-- /@w --> /* <i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> == -1 */ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] == <tt>TAVL_CHILD</tt><!-- /@w -->)
+          <i>y</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1];
+        <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>y</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[0] = <tt>TAVL_THREAD</tt><!-- /@w -->;
+            <i>x</i><!-- /@w -->-&gt;<i>tavl_tag</i><!-- /@w -->[1] = <tt>TAVL_CHILD</tt><!-- /@w -->;
+          }
+        <i>x</i><!-- /@w -->-&gt;<i>tavl_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+        <i>x</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>tavl_balance</i><!-- /@w --> = 0;
+        <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>tavl_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]] = <i>x</i><!-- /@w -->;
+      }
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-8.html#665">665</a>.</small>
+
+   </body></html>
+

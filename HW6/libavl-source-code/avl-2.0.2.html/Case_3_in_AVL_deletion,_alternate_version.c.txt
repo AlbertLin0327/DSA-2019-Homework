@@ -1,0 +1,17 @@
+struct avl_node *s;
+
+da[k] = 1;
+pa[k++] = p;
+for (;;)
+  {
+    da[k] = 0;
+    pa[k++] = r;
+    s = r->avl_link[0];
+    if (s->avl_link[0] == NULL)
+      break;
+
+    r = s;
+  }
+p->avl_data = s->avl_data;
+r->avl_link[0] = s->avl_link[1];
+p = s;

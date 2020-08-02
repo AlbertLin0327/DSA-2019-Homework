@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>BST Operations - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="BST-Rotations.html" title="4.3 Rotations">
+<link rel=Next href="Creating-a-BST.html" title="4.5 Creation">
+<link rel=Parent href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="BST-Operations">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.4 Operations</b></big></td>
+<td align=right>
+<a href="index.html#BST-Operations.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="BST-Rotations.html" title="Skip Back: 4.3 Rotations"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Creating-a-BST.html" title="Skip Forward: 4.5 Creation"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="BST-Rotations.html" title="Prev: 4.3 Rotations"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Binary-Search-Trees.html" title="Up: 4 Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Creating-a-BST.html" title="Next: 4.5 Creation"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Now can start to implement the operations that we'll want to perform
+on BSTs.  Here's the outline of the functions we'll implement.  We use
+the generic table insertion convenience functions from
+Exercise 2.8-3 to implement <i>bst_insert</i><!-- /@w -->() and
+<i>bst_replace</i><!-- /@w -->(), as well the generic assertion function
+implementations from Exercise 2.9-2 to implement
+<i>tbl_assert_insert</i><!-- /@w -->() and <i>tbl_assert_delete</i><!-- /@w -->().  We also include a
+copy of the default memory allocation functions for use with BSTs:
+
+   <p><a name="index-BST-operations-42"></a>
+<pre class="format"><a href="BST_operations.c.txt">29</a>. &lt;<a name="29" href="BST_operations.c.txt">BST operations 29</a>&gt; =
+&lt;<a href="Creating-a-BST.html#30">BST creation function 30</a>&gt;
+&lt;<a href="Searching-a-BST.html#31">BST search function 31</a>&gt;
+&lt;<a href="Inserting-into-a-BST.html#32">BST item insertion function 32</a>&gt;
+&lt;<a href="Answers-for-Chapter-2.html#592">Table insertion convenience functions; tbl =&gt; bst 592</a>&gt;
+&lt;<a href="Deleting-from-a-BST.html#37">BST item deletion function 37</a>&gt;
+&lt;<a href="Better-Iterative-Traversal.html#63">BST traversal functions 63</a>&gt;
+&lt;<a href="Handling-Errors-in-Iterative-BST-Copying.html#83">BST copy function 83</a>&gt;
+&lt;<a href="Destroying-a-BST-by-Rotation.html#84">BST destruction function 84</a>&gt;
+&lt;<a href="Balancing-a-BST.html#87">BST balance function 87</a>&gt;
+&lt;<a href="Memory-Allocation.html#6">Default memory allocation functions; tbl =&gt; bst 6</a>&gt;
+&lt;<a href="Answers-for-Chapter-2.html#594">Table assertion functions; tbl =&gt; bst 594</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Binary-Search-Trees.html#25">25</a>.</small>
+
+   </body></html>
+

@@ -1,0 +1,37 @@
+/* Inserts |item| into |tree| and returns a pointer to |item|'s address.
+   If a duplicate item is found in the tree,
+   returns a pointer to the duplicate without inserting |item|.
+   Returns |NULL| in case of memory allocation failure. */
+void **
+pbst_probe (struct pbst_table *tree, void *item)
+{
+  struct pbst_node *p, *q; /* Current node in search and its parent. */
+  int dir;                 /* Side of |q| on which |p| is located. */
+  struct pbst_node *n;     /* Newly inserted node. */
+
+  assert (tree != NULL && item != NULL);
+
+  for (q = NULL, p = tree->pbst_root; p != NULL; q = p, p = p->pbst_link[dir])
+    {
+      int cmp = tree->pbst_compare (item, p->pbst_data, tree->pbst_param);
+      if (cmp == 0)
+        return &p->pbst_data;
+      dir = cmp > 0;
+    }
+
+  n = tree->pbst_alloc->libavl_malloc (tree->pbst_alloc, sizeof *p);
+  if (n == NULL)
+    return NULL;
+
+  tree->pbst_count++;
+  n->pbst_link[0] = n->pbst_link[1] = NULL;
+  n->pbst_parent = q;
+  n->pbst_data = item;
+  if (q != NULL)
+    q->pbst_link[dir] = n;
+  else
+    tree->pbst_root = n;
+
+  return &n->pbst_data;
+}
+

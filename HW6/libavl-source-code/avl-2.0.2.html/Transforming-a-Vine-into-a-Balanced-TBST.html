@@ -1,0 +1,207 @@
+<html lang="en">
+<head>
+<title>Transforming a Vine into a Balanced TBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Transforming-a-TBST-into-a-Vine.html" title="7.11.1 From Tree to Vine">
+<link rel=Next href="Testing-TBSTs.html" title="7.12 Testing">
+<link rel=Parent href="Balancing-a-TBST.html" title="7.11 Balance">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Transforming-a-Vine-into-a-Balanced-TBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>7.11.2 From Vine to Balanced Tree</b></big></td>
+<td align=right>
+<a href="index.html#Transforming-a-Vine-into-a-Balanced-TBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Transforming-a-TBST-into-a-Vine.html" title="Skip Back: 7.11.1 From Tree to Vine"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Transforming-a-TBST-into-a-Vine.html" title="Prev: 7.11.1 From Tree to Vine"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Balancing-a-TBST.html" title="Up: 7.11 Balance"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Testing-TBSTs.html" title="Next: 7.12 Testing"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Transforming a vine into a balanced threaded BST is similar to the same
+operation on an unthreaded BST.  We can use the same algorithm,
+adjusting it for presence of the threads.  The following outline is
+similar to &lt;<a href="Balancing-a-BST.html#87">BST balance function 87</a>&gt;.  In fact, we entirely reuse
+&lt;<a href="Balancing-Implementation.html#91">Calculate <i>leaves</i><!-- /@w --> 91</a>&gt;, just changing <i>bst</i><!-- /@w --> to <i>tbst</i><!-- /@w -->.  We omit the
+final check on the tree's height, because none of the TBST functions are
+height-limited.
+
+   <p><a name="catalogue_002dentry_002dtbst_002d17"></a>
+<a name="index-TBST-vine_002dto_002dtree-function-412"></a>
+<pre class="format"><a href="TBST_vine-to-tree_function.c.txt">285</a>. &lt;<a name="285" href="TBST_vine-to-tree_function.c.txt">TBST vine-to-tree function 285</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>vine_to_tree</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bvine_005fto_005ftree_007d-function-413"></a>  <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>vine</i><!-- /@w -->;   /* Number of nodes in main vine. */
+  <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>leaves</i><!-- /@w -->; /* Nodes in incomplete bottom level, if any. */
+  <b>int</b><!-- /@w --> <i>height</i><!-- /@w -->;           /* Height of produced balanced tree. */
+
+  &lt;<a href="Balancing-Implementation.html#91">Calculate <i>leaves</i><!-- /@w -->; bst =&gt; tbst 91</a>&gt;
+  &lt;<a href="Transforming-a-Vine-into-a-Balanced-TBST.html#287">Reduce TBST vine general case to special case 287</a>&gt;
+  &lt;<a href="Transforming-a-Vine-into-a-Balanced-TBST.html#288">Make special case TBST vine into balanced tree and count height 288</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-a-TBST.html#282">282</a> and <a href="Balancing-an-RTBST.html#408">408</a>.</small>
+
+   <p>Not many changes are needed to adapt the algorithm to handle threads. 
+Consider the basic right rotation transformation used during a
+compression:
+
+<div align="center"><a href="compress.txt"><img border=0 src="compress.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The rotation does not disturb <i>a</i><!-- /@w --> or <i>c</i><!-- /@w -->, so the only node that can
+cause trouble is <i>b</i><!-- /@w -->.  If <i>b</i><!-- /@w --> is a real child node, then there's no need
+to do anything differently.  But if <i>b</i><!-- /@w --> is a thread, then we have to
+swap around the direction of the thread, like this:
+
+<div align="center"><a href="tbstcmp.txt"><img border=0 src="tbstcmp.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">After a rotation that involves a thread, the next rotation on <i>B</i><!-- /@w --> will
+not involve a thread.  So after we perform a rotation that adjusts a
+thread in one place, the next one in the same place will not require a
+thread adjustment.
+
+   <p>Every node in the vine we start with has a thread as its right link. 
+This means that during the first pass along the main vine we must
+perform thread adjustments at every node, but subsequent passes along
+the vine must not perform any adjustments.
+
+   <p>This simple idea is complicated by the initial partial compression pass
+in trees that do not have exactly one fewer than a power of two nodes. 
+After a partial compression pass, the nodes at the top of the main vine
+no longer have right threads, but the ones farther down still do.
+
+   <p>We deal with this complication by defining the <i>compress</i><!-- /@w -->() function so
+it can handle a mixture of rotations with and without right threads. 
+The rotations that need thread adjustments will always be below the ones
+that do not, so this function simply takes a pair of parameters, the
+first specifying how many rotations without thread adjustment to
+perform, the next how many with thread adjustment.  Compare this code
+to that for unthreaded BSTs:
+
+   <p><a name="catalogue_002dentry_002dtbst_002d18"></a>
+<a name="index-TBST-vine-compression-function-414"></a>
+<pre class="format"><a href="TBST_vine_compression_function.c.txt">286</a>. &lt;<a name="286" href="TBST_vine_compression_function.c.txt">TBST vine compression function 286</a>&gt; =
+/* Performs a nonthreaded compression operation <i>nonthread</i><!-- /@w --> times,
+   then a threaded compression operation <i>thread</i><!-- /@w --> times, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->starting at <i>root</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>compress</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>root</i><!-- /@w -->,
+          <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>nonthread</i><!-- /@w -->, <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>thread</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompress_007d-function-415"></a>  <i>assert</i><!-- /@w --> (<i>root</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>while</b><!-- /@w --> (<i>nonthread</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>red</i><!-- /@w --> = <i>root</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+      <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>black</i><!-- /@w --> = <i>red</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+
+      <i>root</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>black</i><!-- /@w -->;
+      <i>red</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>black</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+      <i>black</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] = <i>red</i><!-- /@w -->;
+      <i>root</i><!-- /@w --> = <i>black</i><!-- /@w -->;
+    }
+
+  <b>while</b><!-- /@w --> (<i>thread</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>red</i><!-- /@w --> = <i>root</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+      <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>black</i><!-- /@w --> = <i>red</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+
+      <i>root</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>black</i><!-- /@w -->;
+      <i>red</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>black</i><!-- /@w -->;
+      <i>red</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] = <tt>TBST_THREAD</tt><!-- /@w -->;
+      <i>black</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] = <tt>TBST_CHILD</tt><!-- /@w -->;
+      <i>root</i><!-- /@w --> = <i>black</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-a-TBST.html#282">282</a>.</small>
+
+   <p>When we reduce the general case to the 2**n - 1
+special case, all of the rotations adjust threads:
+
+   <p><a name="index-reduce-TBST-vine-general-case-to-special-case-416"></a>
+<pre class="format"><a href="Reduce_TBST_vine_general_case_to_special_case.c.txt">287</a>. &lt;<a name="287" href="Reduce_TBST_vine_general_case_to_special_case.c.txt">Reduce TBST vine general case to special case 287</a>&gt; =
+<i>compress</i><!-- /@w --> ((<b>struct</b><!-- /@w --> <b>tbst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->, 0, <i>leaves</i><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Transforming-a-Vine-into-a-Balanced-TBST.html#285">285</a>.</small>
+
+   <p>We deal with the first compression specially, in order to clean up any
+remaining unadjusted threads:
+
+   <p><a name="index-make-special-case-TBST-vine-into-balanced-tree-and-count-height-417"></a>
+<pre class="format"><a href="Make_special_case_TBST_vine_into_balanced_tree_and_count_height.c.txt">288</a>. &lt;<a name="288" href="Make_special_case_TBST_vine_into_balanced_tree_and_count_height.c.txt">Make special case TBST vine into balanced tree and count height 288</a>&gt; =
+<i>vine</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>tbst_count</i><!-- /@w --> - <i>leaves</i><!-- /@w -->;
+<i>height</i><!-- /@w --> = 1 + (<i>leaves</i><!-- /@w --> &gt; 0);
+<b>if</b><!-- /@w --> (<i>vine</i><!-- /@w --> &gt; 1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>nonleaves</i><!-- /@w --> = <i>vine</i><!-- /@w --> / 2;
+    <i>leaves</i><!-- /@w --> /= 2;
+    <b>if</b><!-- /@w --> (<i>leaves</i><!-- /@w --> &gt; <i>nonleaves</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>leaves</i><!-- /@w --> = <i>nonleaves</i><!-- /@w -->;
+        <i>nonleaves</i><!-- /@w --> = 0;
+      }
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>nonleaves</i><!-- /@w --> -= <i>leaves</i><!-- /@w -->;
+
+    <i>compress</i><!-- /@w --> ((<b>struct</b><!-- /@w --> <b>tbst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->, <i>leaves</i><!-- /@w -->, <i>nonleaves</i><!-- /@w -->);
+    <i>vine</i><!-- /@w --> /= 2;
+    <i>height</i><!-- /@w -->++;
+  }
+</pre>
+   <p class="noindent"><small>See also <a href="Transforming-a-Vine-into-a-Balanced-TBST.html#289">289</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Transforming-a-Vine-into-a-Balanced-TBST.html#285">285</a>.</small></div>
+
+   <p>After this, all the remaining compressions use only rotations without
+thread adjustment, and we're done:
+
+   <p><a name="index-make-special-case-TBST-vine-into-balanced-tree-and-count-height-418"></a>
+<pre class="format"><a href="Make_special_case_TBST_vine_into_balanced_tree_and_count_height.c.txt">289</a>. &lt;<a name="289" href="Make_special_case_TBST_vine_into_balanced_tree_and_count_height.c.txt">Make special case TBST vine into balanced tree and count height 288</a>&gt; +=
+<b>while</b><!-- /@w --> (<i>vine</i><!-- /@w --> &gt; 1) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>compress</i><!-- /@w --> ((<b>struct</b><!-- /@w --> <b>tbst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->, <i>vine</i><!-- /@w --> / 2, 0);
+    <i>vine</i><!-- /@w --> /= 2;
+    <i>height</i><!-- /@w -->++;
+  }
+</pre>
+   </body></html>
+

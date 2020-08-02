@@ -1,0 +1,9 @@
+/* Returns |trav|'s current item. */
+void *
+bst_t_cur (struct bst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  return trav->bst_node != NULL ? trav->bst_node->bst_data : NULL;
+}
+

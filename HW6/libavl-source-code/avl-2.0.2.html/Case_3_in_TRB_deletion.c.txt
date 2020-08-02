@@ -1,0 +1,15 @@
+r->trb_link[0] = p->trb_link[0];
+r->trb_tag[0] = p->trb_tag[0];
+if (r->trb_tag[0] == TRB_CHILD)
+  {
+    struct trb_node *t = r->trb_link[0];
+    while (t->trb_tag[1] == TRB_CHILD)
+      t = t->trb_link[1];
+    t->trb_link[1] = r;
+  }
+pa[k - 1]->trb_link[da[k - 1]] = r;
+t = r->trb_color;
+r->trb_color = p->trb_color;
+p->trb_color = t;
+da[k] = 1;
+pa[k++] = r;

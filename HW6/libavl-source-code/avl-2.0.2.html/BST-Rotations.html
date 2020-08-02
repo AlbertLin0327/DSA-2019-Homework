@@ -1,0 +1,128 @@
+<html lang="en">
+<head>
+<title>BST Rotations - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="BST-Maximum-Height.html" title="4.2.3 Maximum Height">
+<link rel=Next href="BST-Operations.html" title="4.4 Operations">
+<link rel=Parent href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="BST-Rotations">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.3 Rotations</b></big></td>
+<td align=right>
+<a href="index.html#BST-Rotations.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="BST-Data-Types.html" title="Skip Back: 4.2 Data Types"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="BST-Operations.html" title="Skip Forward: 4.4 Operations"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="BST-Maximum-Height.html" title="Prev: 4.2.3 Maximum Height"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Binary-Search-Trees.html" title="Up: 4 Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="BST-Operations.html" title="Next: 4.4 Operations"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Soon we'll jump right in and start implementing the table functions
+for BSTs.  But before that, there's one more topic to discuss, because
+they'll keep coming up from time to time throughout the rest of the
+book.  This topic is the concept of a <dfn>rotation</dfn> (see <a href="Glossary.html#rotation">rotation</a>).  A rotation is
+a simple transformation of a binary tree that looks like this:
+
+<div align="center"><a href="rotation.txt"><img border=0 src="rotation.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>In this diagram, <i>X</i><!-- /@w --> and <i>Y</i><!-- /@w --> represent nodes and <i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->, and <i>c</i><!-- /@w --> are
+arbitrary binary trees that may be empty.  A rotation that changes a
+binary tree of the form shown on the left to the form shown on the
+right is called a <dfn>right rotation</dfn> (see <a href="Glossary.html#right%20rotation">right rotation</a>) on <i>Y</i><!-- /@w -->.  Going the other way,
+it is a <dfn>left rotation</dfn> (see <a href="Glossary.html#left%20rotation">left rotation</a>) on <i>X</i><!-- /@w -->.
+
+   <p>This figure also introduces new graphical conventions.  First, the
+line leading vertically down to the root explicitly shows that the BST
+may be a subtree of a larger tree. 
+Also, the use of both uppercase and lowercase letters emphasizes the
+distinction between individual nodes and subtrees: uppercase letters are
+nodes, lowercase letters represent (possibly empty) subtrees.
+
+   <p>A rotation changes the local structure of a binary tree without changing
+its ordering as seen through inorder traversal.  That's a subtle
+statement, so let's dissect it bit by bit.  Rotations have the following
+properties:
+
+     <dl>
+<dt>Rotations change the structure of a binary tree.<dd>In particular, rotations can often, depending on the tree's shape, be
+used to change the height of a part of a binary tree.
+
+     <br><dt>Rotations change the local structure of a binary tree.<dd>Any given rotation only affects the node rotated and its immediate
+children.  The node's ancestors and its children's children are
+unchanged.
+
+     <br><dt>Rotations do not change the ordering of a binary tree.<dd>If a binary tree is a binary search tree before a rotation, it is a
+binary search tree after a rotation.  So, we can safely use rotations
+to rearrange a BST-based structure, without concerns about upsetting
+its ordering. 
+</dl>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 14.2;
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], section 12.8.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->For each of the binary search trees below, perform a right rotation at
+node 4.
+
+<div align="center"><a href="bstrot1.txt"><img border=0 src="bstrot1.png" alt="[Click here for plain-text rendering]"></a></div>
+   <p>[<a href="Answers-for-Chapter-4.html#4%2d3%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="bstrotation"></a>&nbsp;<!-- /@w -->Write a pair of functions, one to perform a right rotation at a given
+BST node, one to perform a left rotation.  What should be the type of
+the functions' parameter? 
+[<a href="Answers-for-Chapter-4.html#4%2d3%232">answer</a>]
+
+   </body></html>
+

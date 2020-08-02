@@ -1,0 +1,201 @@
+<html lang="en">
+<head>
+<title>Testing PRB Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="PRB-Deletion-Symmetric-Case.html" title="15.4.4 Symmetric Case">
+<link rel=Next href="References.html" title="Appendix A References">
+<link rel=Parent href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Testing-PRB-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>15.5 Testing</b></big></td>
+<td align=right>
+<a href="index.html#Testing-PRB-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-from-a-PRB-Tree.html" title="Skip Back: 15.4 Deletion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="PRB-Deletion-Symmetric-Case.html" title="Prev: 15.4.4 Symmetric Case"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="Up: 15 Red-Black Trees with Parent Pointers"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="References.html" title="Next: Appendix A References"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>No comment is necessary.
+
+   <p><a name="index-_0040t_007bprb_002dtest_002ec_007d-800"></a>
+<pre class="format"><a href="prb-test.c.txt">583</a>. &lt;<a name="583" href="prb-test.c.txt"><tt>prb-test.c</tt> 583</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;limits.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> "prb.h"
+#<b>include</b> "test.h"
+
+&lt;<a href="Displaying-BST-Structures.html#119">BST print function; bst =&gt; prb 119</a>&gt;
+&lt;<a href="Testing-BSTs.html#104">BST traverser check function; bst =&gt; prb 104</a>&gt;
+&lt;<a href="Testing-PRB-Trees.html#584">Compare two PRB trees for structure and content 584</a>&gt;
+&lt;<a href="Testing-PRB-Trees.html#585">Recursively verify PRB tree structure 585</a>&gt;
+&lt;<a href="Testing-RB-Trees.html#244">RB tree verify function; rb =&gt; prb 244</a>&gt;
+&lt;<a href="Testing-BSTs.html#100">BST test function; bst =&gt; prb 100</a>&gt;
+&lt;<a href="Testing-Overflow.html#122">BST overflow test function; bst =&gt; prb 122</a>&gt;
+</pre>
+   <p><a name="index-compare-two-PRB-trees-for-structure-and-content-801"></a>
+<pre class="format"><a href="Compare_two_PRB_trees_for_structure_and_content.c.txt">584</a>. &lt;<a name="584" href="Compare_two_PRB_trees_for_structure_and_content.c.txt">Compare two PRB trees for structure and content 584</a>&gt; =
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>compare_trees</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>prb_node</b> *<i>a</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>prb_node</b> *<i>b</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompare_005ftrees_007d-function-802"></a>  <b>int</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>b</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>assert</i><!-- /@w --> (<i>a</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>b</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->);
+      <b>return</b><!-- /@w --> 1;
+    }
+
+  <b>if</b><!-- /@w --> (*(<b>int</b><!-- /@w --> *) <i>a</i><!-- /@w -->-&gt;<i>prb_data</i><!-- /@w --> != *(<b>int</b><!-- /@w --> *) <i>b</i><!-- /@w -->-&gt;<i>prb_data</i><!-- /@w -->
+      || ((<i>a</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) != (<i>b</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->))
+      || ((<i>a</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) != (<i>b</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->))
+      || <i>a</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> != <i>b</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>" Copied nodes differ: a=%d%c b=%d%c a:"</tt>,
+              *(<b>int</b><!-- /@w --> *) <i>a</i><!-- /@w -->-&gt;<i>prb_data</i><!-- /@w -->, <i>a</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> == <tt>PRB_RED</tt><!-- /@w --> ? <tt>'r'</tt> : <tt>'b'</tt>,
+              *(<b>int</b><!-- /@w --> *) <i>b</i><!-- /@w -->-&gt;<i>prb_data</i><!-- /@w -->, <i>b</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> == <tt>PRB_RED</tt><!-- /@w --> ? <tt>'r'</tt> : <tt>'b'</tt>);
+
+      <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"l"</tt>);
+      <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"r"</tt>);
+
+      <i>printf</i><!-- /@w --> (<tt>" b:"</tt>);
+      <b>if</b><!-- /@w --> (<i>b</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"l"</tt>);
+      <b>if</b><!-- /@w --> (<i>b</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"r"</tt>);
+
+      <i>printf</i><!-- /@w --> (<tt>"\n"</tt>);
+      <b>return</b><!-- /@w --> 0;
+    }
+
+  <i>okay</i><!-- /@w --> = 1;
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+    <i>okay</i><!-- /@w --> &amp;= <i>compare_trees</i><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0], <i>b</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0]);
+  <b>if</b><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->)
+    <i>okay</i><!-- /@w --> &amp;= <i>compare_trees</i><!-- /@w --> (<i>a</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1], <i>b</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1]);
+  <b>return</b><!-- /@w --> <i>okay</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-PRB-Trees.html#583">583</a>.</small>
+
+   <p><a name="index-recursively-verify-PRB-tree-structure-803"></a>
+<pre class="format"><a href="Recursively_verify_PRB_tree_structure.c.txt">585</a>. &lt;<a name="585" href="Recursively_verify_PRB_tree_structure.c.txt">Recursively verify PRB tree structure 585</a>&gt; =
+/* Examines the binary tree rooted at <i>node</i><!-- /@w -->.  
+   Zeroes *<i>okay</i><!-- /@w --> if an error occurs.  <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->Otherwise, does not modify *<i>okay</i><!-- /@w -->.
+   Sets *<i>count</i><!-- /@w --> to the number of nodes in that tree, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->including <i>node</i><!-- /@w --> itself if <i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->.
+   Sets *<i>bh</i><!-- /@w --> to the tree's black-height.
+   All the nodes in the tree are verified to be at least <i>min</i><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->but no greater than <i>max</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>recurse_verify_tree</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>prb_node</b> *<i>node</i><!-- /@w -->, <b>int</b><!-- /@w --> *<i>okay</i><!-- /@w -->, <b>size_t</b><!-- /@w --> *<i>count</i><!-- /@w -->, 
+                     <b>int</b><!-- /@w --> <i>min</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>max</i><!-- /@w -->, <b>int</b><!-- /@w --> *<i>bh</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brecurse_005fverify_005ftree_007d-function-804"></a>  <b>int</b><!-- /@w --> <i>d</i><!-- /@w -->;                /* Value of this node's data. */
+  <b>size_t</b><!-- /@w --> <i>subcount</i><!-- /@w -->[2];   /* Number of nodes in subtrees. */
+  <b>int</b><!-- /@w --> <i>subbh</i><!-- /@w -->[2];         /* Black-heights of subtrees. */
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      *<i>count</i><!-- /@w --> = 0;
+      *<i>bh</i><!-- /@w --> = 0;
+      <b>return</b><!-- /@w -->;
+    }
+  <i>d</i><!-- /@w --> = *(<b>int</b><!-- /@w --> *) <i>node</i><!-- /@w -->-&gt;<i>prb_data</i><!-- /@w -->;
+
+  &lt;<a href="BST-Verification.html#114">Verify binary search tree ordering 114</a>&gt;
+
+  <i>recurse_verify_tree</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[0], <i>okay</i><!-- /@w -->, &amp;<i>subcount</i><!-- /@w -->[0], 
+                       <i>min</i><!-- /@w -->, <i>d</i><!-- /@w --> - 1, &amp;<i>subbh</i><!-- /@w -->[0]);
+  <i>recurse_verify_tree</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>prb_link</i><!-- /@w -->[1], <i>okay</i><!-- /@w -->, &amp;<i>subcount</i><!-- /@w -->[1], 
+                       <i>d</i><!-- /@w --> + 1, <i>max</i><!-- /@w -->, &amp;<i>subbh</i><!-- /@w -->[1]);
+  *<i>count</i><!-- /@w --> = 1 + <i>subcount</i><!-- /@w -->[0] + <i>subcount</i><!-- /@w -->[1];
+  *<i>bh</i><!-- /@w --> = (<i>node</i><!-- /@w -->-&gt;<i>prb_color</i><!-- /@w --> == <tt>PRB_BLACK</tt><!-- /@w -->) + <i>subbh</i><!-- /@w -->[0];
+
+  &lt;<a href="Testing-RB-Trees.html#241">Verify RB node color; rb =&gt; prb 241</a>&gt;
+  &lt;<a href="Testing-RB-Trees.html#242">Verify RB node rule 1 compliance; rb =&gt; prb 242</a>&gt;
+  &lt;<a href="Testing-RB-Trees.html#243">Verify RB node rule 2 compliance; rb =&gt; prb 243</a>&gt;
+
+  &lt;<a href="Testing-PBSTs.html#518">Verify PBST node parent pointers; pbst =&gt; prb 518</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-PRB-Trees.html#583">583</a>.</small>
+
+<!-- *-texinfo-*- -->
+<!-- GNU libavl - library for manipulation of binary trees. -->
+<!-- Copyright (C) 1998-2002, 2004 Free Software Foundation, Inc. -->
+<!-- This program is free software; you can redistribute it and/or -->
+<!-- modify it under the terms of the GNU General Public License as -->
+<!-- published by the Free Software Foundation; either version 2 of -->
+<!-- the License, or (at your option) any later version. -->
+<!-- This program is distributed in the hope that it will be useful, -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU -->
+<!-- General Public License for more details. -->
+<!-- You should have received a copy of the GNU General Public License -->
+<!-- along with this program; if not, write to: Free Software -->
+<!-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA -->
+<!-- 02111-1307, USA. -->
+<!-- The author may be contacted as blp@gnu.org on the Internet, or -->
+<!-- write to Ben Pfaff, Stanford University, Computer Science Dept., -->
+<!-- 353 Serra Mall, Stanford CA 94305, USA. -->
+</p>
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr valign=middle>
+<td align=left width="33%">
+<a href="PRB-Deletion-Symmetric-Case.html"><img src="prev.png" border=0 alt="Prev:" align=middle></a>
+15.4.4 Symmetric Case
+</td>
+<td align=center width="33%">
+<a href="Red_002dBlack-Trees-with-Parent-Pointers.html"><img src="up.png" border=0 alt="Up:" align=middle></a>
+15 Red-Black Trees with Parent Pointers
+</td>
+<td align=right width="33%">
+Appendix A References
+<a href="References.html"><img src="next.png" border=0 alt="Next" align=middle></a>
+</td>
+</tr></table>
+</body></html>
+

@@ -1,0 +1,23 @@
+/* Color of a red-black node. */
+enum rtrb_color
+  {
+    RTRB_BLACK,                     /* Black. */
+    RTRB_RED                        /* Red. */
+  };
+
+/* Characterizes a link as a child pointer or a thread. */
+enum rtrb_tag
+  {
+    RTRB_CHILD,                     /* Child pointer. */
+    RTRB_THREAD                     /* Thread. */
+  };
+
+/* A threaded binary search tree node. */
+struct rtrb_node
+  {
+    struct rtrb_node *rtrb_link[2]; /* Subtrees. */
+    void *rtrb_data;                /* Pointer to data. */
+    unsigned char rtrb_color;       /* Color. */
+    unsigned char rtrb_rtag;        /* Tag field. */
+  };
+

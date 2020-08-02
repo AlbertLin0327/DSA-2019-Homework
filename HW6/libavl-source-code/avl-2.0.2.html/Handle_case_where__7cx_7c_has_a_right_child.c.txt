@@ -1,0 +1,20 @@
+if (trav->bst_height >= BST_MAX_HEIGHT)
+  {
+    bst_balance (trav->bst_table);
+    return bst_t_next (trav);
+  }
+
+trav->bst_stack[trav->bst_height++] = x;
+x = x->bst_link[1];
+
+while (x->bst_link[0] != NULL)
+  {
+    if (trav->bst_height >= BST_MAX_HEIGHT)
+      {
+        bst_balance (trav->bst_table);
+        return bst_t_next (trav);
+      }
+
+    trav->bst_stack[trav->bst_height++] = x;
+    x = x->bst_link[0];
+  }

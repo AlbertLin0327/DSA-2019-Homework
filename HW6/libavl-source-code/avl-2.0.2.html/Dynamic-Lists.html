@@ -1,0 +1,142 @@
+<html lang="en">
+<head>
+<title>Dynamic Lists - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Binary-Search-Tree-in-Array.html" title="3.6 Binary Search Tree in Array">
+<link rel=Next href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Parent href="Search-Algorithms.html" title="3 Search Algorithms">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Dynamic-Lists">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>3.7 Dynamic Lists</b></big></td>
+<td align=right>
+<a href="index.html#Dynamic-Lists.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Binary-Search-Tree-in-Array.html" title="Skip Back: 3.6 Binary Search Tree in Array"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Binary-Search-Tree-in-Array.html" title="Prev: 3.6 Binary Search Tree in Array"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Search-Algorithms.html" title="Up: 3 Search Algorithms"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Binary-Search-Trees.html" title="Next: 4 Binary Search Trees"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Up until now, we've considered only lists whose contents are fixed and
+unchanging, that is, <dfn>static</dfn> (see <a href="Glossary.html#static">static</a>) lists.  But in real programs, many
+lists are <dfn>dynamic</dfn> (see <a href="Glossary.html#dynamic">dynamic</a>), with their contents changing rapidly and
+unpredictably.  For the case of dynamic lists, we need to reconsider
+some of the attributes of the types of lists that we've
+examined.<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+
+   <p>Specifically, we want to know how long it takes to insert a new element
+into a list and to remove an existing element from a list.  Think about
+it for each type of list examined so far:
+
+<!-- FIXME: Dann Corbit: -->
+<!-- Mention heaps, skip lists, hash tables. -->
+<dl>
+<dt><b>Unordered array</b><dd>
+Adding items to the list is easy and fast, unless the array grows too
+large for the block and has to be copied into a new area of memory. Just
+copy the new item to the end of the list and increase the size by one.
+
+     <p>Removing an item from the list is almost as simple. If the item to
+delete happens to be located at the very end of the array, just reduce
+the size of the list by one. If it's located at any other spot, you must
+also copy the element that is located at the very end onto the location
+that the deleted element used to occupy.
+
+     <br><dt><b>Ordered array</b><dd>
+In terms of inserting and removing elements, ordered arrays are
+mechanically the same as unordered arrays.  The difference is that
+insertions and deletions can only be at one end of the array if the item
+in question is the largest or smallest in the list.  The practical
+upshot is that dynamic ordered arrays are only efficient if items are
+added and removed in sorted order.
+
+     <br><dt><b>Binary search tree</b><dd>
+Insertions and deletions are where binary search trees have their chance
+to shine.  Insertions and deletions are efficient in binary search trees
+whether they're made at the beginning, middle, or end of the lists. 
+</dl>
+
+   <p>Clearly, binary search trees are superior to ordered or unordered arrays
+in situations that require insertion and deletion in random positions. 
+But insertion and deletion operations in binary search trees require a
+bit of explanation if you've never seen them before.  This is what the
+next chapter is for, so read on.
+
+<!-- *-texinfo-*- -->
+<!-- GNU libavl - library for manipulation of binary trees. -->
+<!-- Copyright (C) 1998-2002, 2004 Free Software Foundation, Inc. -->
+<!-- This program is free software; you can redistribute it and/or -->
+<!-- modify it under the terms of the GNU General Public License as -->
+<!-- published by the Free Software Foundation; either version 2 of -->
+<!-- the License, or (at your option) any later version. -->
+<!-- This program is distributed in the hope that it will be useful, -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU -->
+<!-- General Public License for more details. -->
+<!-- You should have received a copy of the GNU General Public License -->
+<!-- along with this program; if not, write to: Free Software -->
+<!-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA -->
+<!-- 02111-1307, USA. -->
+<!-- The author may be contacted as blp@gnu.org on the Internet, or -->
+<!-- write to Ben Pfaff, Stanford University, Computer Science Dept., -->
+<!-- 353 Serra Mall, Stanford CA 94305, USA. -->
+<div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> These uses of the words &ldquo;static&rdquo; and &ldquo;dynamic&rdquo;
+are different from their meanings in the phrases &ldquo;static allocation&rdquo;
+and &ldquo;dynamic allocation.&rdquo;  See <a href="Glossary.html">Glossary</a>, for more details.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

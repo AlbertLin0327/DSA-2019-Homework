@@ -1,0 +1,6 @@
+r->rtavl_link[1] = p->rtavl_link[1];
+r->rtavl_rtag = p->rtavl_rtag;
+r->rtavl_balance = p->rtavl_balance;
+pa[k - 1]->rtavl_link[da[k - 1]] = r;
+da[k] = 0;
+pa[k++] = r;

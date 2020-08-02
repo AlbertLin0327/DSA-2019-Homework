@@ -1,0 +1,39 @@
+/* Refreshes the stack of parent pointers in |trav|
+   and updates its generation number.
+   Will *not* work if any deletions have occurred in the tree. */
+static void
+trav_refresh (struct bst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  trav->bst_generation = trav->bst_table->bst_generation;
+
+  if (trav->bst_node != NULL)
+    {
+      bst_comparison_func *cmp = trav->bst_table->bst_compare;
+      void *param = trav->bst_table->bst_param;
+      struct bst_node *node = trav->bst_node;
+      struct bst_node *i = trav->bst_table->bst_root;
+      size_t height = 0;
+
+      if (trav->bst_height > 0 && i == trav->bst_stack[0])
+        for (; height < trav->bst_height; height++)
+          {
+            struct bst_node *next = trav->bst_stack[height + 1];
+            if (i->bst_link[0] != next && i->bst_link[1] != next)
+              break;
+            i = next;
+          }
+
+      while (i != node)
+        {
+          assert (height < BST_MAX_HEIGHT);
+          assert (i != NULL);
+
+          trav->bst_stack[height++] = i;
+          i = i->bst_link[cmp (node->bst_data, i->bst_data, param) > 0];
+        }
+
+      trav->bst_height = height;
+    }
+}

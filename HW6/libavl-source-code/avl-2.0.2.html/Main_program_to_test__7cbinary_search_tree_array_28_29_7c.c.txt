@@ -1,0 +1,40 @@
+int
+main (int argc, char *argv[])
+{
+  struct binary_tree_entry *array;
+  int n, i;
+
+  /* Parse command line. */
+  if (argc != 2)
+    usage ();
+  n = stoi (argv[1]);
+  if (n < 1)
+    usage ();
+
+  /* Allocate memory. */
+  array = malloc ((n + 1) * sizeof *array);
+  if (array == NULL)
+    {
+      fprintf (stderr, "out of memory\n");
+      return EXIT_FAILURE;
+    }
+
+  /* Initialize array. */
+  for (i = 0; i < n; i++)
+    array[i].value = i;
+  init_binary_tree_array (array, n, 0, n - 1);
+
+  /* Test successful and unsuccessful searches. */
+  for (i = -1; i < n; i++)
+    {
+      int result = binary_search_tree_array (array, n, i);
+      if (result != i)
+        printf ("Searching for %d: expected %d, but received %d\n",
+                i, i, result);
+    }
+
+  /* Clean up. */
+  free (array);
+
+  return EXIT_SUCCESS;
+}

@@ -1,0 +1,36 @@
+if (p->pbst_link[1] == NULL)
+  {
+    q->pbst_link[dir] = p->pbst_link[0];
+    if (q->pbst_link[dir] != NULL)
+      q->pbst_link[dir]->pbst_parent = p->pbst_parent;
+  }
+else
+  {
+    struct pbst_node *r = p->pbst_link[1];
+    if (r->pbst_link[0] == NULL)
+      {
+        r->pbst_link[0] = p->pbst_link[0];
+        q->pbst_link[dir] = r;
+        r->pbst_parent = p->pbst_parent;
+        if (r->pbst_link[0] != NULL)
+          r->pbst_link[0]->pbst_parent = r;
+      }
+    else
+      {
+        struct pbst_node *s = r->pbst_link[0];
+        while (s->pbst_link[0] != NULL)
+          s = s->pbst_link[0];
+        r = s->pbst_parent;
+        r->pbst_link[0] = s->pbst_link[1];
+        s->pbst_link[0] = p->pbst_link[0];
+        s->pbst_link[1] = p->pbst_link[1];
+        q->pbst_link[dir] = s;
+        if (s->pbst_link[0] != NULL)
+          s->pbst_link[0]->pbst_parent = s;
+        s->pbst_link[1]->pbst_parent = s;
+        s->pbst_parent = p->pbst_parent;
+        if (r->pbst_link[0] != NULL)
+          r->pbst_link[0]->pbst_parent = r;
+      }
+  }
+

@@ -1,0 +1,9 @@
+if (x->rtavl_rtag == RTAVL_CHILD)
+  y->rtavl_link[0] = x->rtavl_link[1];
+else
+  {
+    y->rtavl_link[0] = NULL;
+    x->rtavl_rtag = RTAVL_CHILD;
+  }
+x->rtavl_link[1] = y;
+y->rtavl_balance = x->rtavl_balance = 0;

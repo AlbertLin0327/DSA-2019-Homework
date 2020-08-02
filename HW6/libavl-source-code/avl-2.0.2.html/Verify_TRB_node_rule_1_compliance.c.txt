@@ -1,0 +1,20 @@
+/* Verify compliance with rule 1. */
+if (node->trb_color == TRB_RED)
+  {
+    if (node->trb_tag[0] == TRB_CHILD
+        && node->trb_link[0]->trb_color == TRB_RED)
+      {
+        printf (" Red node %d has red left child %d\n",
+                d, *(int *) node->trb_link[0]->trb_data);
+        *okay = 0;
+      }
+
+    if (node->trb_tag[1] == TRB_CHILD
+        && node->trb_link[1]->trb_color == TRB_RED)
+      {
+        printf (" Red node %d has red right child %d\n",
+                d, *(int *) node->trb_link[1]->trb_data);
+        *okay = 0;
+      }
+  }
+

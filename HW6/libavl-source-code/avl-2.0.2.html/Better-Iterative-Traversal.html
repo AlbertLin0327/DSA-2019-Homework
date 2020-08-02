@@ -1,0 +1,218 @@
+<html lang="en">
+<head>
+<title>Better Iterative Traversal - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Improving-Convenience.html" title="4.9.2.1 Improving Convenience">
+<link rel=Next href="BST-Traverser-Null-Initialization.html" title="4.9.3.1 Starting at the Null Node">
+<link rel=Parent href="Traversing-a-BST.html" title="4.9 Traversal">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Better-Iterative-Traversal">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.9.3 Better Iterative Traversal</b></big></td>
+<td align=right>
+<a href="index.html#Better-Iterative-Traversal.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Iterative-Traversal-of-a-BST.html" title="Skip Back: 4.9.2 Traversal by Iteration"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Improving-Convenience.html" title="Prev: 4.9.2.1 Improving Convenience"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Traversing-a-BST.html" title="Up: 4.9 Traversal"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="BST-Traverser-Null-Initialization.html" title="Next: 4.9.3.1 Starting at the Null Node"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>We have developed an efficient, convenient function for traversing a
+binary tree.  In the exercises, we made it reliable, and it is possible
+to make it resilient as well.  But its algorithm makes it difficult to
+add generality.  In order to do that in a practical way, we will have to
+use a new algorithm.
+
+   <p>Let us start by considering how to understand how to find the successor
+or predecessor of any node in general, as opposed to just blindly
+transforming code as we did in the previous section.  Back when we wrote
+<i>bst_delete</i><!-- /@w -->(), we already solved half of the problem, by figuring out
+how to find the successor of a node that has a right child: take the
+least-valued node in the right subtree of the node (see <a href="Deleting-from-a-BST.html#successor">Deletion Case 3</a>).
+
+   <p>The other half is the successor of a node that doesn't have a right
+child.  Take a look at the code for one of the previous traversal
+functions&mdash;recursive or iterative, whichever you better
+understand&mdash;and mentally work out the relationship between the current
+node and its successor for a node without a right child.  What happens
+is that we move up the tree, from a node to its parent, one node at a
+time, until it turns out that we moved up to the right (as opposed to up
+to the left) and that is the successor node.  Think of it this way: if
+we move up to the left, then the node we started at has a lesser value
+than where we ended up, so we've already visited it, but if we move up
+to the right, then we're moving to a node with a greater value, so we've
+found the successor.
+
+   <p>Using these instructions, we can find the predecessor of a node, too,
+just by exchanging &ldquo;left&rdquo; and &ldquo;right&rdquo;.  This suggests that all we
+have to do in order to generalize our traversal function is to keep
+track of all the nodes above the current node, not just the ones that
+are up and to the left.  This in turn suggests our final implementation
+of <b>struct</b><!-- /@w --> <b>bst_traverser</b>, with appropriate comments:
+
+   <p><a name="index-BST-traverser-structure-92"></a>
+<pre class="format"><a href="BST_traverser_structure.c.txt">61</a>. &lt;<a name="61" href="BST_traverser_structure.c.txt">BST traverser structure 61</a>&gt; =
+/* BST traverser structure. */
+<b>struct</b><!-- /@w --> <b>bst_traverser</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bbst_005ftraverser_007d-structure-93"></a>    <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>bst_table</i><!-- /@w -->;        /* Tree being traversed. */
+    <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>bst_node</i><!-- /@w -->;          /* Current node in tree. */
+    <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>bst_stack</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->]; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->/* All the nodes above <i>bst_node</i><!-- /@w -->. */
+    <b>size_t</b><!-- /@w --> <i>bst_height</i><!-- /@w -->;                  /* Number of nodes in <i>bst_parent</i><!-- /@w -->. */
+    <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>bst_generation</i><!-- /@w -->;       /* Generation number. */
+  };
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Binary-Search-Trees.html#24">24</a>, <a href="AVL-Trees.html#142">142</a>, and <a href="Red_002dBlack-Trees.html#192">192</a>.</small>
+
+   <p>Because user code is expected to declare actual instances of <b>struct</b><!-- /@w --> <b>bst_traverser</b>, <b>struct</b><!-- /@w --> <b>bst_traverser</b> must be defined in &lt;<a href="Binary-Search-Trees.html#24"><tt>bst.h</tt> 24</a>&gt; and
+therefore all of its member names are prefixed by <i>bst_</i><!-- /@w --> for safety.
+
+   <p>The only surprise in <b>struct</b><!-- /@w --> <b>bst_traverser</b> is member <i>bst_generation</i><!-- /@w -->,
+the traverser's generation number.  This member is set equal to its
+namesake in <b>struct</b><!-- /@w --> <b>bst_table</b> when a traverser is initialized.  After
+that, the two values are compared whenever the stack of parent pointers
+must be accessed.  Any change in the tree that could disturb the action
+of a traverser will cause their generation numbers to differ, which in
+turn triggers an update to the stack.  This is what allows this final
+implementation to be resilient.
+
+   <p>We need a utility function to actually update the stack of parent
+pointers when differing generation numbers are detected.  This is easy
+to write:
+
+   <p><a name="catalogue_002dentry_002dbst_002d9"></a>
+<a name="index-BST-traverser-refresher-94"></a>
+<pre class="format"><a href="BST_traverser_refresher.c.txt">62</a>. &lt;<a name="62" href="BST_traverser_refresher.c.txt">BST traverser refresher 62</a>&gt; =
+/* Refreshes the stack of parent pointers in <i>trav</i><!-- /@w -->
+   and updates its generation number. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>trav_refresh</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_traverser</b> *<i>trav</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btrav_005frefresh_007d-function-95"></a>  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>trav</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>bst_comparison_func</b><!-- /@w --> *<i>cmp</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w -->;
+      <b>void</b><!-- /@w --> *<i>param</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->;
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_node</i><!-- /@w -->;
+      <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>i</i><!-- /@w -->;
+
+      <i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w --> = 0;
+      <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->; <i>i</i><!-- /@w --> != <i>node</i><!-- /@w -->; ) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w --> &lt; <tt>BST_MAX_HEIGHT</tt><!-- /@w -->);
+          <i>assert</i><!-- /@w --> (<i>i</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+          <i>trav</i><!-- /@w -->-&gt;<i>bst_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w -->++] = <i>i</i><!-- /@w -->;
+          <i>i</i><!-- /@w --> = <i>i</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>cmp</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>i</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->) &gt; 0];
+        }
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Better-Iterative-Traversal.html#63">63</a> and <a href="Traversal-of-an-AVL-Tree.html#178">178</a>.</small>
+
+   <p>The following sections will implement all of the traverser functions
+<i>bst_t_</i><!-- /@w -->*().  See <a href="Traversers.html">Traversers</a>, for descriptions of the purpose of each
+of these functions.
+
+   <p>The traversal functions are collected together into &lt;<a href="Better-Iterative-Traversal.html#63">BST traversal functions 63</a>&gt;:
+
+   <p><a name="index-BST-traversal-functions-96"></a>
+<pre class="format"><a href="BST_traversal_functions.c.txt">63</a>. &lt;<a name="63" href="BST_traversal_functions.c.txt">BST traversal functions 63</a>&gt; =
+&lt;<a href="Better-Iterative-Traversal.html#62">BST traverser refresher 62</a>&gt;
+&lt;<a href="BST-Traverser-Null-Initialization.html#64">BST traverser null initializer 64</a>&gt;
+&lt;<a href="BST-Traverser-First-Initialization.html#65">BST traverser least-item initializer 65</a>&gt;
+&lt;<a href="BST-Traverser-Last-Initialization.html#66">BST traverser greatest-item initializer 66</a>&gt;
+&lt;<a href="BST-Traverser-Find-Initialization.html#67">BST traverser search initializer 67</a>&gt;
+&lt;<a href="BST-Traverser-Insert-Initialization.html#68">BST traverser insertion initializer 68</a>&gt;
+&lt;<a href="BST-Traverser-Copying.html#69">BST traverser copy initializer 69</a>&gt;
+&lt;<a href="BST-Traverser-Advancing.html#70">BST traverser advance function 70</a>&gt;
+&lt;<a href="BST-Traverser-Retreating.html#73">BST traverser back up function 73</a>&gt;
+&lt;<a href="BST-Traversal-Current-Item.html#74">BST traverser current item function 74</a>&gt;
+&lt;<a href="BST-Traversal-Replacing-the-Current-Item.html#75">BST traverser replacement function 75</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Operations.html#29">29</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="probegeneration"></a>&nbsp;<!-- /@w -->The <i>bst_probe</i><!-- /@w -->() function doesn't change the tree's generation number. 
+Why not? 
+[<a href="Answers-for-Chapter-4.html#4%2d9%2d3%231">answer</a>]
+
+<p class="noindent"><b>*2.</b>&nbsp;<!-- /@w -->The main loop in <i>trav_refresh</i><!-- /@w -->() contains the assertion
+
+<pre class="format">      <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w --> &lt; <tt>BST_MAX_HEIGHT</tt><!-- /@w -->);
+</pre>
+   <p class="noindent">Prove that this assertion is always true. 
+[<a href="Answers-for-Chapter-4.html#4%2d9%2d3%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->In <i>trav_refresh</i><!-- /@w -->(), it is tempting to avoid calls to the user-supplied
+comparison function by comparing the nodes on the stack to the current
+state of the tree; e.g., move up the stack, starting from the bottom,
+and for each node verify that it is a child of the previous one on the
+stack, falling back to the general algorithm at the first mismatch.  Why
+won't this work? 
+[<a href="Answers-for-Chapter-4.html#4%2d9%2d3%233">answer</a>]
+
+<ul class="menu">
+<li><a accesskey="1" href="BST-Traverser-Null-Initialization.html">BST Traverser Null Initialization</a>
+<li><a accesskey="2" href="BST-Traverser-First-Initialization.html">BST Traverser First Initialization</a>
+<li><a accesskey="3" href="BST-Traverser-Last-Initialization.html">BST Traverser Last Initialization</a>
+<li><a accesskey="4" href="BST-Traverser-Find-Initialization.html">BST Traverser Find Initialization</a>
+<li><a accesskey="5" href="BST-Traverser-Insert-Initialization.html">BST Traverser Insert Initialization</a>
+<li><a accesskey="6" href="BST-Traverser-Copying.html">BST Traverser Copying</a>
+<li><a accesskey="7" href="BST-Traverser-Advancing.html">BST Traverser Advancing</a>
+<li><a accesskey="8" href="BST-Traverser-Retreating.html">BST Traverser Retreating</a>
+<li><a accesskey="9" href="BST-Traversal-Current-Item.html">BST Traversal Current Item</a>
+<li><a href="BST-Traversal-Replacing-the-Current-Item.html">BST Traversal Replacing the Current Item</a>
+</ul>
+
+   </body></html>
+

@@ -1,0 +1,5 @@
+for (p = y; p != n; p = p->avl_link[cache & 1], cache >>= 1)
+  if ((cache & 1) == 0)
+    p->avl_balance--;
+  else
+    p->avl_balance++;

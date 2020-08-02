@@ -1,0 +1,21 @@
+#undef NDEBUG
+#include <assert.h>
+
+/* Asserts that |tbl_insert()| succeeds at inserting |item| into |table|. */
+void
+(tbl_assert_insert) (struct tbl_table *table, void *item)
+{
+  void **p = tbl_probe (table, item);
+  assert (p != NULL && *p == item);
+}
+
+/* Asserts that |tbl_delete()| really removes |item| from |table|,
+   and returns the removed item. */
+void *
+(tbl_assert_delete) (struct tbl_table *table, void *item)
+{
+  void *p = tbl_delete (table, item);
+  assert (p != NULL);
+  return p;
+}
+

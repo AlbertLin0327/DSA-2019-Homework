@@ -1,0 +1,11 @@
+/* Initializes |trav| for use with |tree|
+   and selects the null node. */
+void
+bst_t_init (struct bst_traverser *trav, struct bst_table *tree)
+{
+  trav->bst_table = tree;
+  trav->bst_node = NULL;
+  trav->bst_height = 0;
+  trav->bst_generation = tree->bst_generation;
+}
+

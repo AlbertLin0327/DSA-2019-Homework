@@ -1,0 +1,2 @@
+#define tbl_count(table) ((size_t) (table)->tbl_count)
+

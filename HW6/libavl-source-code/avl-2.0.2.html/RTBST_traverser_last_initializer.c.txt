@@ -1,0 +1,20 @@
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the greatest value,
+   or |NULL| if |tree| is empty. */
+void *
+rtbst_t_last (struct rtbst_traverser *trav, struct rtbst_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->rtbst_table = tree;
+  trav->rtbst_node = tree->rtbst_root;
+  if (trav->rtbst_node != NULL)
+    {
+      while (trav->rtbst_node->rtbst_rtag == RTBST_CHILD)
+        trav->rtbst_node = trav->rtbst_node->rtbst_link[1];
+      return trav->rtbst_node->rtbst_data;
+    }
+  else
+    return NULL;
+}
+

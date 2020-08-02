@@ -1,0 +1,43 @@
+/* Compares binary trees rooted at |a| and |b|,
+   making sure that they are identical. */
+static int
+compare_trees (struct pavl_node *a, struct pavl_node *b)
+{
+  int okay;
+
+  if (a == NULL || b == NULL)
+    {
+      assert (a == NULL && b == NULL);
+      return 1;
+    }
+
+  if (*(int *) a->pavl_data != *(int *) b->pavl_data
+      || ((a->pavl_link[0] != NULL) != (b->pavl_link[0] != NULL))
+      || ((a->pavl_link[1] != NULL) != (b->pavl_link[1] != NULL))
+      || ((a->pavl_parent != NULL) != (b->pavl_parent != NULL))
+      || (a->pavl_parent != NULL && b->pavl_parent != NULL
+          && a->pavl_parent->pavl_data != b->pavl_parent->pavl_data)
+      || a->pavl_balance != b->pavl_balance)
+    {
+      printf (" Copied nodes differ:\n"
+              "  a: %d, bal %+d, parent %d, %s left child, %s right child\n"
+              "  b: %d, bal %+d, parent %d, %s left child, %s right child\n",
+              *(int *) a->pavl_data, a->pavl_balance,
+              a->pavl_parent != NULL ? *(int *) a->pavl_parent : -1,
+              a->pavl_link[0] != NULL ? "has" : "no",
+              a->pavl_link[1] != NULL ? "has" : "no",
+              *(int *) b->pavl_data, b->pavl_balance,
+              b->pavl_parent != NULL ? *(int *) b->pavl_parent : -1,
+              b->pavl_link[0] != NULL ? "has" : "no",
+              b->pavl_link[1] != NULL ? "has" : "no");
+      return 0;
+    }
+
+  okay = 1;
+  if (a->pavl_link[0] != NULL)
+    okay &= compare_trees (a->pavl_link[0], b->pavl_link[0]);
+  if (a->pavl_link[1] != NULL)
+    okay &= compare_trees (a->pavl_link[1], b->pavl_link[1]);
+  return okay;
+}
+

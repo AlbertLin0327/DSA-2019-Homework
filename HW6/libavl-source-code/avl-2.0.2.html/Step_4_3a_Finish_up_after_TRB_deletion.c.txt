@@ -1,0 +1,3 @@
+tree->trb_alloc->libavl_free (tree->trb_alloc, p);
+tree->trb_count--;
+return (void *) item;

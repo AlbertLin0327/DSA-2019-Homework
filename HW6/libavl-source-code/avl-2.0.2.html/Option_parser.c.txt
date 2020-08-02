@@ -1,0 +1,156 @@
+/* Option parsing state. */
+struct option_state
+  {
+    const struct option *options; /* List of options. */
+    char **arg_next;            /* Remaining arguments. */
+    char *short_next;           /* When non-null, unparsed short options. */
+  };
+
+/* Creates and returns a command-line options parser.
+   |args| is a null-terminated array of command-line arguments, not
+   including program name. */
+static struct option_state *
+option_init (const struct option *options, char **args)
+{
+  struct option_state *state;
+
+  assert (options != NULL && args != NULL);
+
+  state = xmalloc (sizeof *state);
+  state->options = options;
+  state->arg_next = args;
+  state->short_next = NULL;
+
+  return state;
+}
+
+/* Parses a short option whose single-character name is pointed to by
+   |state->short_next|.  Advances past the option so that the next one
+   will be parsed in the next call to |option_get()|.  Sets |*argp| to
+   the option's argument, if any.  Returns the option's short name. */
+static int
+handle_short_option (struct option_state *state, char **argp)
+{
+  const struct option *o;
+
+  assert (state != NULL
+          && state->short_next != NULL && *state->short_next != '\0'
+          && state->options != NULL);
+
+  /* Find option in |o|. */
+  for (o = state->options; ; o++)
+    if (o->long_name == NULL)
+      fail ("unknown option `-%c'; use --help for help", *state->short_next);
+    else if (o->short_name == *state->short_next)
+      break;
+  state->short_next++;
+
+  /* Handle argument. */
+  if (o->has_arg)
+    {
+      if (*state->arg_next == NULL || **state->arg_next == '-')
+        fail ("`-%c' requires an argument; use --help for help");
+
+      *argp = *state->arg_next++;
+    }
+
+  return o->short_name;
+}
+
+/* Parses a long option whose command-line argument is pointed to by
+   |*state->arg_next|.  Advances past the option so that the next one
+   will be parsed in the next call to |option_get()|.  Sets |*argp| to
+   the option's argument, if any.  Returns the option's identifier. */
+static int
+handle_long_option (struct option_state *state, char **argp)
+{
+  const struct option *o;        /* Iterator on options. */
+  char name[16];                /* Option name. */
+  const char *arg;                /* Option argument. */
+
+  assert (state != NULL
+          && state->arg_next != NULL && *state->arg_next != NULL
+          && state->options != NULL
+          && argp != NULL);
+
+  /* Copy the option name into |name|
+     and put a pointer to its argument, or |NULL| if none, into |arg|. */
+  {
+    const char *p = *state->arg_next + 2;
+    const char *q = p + strcspn (p, "=");
+    size_t name_len = q - p;
+
+    if (name_len > (sizeof name) - 1)
+      name_len = (sizeof name) - 1;
+    memcpy (name, p, name_len);
+    name[name_len] = '\0';
+
+    arg = (*q == '=') ? q + 1 : NULL;
+  }
+
+  /* Find option in |o|. */
+  for (o = state->options; ; o++)
+    if (o->long_name == NULL)
+      fail ("unknown option --%s; use --help for help", name);
+    else if (!strcmp (name, o->long_name))
+      break;
+
+  /* Make sure option has an argument if it should. */
+  if ((arg != NULL) != (o->has_arg != 0))
+    {
+      if (arg != NULL)
+        fail ("--%s can't take an argument; use --help for help", name);
+      else
+        fail ("--%s requires an argument; use --help for help", name);
+    }
+
+  /* Advance and return. */
+  state->arg_next++;
+  *argp = (char *) arg;
+  return o->short_name;
+}
+
+/* Retrieves the next option in the state vector |state|.
+   Returns the option's identifier, or -1 if out of options.
+   Stores the option's argument, or |NULL| if none, into |*argp|. */
+static int
+option_get (struct option_state *state, char **argp)
+{
+  assert (state != NULL && argp != NULL);
+
+  /* No argument by default. */
+  *argp = NULL;
+
+  /* Deal with left-over short options. */
+  if (state->short_next != NULL)
+    {
+      if (*state->short_next != '\0')
+        return handle_short_option (state, argp);
+      else
+        state->short_next = NULL;
+    }
+
+  /* Out of options? */
+  if (*state->arg_next == NULL)
+    {
+      free (state);
+      return -1;
+    }
+
+  /* Non-option arguments not supported. */
+  if ((*state->arg_next)[0] != '-')
+    fail ("non-option arguments encountered; use --help for help");
+  if ((*state->arg_next)[1] == '\0')
+    fail ("unknown option `-'; use --help for help");
+
+  /* Handle the option. */
+  if ((*state->arg_next)[1] == '-')
+    return handle_long_option (state, argp);
+  else
+    {
+      state->short_next = *state->arg_next + 1;
+      state->arg_next++;
+      return handle_short_option (state, argp);
+    }
+}
+

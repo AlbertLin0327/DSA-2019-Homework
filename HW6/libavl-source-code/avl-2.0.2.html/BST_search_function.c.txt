@@ -1,0 +1,23 @@
+/* Search |tree| for an item matching |item|, and return it if found.
+   Otherwise return |NULL|. */
+void *
+bst_find (const struct bst_table *tree, const void *item)
+{
+  const struct bst_node *p;
+
+  assert (tree != NULL && item != NULL);
+  for (p = tree->bst_root; p != NULL; )
+    {
+      int cmp = tree->bst_compare (item, p->bst_data, tree->bst_param);
+
+      if (cmp < 0)
+        p = p->bst_link[0];
+      else if (cmp > 0)
+        p = p->bst_link[1];
+      else /* |cmp == 0| */
+        return p->bst_data;
+    }
+
+  return NULL;
+}
+

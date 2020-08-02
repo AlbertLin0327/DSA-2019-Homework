@@ -1,0 +1,165 @@
+<html lang="en">
+<head>
+<title>Right-Threaded Binary Search Trees - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Testing-TRB-Trees.html" title="9.5 Testing">
+<link rel=Next href="RTBST-Data-Types.html" title="10.1 Data Types">
+<link rel=Parent href="index.html" title="Table of Contents">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Right_002dThreaded-Binary-Search-Trees">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>10 Right-Threaded Binary Search Trees</b></big></td>
+<td align=right>
+<a href="index.html#Right_002dThreaded-Binary-Search-Trees.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Threaded-Red_002dBlack-Trees.html" title="Skip Back: 9 Threaded Red-Black Trees"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Right_002dThreaded-AVL-Trees.html" title="Skip Forward: 11 Right-Threaded AVL Trees"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Testing-TRB-Trees.html" title="Prev: 9.5 Testing"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="index.html" title="Up: Table of Contents"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="RTBST-Data-Types.html" title="Next: 10.1 Data Types"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>We originally introduced threaded trees to allow for traversal without
+maintaining a stack explicitly.  This worked out well, so we implemented
+tables using threaded BSTs and AVL and RB trees.  However, maintaining
+the threads can take some time.  It would be nice if we could have the
+advantages of threads without so much of the overhead.
+
+   <p>In one common special case, we can.  Threaded trees are symmetric:
+there are left threads for moving to node predecessors and right
+threads for move to node successors.  But traversals are not
+symmetric: many algorithms that traverse table entries only from least
+to greatest, never backing up.  This suggests a matching asymmetric
+tree structure that has only right threads.
+
+   <p>We can do this.  In this chapter, we will develop a table
+implementation for a new kind of binary tree, called a right-threaded
+binary search tree, <dfn>right-threaded tree</dfn> (see <a href="Glossary.html#right%2dthreaded%20tree">right-threaded tree</a>), or simply &ldquo;RTBST&rdquo;,
+that has threads only on the right side of nodes.  Construction and
+modification of such trees can be faster and simpler than threaded
+trees because there is no need to maintain the left threads.
+
+   <p>There isn't anything fundamentally new here, but just for completeness,
+here's an example of a right-threaded tree:
+
+<div align="center"><a href="rtbst1.txt"><img border=0 src="rtbst1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Keep in mind that although it is not efficient, it is still possible to
+traverse a right-threaded tree in order from greatest to
+least.<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>  If it were not possible at all, then we could not build
+a complete table implementation based on right-threaded trees, because
+the definition of a table includes the ability to traverse it in either
+direction (see <a href="Manipulators.html">Manipulators</a>).
+
+   <p>Here's the outline of the RTBST code, which uses the prefix <i>rtbst_</i><!-- /@w -->:
+
+   <p><a name="index-_0040t_007brtbst_002eh_007d-524"></a>
+<pre class="format"><a href="rtbst.h.txt">372</a>. &lt;<a name="372" href="rtbst.h.txt"><tt>rtbst.h</tt> 372</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>ifndef</b> <tt>RTBST_H</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bRTBST_005fH_007d_007d-macro_0040c-525"></a><tt>RTBST_H</tt><!-- /@w --> 1
+
+#<b>include</b> &lt;stddef.h&gt;
+
+&lt;<a href="Table-Headers.html#14">Table types; tbl =&gt; rtbst 14</a>&gt;
+&lt;<a href="TBST-Data-Types.html#250">TBST table structure; tbst =&gt; rtbst 250</a>&gt;
+&lt;<a href="RTBST-Data-Types.html#374">RTBST node structure 374</a>&gt;
+&lt;<a href="Traversing-a-TBST.html#267">TBST traverser structure; tbst =&gt; rtbst 267</a>&gt;
+&lt;<a href="Table-Headers.html#15">Table function prototypes; tbl =&gt; rtbst 15</a>&gt;
+&lt;<a href="Balancing-a-BST.html#88">BST extra function prototypes; bst =&gt; rtbst 88</a>&gt;
+
+#<b>endif</b> /* rtbst.h */
+</pre>
+   <p><a name="index-_0040t_007brtbst_002ec_007d-526"></a>
+<pre class="format"><a href="rtbst.c.txt">373</a>. &lt;<a name="373" href="rtbst.c.txt"><tt>rtbst.c</tt> 373</a>&gt; =
+&lt;<a href="Code-License.html#1">License 1</a>&gt;
+#<b>include</b> &lt;assert.h&gt;
+#<b>include</b> &lt;stdio.h&gt;
+#<b>include</b> &lt;stdlib.h&gt;
+#<b>include</b> "rtbst.h"
+
+&lt;<a href="RTBST-Operations.html#375">RTBST functions 375</a>&gt;
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201997">Knuth 1997</a>], section 2.3.1.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->We can define a <dfn>left-threaded tree</dfn> (see <a href="Glossary.html#left%2dthreaded%20tree">left-threaded tree</a>) in a way analogous to a
+right-threaded tree, as a binary search tree with threads only on
+the left sides of nodes.  Is this a useful thing to do? 
+[<a href="Answers-for-Chapter-10.html#10%231">answer</a>]
+
+<ul class="menu">
+<li><a accesskey="1" href="RTBST-Data-Types.html">RTBST Data Types</a>
+<li><a accesskey="2" href="RTBST-Operations.html">RTBST Operations</a>
+<li><a accesskey="3" href="Searching-an-RTBST.html">Searching an RTBST</a>
+<li><a accesskey="4" href="Inserting-into-an-RTBST.html">Inserting into an RTBST</a>
+<li><a accesskey="5" href="Deleting-from-an-RTBST.html">Deleting from an RTBST</a>
+<li><a accesskey="6" href="Traversing-an-RTBST.html">Traversing an RTBST</a>
+<li><a accesskey="7" href="Copying-an-RTBST.html">Copying an RTBST</a>
+<li><a accesskey="8" href="Destroying-an-RTBST.html">Destroying an RTBST</a>
+<li><a accesskey="9" href="Balancing-an-RTBST.html">Balancing an RTBST</a>
+<li><a href="Testing-RTBSTs.html">Testing RTBSTs</a>
+</ul>
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> It can be efficient if we use a stack to do it, but that
+kills the advantage of threading the tree.  It would be possible to
+implement two sets of traversers for right-threaded trees, one with a
+stack, one without, but in that case it's probably better to just use a
+threaded tree.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

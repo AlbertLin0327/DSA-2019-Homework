@@ -1,0 +1,23 @@
+n = tree->rtrb_alloc->libavl_malloc (tree->rtrb_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+tree->rtrb_count++;
+n->rtrb_data = item;
+n->rtrb_link[0] = NULL;
+if (dir == 0)
+  {
+    if (tree->rtrb_root != NULL)
+      n->rtrb_link[1] = p;
+    else
+      n->rtrb_link[1] = NULL;
+  }
+else /* |dir == 1| */
+  {
+    p->rtrb_rtag = RTRB_CHILD;
+    n->rtrb_link[1] = p->rtrb_link[1];
+  }
+n->rtrb_rtag = RTRB_THREAD;
+n->rtrb_color = RTRB_RED;
+p->rtrb_link[dir] = n;
+

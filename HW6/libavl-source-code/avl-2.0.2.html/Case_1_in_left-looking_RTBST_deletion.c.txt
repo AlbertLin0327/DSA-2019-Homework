@@ -1,0 +1,1 @@
+q->rtbst_link[dir] = p->rtbst_link[1];

@@ -1,0 +1,53 @@
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+avl_t_prev (struct avl_traverser *trav)
+{
+  struct avl_node *x;
+
+  assert (trav != NULL);
+
+  if (trav->avl_generation != trav->avl_table->avl_generation)
+    trav_refresh (trav);
+
+  x = trav->avl_node;
+  if (x == NULL)
+    {
+      return avl_t_last (trav, trav->avl_table);
+    }
+  else if (x->avl_link[0] != NULL)
+    {
+      assert (trav->avl_height < AVL_MAX_HEIGHT);
+      trav->avl_stack[trav->avl_height++] = x;
+      x = x->avl_link[0];
+
+      while (x->avl_link[1] != NULL)
+        {
+          assert (trav->avl_height < AVL_MAX_HEIGHT);
+          trav->avl_stack[trav->avl_height++] = x;
+          x = x->avl_link[1];
+        }
+    }
+  else
+    {
+      struct avl_node *y;
+
+      do
+        {
+          if (trav->avl_height == 0)
+            {
+              trav->avl_node = NULL;
+              return NULL;
+            }
+
+          y = x;
+          x = trav->avl_stack[--trav->avl_height];
+        }
+      while (y == x->avl_link[0]);
+    }
+  trav->avl_node = x;
+
+  return x->avl_data;
+}
+

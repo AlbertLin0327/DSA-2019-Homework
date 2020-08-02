@@ -1,0 +1,12 @@
+if (min > max)
+  {
+    printf (" Parents of node %d constrain it to empty range %d...%d.\n",
+            d, min, max);
+    *okay = 0;
+  }
+else if (d < min || d > max)
+  {
+    printf (" Node %d is not in range %d...%d implied by its parents.\n",
+            d, min, max);
+    *okay = 0;
+  }

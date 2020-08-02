@@ -1,0 +1,129 @@
+<html lang="en">
+<head>
+<title>Identifiers - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Informal-Definition.html" title="2.1 Informal Definition">
+<link rel=Next href="Comparison-Function.html" title="2.3 Comparison Function">
+<link rel=Parent href="The-Table-ADT.html" title="2 The Table ADT">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Identifiers">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>2.2 Identifiers</b></big></td>
+<td align=right>
+<a href="index.html#Identifiers.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Informal-Definition.html" title="Skip Back: 2.1 Informal Definition"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Comparison-Function.html" title="Skip Forward: 2.3 Comparison Function"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Informal-Definition.html" title="Prev: 2.1 Informal Definition"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="The-Table-ADT.html" title="Up: 2 The Table ADT"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Comparison-Function.html" title="Next: 2.3 Comparison Function"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>In C programming it is necessary to be careful if we expect to avoid
+clashes between our own names and those used by others.  Any identifiers
+that we pick might also be used by others.  The usual solution is to
+adopt a prefix that is applied to the beginning of every identifier that
+can be visible in code outside a single source file.  In particular,
+most identifiers in a library's public header files must be prefixed.
+
+   <p>libavl is a collection of mostly independent modules, each of which
+implements the table ADT.  Each module has its own, different identifier
+prefix.  Identifiers that begin with this prefix are reserved for any
+use in source files that #<b>include</b> the module header file.  Also
+reserved (for use as macro names) are identifiers that begin with the
+all-uppercase version of the prefix.  Both sets of identifiers are also
+reserved as external names<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a> throughout any
+program that uses the module.
+
+   <p>In addition, all identifiers that begin with <i>libavl_</i><!-- /@w --> or <tt>LIBAVL_</tt><!-- /@w --> are
+reserved for any use in source files that #<b>include</b> any libavl
+module.  Likewise, these identifiers are reserved as external names in
+any program that uses any libavl module.  This is primarily to allow
+for future expansion, but see <a href="Memory-Allocation.html">Memory Allocation</a> and
+Exercise 2.5-1 for a sample use.
+
+   <p>The prefix used in code samples in this chapter is <i>tbl_</i><!-- /@w -->, short for
+&ldquo;table&rdquo;.  This can be considered a generic substitute for the prefix
+used by any of the table implementation.  All of the statements about
+these functions here apply equally to all of the table implementation in
+later chapters, except that the <i>tbl_</i><!-- /@w --> prefix must be replaced by the
+prefix used by the chapter's table implementation.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->The following kinds of identifiers are among those that might appear in
+a header file.  Which of them can be safely appear unprefixed?  Why?
+
+     <ol type=a start=1>
+<li>Parameter names within function prototypes.
+
+     <li>Macro parameter names.
+
+     <li>Structure and union tags.
+
+     <li>Structure and union member names.
+        </ol>
+[<a href="Answers-for-Chapter-2.html#2%2d2%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Suppose that we create a module for reporting errors.  Why is <i>err_</i><!-- /@w --> a
+poorly chosen prefix for the module's identifiers? 
+[<a href="Answers-for-Chapter-2.html#2%2d2%232">answer</a>]
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> External names are identifiers
+visible outside a single source file.  These are, mainly, non-<b>static</b><!-- /@w -->
+functions and variables declared outside a function.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

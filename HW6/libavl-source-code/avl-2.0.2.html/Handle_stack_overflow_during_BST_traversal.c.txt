@@ -1,0 +1,21 @@
+struct bst_node *prev, *iter;
+
+prev = node;
+while (prev->bst_link[0] != NULL)
+  prev = prev->bst_link[0];
+
+bst_balance (trav->table);
+
+trav->height = 0;
+for (iter = trav->table->bst_root; iter != prev; )
+  if (trav->table->bst_compare (prev->bst_data, iter->bst_data,
+                                trav->table->bst_param) < 0)
+    {
+      trav->stack[trav->height++] = iter;
+      iter = iter->bst_link[0];
+    }
+  else
+    iter = iter->bst_link[1];
+
+trav->node = iter->bst_link[1];
+return prev->bst_data;

@@ -1,0 +1,57 @@
+/* Deletes from |tree| and returns an item matching |item|.
+   Returns a null pointer if no matching item found. */
+void *
+bst_delete (struct bst_table *tree, const void *item)
+{
+  struct bst_node *p, *q; /* Node to delete and its parent. */
+  int cmp;                /* Comparison between |p->bst_data| and |item|. */
+  int dir;                /* Side of |q| on which |p| is located. */
+
+  assert (tree != NULL && item != NULL);
+
+  p = (struct bst_node *) &tree->bst_root;
+  for (cmp = -1; cmp != 0;
+       cmp = tree->bst_compare (item, p->bst_data, tree->bst_param))
+    {
+      dir = cmp > 0;
+      q = p;
+      p = p->bst_link[dir];
+      if (p == NULL)
+        return NULL;
+    }
+  item = p->bst_data;
+
+  if (p->bst_link[1] == NULL)
+    q->bst_link[dir] = p->bst_link[0];
+  else
+    {
+      struct bst_node *r = p->bst_link[1];
+      if (r->bst_link[0] == NULL)
+        {
+          r->bst_link[0] = p->bst_link[0];
+          q->bst_link[dir] = r;
+        }
+      else
+        {
+          struct bst_node *s;
+          for (;;)
+            {
+              s = r->bst_link[0];
+              if (s->bst_link[0] == NULL)
+                break;
+
+              r = s;
+            }
+          r->bst_link[0] = s->bst_link[1];
+          s->bst_link[0] = p->bst_link[0];
+          s->bst_link[1] = p->bst_link[1];
+          q->bst_link[dir] = s;
+        }
+    }
+
+  tree->bst_alloc->libavl_free (tree->bst_alloc, p);
+  tree->bst_count--;
+  tree->bst_generation++;
+  return (void *) item;
+}
+

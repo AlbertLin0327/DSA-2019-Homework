@@ -1,0 +1,29 @@
+/* Inserts |item| into |table|.
+   Returns |NULL| if |item| was successfully inserted
+   or if a memory allocation error occurred.
+   Otherwise, returns the duplicate item. */
+void *
+tbl_insert (struct tbl_table *table, void *item)
+{
+  void **p = tbl_probe (table, item);
+  return p == NULL || *p == item ? NULL : *p;
+}
+
+/* Inserts |item| into |table|, replacing any duplicate item.
+   Returns |NULL| if |item| was inserted without replacing a duplicate,
+   or if a memory allocation error occurred.
+   Otherwise, returns the item that was replaced. */
+void *
+tbl_replace (struct tbl_table *table, void *item)
+{
+  void **p = tbl_probe (table, item);
+  if (p == NULL || *p == item)
+    return NULL;
+  else
+    {
+      void *r = *p;
+      *p = item;
+      return r;
+    }
+}
+

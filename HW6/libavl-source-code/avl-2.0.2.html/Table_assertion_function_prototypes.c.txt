@@ -1,0 +1,3 @@
+void tbl_assert_insert (struct tbl_table *, void *);
+void *tbl_assert_delete (struct tbl_table *, void *);
+

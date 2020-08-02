@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>Left-Looking Deletion in an RTBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Right_002dLooking-Deletion-in-a-RTBST.html" title="10.5.1 Right-Looking Deletion">
+<link rel=Next href="Comparing-Deletion-Algorithms.html" title="10.5.3 Aside: Comparison of Deletion Algorithms">
+<link rel=Parent href="Deleting-from-an-RTBST.html" title="10.5 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Left_002dLooking-Deletion-in-an-RTBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>10.5.2 Left-Looking Deletion</b></big></td>
+<td align=right>
+<a href="index.html#Left_002dLooking-Deletion-in-an-RTBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Right_002dLooking-Deletion-in-a-RTBST.html" title="Skip Back: 10.5.1 Right-Looking Deletion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Comparing-Deletion-Algorithms.html" title="Skip Forward: 10.5.3 Aside: Comparison of Deletion Algorithms"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Right_002dLooking-Deletion-in-a-RTBST.html" title="Prev: 10.5.1 Right-Looking Deletion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-an-RTBST.html" title="Up: 10.5 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Comparing-Deletion-Algorithms.html" title="Next: 10.5.3 Aside: Comparison of Deletion Algorithms"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The previous section implemented the &ldquo;right-looking&rdquo; form of
+deletion used elsewhere in libavl.  Compared to deletion in a fully
+threaded binary tree, the benefits to using an RTBST with this kind of
+deletion are minimal:
+
+     <ul>
+<li>Cases 1 and 2 are similar code in both TBST and RTBST deletion.
+
+     <li>Case 3 in an RTBST avoids one tag copy required in TBST deletion.
+
+     <li>One subcase of case 4 in an RTBST avoids one tag assignment required in
+the same subcase of TBST deletion. 
+</ul>
+
+   <p>This is hardly worth it.  We saved at most one assignment per call.  We
+need something better if it's ever going to be worthwhile to use
+right-threaded trees.
+
+   <p>Fortunately, there is a way that we can save a little more.  This is
+by changing our right-looking deletion into left-looking deletion, by
+switching the use of left and right children in the algorithm.  In a
+BST or TBST, this symmetrical change in the algorithm would have no
+effect, because the BST and TBST node structures are themselves
+symmetric.  But in an asymmetric RTBST even a symmetric change can
+have a significant effect on an algorithm, as we'll see.
+
+   <p>The cases for left-looking deletion are outlined in the same way as for
+right-looking deletion:
+
+   <p><a name="catalogue_002dentry_002drtbst_002d3"></a>
+<a name="index-delete-RTBST-node_002c-left_002dlooking-546"></a>
+<pre class="format"><a href="Step_2_3a_Delete_RTBST_node,_left-looking.c.txt">388</a>. &lt;<a name="388" href="Step_2_3a_Delete_RTBST_node,_left-looking.c.txt">Step 2: Delete RTBST node, left-looking 388</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_CHILD</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Left_002dLooking-Deletion-in-an-RTBST.html#389">Case 1 in left-looking RTBST deletion 389</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Left_002dLooking-Deletion-in-an-RTBST.html#390">Case 2 in left-looking RTBST deletion 390</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  } <br><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>r</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_THREAD</tt><!-- /@w -->)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Left_002dLooking-Deletion-in-an-RTBST.html#391">Case 3 in left-looking RTBST deletion 391</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Left_002dLooking-Deletion-in-an-RTBST.html#392">Case 4 in left-looking RTBST deletion 392</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deleting-from-an-RTBST.html#380">380</a>.</small>
+
+<h5 class="subsubheading">Case 1: <i>p</i><!-- /@w --> has a right child but no left child</h5>
+
+<p>If the node to delete <i>p</i><!-- /@w --> has a right child but no left child, we can
+just replace it by its right child.  There is no right thread to update
+in <i>p</i><!-- /@w -->'s left subtree because <i>p</i><!-- /@w --> has no left child, and there is no
+left thread to update because a right-threaded tree has no left threads.
+
+   <p>The deletion looks like this if <i>p</i><!-- /@w -->'s right child is designated <i>x</i><!-- /@w -->:
+
+<div align="center"><a href="rtbstdel.txt"><img border=0 src="rtbstdel.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-1-in-left_002dlooking-RTBST-deletion-547"></a>
+<pre class="format"><a href="Case_1_in_left-looking_RTBST_deletion.c.txt">389</a>. &lt;<a name="389" href="Case_1_in_left-looking_RTBST_deletion.c.txt">Case 1 in left-looking RTBST deletion 389</a>&gt; =
+<i>q</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Left_002dLooking-Deletion-in-an-RTBST.html#388">388</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>p</i><!-- /@w --> has a right thread and no left child</h5>
+
+<p>This case is analogous to case 2 in right-looking deletion covered
+earlier.  The same discussion applies.
+
+   <p><a name="index-case-2-in-left_002dlooking-RTBST-deletion-548"></a>
+<pre class="format"><a href="Case_2_in_left-looking_RTBST_deletion.c.txt">390</a>. &lt;<a name="390" href="Case_2_in_left-looking_RTBST_deletion.c.txt">Case 2 in left-looking RTBST deletion 390</a>&gt; =
+<i>q</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+<b>if</b><!-- /@w --> (<i>dir</i><!-- /@w --> == 1)
+  <i>q</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> = <tt>RTBST_THREAD</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Left_002dLooking-Deletion-in-an-RTBST.html#388">388</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>p</i><!-- /@w -->'s left child has a right thread</h5>
+
+<p>If <i>p</i><!-- /@w --> has a left child <i>r</i><!-- /@w --> that itself has a right thread, then we
+replace <i>p</i><!-- /@w --> by <i>r</i><!-- /@w -->.  Node <i>r</i><!-- /@w --> receives <i>p</i><!-- /@w -->'s former right link, as shown
+here:
+
+<div align="center"><a href="rtbstdel2.txt"><img border=0 src="rtbstdel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>There is no need to fiddle with threads.  If <i>r</i><!-- /@w --> has a right thread
+then it gets replaced by <i>p</i><!-- /@w -->'s right child or thread anyhow.  Any
+right thread within <i>r</i><!-- /@w -->'s left subtree either points within that
+subtree or to <i>r</i><!-- /@w -->.  Finally, <i>r</i><!-- /@w -->'s right subtree cannot cause
+problems.
+
+   <p><a name="index-case-3-in-left_002dlooking-RTBST-deletion-549"></a>
+<pre class="format"><a href="Case_3_in_left-looking_RTBST_deletion.c.txt">391</a>. &lt;<a name="391" href="Case_3_in_left-looking_RTBST_deletion.c.txt">Case 3 in left-looking RTBST deletion 391</a>&gt; =
+<i>r</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+<i>r</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w -->;
+<i>q</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>r</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Left_002dLooking-Deletion-in-an-RTBST.html#388">388</a>.</small>
+
+<h5 class="subsubheading">Case 4: <i>p</i><!-- /@w -->'s left child has a right child</h5>
+
+<p>The final case handles deletion of a node <i>p</i><!-- /@w --> with a left child <i>r</i><!-- /@w -->
+that in turn has a right child.  The code here follows the same
+pattern as &lt;<a href="Deleting-from-a-TBST.html#263">Case 4 in TBST deletion 263</a>&gt; (see the discussion there for
+details).  The first step is to find the predecessor <i>s</i><!-- /@w --> of node <i>p</i><!-- /@w -->:
+
+   <p><a name="index-case-4-in-left_002dlooking-RTBST-deletion-550"></a>
+<pre class="format"><a href="Case_4_in_left-looking_RTBST_deletion.c.txt">392</a>. &lt;<a name="392" href="Case_4_in_left-looking_RTBST_deletion.c.txt">Case 4 in left-looking RTBST deletion 392</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rtbst_node</b> *<i>s</i><!-- /@w -->;
+
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> == <tt>RTBST_THREAD</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>See also <a href="Left_002dLooking-Deletion-in-an-RTBST.html#393">393</a> and <a href="Left_002dLooking-Deletion-in-an-RTBST.html#394">394</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Left_002dLooking-Deletion-in-an-RTBST.html#388">388</a>.</small></div>
+
+   <p>Next, we update <i>r</i><!-- /@w -->, handling two subcases depending on whether <i>s</i><!-- /@w --> has
+a left child:
+
+   <p><a name="index-case-4-in-left_002dlooking-RTBST-deletion-551"></a>
+<pre class="format"><a href="Case_4_in_left-looking_RTBST_deletion.c.txt">393</a>. &lt;<a name="393" href="Case_4_in_left-looking_RTBST_deletion.c.txt">Case 4 in left-looking RTBST deletion 392</a>&gt; +=
+<b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+  <i>r</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>s</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0];
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>r</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>s</i><!-- /@w -->;
+    <i>r</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> = <tt>RTBST_THREAD</tt><!-- /@w -->;
+  }
+</pre>
+   <p>The final step is to copy <i>p</i><!-- /@w -->'s fields into <i>s</i><!-- /@w -->, then set <i>q</i><!-- /@w -->'s child
+pointer to point to <i>s</i><!-- /@w --> instead of <i>p</i><!-- /@w -->.  There is no need to chase down
+any threads.
+
+   <p><a name="index-case-4-in-left_002dlooking-RTBST-deletion-552"></a>
+<pre class="format"><a href="Case_4_in_left-looking_RTBST_deletion.c.txt">394</a>. &lt;<a name="394" href="Case_4_in_left-looking_RTBST_deletion.c.txt">Case 4 in left-looking RTBST deletion 392</a>&gt; +=
+<i>s</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[0];
+<i>s</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1] = <i>p</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[1];
+<i>s</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>rtbst_rtag</i><!-- /@w -->;
+
+<i>q</i><!-- /@w -->-&gt;<i>rtbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>s</i><!-- /@w -->;    
+</pre>
+   <p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Rewrite &lt;<a href="Left_002dLooking-Deletion-in-an-RTBST.html#392">Case 4 in left-looking RTBST deletion 392</a>&gt; to replace the deleted
+node's <i>rtavl_data</i><!-- /@w --> by its predecessor, then delete the predecessor,
+instead of shuffling pointers.  (Refer back to Exercise 4.8-3 for an
+explanation of why this approach cannot be used in libavl.) 
+[<a href="Answers-for-Chapter-10.html#10%2d5%2d2%231">answer</a>]
+
+   </body></html>
+

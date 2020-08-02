@@ -1,0 +1,12 @@
+/* Initializes |trav| to have the same current node as |src|. */
+void *
+tbst_t_copy (struct tbst_traverser *trav, const struct tbst_traverser *src)
+{
+  assert (trav != NULL && src != NULL);
+
+  trav->tbst_table = src->tbst_table;
+  trav->tbst_node = src->tbst_node;
+
+  return trav->tbst_node != NULL ? trav->tbst_node->tbst_data : NULL;
+}
+

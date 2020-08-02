@@ -1,0 +1,9 @@
+r->rtbst_link[0] = p->rtbst_link[0];
+if (r->rtbst_link[0] != NULL)
+  {
+    struct rtbst_node *t = r->rtbst_link[0];
+    while (t->rtbst_rtag == RTBST_CHILD)
+      t = t->rtbst_link[1];
+    t->rtbst_link[1] = r;
+  }
+q->rtbst_link[dir] = r;

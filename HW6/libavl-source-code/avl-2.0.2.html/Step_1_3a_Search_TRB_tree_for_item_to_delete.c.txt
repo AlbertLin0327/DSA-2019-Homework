@@ -1,0 +1,17 @@
+if (tree->trb_root == NULL)
+  return NULL;
+
+p = (struct trb_node *) &tree->trb_root;
+for (cmp = -1; cmp != 0;
+     cmp = tree->trb_compare (item, p->trb_data, tree->trb_param))
+  {
+    dir = cmp > 0;
+    pa[k] = p;
+    da[k++] = dir;
+
+    if (p->trb_tag[dir] == TRB_THREAD)
+      return NULL;
+    p = p->trb_link[dir];
+  }
+item = p->trb_data;
+

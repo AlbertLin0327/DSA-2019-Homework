@@ -1,0 +1,264 @@
+/* Deletes from |tree| and returns an item matching |item|.
+   Returns a null pointer if no matching item found. */
+void *
+rtrb_delete (struct rtrb_table *tree, const void *item)
+{
+  struct rtrb_node *pa[RTRB_MAX_HEIGHT]; /* Nodes on stack. */
+  unsigned char da[RTRB_MAX_HEIGHT];   /* Directions moved from stack nodes. */
+  int k;                               /* Stack height. */
+
+  struct rtrb_node *p;
+
+  assert (tree != NULL && item != NULL);
+
+  k = 1;
+  da[0] = 0;
+  pa[0] = (struct rtrb_node *) &tree->rtrb_root;
+  p = tree->rtrb_root;
+  if (p == NULL)
+    return NULL;
+
+  for (;;)
+    {
+      int cmp, dir;
+
+      cmp = tree->rtrb_compare (item, p->rtrb_data, tree->rtrb_param);
+      if (cmp == 0)
+        break;
+
+      dir = cmp > 0;
+      if (dir == 0)
+        {
+          if (p->rtrb_link[0] == NULL)
+            return NULL;
+        }
+      else /* |dir == 1| */
+        {
+          if (p->rtrb_rtag == RTRB_THREAD)
+            return NULL;
+        }
+
+      pa[k] = p;
+      da[k++] = dir;
+      p = p->rtrb_link[dir];
+    }
+  tree->rtrb_count--;
+  item = p->rtrb_data;
+
+  if (p->rtrb_link[0] == NULL)
+    {
+      if (p->rtrb_rtag == RTRB_CHILD)
+        {
+          pa[k - 1]->rtrb_link[da[k - 1]] = p->rtrb_link[1];
+        }
+      else
+        {
+          pa[k - 1]->rtrb_link[da[k - 1]] = p->rtrb_link[da[k - 1]];
+          if (da[k - 1] == 1)
+            pa[k - 1]->rtrb_rtag = RTRB_THREAD;
+        }
+    }
+  else
+    {
+      enum rtrb_color t;
+      struct rtrb_node *r = p->rtrb_link[0];
+
+      if (r->rtrb_rtag == RTRB_THREAD)
+        {
+          r->rtrb_link[1] = p->rtrb_link[1];
+          r->rtrb_rtag = p->rtrb_rtag;
+          t = r->rtrb_color;
+          r->rtrb_color = p->rtrb_color;
+          p->rtrb_color = t;
+          pa[k - 1]->rtrb_link[da[k - 1]] = r;
+          da[k] = 0;
+          pa[k++] = r;
+        }
+      else
+        {
+          struct rtrb_node *s;
+          int j = k++;
+
+          for (;;)
+            {
+              da[k] = 1;
+              pa[k++] = r;
+              s = r->rtrb_link[1];
+              if (s->rtrb_rtag == RTRB_THREAD)
+                break;
+
+              r = s;
+            }
+
+          da[j] = 0;
+          pa[j] = pa[j - 1]->rtrb_link[da[j - 1]] = s;
+
+          if (s->rtrb_link[0] != NULL)
+            r->rtrb_link[1] = s->rtrb_link[0];
+          else
+            {
+              r->rtrb_rtag = RTRB_THREAD;
+              r->rtrb_link[1] = s;
+            }
+
+          s->rtrb_link[0] = p->rtrb_link[0];
+          s->rtrb_link[1] = p->rtrb_link[1];
+          s->rtrb_rtag = p->rtrb_rtag;
+
+          t = s->rtrb_color;
+          s->rtrb_color = p->rtrb_color;
+          p->rtrb_color = t;
+        }
+    }
+
+  if (p->rtrb_color == RTRB_BLACK)
+    {
+      for (; k > 1; k--)
+        {
+          struct rtrb_node *x;
+          if (da[k - 1] == 0 || pa[k - 1]->rtrb_rtag == RTRB_CHILD)
+            x = pa[k - 1]->rtrb_link[da[k - 1]];
+          else
+            x = NULL;
+          if (x != NULL && x->rtrb_color == RTRB_RED)
+            {
+              x->rtrb_color = RTRB_BLACK;
+              break;
+            }
+
+          if (da[k - 1] == 0)
+            {
+              struct rtrb_node *w = pa[k - 1]->rtrb_link[1];
+
+              if (w->rtrb_color == RTRB_RED)
+                {
+                  w->rtrb_color = RTRB_BLACK;
+                  pa[k - 1]->rtrb_color = RTRB_RED;
+
+                  pa[k - 1]->rtrb_link[1] = w->rtrb_link[0];
+                  w->rtrb_link[0] = pa[k - 1];
+                  pa[k - 2]->rtrb_link[da[k - 2]] = w;
+
+                  pa[k] = pa[k - 1];
+                  da[k] = 0;
+                  pa[k - 1] = w;
+                  k++;
+
+                  w = pa[k - 1]->rtrb_link[1];
+                }
+
+              if ((w->rtrb_link[0] == NULL
+                   || w->rtrb_link[0]->rtrb_color == RTRB_BLACK)
+                  && (w->rtrb_rtag == RTRB_THREAD
+                      || w->rtrb_link[1]->rtrb_color == RTRB_BLACK))
+                {
+                  w->rtrb_color = RTRB_RED;
+                }
+              else
+                {
+                  if (w->rtrb_rtag == RTRB_THREAD
+                      || w->rtrb_link[1]->rtrb_color == RTRB_BLACK)
+                    {
+                      struct rtrb_node *y = w->rtrb_link[0];
+                      y->rtrb_color = RTRB_BLACK;
+                      w->rtrb_color = RTRB_RED;
+                      w->rtrb_link[0] = y->rtrb_link[1];
+                      y->rtrb_link[1] = w;
+                      w = pa[k - 1]->rtrb_link[1] = y;
+
+                      if (w->rtrb_rtag == RTRB_THREAD)
+                        {
+                          w->rtrb_rtag = RTRB_CHILD;
+                          w->rtrb_link[1]->rtrb_link[0] = NULL;
+                        }
+                    }
+
+                  w->rtrb_color = pa[k - 1]->rtrb_color;
+                  pa[k - 1]->rtrb_color = RTRB_BLACK;
+                  w->rtrb_link[1]->rtrb_color = RTRB_BLACK;
+
+                  pa[k - 1]->rtrb_link[1] = w->rtrb_link[0];
+                  w->rtrb_link[0] = pa[k - 1];
+                  pa[k - 2]->rtrb_link[da[k - 2]] = w;
+
+                  if (w->rtrb_link[0]->rtrb_link[1] == NULL)
+                    {
+                      w->rtrb_link[0]->rtrb_rtag = RTRB_THREAD;
+                      w->rtrb_link[0]->rtrb_link[1] = w;
+                    }
+                  break;
+                }
+            }
+          else
+            {
+              struct rtrb_node *w = pa[k - 1]->rtrb_link[0];
+
+              if (w->rtrb_color == RTRB_RED)
+                {
+                  w->rtrb_color = RTRB_BLACK;
+                  pa[k - 1]->rtrb_color = RTRB_RED;
+
+                  pa[k - 1]->rtrb_link[0] = w->rtrb_link[1];
+                  w->rtrb_link[1] = pa[k - 1];
+                  pa[k - 2]->rtrb_link[da[k - 2]] = w;
+
+                  pa[k] = pa[k - 1];
+                  da[k] = 1;
+                  pa[k - 1] = w;
+                  k++;
+
+                  w = pa[k - 1]->rtrb_link[0];
+                }
+
+              if ((w->rtrb_link[0] == NULL
+                   || w->rtrb_link[0]->rtrb_color == RTRB_BLACK)
+                  && (w->rtrb_rtag == RTRB_THREAD
+                      || w->rtrb_link[1]->rtrb_color == RTRB_BLACK))
+                {
+                  w->rtrb_color = RTRB_RED;
+                }
+              else
+                {
+                  if (w->rtrb_link[0] == NULL
+                      || w->rtrb_link[0]->rtrb_color == RTRB_BLACK)
+                    {
+                      struct rtrb_node *y = w->rtrb_link[1];
+                      y->rtrb_color = RTRB_BLACK;
+                      w->rtrb_color = RTRB_RED;
+                      w->rtrb_link[1] = y->rtrb_link[0];
+                      y->rtrb_link[0] = w;
+                      w = pa[k - 1]->rtrb_link[0] = y;
+
+                      if (w->rtrb_link[0]->rtrb_link[1] == NULL)
+                        {
+                          w->rtrb_link[0]->rtrb_rtag = RTRB_THREAD;
+                          w->rtrb_link[0]->rtrb_link[1] = w;
+                        }
+                    }
+
+                  w->rtrb_color = pa[k - 1]->rtrb_color;
+                  pa[k - 1]->rtrb_color = RTRB_BLACK;
+                  w->rtrb_link[0]->rtrb_color = RTRB_BLACK;
+
+                  pa[k - 1]->rtrb_link[0] = w->rtrb_link[1];
+                  w->rtrb_link[1] = pa[k - 1];
+                  pa[k - 2]->rtrb_link[da[k - 2]] = w;
+
+                  if (w->rtrb_rtag == RTRB_THREAD)
+                    {
+                      w->rtrb_rtag = RTRB_CHILD;
+                      pa[k - 1]->rtrb_link[0] = NULL;
+                    }
+                  break;
+                }
+            }
+        }
+
+      if (tree->rtrb_root != NULL)
+        tree->rtrb_root->rtrb_color = RTRB_BLACK;
+    }
+
+  tree->rtrb_alloc->libavl_free (tree->rtrb_alloc, p);
+  return (void *) item;
+}
+

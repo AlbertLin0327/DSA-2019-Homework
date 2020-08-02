@@ -1,0 +1,201 @@
+<html lang="en">
+<head>
+<title>Deletion by Merging - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Deleting-from-a-BST.html" title="4.8 Deletion">
+<link rel=Next href="Traversing-a-BST.html" title="4.9 Traversal">
+<link rel=Parent href="Deleting-from-a-BST.html" title="4.8 Deletion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deletion-by-Merging">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.8.1 Aside: Deletion by Merging</b></big></td>
+<td align=right>
+<a href="index.html#Deletion-by-Merging.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Deleting-from-a-BST.html" title="Prev: 4.8 Deletion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Deleting-from-a-BST.html" title="Up: 4.8 Deletion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Traversing-a-BST.html" title="Next: 4.9 Traversal"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The libavl algorithm for deletion is commonly used, but it is also
+seemingly ad-hoc and arbitrary in its approach.  In this section we'll
+take a look at another algorithm that may seem a little more uniform. 
+Unfortunately, though it is conceptually simpler in some ways, in
+practice this algorithm is both slower and more difficult to properly
+implement.
+
+   <p>The idea behind this algorithm is to consider deletion as breaking the
+links between the deleted node and its parent and children.  In the
+most general case, we end up with three disconnected BSTs, one that
+contains the deleted node's parent and two corresponding to the
+deleted node's former subtrees.  The diagram below shows how this idea
+works out for the deletion of node 5 from the tree on the left:
+
+<div align="center"><a href="rotdel.txt"><img border=0 src="rotdel.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Of course, the problem then becomes to reassemble the pieces into a
+single binary search tree.  We can do this by merging the two former
+subtrees of the deleted node and attaching them as the right child of
+the parent subtree.  As the first step in merging the subtrees, we
+take the minimum node <i>r</i><!-- /@w --> in the former right subtree and repeatedly
+perform a right rotation on its parent, until it is the root of its
+subtree.  The process up to this point looks like this for our
+example, showing only the subtree containing <i>r</i><!-- /@w -->:
+
+<div align="center"><a href="rotdel2.txt"><img border=0 src="rotdel2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Now, because <i>r</i><!-- /@w --> is the root and the minimum node in its subtree, <i>r</i><!-- /@w -->
+has no left child.  Also, all the nodes in the opposite subtree are
+smaller than <i>r</i><!-- /@w -->.  So to merge these subtrees, we simply link the
+opposite subtree as <i>r</i><!-- /@w -->'s left child and connect <i>r</i><!-- /@w --> in place of the
+deleted node:
+
+<div align="center"><a href="rotdel3.txt"><img border=0 src="rotdel3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The function outline is straightforward:
+
+   <p><a name="catalogue_002dentry_002dbst_002d5"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-BST-item-deletion-function_002c-by-merging-63"></a>
+<pre class="format"><a href="BST_item_deletion_function,_by_merging.c.txt">45</a>. &lt;<a name="45" href="BST_item_deletion_function,_by_merging.c.txt">BST item deletion function, by merging 45</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>bst_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fdelete_007d-function-64"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>p</i><!-- /@w -->;   /* The node to delete, or a node part way to it. */
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>q</i><!-- /@w -->;	/* Parent of <i>p</i><!-- /@w -->. */
+  <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w -->, <i>dir</i><!-- /@w -->;         /* Result of comparison between <i>item</i><!-- /@w --> and <i>p</i><!-- /@w -->. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Deletion-by-Merging.html#46">Step 1: Find BST node to delete by merging 46</a>&gt;
+  &lt;<a href="Deletion-by-Merging.html#47">Step 2: Delete BST node by merging 47</a>&gt;
+  &lt;<a href="Deletion-by-Merging.html#48">Step 3: Finish up after BST deletion by merging 48</a>&gt;  
+
+  <b>return</b><!-- /@w --> (<b>void</b><!-- /@w --> *) <i>item</i><!-- /@w -->;
+}
+</pre>
+   <p>First we search for the node to delete, storing it as <i>p</i><!-- /@w --> and its
+parent as <i>q</i><!-- /@w -->:
+
+   <p><a name="index-find-BST-node-to-delete-by-merging-65"></a>
+<pre class="format"><a href="Step_1_3a_Find_BST_node_to_delete_by_merging.c.txt">46</a>. &lt;<a name="46" href="Step_1_3a_Find_BST_node_to_delete_by_merging.c.txt">Step 1: Find BST node to delete by merging 46</a>&gt; =
+<i>p</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+<b>for</b><!-- /@w --> (<i>cmp</i><!-- /@w --> = -1; <i>cmp</i><!-- /@w --> != 0; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>cmp</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_compare</i><!-- /@w --> (<i>item</i><!-- /@w -->, <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>bst_param</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>dir</i><!-- /@w --> = <i>cmp</i><!-- /@w --> &gt; 0;
+    <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+    <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+      <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deletion-by-Merging.html#45">45</a>.</small>
+
+   <p>The actual deletion process is not as simple.  We handle specially the
+case where <i>p</i><!-- /@w --> has no right child.  This is unfortunate for
+uniformity, but simplifies the rest of the code considerably.  The
+main case starts off with a loop on variable <i>r</i><!-- /@w --> to build a stack of
+the nodes in the right subtree of <i>p</i><!-- /@w --> that will need to be rotated. 
+After the loop, <i>r</i><!-- /@w --> is the minimum value in <i>p</i><!-- /@w -->'s right subtree.  This
+will be the new root of the merged subtrees after the rotations, so we
+set <i>r</i><!-- /@w --> as <i>q</i><!-- /@w -->'s child on the appropriate side and <i>r</i><!-- /@w -->'s left child as
+<i>p</i><!-- /@w -->'s former left child.  After that the only remaining task is the
+rotations themselves, so we perform them and we're done:
+
+   <p><a name="index-delete-BST-node-by-merging-66"></a>
+<pre class="format"><a href="Step_2_3a_Delete_BST_node_by_merging.c.txt">47</a>. &lt;<a name="47" href="Step_2_3a_Delete_BST_node_by_merging.c.txt">Step 2: Delete BST node by merging 47</a>&gt; =
+<b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>pa</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->]; /* Nodes on stack. */
+    <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>da</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];    /* Directions moved from stack nodes. */
+    <b>int</b><!-- /@w --> <i>k</i><!-- /@w --> = 0;                           /* Stack height. */
+
+    <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>r</i><!-- /@w -->; /* Iterator; final value is minimum node in subtree. */
+
+    <b>for</b><!-- /@w --> (<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]; <i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->; <i>r</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>if</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>bst_balance</i><!-- /@w --> (<i>tree</i><!-- /@w -->);
+            <b>return</b><!-- /@w --> <i>bst_delete</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>item</i><!-- /@w -->);
+          }
+
+        <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->] = <i>r</i><!-- /@w -->;
+        <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = 0;
+      }
+    <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>r</i><!-- /@w -->;
+    <i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+
+    <b>for</b><!-- /@w --> (; <i>k</i><!-- /@w --> &gt; 0; <i>k</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+        <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w --> = <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        <i>y</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+        <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+        <b>if</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt; 1)
+          <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>bst_link</i><!-- /@w -->[<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]] = <i>x</i><!-- /@w -->;
+      }
+  }
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deletion-by-Merging.html#45">45</a>.</small>
+
+   <p>Finally, there's a bit of obligatory bookkeeping:
+
+   <p><a name="index-finish-up-after-BST-deletion-by-merging-67"></a>
+<pre class="format"><a href="Step_3_3a_Finish_up_after_BST_deletion_by_merging.c.txt">48</a>. &lt;<a name="48" href="Step_3_3a_Finish_up_after_BST_deletion_by_merging.c.txt">Step 3: Finish up after BST deletion by merging 48</a>&gt; =
+<i>item</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->-&gt;<i>libavl_free</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_alloc</i><!-- /@w -->, <i>p</i><!-- /@w -->);
+<i>tree</i><!-- /@w -->-&gt;<i>bst_count</i><!-- /@w -->&ndash;;
+<i>tree</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w -->++;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Deletion-by-Merging.html#45">45</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], section 12.9.
+
+   </body></html>
+

@@ -1,0 +1,38 @@
+/* Creates a new node as a child of |dst| on side |dir|.
+   Copies data from |src| into the new node, applying |copy()|, if non-null.
+   Returns nonzero only if fully successful.
+   Regardless of success, integrity of the tree structure is assured,
+   though failure may leave a null pointer in a |rtbst_data| member. */
+static int
+copy_node (struct rtbst_table *tree,
+           struct rtbst_node *dst, int dir,
+           const struct rtbst_node *src, rtbst_copy_func *copy)
+{
+  struct rtbst_node *new =
+    tree->rtbst_alloc->libavl_malloc (tree->rtbst_alloc, sizeof *new);
+  if (new == NULL)
+    return 0;
+
+  new->rtbst_link[0] = NULL;
+  new->rtbst_rtag = RTBST_THREAD;
+  if (dir == 0)
+    new->rtbst_link[1] = dst;
+  else
+    {
+      new->rtbst_link[1] = dst->rtbst_link[1];
+      dst->rtbst_rtag = RTBST_CHILD;
+    }
+  dst->rtbst_link[dir] = new;
+
+  if (copy == NULL)
+    new->rtbst_data = src->rtbst_data;
+  else
+    {
+      new->rtbst_data = copy (src->rtbst_data, tree->rtbst_param);
+      if (new->rtbst_data == NULL)
+        return 0;
+    }
+
+  return 1;
+}
+

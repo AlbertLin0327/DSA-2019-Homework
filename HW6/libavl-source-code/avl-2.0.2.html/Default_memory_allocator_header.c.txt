@@ -1,0 +1,5 @@
+/* Default memory allocator. */
+extern struct libavl_allocator tbl_allocator_default;
+void *tbl_malloc (struct libavl_allocator *, size_t);
+void tbl_free (struct libavl_allocator *, void *);
+

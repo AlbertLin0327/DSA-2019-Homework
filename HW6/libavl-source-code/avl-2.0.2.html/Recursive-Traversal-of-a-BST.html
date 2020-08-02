@@ -1,0 +1,137 @@
+<html lang="en">
+<head>
+<title>Recursive Traversal of a BST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Traversing-a-BST.html" title="4.9 Traversal">
+<link rel=Next href="Iterative-Traversal-of-a-BST.html" title="4.9.2 Traversal by Iteration">
+<link rel=Parent href="Traversing-a-BST.html" title="4.9 Traversal">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Recursive-Traversal-of-a-BST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.9.1 Traversal by Recursion</b></big></td>
+<td align=right>
+<a href="index.html#Recursive-Traversal-of-a-BST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Iterative-Traversal-of-a-BST.html" title="Skip Forward: 4.9.2 Traversal by Iteration"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Traversing-a-BST.html" title="Prev: 4.9 Traversal"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Traversing-a-BST.html" title="Up: 4.9 Traversal"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Iterative-Traversal-of-a-BST.html" title="Next: 4.9.2 Traversal by Iteration"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>To figure out how to traverse a binary search tree in inorder, think
+about a BST's structure.  A BST consists of a root, a left subtree, and
+right subtree.  All the items in the left subtree have smaller values
+than the root and all the items in the right subtree have larger values
+than the root.
+
+   <p>That's good enough right there: we can traverse a BST in inorder by
+dealing with its left subtree, then doing with the root whatever it is
+we want to do with each node in the tree (generically, <dfn>visit</dfn> (see <a href="Glossary.html#visit">visit</a>) the
+root node), then dealing with its right subtree.  But how do we deal
+with the subtrees?  Well, they're BSTs too, so we can do the same thing:
+traverse its left subtree, then visit its root, then traverse its right
+subtree, and so on.  Eventually the process terminates because at some
+point the subtrees are null pointers, and nothing needs to be done to
+traverse an empty tree.
+
+   <p>Writing the traversal function is almost trivial.  We use
+<b>bst_item_func</b><!-- /@w --> to visit a node (see <a href="Item-and-Copy-Functions.html">Item and Copy Functions</a>):
+
+   <p><a name="catalogue_002dentry_002dbst_002d6"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-recursive-traversal-of-BST-68"></a>
+<pre class="format"><a href="Recursive_traversal_of_BST.c.txt">49</a>. &lt;<a name="49" href="Recursive_traversal_of_BST.c.txt">Recursive traversal of BST 49</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>traverse_recursive</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btraverse_005frecursive_007d-function-69"></a>  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>traverse_recursive</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0], <i>action</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>action</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>traverse_recursive</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1], <i>action</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+    }
+}
+</pre>
+   <p class="noindent"><small>See also <a href="Recursive-Traversal-of-a-BST.html#50">50</a>.</small>
+
+   <p>We also want a wrapper function to insulate callers from the existence
+of individual tree nodes:
+
+<!-- tested 2000/7/8 -->
+<p><a name="index-recursive-traversal-of-BST-70"></a>
+<pre class="format"><a href="Recursive_traversal_of_BST.c.txt">50</a>. &lt;<a name="50" href="Recursive_traversal_of_BST.c.txt">Recursive traversal of BST 49</a>&gt; +=
+<b>void</b><!-- /@w --> <br><i>walk</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bwalk_007d-function-71"></a>  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>action</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>traverse_recursive</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->, <i>action</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201997">Knuth 1997</a>], section 2.3.1;
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 13.1;
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], program 12.8.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Instead of checking for a null <i>node</i><!-- /@w --> at the top of
+<i>traverse_recursive</i><!-- /@w -->(), would it be better to check before calling in
+each place that the function is called?  Why or why not? 
+[<a href="Answers-for-Chapter-4.html#4%2d9%2d1%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Some languages, such as Pascal, support the concept of <dfn>nested
+functions</dfn>, that is, functions within functions, but C does not.  Some
+algorithms, including recursive tree traversal, can be expressed much
+more naturally with this feature.  Rewrite <i>walk</i><!-- /@w -->(), in a hypothetical
+C-like language that supports nested functions, as a function that calls
+an inner, recursively defined function.  The nested function should only
+take a single parameter.  (The GNU C compiler supports nested functions
+as a language extension, so you may want to use it to check your code.) 
+[<a href="Answers-for-Chapter-4.html#4%2d9%2d1%232">answer</a>]
+
+   </body></html>
+

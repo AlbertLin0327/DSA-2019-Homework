@@ -1,0 +1,20 @@
+/* Initializes |larger| and |smaller| within range |min|@dots{}|max| of
+   |array[]|,
+   which has |n| real elements plus a |(n + 1)|th sentinel element. */
+int
+init_binary_tree_array (struct binary_tree_entry array[], int n,
+                        int min, int max)
+{
+  if (min <= max)
+    {
+      /* The `|+ 1|' is necessary because the tree root must be at |n / 2|,
+         and on the first call we have |min == 0| and |max == n - 1|. */
+      int i = (min + max + 1) / 2;
+      array[i].larger = init_binary_tree_array (array, n, i + 1, max);
+      array[i].smaller = init_binary_tree_array (array, n, min, i - 1);
+      return i;
+    }
+  else
+    return n;
+}
+

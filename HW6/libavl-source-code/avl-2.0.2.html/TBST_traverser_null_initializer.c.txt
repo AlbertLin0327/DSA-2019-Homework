@@ -1,0 +1,9 @@
+/* Initializes |trav| for use with |tree|
+   and selects the null node. */
+void
+tbst_t_init (struct tbst_traverser *trav, struct tbst_table *tree)
+{
+  trav->tbst_table = tree;
+  trav->tbst_node = NULL;
+}
+

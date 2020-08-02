@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+<title>Transforming a BST into a Vine - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Balancing-a-BST.html" title="4.12 Balance">
+<link rel=Next href="Transforming-a-Vine-into-a-Balanced-BST.html" title="4.12.2 From Vine to Balanced Tree">
+<link rel=Parent href="Balancing-a-BST.html" title="4.12 Balance">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Transforming-a-BST-into-a-Vine">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.12.1 From Tree to Vine</b></big></td>
+<td align=right>
+<a href="index.html#Transforming-a-BST-into-a-Vine.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Transforming-a-Vine-into-a-Balanced-BST.html" title="Skip Forward: 4.12.2 From Vine to Balanced Tree"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-a-BST.html" title="Prev: 4.12 Balance"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Balancing-a-BST.html" title="Up: 4.12 Balance"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Transforming-a-Vine-into-a-Balanced-BST.html" title="Next: 4.12.2 From Vine to Balanced Tree"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The first stage of balancing converts a binary tree into a linear
+structure resembling a linked list, called a <dfn>vine</dfn> (see <a href="Glossary.html#vine">vine</a>).  The vines we
+will create have the greatest value in the binary tree at the root and
+decrease descending to the left.  Any binary search tree that contains a
+particular set of values, no matter its shape, corresponds to the same
+vine of this type.  For instance, all binary search trees of the
+integers 0<small class="dots">...</small>4 will be transformed into the following vine:
+
+<div align="center"><a href="vine.txt"><img border=0 src="vine.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>The method for transforming a tree into a vine of this type is similar
+to that used for destroying a tree by rotation (see <a href="Destroying-a-BST-by-Rotation.html">Destroying a BST by Rotation</a>).  We step pointer <i>p</i><!-- /@w --> through the tree, starting at the
+root of the tree, maintaining pointer <i>q</i><!-- /@w --> as <i>p</i><!-- /@w -->'s parent.  (Because
+we're building a vine, <i>p</i><!-- /@w --> is always the left child of <i>q</i><!-- /@w -->.)  At each
+step, we do one of two things:
+
+     <ul>
+<li>If <i>p</i><!-- /@w --> has no right child, then this part of the tree is already the
+shape we want it to be.  We step <i>p</i><!-- /@w --> and <i>q</i><!-- /@w --> down to the left and
+continue.
+
+     <li>If <i>p</i><!-- /@w --> has a right child <i>r</i><!-- /@w -->, then we rotate left at <i>p</i><!-- /@w -->, performing
+the following transformation:
+
+     <div align="center"><a href="tree2vine.txt"><img border=0 src="tree2vine.png" alt="[Click here for plain-text rendering]"></a></div>
+
+     <p>where <i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->, and <i>c</i><!-- /@w --> are arbitrary subtrees or empty trees.  Node
+<i>r</i><!-- /@w --> then becomes the new <i>p</i><!-- /@w -->.  If <i>c</i><!-- /@w --> is an empty tree, then, in the
+next step, we will continue down the tree.  Otherwise, the right
+subtree of <i>p</i><!-- /@w --> is smaller (contains fewer nodes) than previously, so
+we're on the right track. 
+</ul>
+
+   <p>This is all it takes:
+
+   <p><a name="catalogue_002dentry_002dbst_002d28"></a>
+<a name="index-BST-to-vine-function-140"></a>
+<pre class="format"><a href="BST_to_vine_function.c.txt">89</a>. &lt;<a name="89" href="BST_to_vine_function.c.txt">BST to vine function 89</a>&gt; =
+/* Converts <i>tree</i><!-- /@w --> into a vine. */
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>tree_to_vine</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btree_005fto_005fvine_007d-function-141"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>q</i><!-- /@w -->, *<i>p</i><!-- /@w -->;
+
+  <i>q</i><!-- /@w --> = (<b>struct</b><!-- /@w --> <b>bst_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <b>while</b><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+    <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+        <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+      }
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>r</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+        <i>p</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] = <i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        <i>r</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->;
+        <i>p</i><!-- /@w --> = <i>r</i><!-- /@w -->;
+        <i>q</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] = <i>r</i><!-- /@w -->;
+      }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-a-BST.html#87">87</a>, <a href="Balancing-a-PBST.html#511">511</a>, and <a href="Answers-for-Chapter-13.html#679">679</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Stout%201986">Stout 1986</a>], <i>tree_to_vine</i><!-- /@w --> procedure.
+
+   </body></html>
+

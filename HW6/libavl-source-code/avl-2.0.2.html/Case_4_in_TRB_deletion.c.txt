@@ -1,0 +1,44 @@
+struct trb_node *s;
+int j = k++;
+
+for (;;)
+  {
+    da[k] = 0;
+    pa[k++] = r;
+    s = r->trb_link[0];
+    if (s->trb_tag[0] == TRB_THREAD)
+      break;
+
+    r = s;
+  }
+
+da[j] = 1;
+pa[j] = s;
+if (s->trb_tag[1] == TRB_CHILD)
+  r->trb_link[0] = s->trb_link[1];
+else
+  {
+    r->trb_link[0] = s;
+    r->trb_tag[0] = TRB_THREAD;
+  }
+
+s->trb_link[0] = p->trb_link[0];
+if (p->trb_tag[0] == TRB_CHILD)
+  {
+    struct trb_node *t = p->trb_link[0];
+    while (t->trb_tag[1] == TRB_CHILD)
+      t = t->trb_link[1];
+    t->trb_link[1] = s;
+
+    s->trb_tag[0] = TRB_CHILD;
+  }
+
+s->trb_link[1] = p->trb_link[1];
+s->trb_tag[1] = TRB_CHILD;
+
+t = s->trb_color;
+s->trb_color = p->trb_color;
+p->trb_color = t;
+
+pa[j - 1]->trb_link[da[j - 1]] = s;
+

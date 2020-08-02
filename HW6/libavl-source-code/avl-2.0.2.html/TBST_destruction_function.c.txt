@@ -1,0 +1,30 @@
+/* Frees storage allocated for |tree|.
+   If |destroy != NULL|, applies it to each data item in inorder. */
+void
+tbst_destroy (struct tbst_table *tree, tbst_item_func *destroy)
+{
+  struct tbst_node *p; /* Current node. */
+  struct tbst_node *n; /* Next node. */
+
+  p = tree->tbst_root;
+  if (p != NULL)
+    while (p->tbst_tag[0] == TBST_CHILD)
+      p = p->tbst_link[0];
+
+  while (p != NULL)
+    {
+      n = p->tbst_link[1];
+      if (p->tbst_tag[1] == TBST_CHILD)
+        while (n->tbst_tag[0] == TBST_CHILD)
+          n = n->tbst_link[0];
+
+      if (destroy != NULL && p->tbst_data != NULL)
+        destroy (p->tbst_data, tree->tbst_param);
+      tree->tbst_alloc->libavl_free (tree->tbst_alloc, p);
+
+      p = n;
+    }
+
+  tree->tbst_alloc->libavl_free (tree->tbst_alloc, tree);
+}
+

@@ -1,0 +1,22 @@
+struct avl_node *s;
+int j = k++;
+
+for (;;)
+  {
+    da[k] = 0;
+    pa[k++] = r;
+    s = r->avl_link[0];
+    if (s->avl_link[0] == NULL)
+      break;
+
+    r = s;
+  }
+
+s->avl_link[0] = p->avl_link[0];
+r->avl_link[0] = s->avl_link[1];
+s->avl_link[1] = p->avl_link[1];
+s->avl_balance = p->avl_balance;
+
+pa[j - 1]->avl_link[da[j - 1]] = s;
+da[j] = 1;
+pa[j] = s;

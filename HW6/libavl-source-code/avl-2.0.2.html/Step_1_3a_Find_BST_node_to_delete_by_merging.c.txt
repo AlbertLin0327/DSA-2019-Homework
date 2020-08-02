@@ -1,0 +1,11 @@
+p = (struct bst_node *) &tree->bst_root;
+for (cmp = -1; cmp != 0;
+     cmp = tree->bst_compare (item, p->bst_data, tree->bst_param))
+  {
+    dir = cmp > 0;
+    q = p;
+    p = p->bst_link[dir];
+    if (p == NULL)
+      return NULL;
+  }
+

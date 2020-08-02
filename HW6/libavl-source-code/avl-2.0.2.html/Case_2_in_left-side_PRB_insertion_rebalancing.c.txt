@@ -1,0 +1,11 @@
+g->prb_color = PRB_RED;
+f->prb_color = PRB_BLACK;
+
+g->prb_link[0] = f->prb_link[1];
+f->prb_link[1] = g;
+h->prb_link[h->prb_link[0] != g] = f;
+
+f->prb_parent = g->prb_parent;
+g->prb_parent = f;
+if (g->prb_link[0] != NULL)
+  g->prb_link[0]->prb_parent = g;

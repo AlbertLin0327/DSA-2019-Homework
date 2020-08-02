@@ -1,0 +1,34 @@
+struct tbst_node *s;
+
+for (;;)
+  {
+    s = r->tbst_link[0];
+    if (s->tbst_tag[0] == TBST_THREAD)
+      break;
+
+    r = s;
+  }
+
+if (s->tbst_tag[1] == TBST_CHILD)
+  r->tbst_link[0] = s->tbst_link[1];
+else
+  {
+    r->tbst_link[0] = s;
+    r->tbst_tag[0] = TBST_THREAD;
+  }
+
+s->tbst_link[0] = p->tbst_link[0];
+if (p->tbst_tag[0] == TBST_CHILD)
+  {
+    struct tbst_node *t = p->tbst_link[0];
+    while (t->tbst_tag[1] == TBST_CHILD)
+      t = t->tbst_link[1];
+    t->tbst_link[1] = s;
+
+    s->tbst_tag[0] = TBST_CHILD;
+  }
+
+s->tbst_link[1] = p->tbst_link[1];
+s->tbst_tag[1] = TBST_CHILD;
+
+q->tbst_link[dir] = s;

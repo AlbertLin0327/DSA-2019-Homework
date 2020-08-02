@@ -1,0 +1,21 @@
+/* Returns |i| such that |array[i].value == key|,
+   or -1 if |key| is not in |array[]|.
+   |array[]| is an array of |n| elements forming a binary search tree,
+   with its root at |array[n / 2]|,
+   and space for an |(n + 1)|th value at the end. */
+int
+binary_search_tree_array (struct binary_tree_entry array[], int n,
+                          int key)
+{
+  int i = n / 2;
+
+  array[n].value = key;
+  for (;;)
+    if (key > array[i].value)
+      i = array[i].larger;
+    else if (key < array[i].value)
+      i = array[i].smaller;
+    else
+      return i != n ? i : -1;
+}
+

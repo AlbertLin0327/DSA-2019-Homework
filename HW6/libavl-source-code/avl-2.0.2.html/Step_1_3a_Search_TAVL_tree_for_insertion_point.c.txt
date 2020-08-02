@@ -1,0 +1,24 @@
+z = (struct tavl_node *) &tree->tavl_root;
+y = tree->tavl_root;
+if (y != NULL)
+  {
+    for (q = z, p = y; ; q = p, p = p->tavl_link[dir])
+      {
+        int cmp = tree->tavl_compare (item, p->tavl_data, tree->tavl_param);
+        if (cmp == 0)
+          return &p->tavl_data;
+
+        if (p->tavl_balance != 0)
+          z = q, y = p, k = 0;
+        da[k++] = dir = cmp > 0;
+
+        if (p->tavl_tag[dir] == TAVL_THREAD)
+          break;
+      }
+  }
+else
+  {
+    p = z;
+    dir = 0;
+  }
+

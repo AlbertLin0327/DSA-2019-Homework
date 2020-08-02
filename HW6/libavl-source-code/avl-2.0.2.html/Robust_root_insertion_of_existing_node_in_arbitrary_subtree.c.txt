@@ -1,0 +1,87 @@
+/* Performs root insertion of |n| at |root| within |tree|.
+   Subtree |root| must not contain a node matching |n|.
+   Never fails and will not rebalance |tree|. */
+static void
+root_insert (struct bst_table *tree, struct bst_node **root,
+             struct bst_node *n)
+{
+  struct bst_node *pa[BST_MAX_HEIGHT]; /* Nodes on stack. */
+  unsigned char da[BST_MAX_HEIGHT];    /* Directions moved from stack nodes. */
+  int k;                               /* Stack height. */
+  int overflow = 0;                    /* Set nonzero if stack overflowed. */
+
+  struct bst_node *p; /* Traverses tree looking for insertion point. */
+
+  assert (tree != NULL && n != NULL);
+
+  pa[0] = (struct bst_node *) root;
+  da[0] = 0;
+  k = 1;
+  for (p = *root; p != NULL; p = p->bst_link[da[k - 1]])
+    {
+      int cmp = tree->bst_compare (n->bst_data, p->bst_data, tree->bst_param);
+      assert (cmp != 0);
+
+      if (k >= BST_MAX_HEIGHT)
+        {
+          overflow = 1;
+          k--;
+        }
+
+      pa[k] = p;
+      da[k++] = cmp > 0;
+    }
+
+  pa[k - 1]->bst_link[da[k - 1]] = n;
+
+  if (!overflow)
+    {
+      for (; k > 1; k--)
+        {
+          struct bst_node *q = pa[k - 1];
+
+          if (da[k - 1] == 0)
+            {
+              q->bst_link[0] = n->bst_link[1];
+              n->bst_link[1] = q;
+            }
+          else /* |da[k - 1] == 1| */
+            {
+              q->bst_link[1] = n->bst_link[0];
+              n->bst_link[0] = q;
+            }
+          pa[k - 2]->bst_link[da[k - 2]] = n;
+        }
+    }
+  else
+    {
+      while (*root != n)
+        {
+          struct bst_node **r; /* Link to node to rotate. */
+          struct bst_node *q;  /* Node to rotate. */
+          int dir;
+
+          for (r = root; ; r = &q->bst_link[dir])
+            {
+              q = *r;
+              dir = 0 < tree->bst_compare (n->bst_data, q->bst_data,
+                                           tree->bst_param);
+
+              if (q->bst_link[dir] == n)
+                break;
+            }
+
+          if (dir == 0)
+            {
+              q->bst_link[0] = n->bst_link[1];
+              n->bst_link[1] = q;
+            }
+          else
+            {
+              q->bst_link[1] = n->bst_link[0];
+              n->bst_link[0] = q;
+            }
+          *r = n;
+        }
+    }
+}

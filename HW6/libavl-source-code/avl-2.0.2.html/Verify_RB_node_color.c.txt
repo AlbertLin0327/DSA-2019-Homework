@@ -1,0 +1,7 @@
+if (node->rb_color != RB_RED && node->rb_color != RB_BLACK)
+  {
+    printf (" Node %d is neither red nor black (%d).\n",
+            d, node->rb_color);
+    *okay = 0;
+  }
+

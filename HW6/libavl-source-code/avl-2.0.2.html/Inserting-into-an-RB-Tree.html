@@ -1,0 +1,128 @@
+<html lang="en">
+<head>
+<title>Inserting into an RB Tree - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Operations-in-an-RB-Tree.html" title="6.3 Operations">
+<link rel=Next href="Inserting-an-RB-Node-Step-1-_002d-Search.html" title="6.4.1 Step 1: Search">
+<link rel=Parent href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Inserting-into-an-RB-Tree">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6.4 Insertion</b></big></td>
+<td align=right>
+<a href="index.html#Inserting-into-an-RB-Tree.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Operations-in-an-RB-Tree.html" title="Skip Back: 6.3 Operations"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Deleting-from-an-RB-Tree.html" title="Skip Forward: 6.5 Deletion"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Operations-in-an-RB-Tree.html" title="Prev: 6.3 Operations"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Red_002dBlack-Trees.html" title="Up: 6 Red-Black Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Inserting-an-RB-Node-Step-1-_002d-Search.html" title="Next: 6.4.1 Step 1: Search"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The steps for insertion into a red-black tree are similar to those for
+insertion into an AVL tree:
+
+     <ol type=1 start=1>
+<li><strong>Search</strong> for the location to insert the new item.
+
+     <li><strong>Insert</strong> the item.
+
+     <li><strong>Rebalance</strong> the tree as necessary to satisfy the red-black
+balance condition.
+        </ol>
+
+   <p>Red-black node colors don't need to be updated in the way that AVL
+balance factors do, so there is no separate step for updating colors.
+
+   <p>Here's the outline of the function, expressed as code:
+
+   <p><a name="catalogue_002dentry_002drb_002d0"></a>
+<a name="index-RB-item-insertion-function-295"></a>
+<pre class="format"><a href="RB_item_insertion_function.c.txt">197</a>. &lt;<a name="197" href="RB_item_insertion_function.c.txt">RB item insertion function 197</a>&gt; =
+<b>void</b><!-- /@w --> **<br><i>rb_probe</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rb_table</b> *<i>tree</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brb_005fprobe_007d-function-296"></a>  &lt;<a href="Inserting-into-an-RB-Tree.html#198"><i>rb_probe</i><!-- /@w -->() local variables 198</a>&gt;
+
+  &lt;<a href="Inserting-an-RB-Node-Step-1-_002d-Search.html#199">Step 1: Search RB tree for insertion point 199</a>&gt;
+  &lt;<a href="Inserting-an-RB-Node-Step-2-_002d-Insert.html#200">Step 2: Insert RB node 200</a>&gt;
+  &lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#201">Step 3: Rebalance after RB insertion 201</a>&gt;
+
+  <b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>rb_data</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Operations-in-an-RB-Tree.html#196">196</a>.</small>
+
+   <p><a name="index-_0040w_007b_0040i_007brb_005fprobe_007d_007d_0028_0029-local-variables-297"></a>
+<pre class="format"><a href="_7crb_probe_28_29_7c_local_variables.c.txt">198</a>. &lt;<a name="198" href="_7crb_probe_28_29_7c_local_variables.c.txt"><i>rb_probe</i><!-- /@w -->() local variables 198</a>&gt; =
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>pa</i><!-- /@w -->[<tt>RB_MAX_HEIGHT</tt><!-- /@w -->]; /* Nodes on stack. */
+<b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>da</i><!-- /@w -->[<tt>RB_MAX_HEIGHT</tt><!-- /@w -->];   /* Directions moved from stack nodes. */
+<b>int</b><!-- /@w --> <i>k</i><!-- /@w -->;                             /* Stack height. */
+
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>p</i><!-- /@w -->; /* Traverses tree looking for insertion point. */
+<b>struct</b><!-- /@w --> <b>rb_node</b> *<i>n</i><!-- /@w -->; /* Newly inserted node. */
+
+<i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Root-Insertion-in-a-BST.html#33">33</a>, <a href="Inserting-into-an-RB-Tree.html#197">197</a>, and <a href="Initial-Black-Insertion-in-an-RB-Tree.html#210">210</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 14.3;
+[<a href="References.html#Sedgewick%201998">Sedgewick 1998</a>], program 13.6.
+
+<ul class="menu">
+<li><a accesskey="1" href="Inserting-an-RB-Node-Step-1-_002d-Search.html">Inserting an RB Node Step 1 - Search</a>
+<li><a accesskey="2" href="Inserting-an-RB-Node-Step-2-_002d-Insert.html">Inserting an RB Node Step 2 - Insert</a>
+<li><a accesskey="3" href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html">Inserting an RB Node Step 3 - Rebalance</a>
+<li><a accesskey="4" href="RB-Insertion-Symmetric-Case.html">RB Insertion Symmetric Case</a>
+<li><a accesskey="5" href="Initial-Black-Insertion-in-an-RB-Tree.html">Initial Black Insertion in an RB Tree</a>
+</ul>
+
+   </body></html>
+

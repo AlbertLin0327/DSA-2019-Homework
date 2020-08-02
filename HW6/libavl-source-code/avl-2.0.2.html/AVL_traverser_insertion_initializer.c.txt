@@ -1,0 +1,31 @@
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+avl_t_insert (struct avl_traverser *trav, struct avl_table *tree, void *item)
+{
+  void **p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  p = avl_probe (tree, item);
+  if (p != NULL)
+    {
+      trav->avl_table = tree;
+      trav->avl_node =
+        ((struct avl_node *)
+         ((char *) p - offsetof (struct avl_node, avl_data)));
+      trav->avl_generation = tree->avl_generation - 1;
+      return *p;
+    }
+  else
+    {
+      avl_t_init (trav, tree);
+      return NULL;
+    }
+}
+

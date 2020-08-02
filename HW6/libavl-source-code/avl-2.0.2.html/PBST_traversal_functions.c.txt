@@ -1,0 +1,220 @@
+/* Initializes |trav| for use with |tree|
+   and selects the null node. */
+void
+pbst_t_init (struct pbst_traverser *trav, struct pbst_table *tree)
+{
+  trav->pbst_table = tree;
+  trav->pbst_node = NULL;
+}
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the least value,
+   or |NULL| if |tree| is empty. */
+void *
+pbst_t_first (struct pbst_traverser *trav, struct pbst_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->pbst_table = tree;
+  trav->pbst_node = tree->pbst_root;
+  if (trav->pbst_node != NULL)
+    {
+      while (trav->pbst_node->pbst_link[0] != NULL)
+        trav->pbst_node = trav->pbst_node->pbst_link[0];
+      return trav->pbst_node->pbst_data;
+    }
+  else
+    return NULL;
+}
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the greatest value,
+   or |NULL| if |tree| is empty. */
+void *
+pbst_t_last (struct pbst_traverser *trav, struct pbst_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->pbst_table = tree;
+  trav->pbst_node = tree->pbst_root;
+  if (trav->pbst_node != NULL)
+    {
+      while (trav->pbst_node->pbst_link[1] != NULL)
+        trav->pbst_node = trav->pbst_node->pbst_link[1];
+      return trav->pbst_node->pbst_data;
+    }
+  else
+    return NULL;
+}
+
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+pbst_t_find (struct pbst_traverser *trav, struct pbst_table *tree, void *item)
+{
+  struct pbst_node *p;
+  int dir;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->pbst_table = tree;
+  for (p = tree->pbst_root; p != NULL; p = p->pbst_link[dir])
+    {
+      int cmp = tree->pbst_compare (item, p->pbst_data, tree->pbst_param);
+      if (cmp == 0)
+        {
+          trav->pbst_node = p;
+          return p->pbst_data;
+        }
+
+      dir = cmp > 0;
+    }
+
+  trav->pbst_node = NULL;
+  return NULL;
+}
+
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+pbst_t_insert (struct pbst_traverser *trav, struct pbst_table *tree,
+               void *item)
+{
+  struct pbst_node *p, *q; /* Current node in search and its parent. */
+  int dir;                 /* Side of |q| on which |p| is located. */
+  struct pbst_node *n;     /* Newly inserted node. */
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->pbst_table = tree;
+  for (q = NULL, p = tree->pbst_root; p != NULL; q = p, p = p->pbst_link[dir])
+    {
+      int cmp = tree->pbst_compare (item, p->pbst_data, tree->pbst_param);
+      if (cmp == 0)
+        {
+          trav->pbst_node = p;
+          return p->pbst_data;
+        }
+      dir = cmp > 0;
+    }
+
+  trav->pbst_node = n =
+    tree->pbst_alloc->libavl_malloc (tree->pbst_alloc, sizeof *p);
+  if (n == NULL)
+    return NULL;
+
+  tree->pbst_count++;
+  n->pbst_link[0] = n->pbst_link[1] = NULL;
+  n->pbst_parent = q;
+  n->pbst_data = item;
+  if (q != NULL)
+    q->pbst_link[dir] = n;
+  else
+    tree->pbst_root = n;
+
+  return item;
+}
+
+/* Initializes |trav| to have the same current node as |src|. */
+void *
+pbst_t_copy (struct pbst_traverser *trav, const struct pbst_traverser *src)
+{
+  assert (trav != NULL && src != NULL);
+
+  trav->pbst_table = src->pbst_table;
+  trav->pbst_node = src->pbst_node;
+
+  return trav->pbst_node != NULL ? trav->pbst_node->pbst_data : NULL;
+}
+
+/* Returns the next data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+pbst_t_next (struct pbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->pbst_node == NULL)
+    return pbst_t_first (trav, trav->pbst_table);
+  else if (trav->pbst_node->pbst_link[1] == NULL)
+    {
+      struct pbst_node *q, *p; /* Current node and its child. */
+      for (p = trav->pbst_node, q = p->pbst_parent; ;
+           p = q, q = q->pbst_parent)
+        if (q == NULL || p == q->pbst_link[0])
+          {
+            trav->pbst_node = q;
+            return trav->pbst_node != NULL ? trav->pbst_node->pbst_data : NULL;
+          }
+    }
+  else
+    {
+      trav->pbst_node = trav->pbst_node->pbst_link[1];
+      while (trav->pbst_node->pbst_link[0] != NULL)
+        trav->pbst_node = trav->pbst_node->pbst_link[0];
+      return trav->pbst_node->pbst_data;
+    }
+}
+
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+pbst_t_prev (struct pbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->pbst_node == NULL)
+    return pbst_t_last (trav, trav->pbst_table);
+  else if (trav->pbst_node->pbst_link[0] == NULL)
+    {
+      struct pbst_node *q, *p; /* Current node and its child. */
+      for (p = trav->pbst_node, q = p->pbst_parent; ;
+           p = q, q = q->pbst_parent)
+        if (q == NULL || p == q->pbst_link[1])
+          {
+            trav->pbst_node = q;
+            return trav->pbst_node != NULL ? trav->pbst_node->pbst_data : NULL;
+          }
+    }
+  else
+    {
+      trav->pbst_node = trav->pbst_node->pbst_link[0];
+      while (trav->pbst_node->pbst_link[1] != NULL)
+        trav->pbst_node = trav->pbst_node->pbst_link[1];
+      return trav->pbst_node->pbst_data;
+    }
+}
+
+/* Returns |trav|'s current item. */
+void *
+pbst_t_cur (struct pbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  return trav->pbst_node != NULL ? trav->pbst_node->pbst_data : NULL;
+}
+
+/* Replaces the current item in |trav| by |new| and returns the item replaced.
+   |trav| must not have the null item selected.
+   The new item must not upset the ordering of the tree. */
+void *
+pbst_t_replace (struct pbst_traverser *trav, void *new)
+{
+  void *old;
+
+  assert (trav != NULL && trav->pbst_node != NULL && new != NULL);
+  old = trav->pbst_node->pbst_data;
+  trav->pbst_node->pbst_data = new;
+  return old;
+}
+

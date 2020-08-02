@@ -1,0 +1,17 @@
+void
+walk (struct bst_table *tree, bst_item_func *action, void *param)
+{
+  void
+  traverse_recursive (struct bst_node *node)
+  {
+    if (node != NULL)
+      {
+        traverse_recursive (node->bst_link[0]);
+        action (node->bst_data, param);
+        traverse_recursive (node->bst_link[1]);
+      }
+  }
+
+  assert (tree != NULL && action != NULL);
+  traverse_recursive (tree->bst_root);
+}

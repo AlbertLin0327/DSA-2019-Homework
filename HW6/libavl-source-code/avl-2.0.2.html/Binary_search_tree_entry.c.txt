@@ -1,0 +1,8 @@
+/* One entry in a binary search tree stored in an array. */
+struct binary_tree_entry
+  {
+    int value;          /* This item in the binary search tree. */
+    int smaller;        /* Array index of next item for smaller targets. */
+    int larger;         /* Array index of next item for larger targets. */
+  };
+

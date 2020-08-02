@@ -1,0 +1,10 @@
+/* Recursively verify tree structure. */
+size_t count;
+
+recurse_verify_tree (tree->bst_root, &okay, &count, 0, INT_MAX);
+if (count != n)
+  {
+    printf (" Tree has %lu nodes, but should have %lu.\n",
+            (unsigned long) count, (unsigned long) n);
+    okay = 0;
+  }

@@ -1,0 +1,20 @@
+/* Choose and return an initial random seed based on the current time.
+   Based on code by Lawrence Kirby <fred@genesis.demon.co.uk>. */
+unsigned
+time_seed (void)
+{
+  time_t timeval;        /* Current time. */
+  unsigned char *ptr;        /* Type punned pointed into timeval. */
+  unsigned seed;        /* Generated seed. */
+  size_t i;
+
+  timeval = time (NULL);
+  ptr = (unsigned char *) &timeval;
+
+  seed = 0;
+  for (i = 0; i < sizeof timeval; i++)
+    seed = seed * (UCHAR_MAX + 2u) + ptr[i];
+
+  return seed;
+}
+

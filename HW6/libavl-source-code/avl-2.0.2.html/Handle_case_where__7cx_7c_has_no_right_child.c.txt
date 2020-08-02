@@ -1,0 +1,14 @@
+struct bst_node *y;
+
+do
+  {
+    if (trav->bst_height == 0)
+      {
+        trav->bst_node = NULL;
+        return NULL;
+      }
+
+    y = x;
+    x = trav->bst_stack[--trav->bst_height];
+  }
+while (y == x->bst_link[1]);

@@ -1,0 +1,10 @@
+static void
+bst_destroy_recursive (struct bst_node *node)
+{
+  if (node == NULL)
+    return;
+
+  bst_destroy_recursive (node->bst_link[0]);
+  bst_destroy_recursive (node->bst_link[1]);
+  free (node);
+}

@@ -1,0 +1,61 @@
+if (p->rtavl_link[0] == NULL)
+  {
+    if (p->rtavl_rtag == RTAVL_CHILD)
+      {
+        pa[k - 1]->rtavl_link[da[k - 1]] = p->rtavl_link[1];
+      }
+    else
+      {
+        pa[k - 1]->rtavl_link[da[k - 1]] = p->rtavl_link[da[k - 1]];
+        if (da[k - 1] == 1)
+          pa[k - 1]->rtavl_rtag = RTAVL_THREAD;
+      }
+  }
+else
+  {
+    struct rtavl_node *r = p->rtavl_link[0];
+    if (r->rtavl_rtag == RTAVL_THREAD)
+      {
+        r->rtavl_link[1] = p->rtavl_link[1];
+        r->rtavl_rtag = p->rtavl_rtag;
+        r->rtavl_balance = p->rtavl_balance;
+        pa[k - 1]->rtavl_link[da[k - 1]] = r;
+        da[k] = 0;
+        pa[k++] = r;
+      }
+    else
+      {
+        struct rtavl_node *s;
+        int j = k++;
+
+        for (;;)
+          {
+            da[k] = 1;
+            pa[k++] = r;
+            s = r->rtavl_link[1];
+            if (s->rtavl_rtag == RTAVL_THREAD)
+              break;
+
+            r = s;
+          }
+
+        da[j] = 0;
+        pa[j] = pa[j - 1]->rtavl_link[da[j - 1]] = s;
+
+        if (s->rtavl_link[0] != NULL)
+          r->rtavl_link[1] = s->rtavl_link[0];
+        else
+          {
+            r->rtavl_rtag = RTAVL_THREAD;
+            r->rtavl_link[1] = s;
+          }
+
+        s->rtavl_balance = p->rtavl_balance;
+        s->rtavl_link[0] = p->rtavl_link[0];
+        s->rtavl_link[1] = p->rtavl_link[1];
+        s->rtavl_rtag = p->rtavl_rtag;
+      }
+  }
+
+tree->rtavl_alloc->libavl_free (tree->rtavl_alloc, p);
+

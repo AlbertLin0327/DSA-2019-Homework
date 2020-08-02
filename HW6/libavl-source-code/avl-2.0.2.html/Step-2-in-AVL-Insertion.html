@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>Step 2 in AVL Insertion - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Step-1-in-AVL-Insertion.html" title="5.4.1 Step 1: Search">
+<link rel=Next href="Step-3-in-AVL-Insertion.html" title="5.4.3 Step 3: Update Balance Factors">
+<link rel=Parent href="Inserting-into-an-AVL-Tree.html" title="5.4 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Step-2-in-AVL-Insertion">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>5.4.2 Step 2: Insert</b></big></td>
+<td align=right>
+<a href="index.html#Step-2-in-AVL-Insertion.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Step-1-in-AVL-Insertion.html" title="Skip Back: 5.4.1 Step 1: Search"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Step-3-in-AVL-Insertion.html" title="Skip Forward: 5.4.3 Step 3: Update Balance Factors"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Step-1-in-AVL-Insertion.html" title="Prev: 5.4.1 Step 1: Search"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-an-AVL-Tree.html" title="Up: 5.4 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Step-3-in-AVL-Insertion.html" title="Next: 5.4.3 Step 3: Update Balance Factors"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Following the search loop, <i>q</i><!-- /@w --> is the last non-null node examined, so
+it is the parent of the node to be inserted.  The code below creates
+and initializes a new node as a child of <i>q</i><!-- /@w --> on side <i>dir</i><!-- /@w -->, and stores
+a pointer to it into <i>n</i><!-- /@w -->.  Compare this code for insertion to that
+within &lt;<a href="Inserting-into-a-BST.html#32">BST item insertion function 32</a>&gt;.
+
+   <p><a name="index-insert-AVL-node-231"></a>
+<pre class="format"><a href="Step_2_3a_Insert_AVL_node.c.txt">149</a>. &lt;<a name="149" href="Step_2_3a_Insert_AVL_node.c.txt">Step 2: Insert AVL node 149</a>&gt; =
+<i>n</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tree</i><!-- /@w -->-&gt;<i>avl_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>avl_alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>n</i><!-- /@w -->);
+<b>if</b><!-- /@w --> (<i>n</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+  <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+<i>tree</i><!-- /@w -->-&gt;<i>avl_count</i><!-- /@w -->++;
+<i>n</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w --> = <i>item</i><!-- /@w -->;
+<i>n</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>n</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+<i>n</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> = 0;
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+  <b>return</b><!-- /@w --> &amp;<i>n</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-an-AVL-Tree.html#146">146</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->How can <i>y</i><!-- /@w --> be <tt>NULL</tt><!-- /@w -->?  Why is this special-cased? 
+[<a href="Answers-for-Chapter-5.html#5%2d4%2d2%231">answer</a>]
+
+   </body></html>
+

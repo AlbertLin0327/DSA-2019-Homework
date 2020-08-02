@@ -1,0 +1,205 @@
+/* Initializes |trav| for use with |tree|
+   and selects the null node. */
+void
+pavl_t_init (struct pavl_traverser *trav, struct pavl_table *tree)
+{
+  trav->pavl_table = tree;
+  trav->pavl_node = NULL;
+}
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the least value,
+   or |NULL| if |tree| is empty. */
+void *
+pavl_t_first (struct pavl_traverser *trav, struct pavl_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->pavl_table = tree;
+  trav->pavl_node = tree->pavl_root;
+  if (trav->pavl_node != NULL)
+    {
+      while (trav->pavl_node->pavl_link[0] != NULL)
+        trav->pavl_node = trav->pavl_node->pavl_link[0];
+      return trav->pavl_node->pavl_data;
+    }
+  else
+    return NULL;
+}
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the greatest value,
+   or |NULL| if |tree| is empty. */
+void *
+pavl_t_last (struct pavl_traverser *trav, struct pavl_table *tree)
+{
+  assert (tree != NULL && trav != NULL);
+
+  trav->pavl_table = tree;
+  trav->pavl_node = tree->pavl_root;
+  if (trav->pavl_node != NULL)
+    {
+      while (trav->pavl_node->pavl_link[1] != NULL)
+        trav->pavl_node = trav->pavl_node->pavl_link[1];
+      return trav->pavl_node->pavl_data;
+    }
+  else
+    return NULL;
+}
+
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+pavl_t_find (struct pavl_traverser *trav, struct pavl_table *tree, void *item)
+{
+  struct pavl_node *p;
+  int dir;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->pavl_table = tree;
+  for (p = tree->pavl_root; p != NULL; p = p->pavl_link[dir])
+    {
+      int cmp = tree->pavl_compare (item, p->pavl_data, tree->pavl_param);
+      if (cmp == 0)
+        {
+          trav->pavl_node = p;
+          return p->pavl_data;
+        }
+
+      dir = cmp > 0;
+    }
+
+  trav->pavl_node = NULL;
+  return NULL;
+}
+
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+pavl_t_insert (struct pavl_traverser *trav,
+               struct pavl_table *tree, void *item)
+{
+  void **p;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  p = pavl_probe (tree, item);
+  if (p != NULL)
+    {
+      trav->pavl_table = tree;
+      trav->pavl_node =
+        ((struct pavl_node *)
+         ((char *) p - offsetof (struct pavl_node, pavl_data)));
+      return *p;
+    }
+  else
+    {
+      pavl_t_init (trav, tree);
+      return NULL;
+    }
+}
+
+/* Initializes |trav| to have the same current node as |src|. */
+void *
+pavl_t_copy (struct pavl_traverser *trav, const struct pavl_traverser *src)
+{
+  assert (trav != NULL && src != NULL);
+
+  trav->pavl_table = src->pavl_table;
+  trav->pavl_node = src->pavl_node;
+
+  return trav->pavl_node != NULL ? trav->pavl_node->pavl_data : NULL;
+}
+
+/* Returns the next data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+pavl_t_next (struct pavl_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->pavl_node == NULL)
+    return pavl_t_first (trav, trav->pavl_table);
+  else if (trav->pavl_node->pavl_link[1] == NULL)
+    {
+      struct pavl_node *q, *p; /* Current node and its child. */
+      for (p = trav->pavl_node, q = p->pavl_parent; ;
+           p = q, q = q->pavl_parent)
+        if (q == NULL || p == q->pavl_link[0])
+          {
+            trav->pavl_node = q;
+            return trav->pavl_node != NULL ? trav->pavl_node->pavl_data : NULL;
+          }
+    }
+  else
+    {
+      trav->pavl_node = trav->pavl_node->pavl_link[1];
+      while (trav->pavl_node->pavl_link[0] != NULL)
+        trav->pavl_node = trav->pavl_node->pavl_link[0];
+      return trav->pavl_node->pavl_data;
+    }
+}
+
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+pavl_t_prev (struct pavl_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->pavl_node == NULL)
+    return pavl_t_last (trav, trav->pavl_table);
+  else if (trav->pavl_node->pavl_link[0] == NULL)
+    {
+      struct pavl_node *q, *p; /* Current node and its child. */
+      for (p = trav->pavl_node, q = p->pavl_parent; ;
+           p = q, q = q->pavl_parent)
+        if (q == NULL || p == q->pavl_link[1])
+          {
+            trav->pavl_node = q;
+            return trav->pavl_node != NULL ? trav->pavl_node->pavl_data : NULL;
+          }
+    }
+  else
+    {
+      trav->pavl_node = trav->pavl_node->pavl_link[0];
+      while (trav->pavl_node->pavl_link[1] != NULL)
+        trav->pavl_node = trav->pavl_node->pavl_link[1];
+      return trav->pavl_node->pavl_data;
+    }
+}
+
+/* Returns |trav|'s current item. */
+void *
+pavl_t_cur (struct pavl_traverser *trav)
+{
+  assert (trav != NULL);
+
+  return trav->pavl_node != NULL ? trav->pavl_node->pavl_data : NULL;
+}
+
+/* Replaces the current item in |trav| by |new| and returns the item replaced.
+   |trav| must not have the null item selected.
+   The new item must not upset the ordering of the tree. */
+void *
+pavl_t_replace (struct pavl_traverser *trav, void *new)
+{
+  void *old;
+
+  assert (trav != NULL && trav->pavl_node != NULL && new != NULL);
+  old = trav->pavl_node->pavl_data;
+  trav->pavl_node->pavl_data = new;
+  return old;
+}
+

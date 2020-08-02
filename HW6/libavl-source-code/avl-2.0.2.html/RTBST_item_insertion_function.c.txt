@@ -1,0 +1,62 @@
+/* Inserts |item| into |tree| and returns a pointer to |item|'s address.
+   If a duplicate item is found in the tree,
+   returns a pointer to the duplicate without inserting |item|.
+   Returns |NULL| in case of memory allocation failure. */
+void **
+rtbst_probe (struct rtbst_table *tree, void *item)
+{
+  struct rtbst_node *p; /* Current node in search. */
+  int dir;              /* Side of |p| on which to insert the new node. */
+
+  struct rtbst_node *n; /* New node. */
+
+  if (tree->rtbst_root != NULL)
+    for (p = tree->rtbst_root; ; p = p->rtbst_link[dir])
+      {
+        int cmp = tree->rtbst_compare (item, p->rtbst_data, tree->rtbst_param);
+        if (cmp == 0)
+          return &p->rtbst_data;
+        dir = cmp > 0;
+
+        if (dir == 0)
+          {
+            if (p->rtbst_link[0] == NULL)
+              break;
+          }
+        else /* |dir == 1| */
+          {
+            if (p->rtbst_rtag == RTBST_THREAD)
+              break;
+          }
+      }
+  else
+    {
+      p = (struct rtbst_node *) &tree->rtbst_root;
+      dir = 0;
+    }
+
+  n = tree->rtbst_alloc->libavl_malloc (tree->rtbst_alloc, sizeof *n);
+  if (n == NULL)
+    return NULL;
+
+  tree->rtbst_count++;
+  n->rtbst_data = item;
+  n->rtbst_link[0] = NULL;
+  if (dir == 0)
+    {
+      if (tree->rtbst_root != NULL)
+        n->rtbst_link[1] = p;
+      else
+        n->rtbst_link[1] = NULL;
+    }
+  else /* |dir == 1| */
+    {
+      p->rtbst_rtag = RTBST_CHILD;
+      n->rtbst_link[1] = p->rtbst_link[1];
+    }
+  n->rtbst_rtag = RTBST_THREAD;
+  p->rtbst_link[dir] = n;
+
+  return &n->rtbst_data;
+}
+

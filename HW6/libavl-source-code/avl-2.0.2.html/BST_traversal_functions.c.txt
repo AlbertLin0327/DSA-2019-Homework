@@ -1,0 +1,369 @@
+/* Refreshes the stack of parent pointers in |trav|
+   and updates its generation number. */
+static void
+trav_refresh (struct bst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  trav->bst_generation = trav->bst_table->bst_generation;
+
+  if (trav->bst_node != NULL)
+    {
+      bst_comparison_func *cmp = trav->bst_table->bst_compare;
+      void *param = trav->bst_table->bst_param;
+      struct bst_node *node = trav->bst_node;
+      struct bst_node *i;
+
+      trav->bst_height = 0;
+      for (i = trav->bst_table->bst_root; i != node; )
+        {
+          assert (trav->bst_height < BST_MAX_HEIGHT);
+          assert (i != NULL);
+
+          trav->bst_stack[trav->bst_height++] = i;
+          i = i->bst_link[cmp (node->bst_data, i->bst_data, param) > 0];
+        }
+    }
+}
+
+/* Initializes |trav| for use with |tree|
+   and selects the null node. */
+void
+bst_t_init (struct bst_traverser *trav, struct bst_table *tree)
+{
+  trav->bst_table = tree;
+  trav->bst_node = NULL;
+  trav->bst_height = 0;
+  trav->bst_generation = tree->bst_generation;
+}
+
+/* Initializes |trav| for |tree|
+   and selects and returns a pointer to its least-valued item.
+   Returns |NULL| if |tree| contains no nodes. */
+void *
+bst_t_first (struct bst_traverser *trav, struct bst_table *tree)
+{
+  struct bst_node *x;
+
+  assert (tree != NULL && trav != NULL);
+
+  trav->bst_table = tree;
+  trav->bst_height = 0;
+  trav->bst_generation = tree->bst_generation;
+
+  x = tree->bst_root;
+  if (x != NULL)
+    while (x->bst_link[0] != NULL)
+      {
+        if (trav->bst_height >= BST_MAX_HEIGHT)
+          {
+            bst_balance (tree);
+            return bst_t_first (trav, tree);
+          }
+
+        trav->bst_stack[trav->bst_height++] = x;
+        x = x->bst_link[0];
+      }
+  trav->bst_node = x;
+
+  return x != NULL ? x->bst_data : NULL;
+}
+
+/* Initializes |trav| for |tree|
+   and selects and returns a pointer to its greatest-valued item.
+   Returns |NULL| if |tree| contains no nodes. */
+void *
+bst_t_last (struct bst_traverser *trav, struct bst_table *tree)
+{
+  struct bst_node *x;
+
+  assert (tree != NULL && trav != NULL);
+
+  trav->bst_table = tree;
+  trav->bst_height = 0;
+  trav->bst_generation = tree->bst_generation;
+
+  x = tree->bst_root;
+  if (x != NULL)
+    while (x->bst_link[1] != NULL)
+      {
+        if (trav->bst_height >= BST_MAX_HEIGHT)
+          {
+            bst_balance (tree);
+            return bst_t_last (trav, tree);
+          }
+
+        trav->bst_stack[trav->bst_height++] = x;
+        x = x->bst_link[1];
+      }
+  trav->bst_node = x;
+
+  return x != NULL ? x->bst_data : NULL;
+}
+
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+bst_t_find (struct bst_traverser *trav, struct bst_table *tree, void *item)
+{
+  struct bst_node *p, *q;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+  trav->bst_table = tree;
+  trav->bst_height = 0;
+  trav->bst_generation = tree->bst_generation;
+  for (p = tree->bst_root; p != NULL; p = q)
+    {
+      int cmp = tree->bst_compare (item, p->bst_data, tree->bst_param);
+
+      if (cmp < 0)
+        q = p->bst_link[0];
+      else if (cmp > 0)
+        q = p->bst_link[1];
+      else /* |cmp == 0| */
+        {
+          trav->bst_node = p;
+          return p->bst_data;
+        }
+
+      if (trav->bst_height >= BST_MAX_HEIGHT)
+        {
+          bst_balance (trav->bst_table);
+          return bst_t_find (trav, tree, item);
+        }
+      trav->bst_stack[trav->bst_height++] = p;
+    }
+
+  trav->bst_height = 0;
+  trav->bst_node = NULL;
+  return NULL;
+}
+
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+bst_t_insert (struct bst_traverser *trav, struct bst_table *tree, void *item)
+{
+  struct bst_node **q;
+
+  assert (tree != NULL && item != NULL);
+
+  trav->bst_table = tree;
+  trav->bst_height = 0;
+
+  q = &tree->bst_root;
+  while (*q != NULL)
+    {
+      int cmp = tree->bst_compare (item, (*q)->bst_data, tree->bst_param);
+      if (cmp == 0)
+        {
+          trav->bst_node = *q;
+          trav->bst_generation = tree->bst_generation;
+          return (*q)->bst_data;
+        }
+
+      if (trav->bst_height >= BST_MAX_HEIGHT)
+        {
+          bst_balance (tree);
+          return bst_t_insert (trav, tree, item);
+        }
+      trav->bst_stack[trav->bst_height++] = *q;
+
+      q = &(*q)->bst_link[cmp > 0];
+    }
+
+  trav->bst_node = *q = tree->bst_alloc->libavl_malloc (tree->bst_alloc,
+                                                        sizeof **q);
+  if (*q == NULL)
+    {
+      trav->bst_node = NULL;
+      trav->bst_generation = tree->bst_generation;
+      return NULL;
+    }
+
+  (*q)->bst_link[0] = (*q)->bst_link[1] = NULL;
+  (*q)->bst_data = item;
+  tree->bst_count++;
+  trav->bst_generation = tree->bst_generation;
+  return (*q)->bst_data;
+}
+
+/* Initializes |trav| to have the same current node as |src|. */
+void *
+bst_t_copy (struct bst_traverser *trav, const struct bst_traverser *src)
+{
+  assert (trav != NULL && src != NULL);
+
+  if (trav != src)
+    {
+      trav->bst_table = src->bst_table;
+      trav->bst_node = src->bst_node;
+      trav->bst_generation = src->bst_generation;
+      if (trav->bst_generation == trav->bst_table->bst_generation)
+        {
+          trav->bst_height = src->bst_height;
+          memcpy (trav->bst_stack, (const void *) src->bst_stack,
+                  sizeof *trav->bst_stack * trav->bst_height);
+        }
+    }
+
+  return trav->bst_node != NULL ? trav->bst_node->bst_data : NULL;
+}
+
+/* Returns the next data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+bst_t_next (struct bst_traverser *trav)
+{
+  struct bst_node *x;
+
+  assert (trav != NULL);
+
+  if (trav->bst_generation != trav->bst_table->bst_generation)
+    trav_refresh (trav);
+
+  x = trav->bst_node;
+  if (x == NULL)
+    {
+      return bst_t_first (trav, trav->bst_table);
+    }
+  else if (x->bst_link[1] != NULL)
+    {
+      if (trav->bst_height >= BST_MAX_HEIGHT)
+        {
+          bst_balance (trav->bst_table);
+          return bst_t_next (trav);
+        }
+
+      trav->bst_stack[trav->bst_height++] = x;
+      x = x->bst_link[1];
+
+      while (x->bst_link[0] != NULL)
+        {
+          if (trav->bst_height >= BST_MAX_HEIGHT)
+            {
+              bst_balance (trav->bst_table);
+              return bst_t_next (trav);
+            }
+
+          trav->bst_stack[trav->bst_height++] = x;
+          x = x->bst_link[0];
+        }
+    }
+  else
+    {
+      struct bst_node *y;
+
+      do
+        {
+          if (trav->bst_height == 0)
+            {
+              trav->bst_node = NULL;
+              return NULL;
+            }
+
+          y = x;
+          x = trav->bst_stack[--trav->bst_height];
+        }
+      while (y == x->bst_link[1]);
+    }
+  trav->bst_node = x;
+
+  return x->bst_data;
+}
+
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+bst_t_prev (struct bst_traverser *trav)
+{
+  struct bst_node *x;
+
+  assert (trav != NULL);
+
+  if (trav->bst_generation != trav->bst_table->bst_generation)
+    trav_refresh (trav);
+
+  x = trav->bst_node;
+  if (x == NULL)
+    {
+      return bst_t_last (trav, trav->bst_table);
+    }
+  else if (x->bst_link[0] != NULL)
+    {
+      if (trav->bst_height >= BST_MAX_HEIGHT)
+        {
+          bst_balance (trav->bst_table);
+          return bst_t_prev (trav);
+        }
+
+      trav->bst_stack[trav->bst_height++] = x;
+      x = x->bst_link[0];
+
+      while (x->bst_link[1] != NULL)
+        {
+          if (trav->bst_height >= BST_MAX_HEIGHT)
+            {
+              bst_balance (trav->bst_table);
+              return bst_t_prev (trav);
+            }
+
+          trav->bst_stack[trav->bst_height++] = x;
+          x = x->bst_link[1];
+        }
+    }
+  else
+    {
+      struct bst_node *y;
+
+      do
+        {
+          if (trav->bst_height == 0)
+            {
+              trav->bst_node = NULL;
+              return NULL;
+            }
+
+          y = x;
+          x = trav->bst_stack[--trav->bst_height];
+        }
+      while (y == x->bst_link[0]);
+    }
+  trav->bst_node = x;
+
+  return x->bst_data;
+}
+
+/* Returns |trav|'s current item. */
+void *
+bst_t_cur (struct bst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  return trav->bst_node != NULL ? trav->bst_node->bst_data : NULL;
+}
+
+/* Replaces the current item in |trav| by |new| and returns the item replaced.
+   |trav| must not have the null item selected.
+   The new item must not upset the ordering of the tree. */
+void *
+bst_t_replace (struct bst_traverser *trav, void *new)
+{
+  void *old;
+
+  assert (trav != NULL && trav->bst_node != NULL && new != NULL);
+  old = trav->bst_node->bst_data;
+  trav->bst_node->bst_data = new;
+  return old;
+}
+

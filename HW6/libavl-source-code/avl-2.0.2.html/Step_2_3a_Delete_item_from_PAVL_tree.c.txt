@@ -1,0 +1,43 @@
+if (p->pavl_link[1] == NULL)
+  {
+    q->pavl_link[dir] = p->pavl_link[0];
+    if (q->pavl_link[dir] != NULL)
+      q->pavl_link[dir]->pavl_parent = p->pavl_parent;
+  }
+else
+  {
+    struct pavl_node *r = p->pavl_link[1];
+    if (r->pavl_link[0] == NULL)
+      {
+        r->pavl_link[0] = p->pavl_link[0];
+        q->pavl_link[dir] = r;
+        r->pavl_parent = p->pavl_parent;
+        if (r->pavl_link[0] != NULL)
+          r->pavl_link[0]->pavl_parent = r;
+        r->pavl_balance = p->pavl_balance;
+        q = r;
+        dir = 1;
+      }
+    else
+      {
+        struct pavl_node *s = r->pavl_link[0];
+        while (s->pavl_link[0] != NULL)
+          s = s->pavl_link[0];
+        r = s->pavl_parent;
+        r->pavl_link[0] = s->pavl_link[1];
+        s->pavl_link[0] = p->pavl_link[0];
+        s->pavl_link[1] = p->pavl_link[1];
+        q->pavl_link[dir] = s;
+        if (s->pavl_link[0] != NULL)
+          s->pavl_link[0]->pavl_parent = s;
+        s->pavl_link[1]->pavl_parent = s;
+        s->pavl_parent = p->pavl_parent;
+        if (r->pavl_link[0] != NULL)
+          r->pavl_link[0]->pavl_parent = r;
+        s->pavl_balance = p->pavl_balance;
+        q = r;
+        dir = 0;
+      }
+  }
+tree->pavl_alloc->libavl_free (tree->pavl_alloc, p);
+

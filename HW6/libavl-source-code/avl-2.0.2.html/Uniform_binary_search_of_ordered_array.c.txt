@@ -1,0 +1,32 @@
+/* Returns the offset within |array[]| of an element equal to |key|,
+   or |-1| if |key| is not in |array[]|.
+   |array[]| must be an array of |n| |int|s sorted in ascending order,
+   with |array[-1]| modifiable. */
+int
+uniform_binary_search (int array[], int n, int key)
+{
+  int i = (n + 1) / 2 - 1;
+  int m = n / 2;
+
+  array[-1] = INT_MIN;
+  for (;;)
+    {
+      if (key < array[i])
+        {
+          if (m == 0)
+            return -1;
+          i -= (m + 1) / 2;
+          m /= 2;
+        }
+      else if (key > array[i])
+        {
+          if (m == 0)
+            return -1;
+          i += (m + 1) / 2;
+          m /= 2;
+        }
+      else
+        return i >= 0 ? i : -1;
+    }
+}
+

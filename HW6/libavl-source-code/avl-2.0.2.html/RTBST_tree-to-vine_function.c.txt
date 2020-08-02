@@ -1,0 +1,33 @@
+static void
+tree_to_vine (struct rtbst_table *tree)
+{
+  struct rtbst_node *p;
+
+  if (tree->rtbst_root == NULL)
+    return;
+
+  p = tree->rtbst_root;
+  while (p->rtbst_link[0] != NULL)
+    p = p->rtbst_link[0];
+
+  for (;;)
+    {
+      struct rtbst_node *q = p->rtbst_link[1];
+      if (p->rtbst_rtag == RTBST_CHILD)
+        {
+          while (q->rtbst_link[0] != NULL)
+            q = q->rtbst_link[0];
+          p->rtbst_rtag = RTBST_THREAD;
+          p->rtbst_link[1] = q;
+        }
+
+      if (q == NULL)
+        break;
+
+      q->rtbst_link[0] = p;
+      p = q;
+    }
+
+  tree->rtbst_root = p;
+}
+

@@ -1,0 +1,3 @@
+pa[k - 1]->rb_color = y->rb_color = RB_BLACK;
+pa[k - 2]->rb_color = RB_RED;
+k -= 2;

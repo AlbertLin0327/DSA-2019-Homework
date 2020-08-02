@@ -1,0 +1,3 @@
+
+/* Special BST functions. */
+void bst_balance (struct bst_table *tree);

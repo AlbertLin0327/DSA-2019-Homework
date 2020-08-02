@@ -1,0 +1,14 @@
+z = (struct avl_node *) &tree->avl_root;
+y = tree->avl_root;
+dir = 0;
+for (q = z, p = y; p != NULL; q = p, p = p->avl_link[dir])
+  {
+    int cmp = tree->avl_compare (item, p->avl_data, tree->avl_param);
+    if (cmp == 0)
+      return &p->avl_data;
+
+    if (p->avl_balance != 0)
+      z = q, y = p, k = 0;
+    da[k++] = dir = cmp > 0;
+  }
+

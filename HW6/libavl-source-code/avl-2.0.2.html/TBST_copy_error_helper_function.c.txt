@@ -1,0 +1,17 @@
+/* Destroys |new| with |tbst_destroy (new, destroy)|,
+   first initializing the right link in |new| that has
+   not yet been initialized. */
+static void
+copy_error_recovery (struct tbst_node *p,
+                     struct tbst_table *new, tbst_item_func *destroy)
+{
+  new->tbst_root = p;
+  if (p != NULL)
+    {
+      while (p->tbst_tag[1] == TBST_CHILD)
+        p = p->tbst_link[1];
+      p->tbst_link[1] = NULL;
+    }
+  tbst_destroy (new, destroy);
+}
+

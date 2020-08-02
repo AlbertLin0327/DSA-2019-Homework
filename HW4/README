@@ -1,0 +1,12 @@
+The first argument of tree_predictor.cpp is the test (prediction) data in the format same as training data, and the output 
+is the accuray of the predictor on the test data.
+For example, 
+	./tree_predictor heart
+
+Usage of the Makefile.ta:
+1. make -f Makefile.ta run_tree FNAME=heart.train EPS=3 :
+   run the decision tree on data heart.train with epsilon = 3.
+2. make -f Makefile.ta predict_tree PNAME=heart.test :
+   make prediction by the decision tree model on data heart.test .
+
+You can play around with different FNAME, PNAME and EPS.

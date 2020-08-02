@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>PAVL Data Types - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Next href="PBST-Rotations.html" title="14.2 Rotations">
+<link rel=Parent href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="PAVL-Data-Types">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>14.1 Data Types</b></big></td>
+<td align=right>
+<a href="index.html#PAVL-Data-Types.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="PBST-Rotations.html" title="Skip Forward: 14.2 Rotations"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="AVL-Trees-with-Parent-Pointers.html" title="Prev: 14 AVL Trees with Parent Pointers"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="AVL-Trees-with-Parent-Pointers.html" title="Up: 14 AVL Trees with Parent Pointers"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="PBST-Rotations.html" title="Next: 14.2 Rotations"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>A PAVL tree node has a parent pointer and an AVL balance field in
+addition to the usual members needed for any binary search tree:
+
+   <p><a name="index-PAVL-node-structure-727"></a>
+<pre class="format"><a href="PAVL_node_structure.c.txt">521</a>. &lt;<a name="521" href="PAVL_node_structure.c.txt">PAVL node structure 521</a>&gt; =
+/* An PAVL tree node. */
+<b>struct</b><!-- /@w --> <b>pavl_node</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007bpavl_005fnode_007d-structure-728"></a>    <b>struct</b><!-- /@w --> <b>pavl_node</b> *<i>pavl_link</i><!-- /@w -->[2]; /* Subtrees. */
+    <b>struct</b><!-- /@w --> <b>pavl_node</b> *<i>pavl_parent</i><!-- /@w -->;  /* Parent node. */
+    <b>void</b><!-- /@w --> *<i>pavl_data</i><!-- /@w -->;                /* Pointer to data. */
+    <b>signed</b><!-- /@w --> <b>char</b><!-- /@w --> <i>pavl_balance</i><!-- /@w -->;       /* Balance factor. */
+  };
+</pre>
+   <p class="noindent"><small>This code is included in <a href="AVL-Trees-with-Parent-Pointers.html#519">519</a>.</small>
+
+   <p>The other data structures are the same as the corresponding ones for
+TBSTs.
+
+   </body></html>
+

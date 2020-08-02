@@ -1,0 +1,9 @@
+/* Check that all the values in |array[]| are in |tree|. */
+size_t i;
+
+for (i = 0; i < n; i++)
+  if (bst_find (tree, &array[i]) == NULL)
+    {
+      printf (" Tree does not contain expected value %d.\n", array[i]);
+      okay = 0;
+    }

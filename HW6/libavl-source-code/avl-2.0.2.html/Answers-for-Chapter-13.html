@@ -1,0 +1,143 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 13 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-11.html" title="Chapter 11">
+<link rel=Next href="Answers-for-Chapter-14.html" title="Chapter 14">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-13">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 13</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-13.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-11.html" title="Skip Back: Chapter 11"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-14.html" title="Skip Forward: Chapter 14"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-11.html" title="Prev: Chapter 11"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-14.html" title="Next: Chapter 14"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 13.4</h4>
+
+<p><a name="13_002d4_00231"></a> <b>1.</b>
+No.  It would work, except for the important special case where <i>q</i><!-- /@w --> is
+the pseudo-root but <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> is <tt>NULL</tt><!-- /@w -->.
+
+<h4 class="subheading">Section 13.7</h4>
+
+<p><a name="13_002d7_00231"></a> <b>1.</b>
+<a name="catalogue_002dentry_002dpbst_002d12"></a>
+<!-- tested 2001/11/20 -->
+<a name="index-PBST-balance-function_002c-with-integrated-parent-updates-986"></a>
+<pre class="format"><a href="PBST_balance_function,_with_integrated_parent_updates.c.txt">679</a>. &lt;<a name="679" href="PBST_balance_function,_with_integrated_parent_updates.c.txt">PBST balance function, with integrated parent updates 679</a>&gt; =
+&lt;<a href="Transforming-a-BST-into-a-Vine.html#89">BST to vine function; bst =&gt; pbst 89</a>&gt;
+&lt;<a href="Answers-for-Chapter-13.html#680">Vine to balanced PBST function, with parent updates 680</a>&gt;
+
+<b>void</b><!-- /@w --> <br><i>pbst_balance</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpbst_005fbalance_007d-function-987"></a>  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>tree_to_vine</i><!-- /@w --> (<i>tree</i><!-- /@w -->);
+  <i>vine_to_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->);
+}
+</pre>
+   <p><a name="catalogue_002dentry_002dpbst_002d13"></a>
+<!-- tested 2002/1/6 -->
+<a name="index-vine-to-balanced-PBST-function_002c-with-parent-updates-988"></a>
+<pre class="format"><a href="Vine_to_balanced_PBST_function,_with_parent_updates.c.txt">680</a>. &lt;<a name="680" href="Vine_to_balanced_PBST_function,_with_parent_updates.c.txt">Vine to balanced PBST function, with parent updates 680</a>&gt; =
+&lt;<a href="Answers-for-Chapter-13.html#682">PBST compression function 682</a>&gt;
+
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>vine_to_tree</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bvine_005fto_005ftree_007d-function-989"></a>  <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>vine</i><!-- /@w -->;      /* Number of nodes in main vine. */
+  <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>leaves</i><!-- /@w -->;    /* Nodes in incomplete bottom level, if any. */
+  <b>int</b><!-- /@w --> <i>height</i><!-- /@w -->;              /* Height of produced balanced tree. */
+  <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>p</i><!-- /@w -->, *<i>q</i><!-- /@w -->; /* Current visited node and its parent. */
+
+  &lt;<a href="Balancing-Implementation.html#91">Calculate <i>leaves</i><!-- /@w -->; bst =&gt; pbst 91</a>&gt;
+  &lt;<a href="Balancing-Implementation.html#92">Reduce vine general case to special case; bst =&gt; pbst 92</a>&gt;
+  &lt;<a href="Balancing-Implementation.html#93">Make special case vine into balanced tree and count height; bst =&gt; pbst 93</a>&gt;
+  &lt;<a href="Answers-for-Chapter-13.html#681">Set parents of main vine 681</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-13.html#679">679</a>.</small>
+
+   <p><a name="index-set-parents-of-main-vine-990"></a>
+<pre class="format"><a href="Set_parents_of_main_vine.c.txt">681</a>. &lt;<a name="681" href="Set_parents_of_main_vine.c.txt">Set parents of main vine 681</a>&gt; =
+<b>for</b><!-- /@w --> (<i>q</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->, <i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>pbst_root</i><!-- /@w -->; <i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->, <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0])
+  <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>q</i><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-13.html#680">680</a>.</small>
+
+   <p><a name="catalogue_002dentry_002dpbst_002d14"></a>
+<a name="index-PBST-compression-function-991"></a>
+<pre class="format"><a href="PBST_compression_function.c.txt">682</a>. &lt;<a name="682" href="PBST_compression_function.c.txt">PBST compression function 682</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>compress</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>root</i><!-- /@w -->, <b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>count</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompress_007d-function-992"></a>  <i>assert</i><!-- /@w --> (<i>root</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>while</b><!-- /@w --> (<i>count</i><!-- /@w -->&ndash;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>red</i><!-- /@w --> = <i>root</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+      <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>black</i><!-- /@w --> = <i>red</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+
+      <i>root</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] = <i>black</i><!-- /@w -->;
+      <i>red</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] = <i>black</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1];
+      <i>black</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] = <i>red</i><!-- /@w -->;
+      <i>red</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w --> = <i>black</i><!-- /@w -->;
+      <b>if</b><!-- /@w --> (<i>red</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+        <i>red</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0]-&gt;<i>pbst_parent</i><!-- /@w --> = <i>red</i><!-- /@w -->;
+      <i>root</i><!-- /@w --> = <i>black</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-13.html#680">680</a>.</small>
+
+   </body></html>
+

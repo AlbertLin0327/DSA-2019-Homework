@@ -1,0 +1,281 @@
+<html lang="en">
+<head>
+<title>Iterative Traversal of a BST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Recursive-Traversal-of-a-BST.html" title="4.9.1 Traversal by Recursion">
+<link rel=Next href="Improving-Convenience.html" title="4.9.2.1 Improving Convenience">
+<link rel=Parent href="Traversing-a-BST.html" title="4.9 Traversal">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Iterative-Traversal-of-a-BST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.9.2 Traversal by Iteration</b></big></td>
+<td align=right>
+<a href="index.html#Iterative-Traversal-of-a-BST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Recursive-Traversal-of-a-BST.html" title="Skip Back: 4.9.1 Traversal by Recursion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Better-Iterative-Traversal.html" title="Skip Forward: 4.9.3 Better Iterative Traversal"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Recursive-Traversal-of-a-BST.html" title="Prev: 4.9.1 Traversal by Recursion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Traversing-a-BST.html" title="Up: 4.9 Traversal"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Improving-Convenience.html" title="Next: 4.9.2.1 Improving Convenience"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The recursive approach of the previous section is one valid way to
+traverse a binary search tree in sorted order.  This method has the
+advantages of being simple and &ldquo;obviously correct&rdquo;.  But it does have
+problems with efficiency, because each call to <i>traverse_recursive</i><!-- /@w -->()
+receives its own duplicate copies of arguments <i>action</i><!-- /@w --> and <i>param</i><!-- /@w -->, and
+with convenience, because writing a new callback function for each
+traversal is unpleasant.  It has other problems, too, as already
+discussed, but these are the ones to be addressed immediately.
+
+   <p>Unfortunately, neither problem can be solved acceptably in C using a
+recursive method, the first because the traversal function has to
+somehow know the action function and the parameter to pass to it, and
+the second because there is simply no way to jump out of and then back
+into recursive calls in C.<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>  Our only option is to use an algorithm that does not
+involve recursion.
+
+   <p>The simplest way to eliminate recursion is by a literal conversion of
+the recursion to iteration.  This is the topic of this section. 
+Later, we will consider a slightly different, and in some ways
+superior, iterative solution.
+
+   <p>Converting recursion into iteration is an interesting problem. 
+There are two main ways to do it:
+
+     <dl>
+<dt><b>tail recursion elimination</b><dd>If a recursive call is the last action taken in a function, then it is
+equivalent to a <b>goto</b><!-- /@w --> back to the beginning of the function, possibly
+after modifying argument values.  (If the function has a return value
+then the recursive call must be a <b>return</b><!-- /@w --> statement returning the value
+received from the nested call.)  This form of recursion is called
+<dfn>tail recursion</dfn> (see <a href="Glossary.html#tail%20recursion">tail recursion</a>).
+
+     <br><dt><b>save-and-restore recursion elimination</b><dd>In effect, a recursive function call saves a copy of argument values and
+local variables, modifies the arguments, then executes a <b>goto</b><!-- /@w --> to the
+beginning of the function.  Accordingly, the return from the nested call
+is equivalent to restoring the saved arguments and local variables, then
+executing a <b>goto</b><!-- /@w --> back to the point where the call was made. 
+</dl>
+
+   <p>We can make use of both of these rules in converting
+<i>traverse_recursive</i><!-- /@w -->() to iterative form.  First, does
+<i>traverse_recursive</i><!-- /@w -->() ever call itself as its last action?  The answer
+is yes, so we can convert that to an assignment plus a <b>goto</b><!-- /@w --> statement:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-iterative-traversal-of-BST_002c-take-1-72"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_take_1.c.txt">51</a>. &lt;<a name="51" href="Iterative_traversal_of_BST,_take_1.c.txt">Iterative traversal of BST, take 1 51</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>traverse_iterative</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btraverse_005fiterative_007d-function-73"></a><i>start</i><!-- /@w -->:
+  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>traverse_iterative</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0], <i>action</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>action</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+      <b>goto</b><!-- /@w --> <i>start</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p>Sensible programmers are not fond of <b>goto</b><!-- /@w -->.  Fortunately, it is easy to
+eliminate by rephrasing in terms of a <b>while</b><!-- /@w --> loop:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-iterative-traversal-of-BST_002c-take-2-74"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_take_2.c.txt">52</a>. &lt;<a name="52" href="Iterative_traversal_of_BST,_take_2.c.txt">Iterative traversal of BST, take 2 52</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>traverse_iterative</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btraverse_005fiterative_007d-function-75"></a>  <b>while</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>traverse_iterative</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0], <i>action</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>action</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+    }
+}
+</pre>
+   <p>This still leaves another recursive call, one that is not tail
+recursive.  This one must be eliminated by saving and restoring
+values.  A stack is ideal for this purpose.  For now, we use a stack
+of fixed size <tt>BST_MAX_HEIGHT</tt><!-- /@w --> and deal with stack overflow by
+aborting.  Later, we'll handle overflow more gracefully.  Here's the
+code:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-iterative-traversal-of-BST_002c-take-3-76"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_take_3.c.txt">53</a>. &lt;<a name="53" href="Iterative_traversal_of_BST,_take_3.c.txt">Iterative traversal of BST, take 3 53</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>traverse_iterative</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btraverse_005fiterative_007d-function-77"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>stack</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];
+  <b>size_t</b><!-- /@w --> <i>height</i><!-- /@w --> = 0;
+
+<i>start</i><!-- /@w -->:
+  <b>while</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"tree too deep\n"</tt>);
+          <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+        }
+      <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = <i>node</i><!-- /@w -->;
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+      <b>goto</b><!-- /@w --> <i>start</i><!-- /@w -->;
+
+    <i>resume</i><!-- /@w -->:
+      <i>action</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+    }
+
+  <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>node</i><!-- /@w --> = <i>stack</i><!-- /@w -->[&ndash;<i>height</i><!-- /@w -->];
+      <b>goto</b><!-- /@w --> <i>resume</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p>This code, an ugly mash of statements, is a prime example of why <b>goto</b><!-- /@w -->
+statements are discouraged, but its relationship with the earlier code
+is clear.  To make it acceptable for real use, we must rephrase it. 
+First, we can eliminate label <i>resume</i><!-- /@w --> by recognizing that it can only
+be reached from the corresponding <b>goto</b><!-- /@w --> statement, then moving its code
+appropriately:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-iterative-traversal-of-BST_002c-take-4-78"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_take_4.c.txt">54</a>. &lt;<a name="54" href="Iterative_traversal_of_BST,_take_4.c.txt">Iterative traversal of BST, take 4 54</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>traverse_iterative</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btraverse_005fiterative_007d-function-79"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>stack</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];
+  <b>size_t</b><!-- /@w --> <i>height</i><!-- /@w --> = 0;
+
+<i>start</i><!-- /@w -->:
+  <b>while</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"tree too deep\n"</tt>);
+          <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+        }
+      <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = <i>node</i><!-- /@w -->;
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+      <b>goto</b><!-- /@w --> <i>start</i><!-- /@w -->;
+    }
+
+  <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt; 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>node</i><!-- /@w --> = <i>stack</i><!-- /@w -->[&ndash;<i>height</i><!-- /@w -->];
+      <i>action</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+      <b>goto</b><!-- /@w --> <i>start</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p>The first remaining <b>goto</b><!-- /@w --> statement can be eliminated without any other
+change, because it is redundant; the second, by enclosing the whole
+function body in an &ldquo;infinite loop&rdquo;:
+
+   <p><a name="catalogue_002dentry_002dbst_002d7"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-iterative-traversal-of-BST_002c-take-5-80"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_take_5.c.txt">55</a>. &lt;<a name="55" href="Iterative_traversal_of_BST,_take_5.c.txt">Iterative traversal of BST, take 5 55</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>traverse_iterative</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->, <b>bst_item_func</b><!-- /@w --> *<i>action</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btraverse_005fiterative_007d-function-81"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>stack</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];
+  <b>size_t</b><!-- /@w --> <i>height</i><!-- /@w --> = 0;
+
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>while</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"tree too deep\n"</tt>);
+              <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+            }
+          <i>stack</i><!-- /@w -->[<i>height</i><!-- /@w -->++] = <i>node</i><!-- /@w -->;
+          <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+        }
+
+      <b>if</b><!-- /@w --> (<i>height</i><!-- /@w --> == 0)
+        <b>break</b><!-- /@w -->;
+
+      <i>node</i><!-- /@w --> = <i>stack</i><!-- /@w -->[&ndash;<i>height</i><!-- /@w -->];
+      <i>action</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->, <i>param</i><!-- /@w -->);
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+    }
+}
+</pre>
+   <p>This initial iterative version takes care of the efficiency problem.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Function <i>traverse_iterative</i><!-- /@w -->() relies on <i>stack</i><!-- /@w -->[], a stack of nodes
+yet to be visited, which as allocated can hold up to <tt>BST_MAX_HEIGHT</tt><!-- /@w -->
+nodes.  Consider the following questions concerning <i>stack</i><!-- /@w -->[]:
+
+     <ol type=a start=1>
+<li>What is the maximum height this stack will attain in traversing a binary
+search tree containing <i>n</i><!-- /@w --> nodes, if the binary tree has minimum
+possible height?
+
+     <li>What is the maximum height this stack can attain in traversing any
+binary tree of <i>n</i><!-- /@w --> nodes?  The minimum height?
+
+     <li>Under what circumstances is it acceptable to use a fixed-size stack as
+in the example code?
+
+     <li>Rewrite <i>traverse_iterative</i><!-- /@w -->() to dynamically expand <i>stack</i><!-- /@w -->[] in case
+of overflow.
+
+     <li>Does <i>traverse_recursive</i><!-- /@w -->() also have potential for running out of
+&ldquo;stack&rdquo; or &ldquo;memory&rdquo;?  If so, more or less than
+<i>traverse_iterative</i><!-- /@w -->() as modified by the previous part?
+        </ol>
+[<a href="Answers-for-Chapter-4.html#4%2d9%2d2%231">answer</a>]
+
+<ul class="menu">
+<li><a accesskey="1" href="Improving-Convenience.html">Improving Convenience</a>
+</ul>
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> This is possible in some other
+languages, such as Scheme, that support &ldquo;coroutines&rdquo; as well as
+subroutines.</p>
+
+   <p><hr></div>
+
+   </body></html>
+

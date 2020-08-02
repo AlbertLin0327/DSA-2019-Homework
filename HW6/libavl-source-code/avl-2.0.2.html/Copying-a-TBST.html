@@ -1,0 +1,277 @@
+<html lang="en">
+<head>
+<title>Copying a TBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="TBST-Traverser-Retreating.html" title="7.8.8 Backing Up to the Previous Node">
+<link rel=Next href="Destroying-a-TBST.html" title="7.10 Destruction">
+<link rel=Parent href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Copying-a-TBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>7.9 Copying</b></big></td>
+<td align=right>
+<a href="index.html#Copying-a-TBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Traversing-a-TBST.html" title="Skip Back: 7.8 Traversal"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Destroying-a-TBST.html" title="Skip Forward: 7.10 Destruction"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="TBST-Traverser-Retreating.html" title="Prev: 7.8.8 Backing Up to the Previous Node"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Threaded-Binary-Search-Trees.html" title="Up: 7 Threaded Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Destroying-a-TBST.html" title="Next: 7.10 Destruction"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>We can use essentially the same algorithm to copy threaded BSTs as
+unthreaded (see &lt;<a href="Handling-Errors-in-Iterative-BST-Copying.html#83">BST copy function 83</a>&gt;).  Some modifications are
+necessary, of course.  The most obvious change is that the threads
+must be set up.  This is not hard.  We can do it the same way that
+<i>tbst_probe</i><!-- /@w -->() does.
+
+   <p>Less obvious is the way to get rid of the stack.  In <i>bst_copy</i><!-- /@w -->(), the
+stack was used to keep track of as yet incompletely processed parents of
+the current node.  When we came back to one of these nodes, we did the
+actual copy of the node data, then visited the node's right subtree, if
+non-empty.
+
+   <p>In a threaded tree, we can replace the use of the stack by the use of
+threads.  Instead of popping an item off the stack when we can't move
+down in the tree any further, we follow the node's right thread.  This
+brings us up to an ancestor (parent, grandparent, <small class="dots">...</small>) of the node,
+which we can then deal with in the same way as before.
+
+   <p>This diagram shows the threads that would be followed to find parents in
+copying a couple of different threaded binary trees.  Of course, the
+TBSTs would have complete sets of threads, but only the ones that are
+followed are shown:
+
+<div align="center"><a href="tbstcopy.txt"><img border=0 src="tbstcopy.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Why does following the right thread from a node bring us to one of the
+node's ancestors?  Consider the algorithm for finding the successor of
+a node with no right child, described earlier (see <a href="Better-Iterative-Traversal.html">Better Iterative Traversal</a>).  This algorithm just moves up the tree from a node to its
+parent, grandparent, etc., guaranteeing that the successor will be a
+ancestor of the original node.
+
+   <p>How do we know that following the right thread won't take us too far up
+the tree and skip copying some subtree?  Because we only move up to the
+right one time using that same algorithm.  When we move up to the left,
+we're going back to some binary tree whose right subtree we've already
+dealt with (we are currently in the right subtree of that binary tree,
+so of course we've dealt with it).
+
+   <p>In conclusion, following the right thread always takes us to just the
+node whose right subtree we want to copy next.  Of course, if that node
+happens to have an empty right subtree, then there is nothing to do, so
+we just continue along the next right thread, and so on.
+
+   <p>The first step is to build a function to copy a single node.  The
+following function <i>copy_node</i><!-- /@w -->() does this, creating a new node as the
+child of an existing node:
+
+   <p><a name="catalogue_002dentry_002dtbst_002d12"></a>
+<a name="index-TBST-node-copy-function-398"></a>
+<pre class="format"><a href="TBST_node_copy_function.c.txt">277</a>. &lt;<a name="277" href="TBST_node_copy_function.c.txt">TBST node copy function 277</a>&gt; =
+/* Creates a new node as a child of <i>dst</i><!-- /@w --> on side <i>dir</i><!-- /@w -->.
+   Copies data from <i>src</i><!-- /@w --> into the new node, applying <i>copy</i><!-- /@w -->(), if non-null.
+   Returns nonzero only if fully successful.
+   Regardless of success, integrity of the tree structure is assured,
+   though failure may leave a null pointer in a <i>tbst_data</i><!-- /@w --> member. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>copy_node</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>tree</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>dst</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>dir</i><!-- /@w -->,
+           <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>src</i><!-- /@w -->, <b>tbst_copy_func</b><!-- /@w --> *<i>copy</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcopy_005fnode_007d-function-399"></a>  <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>new</i><!-- /@w --> = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tree</i><!-- /@w -->-&gt;<i>tbst_alloc</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>tbst_alloc</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>new</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> 0;
+
+  <i>new</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>dst</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->];
+  <i>new</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <tt>TBST_THREAD</tt><!-- /@w -->;
+  <i>new</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[!<i>dir</i><!-- /@w -->] = <i>dst</i><!-- /@w -->;
+  <i>new</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[!<i>dir</i><!-- /@w -->] = <tt>TBST_THREAD</tt><!-- /@w -->;
+  <i>dst</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <i>new</i><!-- /@w -->;
+  <i>dst</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[<i>dir</i><!-- /@w -->] = <tt>TBST_CHILD</tt><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>copy</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <i>new</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w --> = <i>src</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w -->;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>new</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w --> = <i>copy</i><!-- /@w --> (<i>src</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w -->, <i>tree</i><!-- /@w -->-&gt;<i>tbst_param</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>new</i><!-- /@w -->-&gt;<i>tbst_data</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+        <b>return</b><!-- /@w --> 0;
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Copying-a-TBST.html#278">278</a>.</small>
+
+   <p>Using the node copy function above, constructing the tree copy function
+is easy.  In fact, the code is considerably easier to read than our
+original function to iteratively copy an unthreaded binary tree
+(see <a href="Handling-Errors-in-Iterative-BST-Copying.html">Handling Errors in Iterative BST Copying</a>), because this
+function is not as heavily optimized.
+
+   <p>One tricky part is getting the copy started.  We can't use the dirty
+trick from <i>bst_copy</i><!-- /@w -->() of casting the address of a <i>bst_root</i><!-- /@w --> to a
+node pointer, because we need access to the first tag as well as the
+first link (see Exercise 2 for a way to sidestep this
+problem).  So instead we use a couple of &ldquo;pseudo-root&rdquo; nodes <i>rp</i><!-- /@w -->
+and <i>rq</i><!-- /@w -->, allocated locally.
+
+   <p><a name="catalogue_002dentry_002dtbst_002d13"></a>
+<a name="index-TBST-copy-function-400"></a>
+<pre class="format"><a href="TBST_copy_function.c.txt">278</a>. &lt;<a name="278" href="TBST_copy_function.c.txt">TBST copy function 278</a>&gt; =
+&lt;<a href="Copying-a-TBST.html#277">TBST node copy function 277</a>&gt;
+&lt;<a href="Copying-a-TBST.html#280">TBST copy error helper function 280</a>&gt;
+&lt;<a href="Copying-a-TBST.html#279">TBST main copy function 279</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="TBST-Operations.html#251">251</a>.</small>
+
+   <p><a name="index-TBST-main-copy-function-401"></a>
+<pre class="format"><a href="TBST_main_copy_function.c.txt">279</a>. &lt;<a name="279" href="TBST_main_copy_function.c.txt">TBST main copy function 279</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tbst_table</b> *<br><i>tbst_copy</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>org</i><!-- /@w -->, <b>tbst_copy_func</b><!-- /@w --> *<i>copy</i><!-- /@w -->,
+          <b>tbst_item_func</b><!-- /@w --> *<i>destroy</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbst_005fcopy_007d-function-402"></a>  <b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>new</i><!-- /@w -->;
+
+  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>p</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>q</i><!-- /@w -->;
+  <b>struct</b><!-- /@w --> <b>tbst_node</b> <i>rp</i><!-- /@w -->, <i>rq</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>org</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>new</i><!-- /@w --> = <i>tbst_create</i><!-- /@w --> (<i>org</i><!-- /@w -->-&gt;<i>tbst_compare</i><!-- /@w -->, <i>org</i><!-- /@w -->-&gt;<i>tbst_param</i><!-- /@w -->,
+                     <i>allocator</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? <i>allocator</i><!-- /@w --> : <i>org</i><!-- /@w -->-&gt;<i>tbst_alloc</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  <i>new</i><!-- /@w -->-&gt;<i>tbst_count</i><!-- /@w --> = <i>org</i><!-- /@w -->-&gt;<i>tbst_count</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>new</i><!-- /@w -->-&gt;<i>tbst_count</i><!-- /@w --> == 0)
+    <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->;
+
+  <i>p</i><!-- /@w --> = &amp;<i>rp</i><!-- /@w -->;
+  <i>rp</i><!-- /@w -->.<i>tbst_link</i><!-- /@w -->[0] = <i>org</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->;
+  <i>rp</i><!-- /@w -->.<i>tbst_tag</i><!-- /@w -->[0] = <tt>TBST_CHILD</tt><!-- /@w -->;
+
+  <i>q</i><!-- /@w --> = &amp;<i>rq</i><!-- /@w -->;
+  <i>rq</i><!-- /@w -->.<i>tbst_link</i><!-- /@w -->[0] = <tt>NULL</tt><!-- /@w -->;
+  <i>rq</i><!-- /@w -->.<i>tbst_tag</i><!-- /@w -->[0] = <tt>TBST_THREAD</tt><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>if</b><!-- /@w --> (!<i>copy_node</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>q</i><!-- /@w -->, 0, <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0], <i>copy</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>copy_error_recovery</i><!-- /@w --> (<i>rq</i><!-- /@w -->.<i>tbst_link</i><!-- /@w -->[0], <i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+              <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+            }
+
+          <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+          <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+        } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>while</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+              <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+                  <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+                  <i>new</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w --> = <i>rq</i><!-- /@w -->.<i>tbst_link</i><!-- /@w -->[0];
+                  <b>return</b><!-- /@w --> <i>new</i><!-- /@w -->;
+                }
+
+              <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+            }
+
+          <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+          <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+        }
+
+      <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_CHILD</tt><!-- /@w -->)
+        <b>if</b><!-- /@w --> (!<i>copy_node</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>q</i><!-- /@w -->, 1, <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1], <i>copy</i><!-- /@w -->)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>copy_error_recovery</i><!-- /@w --> (<i>rq</i><!-- /@w -->.<i>tbst_link</i><!-- /@w -->[0], <i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+            <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+          }
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Copying-a-TBST.html#278">278</a> and <a href="Copying-a-TAVL-Tree.html#329">329</a>.</small>
+
+   <p>A sensitive issue in the code above is treatment of the final thread. 
+The initial call to <i>copy_node</i><!-- /@w -->() causes a right thread to point to
+<i>rq</i><!-- /@w -->, but it needs to be a null pointer.  We need to perform this kind
+of transformation:
+
+<div align="center"><a href="tbstcopy2.txt"><img border=0 src="tbstcopy2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>When the copy is successful, this is just a matter of setting the final
+<i>q</i><!-- /@w -->'s right child pointer to <tt>NULL</tt><!-- /@w -->, but when it is unsuccessful we have
+to find the pointer in question, which is in the greatest node in the
+tree so far (to see this, try constructing a few threaded BSTs by hand
+on paper).  Function <i>copy_error_recovery</i><!-- /@w -->() does this, as well as
+destroying the tree.  It also handles the case of failure when no nodes
+have yet been added to the tree:
+
+   <p><a name="index-TBST-copy-error-helper-function-403"></a>
+<pre class="format"><a href="TBST_copy_error_helper_function.c.txt">280</a>. &lt;<a name="280" href="TBST_copy_error_helper_function.c.txt">TBST copy error helper function 280</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>copy_error_recovery</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>p</i><!-- /@w -->,
+                     <b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>new</i><!-- /@w -->, <b>tbst_item_func</b><!-- /@w --> *<i>destroy</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcopy_005ferror_005frecovery_007d-function-404"></a>  <i>new</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>while</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_CHILD</tt><!-- /@w -->)
+        <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+      <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] = <tt>NULL</tt><!-- /@w -->;
+    }
+  <i>tbst_destroy</i><!-- /@w --> (<i>new</i><!-- /@w -->, <i>destroy</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Copying-a-TBST.html#278">278</a> and <a href="Copying-a-TAVL-Tree.html#329">329</a>.</small>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->In the diagram above that shows examples of threads followed while
+copying a TBST, all right threads in the TBSTs are shown.  Explain how
+this is not just a coincidence. 
+[<a href="Answers-for-Chapter-7.html#7%2d9%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Suggest some optimization possibilities for <i>tbst_copy</i><!-- /@w -->(). 
+[<a href="Answers-for-Chapter-7.html#7%2d9%232">answer</a>]
+
+   </body></html>
+

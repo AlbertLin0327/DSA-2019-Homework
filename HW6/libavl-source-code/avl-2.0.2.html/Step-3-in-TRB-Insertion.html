@@ -1,0 +1,170 @@
+<html lang="en">
+<head>
+<title>Step 3 in TRB Insertion - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Steps-1-and-2-in-TRB-Insertion.html" title="9.3.1 Steps 1 and 2: Search and Insert">
+<link rel=Next href="TRB-Insertion-Symmetric-Case.html" title="9.3.3 Symmetric Case">
+<link rel=Parent href="Inserting-into-a-TRB-Tree.html" title="9.3 Insertion">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Step-3-in-TRB-Insertion">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>9.3.2 Step 3: Rebalance</b></big></td>
+<td align=right>
+<a href="index.html#Step-3-in-TRB-Insertion.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Steps-1-and-2-in-TRB-Insertion.html" title="Skip Back: 9.3.1 Steps 1 and 2: Search and Insert"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="TRB-Insertion-Symmetric-Case.html" title="Skip Forward: 9.3.3 Symmetric Case"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Steps-1-and-2-in-TRB-Insertion.html" title="Prev: 9.3.1 Steps 1 and 2: Search and Insert"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Inserting-into-a-TRB-Tree.html" title="Up: 9.3 Insertion"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="TRB-Insertion-Symmetric-Case.html" title="Next: 9.3.3 Symmetric Case"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The basic rebalancing loop is unchanged from &lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#201">Step 3: Rebalance after RB insertion 201</a>&gt;.
+
+   <p><a name="index-rebalance-after-TRB-insertion-489"></a>
+<pre class="format"><a href="Step_3_3a_Rebalance_after_TRB_insertion.c.txt">340</a>. &lt;<a name="340" href="Step_3_3a_Rebalance_after_TRB_insertion.c.txt">Step 3: Rebalance after TRB insertion 340</a>&gt; =
+<b>while</b><!-- /@w --> (<i>k</i><!-- /@w --> &gt;= 3 &amp;&amp; <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1]-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2] == 0)
+      { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-TRB-Insertion.html#341">Left-side rebalancing after TRB insertion 341</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="TRB-Insertion-Symmetric-Case.html#345">Right-side rebalancing after TRB insertion 345</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+  }
+<i>tree</i><!-- /@w -->-&gt;<i>trb_root</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> = <tt>TRB_BLACK</tt><!-- /@w -->;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Inserting-into-a-TRB-Tree.html#337">337</a>.</small>
+
+   <p>The cases for rebalancing are the same as in &lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#202">Left-side rebalancing after RB insertion 202</a>&gt;, too.  We do need to check for threads, instead of
+null pointers.
+
+   <p><a name="index-left_002dside-rebalancing-after-TRB-insertion-490"></a>
+<pre class="format"><a href="Left-side_rebalancing_after_TRB_insertion.c.txt">341</a>. &lt;<a name="341" href="Left-side_rebalancing_after_TRB_insertion.c.txt">Left-side rebalancing after TRB insertion 341</a>&gt; =
+<b>struct</b><!-- /@w --> <b>trb_node</b> *<i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>trb_link</i><!-- /@w -->[1];
+<b>if</b><!-- /@w --> (<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 2]-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_CHILD</tt><!-- /@w --> &amp;&amp; <i>y</i><!-- /@w -->-&gt;<i>trb_color</i><!-- /@w --> == <tt>TRB_RED</tt><!-- /@w -->)
+  { <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-TRB-Insertion.html#342">Case 1 in left-side TRB insertion rebalancing 342</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+<b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>struct</b><!-- /@w --> <b>trb_node</b> *<i>x</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>da</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1] == 0)
+      <i>y</i><!-- /@w --> = <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w --> - 1];
+    <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{ <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&lt;<a href="Step-3-in-TRB-Insertion.html#344">Case 3 in left-side TRB insertion rebalancing 344</a>&gt; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->}
+
+    &lt;<a href="Step-3-in-TRB-Insertion.html#343">Case 2 in left-side TRB insertion rebalancing 343</a>&gt;
+    <b>break</b><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-TRB-Insertion.html#340">340</a>.</small>
+
+   <p>The rest of this section deals with the individual rebalancing cases,
+the same as in unthreaded RB insertion (see <a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html">Inserting an RB Node Step 3 - Rebalance</a>).  Each iteration deals with a node whose color has
+just been changed to red, which is the newly inserted node <i>n</i><!-- /@w --> in the
+first trip through the loop.  In the discussion, we'll call this node
+<i>q</i><!-- /@w -->.
+
+<h5 class="subsubheading">Case 1: <i>q</i><!-- /@w -->'s uncle is red</h5>
+
+<p>If node <i>q</i><!-- /@w --> has an red &ldquo;uncle&rdquo;, then only recoloring is required. 
+Because no links are changed, no threads need to be updated, and we can
+reuse the code for RB insertion without change:
+
+   <p><a name="index-case-1-in-left_002dside-TRB-insertion-rebalancing-491"></a>
+<pre class="format"><a href="Case_1_in_left-side_TRB_insertion_rebalancing.c.txt">342</a>. &lt;<a name="342" href="Case_1_in_left-side_TRB_insertion_rebalancing.c.txt">Case 1 in left-side TRB insertion rebalancing 342</a>&gt; =
+&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#203">Case 1 in left-side RB insertion rebalancing; rb =&gt; trb 203</a>&gt;
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-TRB-Insertion.html#341">341</a>.</small>
+
+<h5 class="subsubheading">Case 2: <i>q</i><!-- /@w --> is the left child of its parent</h5>
+
+<p>If <i>q</i><!-- /@w --> is the left child of its parent, we rotate right at <i>q</i><!-- /@w -->'s
+grandparent, and recolor a few nodes.  Here's the transformation:
+
+<div align="center"><a href="rbins2.txt"><img border=0 src="rbins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">This transformation can only cause thread problems with subtree <i>c</i><!-- /@w -->,
+since the other subtrees stay firmly in place.  If <i>c</i><!-- /@w --> is a thread, then
+we need to make adjustments after the transformation to account for the
+difference between threaded and unthreaded rotation, so that the final
+operation looks like this:
+
+<div align="center"><a href="trbins.txt"><img border=0 src="trbins.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-2-in-left_002dside-TRB-insertion-rebalancing-492"></a>
+<pre class="format"><a href="Case_2_in_left-side_TRB_insertion_rebalancing.c.txt">343</a>. &lt;<a name="343" href="Case_2_in_left-side_TRB_insertion_rebalancing.c.txt">Case 2 in left-side TRB insertion rebalancing 343</a>&gt; =
+&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#204">Case 2 in left-side RB insertion rebalancing; rb =&gt; trb 204</a>&gt;
+
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_CHILD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_THREAD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[0] = <i>y</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-TRB-Insertion.html#341">341</a>.</small>
+
+<h5 class="subsubheading">Case 3: <i>q</i><!-- /@w --> is the right child of its parent</h5>
+
+<p>The modification to case 3 is the same as the modification to case 2,
+but it applies to a left rotation instead of a right rotation.  The
+adjusted case looks like this:
+
+<div align="center"><a href="trbins2.txt"><img border=0 src="trbins2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="index-case-3-in-left_002dside-TRB-insertion-rebalancing-493"></a>
+<pre class="format"><a href="Case_3_in_left-side_TRB_insertion_rebalancing.c.txt">344</a>. &lt;<a name="344" href="Case_3_in_left-side_TRB_insertion_rebalancing.c.txt">Case 3 in left-side TRB insertion rebalancing 344</a>&gt; =
+&lt;<a href="Inserting-an-RB-Node-Step-3-_002d-Rebalance.html#205">Case 3 in left-side RB insertion rebalancing; rb =&gt; trb 205</a>&gt;
+
+<b>if</b><!-- /@w --> (<i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] == <tt>TRB_THREAD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>y</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[0] = <tt>TRB_CHILD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>trb_tag</i><!-- /@w -->[1] = <tt>TRB_THREAD</tt><!-- /@w -->;
+    <i>x</i><!-- /@w -->-&gt;<i>trb_link</i><!-- /@w -->[1] = <i>y</i><!-- /@w -->;
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Step-3-in-TRB-Insertion.html#341">341</a>.</small>
+
+   </body></html>
+

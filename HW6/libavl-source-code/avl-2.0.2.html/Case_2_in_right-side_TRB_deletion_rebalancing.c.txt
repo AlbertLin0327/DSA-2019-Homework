@@ -1,0 +1,14 @@
+w->trb_color = pa[k - 1]->trb_color;
+pa[k - 1]->trb_color = TRB_BLACK;
+w->trb_link[0]->trb_color = TRB_BLACK;
+
+pa[k - 1]->trb_link[0] = w->trb_link[1];
+w->trb_link[1] = pa[k - 1];
+pa[k - 2]->trb_link[da[k - 2]] = w;
+
+if (w->trb_tag[1] == TRB_THREAD)
+  {
+    w->trb_tag[1] = TRB_CHILD;
+    pa[k - 1]->trb_tag[0] = TRB_THREAD;
+    pa[k - 1]->trb_link[0] = w;
+  }

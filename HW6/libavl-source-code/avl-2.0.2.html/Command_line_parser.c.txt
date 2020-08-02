@@ -1,0 +1,281 @@
+/* Command line parser. */
+
+/* If |a| is a prefix for |b| or vice versa, returns the length of the
+   match.
+   Otherwise, returns 0. */
+size_t
+match_len (const char *a, const char *b)
+{
+  size_t cnt;
+
+  for (cnt = 0; *a == *b && *a != '\0'; a++, b++)
+    cnt++;
+
+  return (*a != *b && *a != '\0' && *b != '\0') ? 0 : cnt;
+}
+
+/* |s| should point to a decimal representation of an integer.
+   Returns the value of |s|, if successful, or 0 on failure. */
+static int
+stoi (const char *s)
+{
+  long x = strtol (s, NULL, 10);
+  return x >= INT_MIN && x <= INT_MAX ? x : 0;
+}
+
+/* Print helpful syntax message and exit. */
+static void
+usage (void)
+{
+  static const char *help[] =
+    {
+      "bst-test, unit test for GNU libavl.\n\n",
+      "Usage: %s [OPTION]...\n\n",
+      "In the option descriptions below, CAPITAL denote arguments.\n",
+      "If a long option shows an argument as mandatory, then it is\n",
+      "mandatory for the equivalent short option also.  See the GNU\n",
+      "libavl manual for more information.\n\n",
+      "-t, --test=TEST     Sets test to perform.  TEST is one of:\n",
+      "                      correctness insert/delete/... (default)\n",
+      "                      overflow    stack overflow test\n",
+      "                      benchmark   benchmark test\n",
+      "                      null        no test\n",
+      "-s, --size=TREE-SIZE  Sets tree size in nodes (default 16).\n",
+      "-r, --repeat=COUNT  Repeats operation COUNT times (default 16).\n",
+      "-i, --insert=ORDER  Sets the insertion order.  ORDER is one of:\n",
+      "                      random      random permutation (default)\n",
+      "                      ascending   ascending order 0...n-1\n",
+      "                      descending  descending order n-1...0\n",
+      "                      balanced    balanced tree order\n",
+      "                      zigzag      zig-zag tree\n",
+      "                      asc-shifted n/2...n-1, 0...n/2-1\n",
+      "                      custom      custom, read from stdin\n",
+      "-d, --delete=ORDER  Sets the deletion order.  ORDER is one of:\n",
+      "                      random   random permutation (default)\n",
+      "                      reverse  reverse order of insertion\n",
+      "                      same     same as insertion order\n",
+      "                      custom   custom, read from stdin\n",
+      "-a, --alloc=POLICY  Sets allocation policy.  POLICY is one of:\n",
+      "                      track     track memory leaks (default)\n",
+      "                      no-track  turn off leak detection\n",
+      "                      fail-CNT  fail after CNT allocations\n",
+      "                      fail%%PCT  fail random PCT%% of allocations\n",
+      "                      sub-B,A   divide B-byte blocks in A-byte units\n",
+      "                    (Ignored for `benchmark' test.)\n",
+      "-A, --incr=INC      Fail policies: arg increment per repetition.\n",
+      "-S, --seed=SEED     Sets initial number seed to SEED.\n",
+      "                    (default based on system time)\n",
+      "-n, --nonstop       Don't stop after a single error.\n",
+      "-q, --quiet         Turns down verbosity level.\n",
+      "-v, --verbose       Turns up verbosity level.\n",
+      "-h, --help          Displays this help screen.\n",
+      "-V, --version       Reports version and copyright information.\n",
+      NULL,
+    };
+
+  const char **p;
+  for (p = help; *p != NULL; p++)
+    printf (*p, pgm_name);
+
+  exit (EXIT_SUCCESS);
+}
+
+/* Parses command-line arguments from null-terminated array |args|.
+   Sets up |options| appropriately to correspond. */
+static void
+parse_command_line (char **args, struct test_options *options)
+{
+  static const struct option option_tab[] =
+    {
+      {"test", 't', 1},
+      {"insert", 'i', 1},
+      {"delete", 'd', 1},
+      {"alloc", 'a', 1},
+      {"incr", 'A', 1},
+      {"size", 's', 1},
+      {"repeat", 'r', 1},
+      {"operation", 'o', 1},
+      {"seed", 'S', 1},
+      {"nonstop", 'n', 0},
+      {"quiet", 'q', 0},
+      {"verbose", 'v', 0},
+      {"help", 'h', 0},
+      {"version", 'V', 0},
+      {NULL, 0, 0},
+    };
+
+  struct option_state *state;
+
+  /* Default options. */
+  options->test = TST_CORRECTNESS;
+  options->insert_order = INS_RANDOM;
+  options->delete_order = DEL_RANDOM;
+  options->alloc_policy = MT_TRACK;
+  options->alloc_arg[0] = 0;
+  options->alloc_arg[1] = 0;
+  options->alloc_incr = 0;
+  options->node_cnt = 15;
+  options->iter_cnt = 15;
+  options->seed_given = 0;
+  options->verbosity = 0;
+  options->nonstop = 0;
+
+  if (*args == NULL)
+    return;
+
+  state = option_init (option_tab, args + 1);
+  for (;;)
+    {
+      char *arg;
+      int id = option_get (state, &arg);
+      if (id == -1)
+        break;
+
+      switch (id)
+        {
+        case 't':
+          if (match_len (arg, "correctness") >= 3)
+            options->test = TST_CORRECTNESS;
+          else if (match_len (arg, "overflow") >= 3)
+            options->test = TST_OVERFLOW;
+          else if (match_len (arg, "null") >= 3)
+            options->test = TST_NULL;
+          else
+            fail ("unknown test \"%s\"", arg);
+          break;
+
+        case 'i':
+          {
+            static const char *orders[INS_CNT] =
+              {
+                "random", "ascending", "descending",
+                "balanced", "zigzag", "asc-shifted", "custom",
+              };
+
+            const char **iter;
+
+            assert (sizeof orders / sizeof *orders == INS_CNT);
+            for (iter = orders; ; iter++)
+              if (iter >= orders + INS_CNT)
+                fail ("unknown order \"%s\"", arg);
+              else if (match_len (*iter, arg) >= 3)
+                {
+                  options->insert_order = iter - orders;
+                  break;
+                }
+          }
+          break;
+
+        case 'd':
+          {
+            static const char *orders[DEL_CNT] =
+              {
+                "random", "reverse", "same", "custom",
+              };
+
+            const char **iter;
+
+            assert (sizeof orders / sizeof *orders == DEL_CNT);
+            for (iter = orders; ; iter++)
+              if (iter >= orders + DEL_CNT)
+                fail ("unknown order \"%s\"", arg);
+              else if (match_len (*iter, arg) >= 3)
+                {
+                  options->delete_order = iter - orders;
+                  break;
+                }
+          }
+          break;
+
+        case 'a':
+          if (match_len (arg, "track") >= 3)
+            options->alloc_policy = MT_TRACK;
+          else if (match_len (arg, "no-track") >= 3)
+            options->alloc_policy = MT_NO_TRACK;
+          else if (!strncmp (arg, "fail", 3))
+            {
+              const char *p = arg + strcspn (arg, "-%");
+              if (*p == '-')
+                options->alloc_policy = MT_FAIL_COUNT;
+              else if (*p == '%')
+                options->alloc_policy = MT_FAIL_PERCENT;
+              else
+                fail ("invalid allocation policy \"%s\"", arg);
+
+              options->alloc_arg[0] = stoi (p + 1);
+            }
+          else if (!strncmp (arg, "suballoc", 3))
+            {
+              const char *p = strchr (arg, '-');
+              const char *q = strchr (arg, ',');
+              if (p == NULL || q == NULL)
+                fail ("invalid allocation policy \"%s\"", arg);
+
+              options->alloc_policy = MT_SUBALLOC;
+              options->alloc_arg[0] = stoi (p + 1);
+              options->alloc_arg[1] = stoi (q + 1);
+              if (options->alloc_arg[MT_BLOCK_SIZE] < 32)
+                fail ("block size too small");
+              else if (options->alloc_arg[MT_ALIGN]
+                       > options->alloc_arg[MT_BLOCK_SIZE])
+                fail ("alignment cannot be greater than block size");
+              else if (options->alloc_arg[MT_ALIGN] < 1)
+                fail ("alignment must be at least 1");
+            }
+          break;
+
+        case 'A':
+          options->alloc_incr = stoi (arg);
+          break;
+
+        case 's':
+          options->node_cnt = stoi (arg);
+          if (options->node_cnt < 1)
+            fail ("bad tree size \"%s\"", arg);
+          break;
+
+        case 'r':
+          options->iter_cnt = stoi (arg);
+          if (options->iter_cnt < 1)
+            fail ("bad repeat count \"%s\"", arg);
+          break;
+
+        case 'S':
+          options->seed_given = 1;
+          options->seed = strtoul (arg, NULL, 0);
+          break;
+
+        case 'n':
+          options->nonstop = 1;
+          break;
+
+        case 'q':
+          options->verbosity--;
+          break;
+
+        case 'v':
+          options->verbosity++;
+          break;
+
+        case 'h':
+          usage ();
+          break;
+
+        case 'V':
+          fputs ("GNU libavl 2.0.2\n"
+                 "Copyright (C) 1998-2002, 2004 "
+                 "Free Software Foundation, Inc.\n"
+                 "This program comes with NO WARRANTY, not even for\n"
+                 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+                 "You may redistribute copies under the terms of the\n"
+                 "GNU General Public License.  For more information on\n"
+                 "these matters, see the file named COPYING.\n",
+                 stdout);
+          exit (EXIT_SUCCESS);
+
+        default:
+          assert (0);
+        }
+    }
+}
+

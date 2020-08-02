@@ -1,0 +1,10 @@
+/* Print a helpful usage message and abort execution. */
+static void
+usage (void)
+{
+  fputs ("Usage: bin-ary-test <array-size>\n"
+         "where <array-size> is the size of the array to test.\n",
+         stdout);
+  exit (EXIT_FAILURE);
+}
+

@@ -1,0 +1,229 @@
+<html lang="en">
+<head>
+<title>Option Parser - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Supplementary-Code.html" title="Appendix B Supplementary Code">
+<link rel=Next href="Command_002dLine-Parser.html" title="B.2 Command-Line Parser">
+<link rel=Parent href="Supplementary-Code.html" title="Appendix B Supplementary Code">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Option-Parser">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>B.1 Option Parser</b></big></td>
+<td align=right>
+<a href="index.html#Option-Parser.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Command_002dLine-Parser.html" title="Skip Forward: B.2 Command-Line Parser"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Supplementary-Code.html" title="Prev: Appendix B Supplementary Code"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Supplementary-Code.html" title="Up: Appendix B Supplementary Code"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Command_002dLine-Parser.html" title="Next: B.2 Command-Line Parser"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The BST test program contains an option parser for handling command-line
+options.  See <a href="User-Interaction.html">User Interaction</a>, for an introduction to its public
+interface.  This section describes the option parser's implementation.
+
+   <p>The option parsing state is kept in <b>struct</b><!-- /@w --> <b>option_state</b>:
+
+   <p><a name="index-option-parser-805"></a>
+<pre class="format"><a href="Option_parser.c.txt">586</a>. &lt;<a name="586" href="Option_parser.c.txt">Option parser 586</a>&gt; =
+/* Option parsing state. */
+<b>struct</b><!-- /@w --> <b>option_state</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007boption_005fstate_007d-structure-806"></a>    <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>option</b> *<i>options</i><!-- /@w -->; /* List of options. */
+    <b>char</b><!-- /@w --> **<i>arg_next</i><!-- /@w -->;            /* Remaining arguments. */
+    <b>char</b><!-- /@w --> *<i>short_next</i><!-- /@w -->;           /* When non-null, unparsed short options. */
+  };
+</pre>
+   <p class="noindent"><small>See also <a href="Option-Parser.html#587">587</a> and <a href="Option-Parser.html#588">588</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Testing-BST-Functions.html#97">97</a>.</small></div>
+
+   <p>The initialization function just creates and returns one of these
+structures:
+
+   <p><a name="index-option-parser-807"></a>
+<pre class="format"><a href="Option_parser.c.txt">587</a>. &lt;<a name="587" href="Option_parser.c.txt">Option parser 586</a>&gt; +=
+/* Creates and returns a command-line options parser.  
+   <i>args</i><!-- /@w --> is a null-terminated array of command-line arguments, not
+   including program name. */
+<b>static</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>option_state</b> *<br><i>option_init</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>option</b> *<i>options</i><!-- /@w -->, <b>char</b><!-- /@w --> **<i>args</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007boption_005finit_007d-function-808"></a>  <b>struct</b><!-- /@w --> <b>option_state</b> *<i>state</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>options</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>args</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <i>state</i><!-- /@w --> = <i>xmalloc</i><!-- /@w --> (<b>sizeof</b><!-- /@w --> *<i>state</i><!-- /@w -->);
+  <i>state</i><!-- /@w -->-&gt;<i>options</i><!-- /@w --> = <i>options</i><!-- /@w -->;
+  <i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w --> = <i>args</i><!-- /@w -->;
+  <i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> <i>state</i><!-- /@w -->;
+}
+</pre>
+   <p>The option retrieval function uses a couple of helper functions.  The
+code is lengthy, but not complicated:
+
+   <p><a name="index-option-parser-809"></a>
+<pre class="format"><a href="Option_parser.c.txt">588</a>. &lt;<a name="588" href="Option_parser.c.txt">Option parser 586</a>&gt; +=
+/* Parses a short option whose single-character name is pointed to by
+   <i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w -->.  Advances past the option so that the next one
+   will be parsed in the next call to <i>option_get</i><!-- /@w -->().  Sets *<i>argp</i><!-- /@w --> to
+   the option's argument, if any.  Returns the option's short name. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>handle_short_option</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>option_state</b> *<i>state</i><!-- /@w -->, <b>char</b><!-- /@w --> **<i>argp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bhandle_005fshort_005foption_007d-function-810"></a>  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>option</b> *<i>o</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>state</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&amp;&amp; <i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; *<i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w --> != <tt>'\0'</tt>
+          &amp;&amp; <i>state</i><!-- /@w -->-&gt;<i>options</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  /* Find option in <i>o</i><!-- /@w -->. */
+  <b>for</b><!-- /@w --> (<i>o</i><!-- /@w --> = <i>state</i><!-- /@w -->-&gt;<i>options</i><!-- /@w -->; ; <i>o</i><!-- /@w -->++)
+    <b>if</b><!-- /@w --> (<i>o</i><!-- /@w -->-&gt;<i>long_name</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+      <i>fail</i><!-- /@w --> (<tt>"unknown option `%c'; use -help for help"</tt>, *<i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w -->);
+    <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>o</i><!-- /@w -->-&gt;<i>short_name</i><!-- /@w --> == *<i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+  <i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w -->++;
+
+  /* Handle argument. */
+  <b>if</b><!-- /@w --> (<i>o</i><!-- /@w -->-&gt;<i>has_arg</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (*<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || **<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w --> == <tt>&rdquo;</tt>)
+        <i>fail</i><!-- /@w --> (<tt>"`%c' requires an argument; use -help for help"</tt>);
+
+      *<i>argp</i><!-- /@w --> = *<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w -->++;
+    }
+
+  <b>return</b><!-- /@w --> <i>o</i><!-- /@w -->-&gt;<i>short_name</i><!-- /@w -->;
+}
+
+/* Parses a long option whose command-line argument is pointed to by
+   *<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w -->.  Advances past the option so that the next one
+   will be parsed in the next call to <i>option_get</i><!-- /@w -->().  Sets *<i>argp</i><!-- /@w --> to
+   the option's argument, if any.  Returns the option's identifier. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>handle_long_option</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>option_state</b> *<i>state</i><!-- /@w -->, <b>char</b><!-- /@w --> **<i>argp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bhandle_005flong_005foption_007d-function-811"></a>  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>option</b> *<i>o</i><!-- /@w -->;	/* Iterator on options. */
+  <b>char</b><!-- /@w --> <i>name</i><!-- /@w -->[16];		/* Option name. */
+  <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>arg</i><!-- /@w -->;		/* Option argument. */
+
+  <i>assert</i><!-- /@w --> (<i>state</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&amp;&amp; <i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; *<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->
+          &amp;&amp; <i>state</i><!-- /@w -->-&gt;<i>options</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&amp;&amp; <i>argp</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  /* Copy the option name into <i>name</i><!-- /@w -->
+     and put a pointer to its argument, or <tt>NULL</tt><!-- /@w --> if none, into <i>arg</i><!-- /@w -->. */
+  {
+    <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>p</i><!-- /@w --> = *<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w --> + 2;
+    <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>q</i><!-- /@w --> = <i>p</i><!-- /@w --> + <i>strcspn</i><!-- /@w --> (<i>p</i><!-- /@w -->, <tt>"="</tt>);
+    <b>size_t</b><!-- /@w --> <i>name_len</i><!-- /@w --> = <i>q</i><!-- /@w --> - <i>p</i><!-- /@w -->;
+
+    <b>if</b><!-- /@w --> (<i>name_len</i><!-- /@w --> &gt; (<b>sizeof</b><!-- /@w --> <i>name</i><!-- /@w -->) - 1)
+      <i>name_len</i><!-- /@w --> = (<b>sizeof</b><!-- /@w --> <i>name</i><!-- /@w -->) - 1;
+    <i>memcpy</i><!-- /@w --> (<i>name</i><!-- /@w -->, <i>p</i><!-- /@w -->, <i>name_len</i><!-- /@w -->);
+    <i>name</i><!-- /@w -->[<i>name_len</i><!-- /@w -->] = <tt>'\0'</tt>;
+
+    <i>arg</i><!-- /@w --> = (*<i>q</i><!-- /@w --> == <tt>'='</tt>) ? <i>q</i><!-- /@w --> + 1 : <tt>NULL</tt><!-- /@w -->;
+  }
+
+  /* Find option in <i>o</i><!-- /@w -->. */
+  <b>for</b><!-- /@w --> (<i>o</i><!-- /@w --> = <i>state</i><!-- /@w -->-&gt;<i>options</i><!-- /@w -->; ; <i>o</i><!-- /@w -->++)
+    <b>if</b><!-- /@w --> (<i>o</i><!-- /@w -->-&gt;<i>long_name</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+      <i>fail</i><!-- /@w --> (<tt>"unknown option -%s; use -help for help"</tt>, <i>name</i><!-- /@w -->);
+    <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (!<i>strcmp</i><!-- /@w --> (<i>name</i><!-- /@w -->, <i>o</i><!-- /@w -->-&gt;<i>long_name</i><!-- /@w -->))
+      <b>break</b><!-- /@w -->;
+
+  /* Make sure option has an argument if it should. */
+  <b>if</b><!-- /@w --> ((<i>arg</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) != (<i>o</i><!-- /@w -->-&gt;<i>has_arg</i><!-- /@w --> != 0)) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>arg</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->)
+        <i>fail</i><!-- /@w --> (<tt>"-%s can't take an argument; use -help for help"</tt>, <i>name</i><!-- /@w -->);
+      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>fail</i><!-- /@w --> (<tt>"-%s requires an argument; use -help for help"</tt>, <i>name</i><!-- /@w -->);
+    }
+
+  /* Advance and return. */
+  <i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w -->++;
+  *<i>argp</i><!-- /@w --> = (<b>char</b><!-- /@w --> *) <i>arg</i><!-- /@w -->;
+  <b>return</b><!-- /@w --> <i>o</i><!-- /@w -->-&gt;<i>short_name</i><!-- /@w -->;
+}
+
+/* Retrieves the next option in the state vector <i>state</i><!-- /@w -->.
+   Returns the option's identifier, or -1 if out of options.
+   Stores the option's argument, or <tt>NULL</tt><!-- /@w --> if none, into *<i>argp</i><!-- /@w -->. */
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>option_get</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>option_state</b> *<i>state</i><!-- /@w -->, <b>char</b><!-- /@w --> **<i>argp</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007boption_005fget_007d-function-812"></a>  <i>assert</i><!-- /@w --> (<i>state</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>argp</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  /* No argument by default. */
+  *<i>argp</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+
+  /* Deal with left-over short options. */
+  <b>if</b><!-- /@w --> (<i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (*<i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w --> != <tt>'\0'</tt>)
+        <b>return</b><!-- /@w --> <i>handle_short_option</i><!-- /@w --> (<i>state</i><!-- /@w -->, <i>argp</i><!-- /@w -->);
+      <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+    }
+
+  /* Out of options? */
+  <b>if</b><!-- /@w --> (*<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>free</i><!-- /@w --> (<i>state</i><!-- /@w -->);
+      <b>return</b><!-- /@w --> -1;
+    }
+
+  /* Non-option arguments not supported. */
+  <b>if</b><!-- /@w --> ((*<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w -->)[0] != <tt>&rdquo;</tt>)
+    <i>fail</i><!-- /@w --> (<tt>"nonoption arguments encountered; use -help for help"</tt>);
+  <b>if</b><!-- /@w --> ((*<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w -->)[1] == <tt>'\0'</tt>)
+    <i>fail</i><!-- /@w --> (<tt>"unknown option `'; use -help for help"</tt>);
+
+  /* Handle the option. */
+  <b>if</b><!-- /@w --> ((*<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w -->)[1] == <tt>&rdquo;</tt>)
+    <b>return</b><!-- /@w --> <i>handle_long_option</i><!-- /@w --> (<i>state</i><!-- /@w -->, <i>argp</i><!-- /@w -->);
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>state</i><!-- /@w -->-&gt;<i>short_next</i><!-- /@w --> = *<i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w --> + 1;
+      <i>state</i><!-- /@w -->-&gt;<i>arg_next</i><!-- /@w -->++;
+      <b>return</b><!-- /@w --> <i>handle_short_option</i><!-- /@w --> (<i>state</i><!-- /@w -->, <i>argp</i><!-- /@w -->);
+    }
+}
+</pre>
+   </body></html>
+

@@ -1,0 +1,41 @@
+/* Searches for |item| in |tree|.
+   If found, initializes |trav| to the item found and returns the item
+   as well.
+   If there is no matching item, initializes |trav| to the null item
+   and returns |NULL|. */
+void *
+bst_t_find (struct bst_traverser *trav, struct bst_table *tree, void *item)
+{
+  struct bst_node *p, *q;
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+  trav->bst_table = tree;
+  trav->bst_height = 0;
+  trav->bst_generation = tree->bst_generation;
+  for (p = tree->bst_root; p != NULL; p = q)
+    {
+      int cmp = tree->bst_compare (item, p->bst_data, tree->bst_param);
+
+      if (cmp < 0)
+        q = p->bst_link[0];
+      else if (cmp > 0)
+        q = p->bst_link[1];
+      else /* |cmp == 0| */
+        {
+          trav->bst_node = p;
+          return p->bst_data;
+        }
+
+      if (trav->bst_height >= BST_MAX_HEIGHT)
+        {
+          bst_balance (trav->bst_table);
+          return bst_t_find (trav, tree, item);
+        }
+      trav->bst_stack[trav->bst_height++] = p;
+    }
+
+  trav->bst_height = 0;
+  trav->bst_node = NULL;
+  return NULL;
+}
+

@@ -1,0 +1,30 @@
+static void
+update_parents (struct pbst_table *tree)
+{
+  struct pbst_node *p;
+
+  if (tree->pbst_root == NULL)
+    return;
+
+  tree->pbst_root->pbst_parent = NULL;
+  for (p = tree->pbst_root; ; p = p->pbst_link[1])
+    {
+      for (; p->pbst_link[0] != NULL; p = p->pbst_link[0])
+        p->pbst_link[0]->pbst_parent = p;
+
+      for (; p->pbst_link[1] == NULL; p = p->pbst_parent)
+        {
+          for (;;)
+            {
+              if (p->pbst_parent == NULL)
+                return;
+
+              if (p == p->pbst_parent->pbst_link[0])
+                break;
+              p = p->pbst_parent;
+            }
+        }
+
+      p->pbst_link[1]->pbst_parent = p;
+    }
+}

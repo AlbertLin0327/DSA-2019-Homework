@@ -1,0 +1,5 @@
+/* Maximum RB height. */
+#ifndef RB_MAX_HEIGHT
+#define RB_MAX_HEIGHT 48
+#endif
+

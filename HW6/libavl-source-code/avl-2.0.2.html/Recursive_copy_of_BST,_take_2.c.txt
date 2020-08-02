@@ -1,0 +1,23 @@
+/* Copies tree rooted at |x| to |y|, which latter is allocated but not
+   yet initialized. */
+static void
+bst_copy_recursive_2 (struct bst_node *x, struct bst_node *y)
+{
+  y->bst_data = x->bst_data;
+
+  if (x->bst_link[0] != NULL)
+    {
+      y->bst_link[0] = malloc (sizeof *y->bst_link[0]);
+      bst_copy_recursive_2 (x->bst_link[0], y->bst_link[0]);
+    }
+  else
+    y->bst_link[0] = NULL;
+
+  if (x->bst_link[1] != NULL)
+    {
+      y->bst_link[1] = malloc (sizeof *y->bst_link[1]);
+      bst_copy_recursive_2 (x->bst_link[1], y->bst_link[1]);
+    }
+  else
+    y->bst_link[1] = NULL;
+}

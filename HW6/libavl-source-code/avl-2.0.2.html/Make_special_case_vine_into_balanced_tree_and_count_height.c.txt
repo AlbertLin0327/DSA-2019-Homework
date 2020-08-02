@@ -1,0 +1,9 @@
+vine = tree->bst_count - leaves;
+height = 1 + (leaves > 0);
+while (vine > 1)
+  {
+    compress ((struct bst_node *) &tree->bst_root, vine / 2);
+    vine /= 2;
+    height++;
+  }
+

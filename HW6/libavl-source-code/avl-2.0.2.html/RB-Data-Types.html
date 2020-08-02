@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>RB Data Types - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Analysis-of-Red_002dBlack-Balancing-Rule.html" title="6.1.1 Analysis">
+<link rel=Next href="Operations-in-an-RB-Tree.html" title="6.3 Operations">
+<link rel=Parent href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="RB-Data-Types">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6.2 Data Types</b></big></td>
+<td align=right>
+<a href="index.html#RB-Data-Types.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="RB-Balancing-Rule.html" title="Skip Back: 6.1 Balancing Rule"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Operations-in-an-RB-Tree.html" title="Skip Forward: 6.3 Operations"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Analysis-of-Red_002dBlack-Balancing-Rule.html" title="Prev: 6.1.1 Analysis"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Red_002dBlack-Trees.html" title="Up: 6 Red-Black Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Operations-in-an-RB-Tree.html" title="Next: 6.3 Operations"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Red-black trees need their own data structure.  Otherwise, there's no
+appropriate place to store each node's color.  Here's a C type for a
+color and a structure for an RB node, using the <i>rb_</i><!-- /@w --> prefix that we've
+adopted for this module:
+
+   <p><a name="index-RB-node-structure-289"></a>
+<pre class="format"><a href="RB_node_structure.c.txt">194</a>. &lt;<a name="194" href="RB_node_structure.c.txt">RB node structure 194</a>&gt; =
+/* Color of a red-black node. */
+<b>enum</b><!-- /@w --> <b>rb_color</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007brb_005fcolor_007d-enumeration-290"></a>    <tt>RB_BLACK</tt><!-- /@w -->,   /* Black. */
+    <tt>RB_RED</tt><!-- /@w -->      /* Red. */
+  };
+
+/* A red-black tree node. */
+<b>struct</b><!-- /@w --> <b>rb_node</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007brb_005fnode_007d-structure-291"></a>    <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>rb_link</i><!-- /@w -->[2];   /* Subtrees. */
+    <b>void</b><!-- /@w --> *<i>rb_data</i><!-- /@w -->;                /* Pointer to data. */
+    <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>rb_color</i><!-- /@w -->;       /* Color. */
+  };
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Red_002dBlack-Trees.html#192">192</a>.</small>
+
+   <p>The maximum height for an RB tree is higher than for an AVL tree,
+because in the worst case RB trees store nodes less efficiently:
+
+   <p><a name="index-RB-maximum-height-292"></a>
+<pre class="format"><a href="RB_maximum_height.c.txt">195</a>. &lt;<a name="195" href="RB_maximum_height.c.txt">RB maximum height 195</a>&gt; =
+/* Maximum RB height. */
+#<b>ifndef</b> <tt>RB_MAX_HEIGHT</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bRB_005fMAX_005fHEIGHT_007d_007d-macro_0040c-293"></a><tt>RB_MAX_HEIGHT</tt><!-- /@w --> 48
+#<b>endif</b>
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Red_002dBlack-Trees.html#192">192</a>, <a href="Threaded-Red_002dBlack-Trees.html#333">333</a>, <a href="Right_002dThreaded-Red_002dBlack-Trees.html#452">452</a>, and <a href="Red_002dBlack-Trees-with-Parent-Pointers.html#551">551</a>.</small>
+
+   <p>The other data structures for RB trees are the same as for BSTs or AVL
+trees.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Why is it okay to have both an enumeration type and a structure member
+named <i>rb_color</i><!-- /@w -->? 
+[<a href="Answers-for-Chapter-6.html#6%2d2%231">answer</a>]
+
+   </body></html>
+

@@ -1,0 +1,13 @@
+for (i = 0; i < 2; i++)
+  {
+    if (node->pbst_link[i] != NULL
+        && node->pbst_link[i]->pbst_parent != node)
+      {
+        printf (" Node %d has parent %d (should be %d).\n",
+                *(int *) node->pbst_link[i]->pbst_data,
+                (node->pbst_link[i]->pbst_parent != NULL
+                 ? *(int *) node->pbst_link[i]->pbst_parent->pbst_data : -1),
+                d);
+        *okay = 0;
+      }
+  }

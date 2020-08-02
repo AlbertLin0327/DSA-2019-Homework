@@ -1,0 +1,40 @@
+/* Creates a new node as a child of |dst| on side |dir|.
+   Copies data from |src| into the new node, applying |copy()|, if non-null.
+   Returns nonzero only if fully successful.
+   Regardless of success, integrity of the tree structure is assured,
+   though failure may leave a null pointer in a |rtavl_data| member. */
+static int
+copy_node (struct rtavl_table *tree,
+           struct rtavl_node *dst, int dir,
+           const struct rtavl_node *src, rtavl_copy_func *copy)
+{
+  struct rtavl_node *new = tree->rtavl_alloc->libavl_malloc (tree->rtavl_alloc,
+                                                             sizeof *new);
+  if (new == NULL)
+    return 0;
+
+  new->rtavl_link[0] = NULL;
+  new->rtavl_rtag = RTAVL_THREAD;
+  if (dir == 0)
+    new->rtavl_link[1] = dst;
+  else
+    {
+      new->rtavl_link[1] = dst->rtavl_link[1];
+      dst->rtavl_rtag = RTAVL_CHILD;
+    }
+  dst->rtavl_link[dir] = new;
+
+  new->rtavl_balance = src->rtavl_balance;
+
+  if (copy == NULL)
+    new->rtavl_data = src->rtavl_data;
+  else
+    {
+      new->rtavl_data = copy (src->rtavl_data, tree->rtavl_param);
+      if (new->rtavl_data == NULL)
+        return 0;
+    }
+
+  return 1;
+}
+

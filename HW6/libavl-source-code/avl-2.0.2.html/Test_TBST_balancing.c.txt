@@ -1,0 +1,36 @@
+/* Test |tbst_balance()|. */
+if (verbosity >= 2)
+  printf ("  Testing balancing...\n");
+
+tree = tbst_create (compare_ints, NULL, allocator);
+if (tree == NULL)
+  {
+    if (verbosity >= 0)
+      printf ("  Out of memory creating tree.\n");
+    return 1;
+  }
+
+for (i = 0; i < n; i++)
+  {
+    void **p = tbst_probe (tree, &insert[i]);
+    if (p == NULL)
+      {
+        if (verbosity >= 0)
+          printf ("    Out of memory in insertion.\n");
+        tbst_destroy (tree, NULL);
+        return 1;
+      }
+    if (*p != &insert[i])
+      printf ("    Duplicate item in tree!\n");
+  }
+
+if (verbosity >= 4)
+  print_whole_tree (tree, "    Pre-balance");
+tbst_balance (tree);
+if (verbosity >= 4)
+  print_whole_tree (tree, "    Post-balance");
+
+if (!verify_tree (tree, insert, n))
+  return 0;
+
+tbst_destroy (tree, NULL);

@@ -1,0 +1,131 @@
+/* Creates a new node as a child of |dst| on side |dir|.
+   Copies data and |tavl_balance| from |src| into the new node,
+   applying |copy()|, if non-null.
+   Returns nonzero only if fully successful.
+   Regardless of success, integrity of the tree structure is assured,
+   though failure may leave a null pointer in a |tavl_data| member. */
+static int
+copy_node (struct tavl_table *tree,
+           struct tavl_node *dst, int dir,
+           const struct tavl_node *src, tavl_copy_func *copy)
+{
+  struct tavl_node *new =
+    tree->tavl_alloc->libavl_malloc (tree->tavl_alloc, sizeof *new);
+  if (new == NULL)
+    return 0;
+
+  new->tavl_link[dir] = dst->tavl_link[dir];
+  new->tavl_tag[dir] = TAVL_THREAD;
+  new->tavl_link[!dir] = dst;
+  new->tavl_tag[!dir] = TAVL_THREAD;
+  dst->tavl_link[dir] = new;
+  dst->tavl_tag[dir] = TAVL_CHILD;
+
+  new->tavl_balance = src->tavl_balance;
+  if (copy == NULL)
+    new->tavl_data = src->tavl_data;
+  else
+    {
+      new->tavl_data = copy (src->tavl_data, tree->tavl_param);
+      if (new->tavl_data == NULL)
+        return 0;
+    }
+
+  return 1;
+}
+
+/* Destroys |new| with |tavl_destroy (new, destroy)|,
+   first initializing the right link in |new| that has
+   not yet been initialized. */
+static void
+copy_error_recovery (struct tavl_node *p,
+                     struct tavl_table *new, tavl_item_func *destroy)
+{
+  new->tavl_root = p;
+  if (p != NULL)
+    {
+      while (p->tavl_tag[1] == TAVL_CHILD)
+        p = p->tavl_link[1];
+      p->tavl_link[1] = NULL;
+    }
+  tavl_destroy (new, destroy);
+}
+
+/* Copies |org| to a newly created tree, which is returned.
+   If |copy != NULL|, each data item in |org| is first passed to |copy|,
+   and the return values are inserted into the tree,
+   with |NULL| return values taken as indications of failure.
+   On failure, destroys the partially created new tree,
+   applying |destroy|, if non-null, to each item in the new tree so far,
+   and returns |NULL|.
+   If |allocator != NULL|, it is used for allocation in the new tree.
+   Otherwise, the same allocator used for |org| is used. */
+struct tavl_table *
+tavl_copy (const struct tavl_table *org, tavl_copy_func *copy,
+          tavl_item_func *destroy, struct libavl_allocator *allocator)
+{
+  struct tavl_table *new;
+
+  const struct tavl_node *p;
+  struct tavl_node *q;
+  struct tavl_node rp, rq;
+
+  assert (org != NULL);
+  new = tavl_create (org->tavl_compare, org->tavl_param,
+                     allocator != NULL ? allocator : org->tavl_alloc);
+  if (new == NULL)
+    return NULL;
+
+  new->tavl_count = org->tavl_count;
+  if (new->tavl_count == 0)
+    return new;
+
+  p = &rp;
+  rp.tavl_link[0] = org->tavl_root;
+  rp.tavl_tag[0] = TAVL_CHILD;
+
+  q = &rq;
+  rq.tavl_link[0] = NULL;
+  rq.tavl_tag[0] = TAVL_THREAD;
+
+  for (;;)
+    {
+      if (p->tavl_tag[0] == TAVL_CHILD)
+        {
+          if (!copy_node (new, q, 0, p->tavl_link[0], copy))
+            {
+              copy_error_recovery (rq.tavl_link[0], new, destroy);
+              return NULL;
+            }
+
+          p = p->tavl_link[0];
+          q = q->tavl_link[0];
+        }
+      else
+        {
+          while (p->tavl_tag[1] == TAVL_THREAD)
+            {
+              p = p->tavl_link[1];
+              if (p == NULL)
+                {
+                  q->tavl_link[1] = NULL;
+                  new->tavl_root = rq.tavl_link[0];
+                  return new;
+                }
+
+              q = q->tavl_link[1];
+            }
+
+          p = p->tavl_link[1];
+          q = q->tavl_link[1];
+        }
+
+      if (p->tavl_tag[1] == TAVL_CHILD)
+        if (!copy_node (new, q, 1, p->tavl_link[1], copy))
+          {
+            copy_error_recovery (rq.tavl_link[0], new, destroy);
+            return NULL;
+          }
+    }
+}
+

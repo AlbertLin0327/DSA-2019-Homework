@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+<title>Transforming a TBST into a Vine - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Balancing-a-TBST.html" title="7.11 Balance">
+<link rel=Next href="Transforming-a-Vine-into-a-Balanced-TBST.html" title="7.11.2 From Vine to Balanced Tree">
+<link rel=Parent href="Balancing-a-TBST.html" title="7.11 Balance">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Transforming-a-TBST-into-a-Vine">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>7.11.1 From Tree to Vine</b></big></td>
+<td align=right>
+<a href="index.html#Transforming-a-TBST-into-a-Vine.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Transforming-a-Vine-into-a-Balanced-TBST.html" title="Skip Forward: 7.11.2 From Vine to Balanced Tree"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Balancing-a-TBST.html" title="Prev: 7.11 Balance"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Balancing-a-TBST.html" title="Up: 7.11 Balance"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Transforming-a-Vine-into-a-Balanced-TBST.html" title="Next: 7.11.2 From Vine to Balanced Tree"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>We could transform a threaded binary tree into a vine in the same way we
+did for unthreaded binary trees, by use of rotations
+(see <a href="Transforming-a-BST-into-a-Vine.html">Transforming a BST into a Vine</a>).  But one of the reasons we did
+it that way was to avoid use of a stack, which is no longer a
+problem.  It's now simpler to rearrange nodes by inorder
+traversal.
+
+   <p>We start by finding the minimum node in the tree as <i>p</i><!-- /@w -->, which will step
+through the tree in inorder.  During each trip through the main loop,
+we find <i>p</i><!-- /@w -->'s successor as <i>q</i><!-- /@w --> and make <i>p</i><!-- /@w --> the left child of <i>q</i><!-- /@w -->.  We
+also have to make sure that <i>p</i><!-- /@w -->'s right thread points to <i>q</i><!-- /@w -->.  That's
+all there is to it.
+
+   <p><a name="catalogue_002dentry_002dtbst_002d16"></a>
+<a name="index-TBST-tree_002dto_002dvine-function-410"></a>
+<pre class="format"><a href="TBST_tree-to-vine_function.c.txt">284</a>. &lt;<a name="284" href="TBST_tree-to-vine_function.c.txt">TBST tree-to-vine function 284</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>tree_to_vine</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btree_005fto_005fvine_007d-function-411"></a>  <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>p</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (<i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w -->;
+
+  <i>p</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w -->;
+  <b>while</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->)
+    <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+
+  <b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>tbst_node</b> *<i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1];
+      <b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] == <tt>TBST_CHILD</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>while</b><!-- /@w --> (<i>q</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] == <tt>TBST_CHILD</tt><!-- /@w -->)
+            <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0];
+          <i>p</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[1] = <tt>TBST_THREAD</tt><!-- /@w -->;
+          <i>p</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[1] = <i>q</i><!-- /@w -->;
+        }
+
+      <b>if</b><!-- /@w --> (<i>q</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+        <b>break</b><!-- /@w -->;
+
+      <i>q</i><!-- /@w -->-&gt;<i>tbst_tag</i><!-- /@w -->[0] = <tt>TBST_CHILD</tt><!-- /@w -->;
+      <i>q</i><!-- /@w -->-&gt;<i>tbst_link</i><!-- /@w -->[0] = <i>p</i><!-- /@w -->;
+      <i>p</i><!-- /@w --> = <i>q</i><!-- /@w -->;
+    }
+
+  <i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w --> = <i>p</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Balancing-a-TBST.html#282">282</a>.</small>
+
+   <p>Sometimes one trip through the main loop above will put the TBST into
+an inconsistent state, where two different nodes are the parent of a
+third node.  Such an inconsistency is always corrected in the next
+trip through the loop.  An example is warranted.  Suppose the original
+threaded binary tree looks like this, with nodes <i>p</i><!-- /@w --> and <i>q</i><!-- /@w --> for the
+initial iteration of the loop as marked:
+
+<div align="center"><a href="tbstbal1.txt"><img border=0 src="tbstbal1.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">The first trip through the loop makes <i>p</i><!-- /@w -->, 1, the child of <i>q</i><!-- /@w -->, 2, but
+<i>p</i><!-- /@w -->'s former parent's left child pointer still points to <i>p</i><!-- /@w -->.  We now
+have a situation where node 1 has two parents: both 2 and 3.  This
+diagram tries to show the situation by omitting the line that would
+otherwise lead down from 3 to 2:
+
+<div align="center"><a href="tbstbal2.txt"><img border=0 src="tbstbal2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent">On the other hand, node 2's right thread still points to 3, so on the
+next trip through the loop there is no trouble finding the new <i>p</i><!-- /@w -->'s
+successor.  Node 3 is made the parent of 2 and all is well.  This
+diagram shows the new <i>p</i><!-- /@w --> and <i>q</i><!-- /@w -->, then the fixed-up vine.  The only
+difference is that node 3 now, correctly, has 2 as its left child:
+
+<div align="center"><a href="tbstbal3.txt"><img border=0 src="tbstbal3.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   </body></html>
+

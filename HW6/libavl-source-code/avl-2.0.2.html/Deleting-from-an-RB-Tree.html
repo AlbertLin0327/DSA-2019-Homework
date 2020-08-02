@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+<title>Deleting from an RB Tree - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Initial-Black-Insertion-in-an-RB-Tree.html" title="6.4.5 Aside: Initial Black Insertion">
+<link rel=Next href="Deleting-an-RB-Node-Step-2-_002d-Delete.html" title="6.5.1 Step 2: Delete">
+<link rel=Parent href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Deleting-from-an-RB-Tree">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>6.5 Deletion</b></big></td>
+<td align=right>
+<a href="index.html#Deleting-from-an-RB-Tree.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Inserting-into-an-RB-Tree.html" title="Skip Back: 6.4 Insertion"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Testing-RB-Trees.html" title="Skip Forward: 6.6 Testing"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Initial-Black-Insertion-in-an-RB-Tree.html" title="Prev: 6.4.5 Aside: Initial Black Insertion"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Red_002dBlack-Trees.html" title="Up: 6 Red-Black Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html" title="Next: 6.5.1 Step 2: Delete"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The process of deletion from an RB tree is very much in line with the
+other algorithms for balanced trees that we've looked at already.  This
+time, the steps are:
+
+     <ol type=1 start=1>
+<li><strong>Search</strong> for the item to delete.
+
+     <li><strong>Delete</strong> the item.
+
+     <li><strong>Rebalance</strong> the tree as necessary.
+
+     <li><strong>Finish up</strong> and return.
+        </ol>
+
+   <p>Here's an outline of the code.  Step 1 is already done for us, because
+we can reuse the search code from AVL deletion.
+
+   <p><a name="catalogue_002dentry_002drb_002d2"></a>
+<a name="index-RB-item-deletion-function-320"></a>
+<pre class="format"><a href="RB_item_deletion_function.c.txt">220</a>. &lt;<a name="220" href="RB_item_deletion_function.c.txt">RB item deletion function 220</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>rb_delete</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>rb_table</b> *<i>tree</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>item</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007brb_005fdelete_007d-function-321"></a>  <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>pa</i><!-- /@w -->[<tt>RB_MAX_HEIGHT</tt><!-- /@w -->]; /* Nodes on stack. */
+  <b>unsigned</b><!-- /@w --> <b>char</b><!-- /@w --> <i>da</i><!-- /@w -->[<tt>RB_MAX_HEIGHT</tt><!-- /@w -->];   /* Directions moved from stack nodes. */
+  <b>int</b><!-- /@w --> <i>k</i><!-- /@w -->;                             /* Stack height. */
+
+  <b>struct</b><!-- /@w --> <b>rb_node</b> *<i>p</i><!-- /@w -->;    /* The node to delete, or a node part way to it. */
+  <b>int</b><!-- /@w --> <i>cmp</i><!-- /@w -->;              /* Result of comparison between <i>item</i><!-- /@w --> and <i>p</i><!-- /@w -->. */
+
+  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>item</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  &lt;<a href="Deleting-an-AVL-Node-Step-1-_002d-Search.html#165">Step 1: Search AVL tree for item to delete; avl =&gt; rb 165</a>&gt;
+  &lt;<a href="Deleting-an-RB-Node-Step-2-_002d-Delete.html#221">Step 2: Delete item from RB tree 221</a>&gt;
+  &lt;<a href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html#225">Step 3: Rebalance tree after RB deletion 225</a>&gt;
+  &lt;<a href="Deleting-an-RB-Node-Step-4-_002d-Finish-Up.html#232">Step 4: Finish up after RB deletion 232</a>&gt;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Operations-in-an-RB-Tree.html#196">196</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 14.4.
+
+<ul class="menu">
+<li><a accesskey="1" href="Deleting-an-RB-Node-Step-2-_002d-Delete.html">Deleting an RB Node Step 2 - Delete</a>
+<li><a accesskey="2" href="Deleting-an-RB-Node-Step-3-_002d-Rebalance.html">Deleting an RB Node Step 3 - Rebalance</a>
+<li><a accesskey="3" href="Deleting-an-RB-Node-Step-4-_002d-Finish-Up.html">Deleting an RB Node Step 4 - Finish Up</a>
+<li><a accesskey="4" href="RB-Deletion-Symmetric-Case.html">RB Deletion Symmetric Case</a>
+</ul>
+
+   </body></html>
+

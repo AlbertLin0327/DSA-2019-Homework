@@ -1,0 +1,55 @@
+struct traverser
+  {
+    struct bst_table *table;                  /* Tree being traversed. */
+    struct bst_node *node;                    /* Current node in tree. */
+    struct bst_node *stack[BST_MAX_HEIGHT];   /* Parent nodes to revisit. */
+    size_t height;                            /* Number of nodes in |stack|. */
+  };
+
+/* Initializes |trav| for |tree|.
+   Returns data item in |tree| with the smallest value,
+   or |NULL| if |tree| is empty.
+   In the former case, |next_item()| may be called with |trav|
+   to retrieve additional data items. */
+void *
+first_item (struct bst_table *tree, struct traverser *trav)
+{
+  assert (tree != NULL && trav != NULL);
+  trav->table = tree;
+  trav->node = tree->bst_root;
+  trav->height = 0;
+  return next_item (trav);
+}
+
+/* Returns the next data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|.
+   In the former case |next_item()| may be called again
+   to retrieve the next item. */
+void *
+next_item (struct traverser *trav)
+{
+  struct bst_node *node;
+
+  assert (trav != NULL);
+  node = trav->node;
+  while (node != NULL)
+    {
+      if (trav->height >= BST_MAX_HEIGHT)
+        {
+          fprintf (stderr, "tree too deep\n");
+          exit (EXIT_FAILURE);
+        }
+
+      trav->stack[trav->height++] = node;
+      node = node->bst_link[0];
+    }
+
+  if (trav->height == 0)
+    return NULL;
+
+  node = trav->stack[--trav->height];
+  trav->node = node->bst_link[1];
+  return node->bst_data;
+}
+

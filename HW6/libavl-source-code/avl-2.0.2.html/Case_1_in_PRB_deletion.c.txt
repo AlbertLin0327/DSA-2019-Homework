@@ -1,0 +1,5 @@
+q->prb_link[dir] = p->prb_link[0];
+if (q->prb_link[dir] != NULL)
+  q->prb_link[dir]->prb_parent = p->prb_parent;
+
+f = q;

@@ -1,0 +1,28 @@
+struct tavl_node *w;
+
+assert (x->tavl_balance == -1);
+w = x->tavl_link[0];
+x->tavl_link[0] = w->tavl_link[1];
+w->tavl_link[1] = x;
+y->tavl_link[1] = w->tavl_link[0];
+w->tavl_link[0] = y;
+if (w->tavl_balance == +1)
+  x->tavl_balance = 0, y->tavl_balance = -1;
+else if (w->tavl_balance == 0)
+  x->tavl_balance = y->tavl_balance = 0;
+else /* |w->tavl_balance == -1| */
+  x->tavl_balance = +1, y->tavl_balance = 0;
+w->tavl_balance = 0;
+if (w->tavl_tag[0] == TAVL_THREAD)
+  {
+    y->tavl_tag[1] = TAVL_THREAD;
+    y->tavl_link[1] = w;
+    w->tavl_tag[0] = TAVL_CHILD;
+  }
+if (w->tavl_tag[1] == TAVL_THREAD)
+  {
+    x->tavl_tag[0] = TAVL_THREAD;
+    x->tavl_link[0] = w;
+    w->tavl_tag[1] = TAVL_CHILD;
+  }
+q->tavl_link[dir] = w;

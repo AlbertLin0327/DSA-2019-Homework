@@ -1,0 +1,16 @@
+/* Characterizes a link as a child pointer or a thread. */
+enum tavl_tag
+  {
+    TAVL_CHILD,                     /* Child pointer. */
+    TAVL_THREAD                     /* Thread. */
+  };
+
+/* An TAVL tree node. */
+struct tavl_node
+  {
+    struct tavl_node *tavl_link[2]; /* Subtrees. */
+    void *tavl_data;                /* Pointer to data. */
+    unsigned char tavl_tag[2];      /* Tag fields. */
+    signed char tavl_balance;       /* Balance factor. */
+  };
+

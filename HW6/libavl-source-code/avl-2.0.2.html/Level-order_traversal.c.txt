@@ -1,0 +1,31 @@
+/* Calls |visit| for each of the nodes in |tree| in level order.
+   Returns nonzero if successful, zero if out of memory. */
+static int
+bst_traverse_level_order (struct bst_table *tree, bst_item_func *visit)
+{
+  struct bst_node **queue;
+  size_t head, tail;
+
+  if (tree->bst_count == 0)
+    return 1;
+
+  queue = tree->bst_alloc->libavl_malloc (tree->bst_alloc,
+                                          sizeof *queue * tree->bst_count);
+  if (queue == NULL)
+    return 0;
+
+  head = tail = 0;
+  queue[head++] = tree->bst_root;
+  while (head != tail)
+    {
+      struct bst_node *cur = queue[tail++];
+      visit (cur->bst_data, tree->bst_param);
+      if (cur->bst_link[0] != NULL)
+        queue[head++] = cur->bst_link[0];
+      if (cur->bst_link[1] != NULL)
+        queue[head++] = cur->bst_link[1];
+    }
+  tree->bst_alloc->libavl_free (tree->bst_alloc, queue);
+
+  return 1;
+}

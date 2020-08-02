@@ -1,0 +1,14 @@
+n = tree->prb_alloc->libavl_malloc (tree->prb_alloc, sizeof *p);
+if (n == NULL)
+  return NULL;
+
+tree->prb_count++;
+n->prb_link[0] = n->prb_link[1] = NULL;
+n->prb_parent = q;
+n->prb_data = item;
+if (q != NULL)
+  q->prb_link[dir] = n;
+else
+  tree->prb_root = n;
+n->prb_color = PRB_RED;
+

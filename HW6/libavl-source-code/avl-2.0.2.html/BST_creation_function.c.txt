@@ -1,0 +1,29 @@
+/* Creates and returns a new table
+   with comparison function |compare| using parameter |param|
+   and memory allocator |allocator|.
+   Returns |NULL| if memory allocation failed. */
+struct bst_table *
+bst_create (bst_comparison_func *compare, void *param,
+            struct libavl_allocator *allocator)
+{
+  struct bst_table *tree;
+
+  assert (compare != NULL);
+
+  if (allocator == NULL)
+    allocator = &bst_allocator_default;
+
+  tree = allocator->libavl_malloc (allocator, sizeof *tree);
+  if (tree == NULL)
+    return NULL;
+
+  tree->bst_root = NULL;
+  tree->bst_compare = compare;
+  tree->bst_param = param;
+  tree->bst_alloc = allocator;
+  tree->bst_count = 0;
+  tree->bst_generation = 0;
+
+  return tree;
+}
+

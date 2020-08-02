@@ -1,0 +1,46 @@
+/* Attempts to insert |item| into |tree|.
+   If |item| is inserted successfully, it is returned and |trav| is
+   initialized to its location.
+   If a duplicate is found, it is returned and |trav| is initialized to
+   its location.  No replacement of the item occurs.
+   If a memory allocation failure occurs, |NULL| is returned and |trav|
+   is initialized to the null item. */
+void *
+pbst_t_insert (struct pbst_traverser *trav, struct pbst_table *tree,
+               void *item)
+{
+  struct pbst_node *p, *q; /* Current node in search and its parent. */
+  int dir;                 /* Side of |q| on which |p| is located. */
+  struct pbst_node *n;     /* Newly inserted node. */
+
+  assert (trav != NULL && tree != NULL && item != NULL);
+
+  trav->pbst_table = tree;
+  for (q = NULL, p = tree->pbst_root; p != NULL; q = p, p = p->pbst_link[dir])
+    {
+      int cmp = tree->pbst_compare (item, p->pbst_data, tree->pbst_param);
+      if (cmp == 0)
+        {
+          trav->pbst_node = p;
+          return p->pbst_data;
+        }
+      dir = cmp > 0;
+    }
+
+  trav->pbst_node = n =
+    tree->pbst_alloc->libavl_malloc (tree->pbst_alloc, sizeof *p);
+  if (n == NULL)
+    return NULL;
+
+  tree->pbst_count++;
+  n->pbst_link[0] = n->pbst_link[1] = NULL;
+  n->pbst_parent = q;
+  n->pbst_data = item;
+  if (q != NULL)
+    q->pbst_link[dir] = n;
+  else
+    tree->pbst_root = n;
+
+  return item;
+}
+

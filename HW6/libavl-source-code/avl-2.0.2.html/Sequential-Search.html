@@ -1,0 +1,121 @@
+<html lang="en">
+<head>
+<title>Sequential Search - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Next href="Sequential-Search-with-Sentinel.html" title="3.2 Sequential Search with Sentinel">
+<link rel=Parent href="Search-Algorithms.html" title="3 Search Algorithms">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Sequential-Search">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>3.1 Sequential Search</b></big></td>
+<td align=right>
+<a href="index.html#Sequential-Search.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<a href="Sequential-Search-with-Sentinel.html" title="Skip Forward: 3.2 Sequential Search with Sentinel"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Search-Algorithms.html" title="Prev: 3 Search Algorithms"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Search-Algorithms.html" title="Up: 3 Search Algorithms"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Sequential-Search-with-Sentinel.html" title="Next: 3.2 Sequential Search with Sentinel"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Suppose that you have a bunch of things (books, magazines, CDs, <small class="dots">...</small>)
+in a pile, and you're looking for one of them.  You'd probably start by
+looking at the item at the top of the pile to check whether it was the
+one you were looking for.  If it wasn't, you'd check the next item down
+the pile, and so on, until you either found the one you wanted or ran
+out of items.
+
+   <p>In computer science terminology, this is a <dfn>sequential search</dfn> (see <a href="Glossary.html#sequential%20search">sequential search</a>). 
+It is easy to implement sequential search for an array or a linked list. 
+If, for the moment, we limit ourselves to items of type <b>int</b><!-- /@w -->, we can
+write a function to sequentially search an array like this:
+
+   <p><a name="index-sequentially-search-an-array-of-_0040w_007b_0040b_007bint_007d_007ds-24"></a>
+<pre class="format"><a href="Sequentially_search_an_array_of__7cint_7cs.c.txt">16</a>. &lt;<a name="16" href="Sequentially_search_an_array_of__7cint_7cs.c.txt">Sequentially search an array of <b>int</b><!-- /@w -->s 16</a>&gt; =
+/* Returns the smallest <i>i</i><!-- /@w --> such that <i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>key</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or -1 if <i>key</i><!-- /@w --> is not in <i>array</i><!-- /@w -->[]. 
+   <i>array</i><!-- /@w -->[] must be an array of <i>n</i><!-- /@w --> <b>int</b><!-- /@w -->s. */
+<b>int</b><!-- /@w --> <br><i>seq_search</i><!-- /@w --> (<b>int</b><!-- /@w --> <i>array</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>key</i><!-- /@w -->) <br>{
+  <b>int</b><!-- /@w --> <i>i</i><!-- /@w -->;
+
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = 0; <i>i</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>i</i><!-- /@w -->++)
+    <b>if</b><!-- /@w --> (<i>array</i><!-- /@w -->[<i>i</i><!-- /@w -->] == <i>key</i><!-- /@w -->)
+      <b>return</b><!-- /@w --> <i>i</i><!-- /@w -->;
+  <b>return</b><!-- /@w --> -1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Answers-for-Chapter-3.html#595">595</a> and <a href="Answers-for-Chapter-3.html#600">600</a>.</small>
+
+   <p>We can hardly hope to improve on the data requirements, space, or
+complexity of simple sequential search, as they're about as good as we
+can want.  But the speed of sequential search leaves something to be
+desired.  The next section describes a simple modification of the
+sequential search algorithm that can sometimes lead to big
+improvements in performance.
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201998b">Knuth 1998b</a>], algorithm 6.1S;
+[<a href="References.html#Kernighan%201976">Kernighan 1976</a>], section 8.2;
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 11.2;
+[<a href="References.html#Bentley%202000">Bentley 2000</a>], sections 9.2 and 13.2, appendix 1.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Write a simple test framework for <i>seq_search</i><!-- /@w -->().  It should read sample
+data from <i>stdin</i><!-- /@w --> and collect them into an array, then search for each
+item in the array in turn and compare the results to those expected,
+reporting any discrepancies on <i>stdout</i><!-- /@w --> and exiting with an appropriate
+return value.  You need not allow for the possibility of duplicate input
+values and may limit the maximum number of input values. 
+[<a href="Answers-for-Chapter-3.html#3%2d1%231">answer</a>]
+
+   </body></html>
+

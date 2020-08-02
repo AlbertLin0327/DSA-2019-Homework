@@ -1,0 +1,29 @@
+z = (struct rtavl_node *) &tree->rtavl_root;
+y = tree->rtavl_root;
+if (tree->rtavl_root != NULL)
+  for (q = z, p = y; ; q = p, p = p->rtavl_link[dir])
+    {
+      int cmp = tree->rtavl_compare (item, p->rtavl_data, tree->rtavl_param);
+      if (cmp == 0)
+        return &p->rtavl_data;
+
+      if (p->rtavl_balance != 0)
+        z = q, y = p, k = 0;
+      da[k++] = dir = cmp > 0;
+
+      if (dir == 0)
+        {
+          if (p->rtavl_link[0] == NULL)
+            break;
+        }
+      else /* |dir == 1| */
+        {
+          if (p->rtavl_rtag == RTAVL_THREAD)
+            break;
+        }
+    }
+else
+  {
+    p = (struct rtavl_node *) &tree->rtavl_root;
+    dir = 0;
+  }

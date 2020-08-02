@@ -1,0 +1,9 @@
+/* |s| should point to a decimal representation of an integer.
+   Returns the value of |s|, if successful, or 0 on failure. */
+static int
+stoi (const char *s)
+{
+  long x = strtol (s, NULL, 10);
+  return x >= INT_MIN && x <= INT_MAX ? x : 0;
+}
+

@@ -1,0 +1,32 @@
+struct rtrb_node *s;
+int j = k++;
+
+for (;;)
+  {
+    da[k] = 1;
+    pa[k++] = r;
+    s = r->rtrb_link[1];
+    if (s->rtrb_rtag == RTRB_THREAD)
+      break;
+
+    r = s;
+  }
+
+da[j] = 0;
+pa[j] = pa[j - 1]->rtrb_link[da[j - 1]] = s;
+
+if (s->rtrb_link[0] != NULL)
+  r->rtrb_link[1] = s->rtrb_link[0];
+else
+  {
+    r->rtrb_rtag = RTRB_THREAD;
+    r->rtrb_link[1] = s;
+  }
+
+s->rtrb_link[0] = p->rtrb_link[0];
+s->rtrb_link[1] = p->rtrb_link[1];
+s->rtrb_rtag = p->rtrb_rtag;
+
+t = s->rtrb_color;
+s->rtrb_color = p->rtrb_color;
+p->rtrb_color = t;

@@ -1,0 +1,183 @@
+<html lang="en">
+<head>
+<title>Testing Overflow - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Test-Set-Generation.html" title="4.14.2 Test Set Generation">
+<link rel=Next href="Memory-Manager.html" title="4.14.4 Memory Manager">
+<link rel=Parent href="Testing-BST-Functions.html" title="4.14 Testing">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Testing-Overflow">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.14.3 Testing Overflow</b></big></td>
+<td align=right>
+<a href="index.html#Testing-Overflow.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Test-Set-Generation.html" title="Skip Back: 4.14.2 Test Set Generation"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Memory-Manager.html" title="Skip Forward: 4.14.4 Memory Manager"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Test-Set-Generation.html" title="Prev: 4.14.2 Test Set Generation"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Testing-BST-Functions.html" title="Up: 4.14 Testing"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Memory-Manager.html" title="Next: 4.14.4 Memory Manager"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Testing for overflow requires an entirely different set of test
+functions.  The idea is to create a too-tall tree using one of the
+pathological insertion orders (ascending, descending, zig-zag,
+shifted ascending), then try out each of the functions that can
+overflow on it and make sure that they behave as they should.
+
+   <p>There is a separate test function for each function that can overflow a
+stack but which is not tested by <i>test</i><!-- /@w -->().  These functions are called
+by driver function <i>test_overflow</i><!-- /@w -->(), which also takes care of creating,
+populating, and destroying the tree.
+
+   <p><a name="index-BST-overflow-test-function-182"></a>
+<pre class="format"><a href="BST_overflow_test_function.c.txt">122</a>. &lt;<a name="122" href="BST_overflow_test_function.c.txt">BST overflow test function 122</a>&gt; =
+&lt;<a href="Testing-Overflow.html#124">Overflow testers 124</a>&gt;
+
+/* Tests the tree routines for proper handling of overflows.
+   Inserting the <i>n</i><!-- /@w --> elements of <i>order</i><!-- /@w -->[] should produce a tree
+   with height greater than <tt>BST_MAX_HEIGHT</tt><!-- /@w -->.
+   Uses <i>allocator</i><!-- /@w --> as the allocator for tree and node data.
+   Use <i>verbosity</i><!-- /@w --> to set the level of chatter on <i>stdout</i><!-- /@w -->. */
+<b>int</b><!-- /@w --> <br><i>test_overflow</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>int</b><!-- /@w --> <i>order</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005foverflow_007d-function-183"></a>  /* An overflow tester function. */
+  <b>typedef</b><!-- /@w --> <b>int</b><!-- /@w --> <i>test_func</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->);
+
+  /* An overflow tester. */
+  <b>struct</b><!-- /@w --> <b>test</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>test_func</i><!-- /@w --> *<i>func</i><!-- /@w -->;                  /* Tester function. */
+      <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>name</i><!-- /@w -->;                 /* Test name. */
+    };
+
+  /* All the overflow testers. */
+  <b>static</b><!-- /@w --> <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>test</b> <i>test</i><!-- /@w -->[] = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      {<i>test_bst_t_first</i><!-- /@w -->, <tt>"first item"</tt>},
+      {<i>test_bst_t_last</i><!-- /@w -->, <tt>"last item"</tt>},
+      {<i>test_bst_t_find</i><!-- /@w -->, <tt>"find item"</tt>},
+      {<i>test_bst_t_insert</i><!-- /@w -->, <tt>"insert item"</tt>},
+      {<i>test_bst_t_next</i><!-- /@w -->, <tt>"next item"</tt>},
+      {<i>test_bst_t_prev</i><!-- /@w -->, <tt>"previous item"</tt>},
+      {<i>test_bst_copy</i><!-- /@w -->, <tt>"copy tree"</tt>},
+    };
+
+  <b>const</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>test</b> *<i>i</i><!-- /@w -->;                 /* Iterator. */
+
+  /* Run all the overflow testers. */
+  <b>for</b><!-- /@w --> (<i>i</i><!-- /@w --> = <i>test</i><!-- /@w -->; <i>i</i><!-- /@w --> &lt; <i>test</i><!-- /@w --> + <b>sizeof</b><!-- /@w --> <i>test</i><!-- /@w --> / <b>sizeof</b><!-- /@w --> *<i>test</i><!-- /@w -->; <i>i</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->;
+      <b>int</b><!-- /@w --> <i>j</i><!-- /@w -->;
+
+      <b>if</b><!-- /@w --> (<i>verbosity</i><!-- /@w --> &gt;= 2) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"  Running %s test...\n"</tt>, <i>i</i><!-- /@w -->-&gt;<i>name</i><!-- /@w -->);
+
+      <i>tree</i><!-- /@w --> = <i>bst_create</i><!-- /@w --> (<i>compare_ints</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->, <i>allocator</i><!-- /@w -->);
+      <b>if</b><!-- /@w --> (<i>tree</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>printf</i><!-- /@w --> (<tt>"    Out of memory creating tree.\n"</tt>);
+          <b>return</b><!-- /@w --> 1;
+        }
+
+      <b>for</b><!-- /@w --> (<i>j</i><!-- /@w --> = 0; <i>j</i><!-- /@w --> &lt; <i>n</i><!-- /@w -->; <i>j</i><!-- /@w -->++) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <b>void</b><!-- /@w --> **<i>p</i><!-- /@w --> = <i>bst_probe</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>order</i><!-- /@w -->[<i>j</i><!-- /@w -->]);
+          <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>p</i><!-- /@w --> != &amp;<i>order</i><!-- /@w -->[<i>j</i><!-- /@w -->]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+              <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>verbosity</i><!-- /@w --> &gt;= 0)
+                <i>printf</i><!-- /@w --> (<tt>"    Out of memory in insertion.\n"</tt>);
+              <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>p</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>printf</i><!-- /@w --> (<tt>"    Duplicate item in tree!\n"</tt>);              
+              <i>bst_destroy</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+              <b>return</b><!-- /@w --> <i>p</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->;
+            }
+        }
+
+      <b>if</b><!-- /@w --> (<i>i</i><!-- /@w -->-&gt;<i>func</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>n</i><!-- /@w -->) == 0)
+        <b>return</b><!-- /@w --> 0;
+
+      <b>if</b><!-- /@w --> (<i>verify_tree</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>order</i><!-- /@w -->, <i>n</i><!-- /@w -->) == 0)
+        <b>return</b><!-- /@w --> 0;
+      <i>bst_destroy</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <tt>NULL</tt><!-- /@w -->);
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Testing-BST-Functions.html#98">98</a>, <a href="Testing-AVL-Trees.html#186">186</a>, <a href="Testing-RB-Trees.html#238">238</a>, <a href="Testing-TBSTs.html#290">290</a>, <a href="Testing-TAVL-Trees.html#330">330</a>, <a href="Testing-TRB-Trees.html#368">368</a>, <a href="Testing-RTBSTs.html#411">411</a>, <a href="Testing-RTAVL-Trees.html#449">449</a>, <a href="Testing-RTRB-Trees.html#482">482</a>, <a href="Testing-PBSTs.html#515">515</a>, <a href="Testing-PAVL-Trees.html#548">548</a>, and <a href="Testing-PRB-Trees.html#583">583</a>.</small>
+
+   <p><a name="index-test-prototypes-184"></a>
+<pre class="format"><a href="Test_prototypes.c.txt">123</a>. &lt;<a name="123" href="Test_prototypes.c.txt">Test prototypes 101</a>&gt; +=
+<b>int</b><!-- /@w --> <i>test_overflow</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *, <b>int</b><!-- /@w --> <i>order</i><!-- /@w -->[], <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>int</b><!-- /@w --> <i>verbosity</i><!-- /@w -->);
+</pre>
+   <p>There is an overflow tester for almost every function that can overflow. 
+Here is one example:
+
+   <p><a name="index-overflow-testers-185"></a>
+<pre class="format"><a href="Overflow_testers.c.txt">124</a>. &lt;<a name="124" href="Overflow_testers.c.txt">Overflow testers 124</a>&gt; =
+<b>static</b><!-- /@w --> <b>int</b><!-- /@w --> <br><i>test_bst_t_first</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>int</b><!-- /@w --> <i>n</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btest_005fbst_005ft_005ffirst_007d-function-186"></a>  <b>struct</b><!-- /@w --> <b>bst_traverser</b> <i>trav</i><!-- /@w -->;
+  <b>int</b><!-- /@w --> *<i>first</i><!-- /@w -->;
+
+  <i>first</i><!-- /@w --> = <i>bst_t_first</i><!-- /@w --> (&amp;<i>trav</i><!-- /@w -->, <i>tree</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>first</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || *<i>first</i><!-- /@w --> != 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>printf</i><!-- /@w --> (<tt>"    First item test failed: expected 0, got %d\n"</tt>,
+              <i>first</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? *<i>first</i><!-- /@w --> : -1);
+      <b>return</b><!-- /@w --> 0;
+    }
+
+  <b>return</b><!-- /@w --> 1;
+}
+</pre>
+   <p class="noindent"><small>See also <a href="Answers-for-Chapter-4.html#644">644</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Testing-Overflow.html#122">122</a>.</small></div>
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Write the rest of the overflow tester functions.  (The <i>test_overflow</i><!-- /@w -->()
+function lists all of them.) 
+[<a href="Answers-for-Chapter-4.html#4%2d14%2d3%231">answer</a>]
+
+   </body></html>
+

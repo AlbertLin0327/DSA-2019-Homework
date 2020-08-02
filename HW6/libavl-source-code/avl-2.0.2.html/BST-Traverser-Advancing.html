@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>BST Traverser Advancing - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="BST-Traverser-Copying.html" title="4.9.3.6 Initialization by Copying">
+<link rel=Next href="BST-Traverser-Retreating.html" title="4.9.3.8 Backing Up to the Previous Node">
+<link rel=Parent href="Better-Iterative-Traversal.html" title="4.9.3 Better Iterative Traversal">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="BST-Traverser-Advancing">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.9.3.7 Advancing to the Next Node</b></big></td>
+<td align=right>
+<a href="index.html#BST-Traverser-Advancing.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="BST-Traverser-Copying.html" title="Skip Back: 4.9.3.6 Initialization by Copying"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="BST-Traverser-Retreating.html" title="Skip Forward: 4.9.3.8 Backing Up to the Previous Node"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="BST-Traverser-Copying.html" title="Prev: 4.9.3.6 Initialization by Copying"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Better-Iterative-Traversal.html" title="Up: 4.9.3 Better Iterative Traversal"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="BST-Traverser-Retreating.html" title="Next: 4.9.3.8 Backing Up to the Previous Node"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The algorithm of <i>bst_t_next</i><!-- /@w -->(), the function for finding a successor,
+divides neatly into three cases.  Two of these are the ones that we
+discussed earlier in the introduction to this kind of traverser
+(see <a href="Better-Iterative-Traversal.html">Better Iterative Traversal</a>).  The third case occurs when the
+last node returned was <tt>NULL</tt><!-- /@w -->, in which case we return the least node in
+the table, in accordance with the semantics for libavl tables.  The
+function outline is this:
+
+   <p><a name="catalogue_002dentry_002dbst_002d16"></a>
+<a name="catalogue_002dentry_002dbst_002d17"></a>
+<a name="index-BST-traverser-advance-function-109"></a>
+<pre class="format"><a href="BST_traverser_advance_function.c.txt">70</a>. &lt;<a name="70" href="BST_traverser_advance_function.c.txt">BST traverser advance function 70</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>bst_t_next</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_traverser</b> *<i>trav</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005ft_005fnext_007d-function-110"></a>  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>x</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w --> != <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->-&gt;<i>bst_generation</i><!-- /@w -->)
+    <i>trav_refresh</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+
+  <i>x</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_node</i><!-- /@w -->;
+  <b>if</b><!-- /@w --> (<i>x</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>return</b><!-- /@w --> <i>bst_t_first</i><!-- /@w --> (<i>trav</i><!-- /@w -->, <i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->);
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      &lt;<a href="BST-Traverser-Advancing.html#71">Handle case where <i>x</i><!-- /@w --> has a right child 71</a>&gt;
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      &lt;<a href="BST-Traverser-Advancing.html#72">Handle case where <i>x</i><!-- /@w --> has no right child 72</a>&gt;
+    }
+  <i>trav</i><!-- /@w -->-&gt;<i>bst_node</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+
+  <b>return</b><!-- /@w --> <i>x</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Better-Iterative-Traversal.html#63">63</a>.</small>
+
+   <p>The case where the current node has a right child is accomplished by
+stepping to the right, then to the left until we can't go any farther,
+as discussed in detail earlier.  The only difference is that we must
+check for stack overflow.  When stack overflow does occur, we recover by
+calling <i>trav_balance</i><!-- /@w -->(), then restarting <i>bst_t_next</i><!-- /@w -->() using a
+tail-recursive call.  The tail recursion will never happen more than
+once, because <i>trav_balance</i><!-- /@w -->() ensures that the tree's height is small
+enough that the stack cannot overflow again:
+
+   <p><a name="index-handle-case-where-_0040w_007b_0040i_007bx_007d_007d-has-a-right-child-111"></a>
+<pre class="format"><a href="Handle_case_where__7cx_7c_has_a_right_child.c.txt">71</a>. &lt;<a name="71" href="Handle_case_where__7cx_7c_has_a_right_child.c.txt">Handle case where <i>x</i><!-- /@w --> has a right child 71</a>&gt; =
+<b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>bst_balance</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->);
+    <b>return</b><!-- /@w --> <i>bst_t_next</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+  }
+
+<i>trav</i><!-- /@w -->-&gt;<i>bst_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w -->++] = <i>x</i><!-- /@w -->;
+<i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+
+<b>while</b><!-- /@w --> (<i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>bst_balance</i><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_table</i><!-- /@w -->);
+        <b>return</b><!-- /@w --> <i>bst_t_next</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+      }
+
+    <i>trav</i><!-- /@w -->-&gt;<i>bst_stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w -->++] = <i>x</i><!-- /@w -->;
+    <i>x</i><!-- /@w --> = <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+  }
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Traverser-Advancing.html#70">70</a>.</small>
+
+   <p>In the case where the current node has no right child, we move upward in
+the tree based on the stack of parent pointers that we saved, as
+described before.  When the stack underflows, we know that we've run out
+of nodes in the tree:
+
+   <p><a name="index-handle-case-where-_0040w_007b_0040i_007bx_007d_007d-has-no-right-child-112"></a>
+<pre class="format"><a href="Handle_case_where__7cx_7c_has_no_right_child.c.txt">72</a>. &lt;<a name="72" href="Handle_case_where__7cx_7c_has_no_right_child.c.txt">Handle case where <i>x</i><!-- /@w --> has no right child 72</a>&gt; =
+<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>y</i><!-- /@w -->;
+
+<b>do</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w --> == 0) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+        <i>trav</i><!-- /@w -->-&gt;<i>bst_node</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+        <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+      }
+
+    <i>y</i><!-- /@w --> = <i>x</i><!-- /@w -->;
+    <i>x</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>bst_stack</i><!-- /@w -->[&ndash;<i>trav</i><!-- /@w -->-&gt;<i>bst_height</i><!-- /@w -->];
+  } <br><b>while</b><!-- /@w --> (<i>y</i><!-- /@w --> == <i>x</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Traverser-Advancing.html#70">70</a>.</small>
+
+   </body></html>
+

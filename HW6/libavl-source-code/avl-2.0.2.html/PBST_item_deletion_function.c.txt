@@ -1,0 +1,76 @@
+/* Deletes from |tree| and returns an item matching |item|.
+   Returns a null pointer if no matching item found. */
+void *
+pbst_delete (struct pbst_table *tree, const void *item)
+{
+  struct pbst_node *p; /* Traverses tree to find node to delete. */
+  struct pbst_node *q; /* Parent of |p|. */
+  int dir;             /* Side of |q| on which |p| is linked. */
+
+  assert (tree != NULL && item != NULL);
+
+  if (tree->pbst_root == NULL)
+    return NULL;
+
+  p = tree->pbst_root;
+  for (;;)
+    {
+      int cmp = tree->pbst_compare (item, p->pbst_data, tree->pbst_param);
+      if (cmp == 0)
+        break;
+
+      dir = cmp > 0;
+      p = p->pbst_link[dir];
+      if (p == NULL)
+        return NULL;
+    }
+  item = p->pbst_data;
+
+  q = p->pbst_parent;
+  if (q == NULL)
+    {
+      q = (struct pbst_node *) &tree->pbst_root;
+      dir = 0;
+    }
+
+  if (p->pbst_link[1] == NULL)
+    {
+      q->pbst_link[dir] = p->pbst_link[0];
+      if (q->pbst_link[dir] != NULL)
+        q->pbst_link[dir]->pbst_parent = p->pbst_parent;
+    }
+  else
+    {
+      struct pbst_node *r = p->pbst_link[1];
+      if (r->pbst_link[0] == NULL)
+        {
+          r->pbst_link[0] = p->pbst_link[0];
+          q->pbst_link[dir] = r;
+          r->pbst_parent = p->pbst_parent;
+          if (r->pbst_link[0] != NULL)
+            r->pbst_link[0]->pbst_parent = r;
+        }
+      else
+        {
+          struct pbst_node *s = r->pbst_link[0];
+          while (s->pbst_link[0] != NULL)
+            s = s->pbst_link[0];
+          r = s->pbst_parent;
+          r->pbst_link[0] = s->pbst_link[1];
+          s->pbst_link[0] = p->pbst_link[0];
+          s->pbst_link[1] = p->pbst_link[1];
+          q->pbst_link[dir] = s;
+          if (s->pbst_link[0] != NULL)
+            s->pbst_link[0]->pbst_parent = s;
+          s->pbst_link[1]->pbst_parent = s;
+          s->pbst_parent = p->pbst_parent;
+          if (r->pbst_link[0] != NULL)
+            r->pbst_link[0]->pbst_parent = r;
+        }
+    }
+
+  tree->pbst_alloc->libavl_free (tree->pbst_alloc, p);
+  tree->pbst_count--;
+  return (void *) item;
+}
+

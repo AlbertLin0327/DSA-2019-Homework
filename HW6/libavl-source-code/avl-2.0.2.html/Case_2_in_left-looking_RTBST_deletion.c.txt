@@ -1,0 +1,3 @@
+q->rtbst_link[dir] = p->rtbst_link[dir];
+if (dir == 1)
+  q->rtbst_rtag = RTBST_THREAD;

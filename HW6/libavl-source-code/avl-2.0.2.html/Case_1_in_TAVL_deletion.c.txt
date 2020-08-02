@@ -1,0 +1,5 @@
+struct tavl_node *t = p->tavl_link[0];
+while (t->tavl_tag[1] == TAVL_CHILD)
+  t = t->tavl_link[1];
+t->tavl_link[1] = p->tavl_link[1];
+q->tavl_link[dir] = p->tavl_link[0];

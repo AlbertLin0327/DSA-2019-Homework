@@ -1,0 +1,6 @@
+/* Function types. */
+typedef int tbl_comparison_func (const void *tbl_a, const void *tbl_b,
+                                 void *tbl_param);
+typedef void tbl_item_func (void *tbl_item, void *tbl_param);
+typedef void *tbl_copy_func (void *tbl_item, void *tbl_param);
+

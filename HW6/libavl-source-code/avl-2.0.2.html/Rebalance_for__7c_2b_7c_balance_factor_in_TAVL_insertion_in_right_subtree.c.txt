@@ -1,0 +1,11 @@
+w = x;
+if (x->tavl_tag[0] == TAVL_THREAD)
+  {
+    x->tavl_tag[0] = TAVL_CHILD;
+    y->tavl_tag[1] = TAVL_THREAD;
+    y->tavl_link[1] = x;
+  }
+else
+  y->tavl_link[1] = x->tavl_link[0];
+x->tavl_link[0] = y;
+x->tavl_balance = y->tavl_balance = 0;

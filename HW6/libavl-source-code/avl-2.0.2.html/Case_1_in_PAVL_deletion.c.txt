@@ -1,0 +1,3 @@
+q->pavl_link[dir] = p->pavl_link[0];
+if (q->pavl_link[dir] != NULL)
+  q->pavl_link[dir]->pavl_parent = p->pavl_parent;

@@ -1,0 +1,142 @@
+/* Checks that |tree| is well-formed
+   and verifies that the values in |array[]| are actually in |tree|.
+   There must be |n| elements in |array[]| and |tree|.
+   Returns nonzero only if no errors detected. */
+static int
+verify_tree (struct bst_table *tree, int array[], size_t n)
+{
+  int okay = 1;
+
+  /* Check |tree|'s bst_count against that supplied. */
+  if (bst_count (tree) != n)
+    {
+      printf (" Tree count is %lu, but should be %lu.\n",
+              (unsigned long) bst_count (tree), (unsigned long) n);
+      okay = 0;
+    }
+
+  if (okay)
+    {
+      /* Recursively verify tree structure. */
+      size_t count;
+
+      recurse_verify_tree (tree->bst_root, &okay, &count, 0, INT_MAX);
+      if (count != n)
+        {
+          printf (" Tree has %lu nodes, but should have %lu.\n",
+                  (unsigned long) count, (unsigned long) n);
+          okay = 0;
+        }
+    }
+
+  if (okay)
+    {
+      /* Check that all the values in |array[]| are in |tree|. */
+      size_t i;
+
+      for (i = 0; i < n; i++)
+        if (bst_find (tree, &array[i]) == NULL)
+          {
+            printf (" Tree does not contain expected value %d.\n", array[i]);
+            okay = 0;
+          }
+    }
+
+  if (okay)
+    {
+      /* Check that |bst_t_first()| and |bst_t_next()| work properly. */
+      struct bst_traverser trav;
+      size_t i;
+      int prev = -1;
+      int *item;
+
+      for (i = 0, item = bst_t_first (&trav, tree); i < 2 * n && item != NULL;
+           i++, item = bst_t_next (&trav))
+        {
+          if (*item <= prev)
+            {
+              printf (" Tree out of order: %d follows %d in traversal\n",
+                      *item, prev);
+              okay = 0;
+            }
+
+          prev = *item;
+        }
+
+      if (i != n)
+        {
+          printf (" Tree should have %lu items, but has %lu in traversal\n",
+                  (unsigned long) n, (unsigned long) i);
+          okay = 0;
+        }
+    }
+
+  if (okay)
+    {
+      /* Check that |bst_t_last()| and |bst_t_prev()| work properly. */
+      struct bst_traverser trav;
+      size_t i;
+      int next = INT_MAX;
+      int *item;
+
+      for (i = 0, item = bst_t_last (&trav, tree); i < 2 * n && item != NULL;
+           i++, item = bst_t_prev (&trav))
+        {
+          if (*item >= next)
+            {
+              printf (" Tree out of order: %d precedes %d in traversal\n",
+                      *item, next);
+              okay = 0;
+            }
+
+          next = *item;
+        }
+
+      if (i != n)
+        {
+          printf (" Tree should have %lu items, but has %lu in reverse\n",
+                  (unsigned long) n, (unsigned long) i);
+          okay = 0;
+        }
+    }
+
+  if (okay)
+    {
+      /* Check that |bst_t_init()| works properly. */
+      struct bst_traverser init, first, last;
+      int *cur, *prev, *next;
+
+      bst_t_init (&init, tree);
+      bst_t_first (&first, tree);
+      bst_t_last (&last, tree);
+
+      cur = bst_t_cur (&init);
+      if (cur != NULL)
+        {
+          printf (" Inited traverser should be null, but is actually %d.\n",
+                  *cur);
+          okay = 0;
+        }
+
+      next = bst_t_next (&init);
+      if (next != bst_t_cur (&first))
+        {
+          printf (" Next after null should be %d, but is actually %d.\n",
+                  *(int *) bst_t_cur (&first), *next);
+          okay = 0;
+        }
+      bst_t_prev (&init);
+
+      prev = bst_t_prev (&init);
+      if (prev != bst_t_cur (&last))
+        {
+          printf (" Previous before null should be %d, but is actually %d.\n",
+                  *(int *) bst_t_cur (&last), *prev);
+          okay = 0;
+        }
+      bst_t_next (&init);
+    }
+
+  return okay;
+}
+

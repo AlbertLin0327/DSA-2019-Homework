@@ -1,0 +1,24 @@
+if (tree->pbst_root == NULL)
+  return NULL;
+
+p = tree->pbst_root;
+for (;;)
+  {
+    int cmp = tree->pbst_compare (item, p->pbst_data, tree->pbst_param);
+    if (cmp == 0)
+      break;
+
+    dir = cmp > 0;
+    p = p->pbst_link[dir];
+    if (p == NULL)
+      return NULL;
+  }
+item = p->pbst_data;
+
+q = p->pbst_parent;
+if (q == NULL)
+  {
+    q = (struct pbst_node *) &tree->pbst_root;
+    dir = 0;
+  }
+

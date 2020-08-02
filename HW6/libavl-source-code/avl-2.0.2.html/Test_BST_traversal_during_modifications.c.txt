@@ -1,0 +1,53 @@
+/* Test BST traversal during modifications. */
+for (i = 0; i < n; i++)
+  {
+    struct bst_traverser x, y, z;
+    int *deleted;
+
+    if (insert[i] == delete[i])
+      continue;
+
+    if (verbosity >= 2)
+      printf ("   Checking traversal from item %d...\n", insert[i]);
+
+    if (bst_t_find (&x, tree, &insert[i]) == NULL)
+      {
+        printf ("    Can't find item %d in tree!\n", insert[i]);
+        continue;
+      }
+
+    okay &= check_traverser (&x, insert[i], n, "Predeletion");
+
+    if (verbosity >= 3)
+      printf ("    Deleting item %d.\n", delete[i]);
+
+    deleted = bst_delete (tree, &delete[i]);
+    if (deleted == NULL || *deleted != delete[i])
+      {
+        okay = 0;
+        if (deleted == NULL)
+          printf ("    Deletion failed.\n");
+        else
+          printf ("    Wrong node %d returned.\n", *deleted);
+      }
+
+    bst_t_copy (&y, &x);
+
+    if (verbosity >= 3)
+      printf ("    Re-inserting item %d.\n", delete[i]);
+    if (bst_t_insert (&z, tree, &delete[i]) == NULL)
+      {
+        if (verbosity >= 0)
+          printf ("    Out of memory re-inserting item.\n");
+        bst_destroy (tree, NULL);
+        return 1;
+      }
+
+    okay &= check_traverser (&x, insert[i], n, "Postdeletion");
+    okay &= check_traverser (&y, insert[i], n, "Copied");
+    okay &= check_traverser (&z, delete[i], n, "Insertion");
+
+    if (!verify_tree (tree, insert, n))
+      return 0;
+  }
+

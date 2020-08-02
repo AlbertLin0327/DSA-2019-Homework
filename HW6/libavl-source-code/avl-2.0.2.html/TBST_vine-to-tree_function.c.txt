@@ -1,0 +1,47 @@
+/* Converts |tree|, which must be in the shape of a vine, into a balanced
+   tree. */
+static void
+vine_to_tree (struct tbst_table *tree)
+{
+  unsigned long vine;   /* Number of nodes in main vine. */
+  unsigned long leaves; /* Nodes in incomplete bottom level, if any. */
+  int height;           /* Height of produced balanced tree. */
+
+  leaves = tree->tbst_count + 1;
+  for (;;)
+    {
+      unsigned long next = leaves & (leaves - 1);
+      if (next == 0)
+        break;
+      leaves = next;
+    }
+  leaves = tree->tbst_count + 1 - leaves;
+
+  compress ((struct tbst_node *) &tree->tbst_root, 0, leaves);
+
+  vine = tree->tbst_count - leaves;
+  height = 1 + (leaves > 0);
+  if (vine > 1)
+    {
+      unsigned long nonleaves = vine / 2;
+      leaves /= 2;
+      if (leaves > nonleaves)
+        {
+          leaves = nonleaves;
+          nonleaves = 0;
+        }
+      else
+        nonleaves -= leaves;
+
+      compress ((struct tbst_node *) &tree->tbst_root, leaves, nonleaves);
+      vine /= 2;
+      height++;
+    }
+  while (vine > 1)
+    {
+      compress ((struct tbst_node *) &tree->tbst_root, vine / 2, 0);
+      vine /= 2;
+      height++;
+    }
+}
+

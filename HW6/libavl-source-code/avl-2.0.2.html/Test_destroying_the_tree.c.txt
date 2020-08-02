@@ -1,0 +1,2 @@
+/* Test destroying the tree. */
+bst_destroy (tree, NULL);

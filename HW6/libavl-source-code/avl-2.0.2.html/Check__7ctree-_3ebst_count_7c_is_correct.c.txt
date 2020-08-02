@@ -1,0 +1,7 @@
+/* Check |tree|'s bst_count against that supplied. */
+if (bst_count (tree) != n)
+  {
+    printf (" Tree count is %lu, but should be %lu.\n",
+            (unsigned long) bst_count (tree), (unsigned long) n);
+    okay = 0;
+  }

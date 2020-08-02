@@ -1,0 +1,30 @@
+/* Returns the previous data item in inorder
+   within the tree being traversed with |trav|,
+   or if there are no more data items returns |NULL|. */
+void *
+pbst_t_prev (struct pbst_traverser *trav)
+{
+  assert (trav != NULL);
+
+  if (trav->pbst_node == NULL)
+    return pbst_t_last (trav, trav->pbst_table);
+  else if (trav->pbst_node->pbst_link[0] == NULL)
+    {
+      struct pbst_node *q, *p; /* Current node and its child. */
+      for (p = trav->pbst_node, q = p->pbst_parent; ;
+           p = q, q = q->pbst_parent)
+        if (q == NULL || p == q->pbst_link[1])
+          {
+            trav->pbst_node = q;
+            return trav->pbst_node != NULL ? trav->pbst_node->pbst_data : NULL;
+          }
+    }
+  else
+    {
+      trav->pbst_node = trav->pbst_node->pbst_link[0];
+      while (trav->pbst_node->pbst_link[1] != NULL)
+        trav->pbst_node = trav->pbst_node->pbst_link[1];
+      return trav->pbst_node->pbst_data;
+    }
+}
+

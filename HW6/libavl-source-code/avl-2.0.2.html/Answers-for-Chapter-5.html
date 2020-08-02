@@ -1,0 +1,297 @@
+<html lang="en">
+<head>
+<title>Answers for Chapter 5 - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Answers-for-Chapter-4.html" title="Chapter 4">
+<link rel=Next href="Answers-for-Chapter-6.html" title="Chapter 6">
+<link rel=Parent href="Answers-to-All-the-Exercises.html" title="Appendix D Answers to All the Exercises">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Answers-for-Chapter-5">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>Chapter 5</b></big></td>
+<td align=right>
+<a href="index.html#Answers-for-Chapter-5.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-4.html" title="Skip Back: Chapter 4"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Answers-for-Chapter-6.html" title="Skip Forward: Chapter 6"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Answers-for-Chapter-4.html" title="Prev: Chapter 4"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Answers-to-All-the-Exercises.html" title="Up: Appendix D Answers to All the Exercises"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Answers-for-Chapter-6.html" title="Next: Chapter 6"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<h4 class="subheading">Section 5.4</h4>
+
+<p><a name="5_002d4_00231"></a> <b>1.</b>
+In a BST, the time for an insertion or deletion is the time required
+to visit each node from the root down to the node of interest, plus
+some time to perform the operation itself.  Functions <i>bst_probe</i><!-- /@w -->()
+and <i>bst_delete</i><!-- /@w -->() contain only a single loop each, which iterates
+once for each node examined.  As the tree grows, the time for the
+actual operation loses significance and the total time for the
+operation becomes essentially proportional to the height of the tree,
+which is approximately <i>log2</i><!-- /@w --> (<i>n</i><!-- /@w -->) in the best case
+(see <a href="Analysis-of-AVL-Balancing-Rule.html">Analysis of AVL Balancing Rule</a>).
+
+   <p>We were given that the additional work for rebalancing an AVL or
+red-black tree is at most a constant amount multiplied by the height
+of the tree.  Furthermore, the maximum height of an AVL tree is 1.44
+times the maximum height for the corresponding perfectly balanced
+binary tree, and a red-black tree has a similar bound on its height. 
+Therefore, for trees with many nodes, the worst-case time required to
+insert or delete an item in a balanced tree is a constant multiple of
+the time required for the same operation on an unbalanced BST in the
+best case.  In the formal terms of computer science, insertion and
+deletion in a balanced tree are O(<i>log</i><!-- /@w --> <i>n</i><!-- /@w -->) operations, where <i>n</i><!-- /@w --> is
+the number of nodes in the tree.
+
+   <p>In practice, operations on balanced trees of reasonable size are, at
+worst, not much slower than operations on unbalanced binary trees and,
+at best, much faster.
+
+<h4 class="subheading">Section 5.4.2</h4>
+
+<p><a name="5_002d4_002d2_00231"></a> <b>1.</b>
+Variable <i>y</i><!-- /@w --> is only modified within &lt;<a href="Step-1-in-AVL-Insertion.html#148">Step 1: Search AVL tree for insertion point 148</a>&gt;.  If <i>y</i><!-- /@w --> is set during the loop, it is set to <i>p</i><!-- /@w -->,
+which is always a non-null pointer within the loop.  So <i>y</i><!-- /@w --> can only be
+<tt>NULL</tt><!-- /@w --> if it is last set before the loop begins.  If that is true, it
+will be <tt>NULL</tt><!-- /@w --> only if <i>tree</i><!-- /@w -->-&gt;<i>avl_root</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->.  So, variable <i>y</i><!-- /@w --> can
+only be <tt>NULL</tt><!-- /@w --> if the AVL tree was empty before the insertion.
+
+   <p>A <tt>NULL</tt><!-- /@w --> value for <i>y</i><!-- /@w --> is a special case because later code assumes that
+<i>y</i><!-- /@w --> points to a node.
+
+<h4 class="subheading">Section 5.4.3</h4>
+
+<p><a name="5_002d4_002d3_00231"></a> <b>1.</b>
+No.  Suppose that <i>n</i><!-- /@w --> is the new node, that <i>p</i><!-- /@w --> is its parent, and that
+<i>p</i><!-- /@w --> has a - balance factor before <i>n</i><!-- /@w -->'s insertion (a similar argument
+applies if <i>p</i><!-- /@w -->'s balance factor is +).  Then, for <i>n</i><!-- /@w -->'s insertion to
+decrease <i>p</i><!-- /@w -->'s balance factor to -2, <i>n</i><!-- /@w --> would have to be the left
+child of <i>p</i><!-- /@w -->.  But if <i>p</i><!-- /@w --> had a - balance factor before the insertion,
+it already had a left child, so <i>n</i><!-- /@w --> cannot be the new left of <i>p</i><!-- /@w -->.  This
+is a contradiction, so case 3 will never be applied to the parent of a
+newly inserted node.
+
+   <p><a name="5_002d4_002d3_00232"></a> <b>2.</b>
+
+   <div class="block-image"><a href="avlexera.txt"><img border=0 src="avlexera.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>In the leftmost tree, case 2 applies to the root's left child and the
+root's balance factor does not change.  In the middle tree, case 1
+applies to the root's left child and case 2 applies to the root.  In
+the rightmost tree, case 1 applies to the root's left child and case 3
+applies to the root.  The tree on the right requires rebalancing, and
+the others do not.
+
+   <p><a name="5_002d4_002d3_00233"></a> <b>3.</b>
+Type <b>char</b><!-- /@w --> may be signed or unsigned, depending on the C compiler
+and/or how the C compiler is run.  Also, a common use for subscripting
+an array with a character type is to translate an arbitrary character
+to another character or a set of properties.  For example, this is a
+common way to implement the standard C functions from <i>ctype</i><!-- /@w -->.<i>h</i><!-- /@w -->.  This
+means that subscripting such an array with a <b>char</b><!-- /@w --> value can have
+different behavior when <b>char</b><!-- /@w --> changes between signed and unsigned
+with different compilers (or with the same compiler invoked with
+different options).
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#ISO%201990">ISO 1990</a>], section 6.1.2.5;
+[<a href="References.html#Kernighan%201988">Kernighan 1988</a>], section A4.2.
+
+   <p><a name="5_002d4_002d3_00234"></a> <b>4.</b>
+Here is one possibility:
+
+   <p><a name="catalogue_002dentry_002davl_002d10"></a>
+<!-- tested 2002/1/6 -->
+<a name="index-update-balance-factors-after-AVL-insertion_002c-with-bitmasks-944"></a>
+<pre class="format"><a href="Step_3_3a_Update_balance_factors_after_AVL_insertion,_with_bitmasks.c.txt">650</a>. &lt;<a name="650" href="Step_3_3a_Update_balance_factors_after_AVL_insertion,_with_bitmasks.c.txt">Step 3: Update balance factors after AVL insertion, with bitmasks 650</a>&gt; =
+<b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>y</i><!-- /@w -->; <i>p</i><!-- /@w --> != <i>n</i><!-- /@w -->; <i>p</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[<i>cache</i><!-- /@w --> &amp; 1], <i>cache</i><!-- /@w --> &gt;&gt;= 1)
+  <b>if</b><!-- /@w --> ((<i>cache</i><!-- /@w --> &amp; 1) == 0)
+    <i>p</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w -->&ndash;;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>p</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w -->++;
+</pre>
+   <p class="noindent">Also, replace the declarations of <i>da</i><!-- /@w -->[] and <i>k</i><!-- /@w --> by these:
+
+<pre class="format"><b>unsigned</b><!-- /@w --> <b>long</b><!-- /@w --> <i>cache</i><!-- /@w --> = 0; /* Cached comparison results. */
+<b>int</b><!-- /@w --> <i>k</i><!-- /@w --> = 0;              /* Number of cached comparison results. */
+</pre>
+   <p class="noindent">and replace the second paragraph of code within the loop in step 1 by
+this:
+
+<pre class="format"><b>if</b><!-- /@w --> (<i>p</i><!-- /@w -->-&gt;<i>avl_balance</i><!-- /@w --> != 0)
+  <i>z</i><!-- /@w --> = <i>q</i><!-- /@w -->, <i>y</i><!-- /@w --> = <i>p</i><!-- /@w -->, <i>cache</i><!-- /@w --> = 0, <i>k</i><!-- /@w --> = 0;
+
+<i>dir</i><!-- /@w --> = <i>cmp</i><!-- /@w --> &gt; 0;
+<b>if</b><!-- /@w --> (<i>dir</i><!-- /@w -->)
+  <i>cache</i><!-- /@w --> |= 1<i>ul</i><!-- /@w --> &lt;&lt; <i>k</i><!-- /@w -->;
+<i>k</i><!-- /@w -->++;
+</pre>
+   <p>It is interesting to note that the speed difference between this
+version and the standard version was found to be negligible, when
+compiled with full optimization under GCC (both 2.95.4 and 3.0.3) on
+x86.
+
+<h4 class="subheading">Section 5.4.4</h4>
+
+<p><a name="5_002d4_002d4_00231"></a> <b>1.</b>
+Because then <i>y</i><!-- /@w -->'s right subtree would have height 1, so there's no
+way that <i>y</i><!-- /@w --> could have a +2 balance factor.
+
+   <p><a name="5_002d4_002d4_00232"></a> <b>2.</b>
+The value of <i>y</i><!-- /@w --> is set during the search for <i>item</i><!-- /@w --> to point to the
+closest node above the insertion point that has a nonzero balance
+factor, so any node below <i>y</i><!-- /@w --> along this search path, including <i>x</i><!-- /@w -->,
+must have had a 0 balance factor originally.  All such nodes are updated
+to have a nonzero balance factor later, during step 3.  So <i>x</i><!-- /@w --> must have
+either a - or + balance factor at the time of rebalancing.
+
+   <p><a name="5_002d4_002d4_00233"></a> <b>3.1.</b>
+
+<div align="center"><a href="avlcase21.txt"><img border=0 src="avlcase21.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent"><b>3.2.</b>
+
+<div align="center"><a href="avlcase22.txt"><img border=0 src="avlcase22.png" alt="[Click here for plain-text rendering]"></a></div>
+
+<p class="noindent"><b>3.3.</b>
+
+<div align="center"><a href="avlcase23.txt"><img border=0 src="avlcase23.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="5_002d4_002d4_00234"></a> <b>4.</b>
+<i>w</i><!-- /@w --> should replace <i>y</i><!-- /@w --> as the left or right child of <i>z</i><!-- /@w -->.  <i>y</i><!-- /@w --> != <i>z</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] has the value 1 if <i>y</i><!-- /@w --> is the right child of <i>z</i><!-- /@w -->, or
+0 if <i>y</i><!-- /@w --> is the left child.  So the overall expression replaces <i>y</i><!-- /@w -->
+with <i>w</i><!-- /@w --> as a child of <i>z</i><!-- /@w -->.
+
+   <p>The suggested substitution is a poor choice because if <i>z</i><!-- /@w --> == (<b>struct</b><!-- /@w --> <b>avl_node</b> *) &amp;<i>tree</i><!-- /@w -->-&gt;<i>root</i><!-- /@w -->, <i>z</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1] is undefined.
+
+   <p><a name="5_002d4_002d4_00235"></a> <b>5.</b>
+Yes. 
+<!-- FIXME: come up with convincing proof. -->
+
+<h4 class="subheading">Section 5.5.2</h4>
+
+<p><a name="5_002d5_002d2_00231"></a> <b>1.</b>
+This approach cannot be used in libavl (see Exercise 4.8-3).
+
+   <p><a name="catalogue_002dentry_002davl_002d11"></a>
+<!-- tested 2001/11/10 -->
+<a name="index-case-3-in-AVL-deletion_002c-alternate-version-945"></a>
+<pre class="format"><a href="Case_3_in_AVL_deletion,_alternate_version.c.txt">651</a>. &lt;<a name="651" href="Case_3_in_AVL_deletion,_alternate_version.c.txt">Case 3 in AVL deletion, alternate version 651</a>&gt; =
+<a name="index-_0040i_007bs_007d-variable-946"></a><b>struct</b><!-- /@w --> <b>avl_node</b> *<i>s</i><!-- /@w -->;
+
+<i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 1;
+<i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>p</i><!-- /@w -->;
+<b>for</b><!-- /@w --> (;;) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+    <i>da</i><!-- /@w -->[<i>k</i><!-- /@w -->] = 0;
+    <i>pa</i><!-- /@w -->[<i>k</i><!-- /@w -->++] = <i>r</i><!-- /@w -->;
+    <i>s</i><!-- /@w --> = <i>r</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0];
+    <b>if</b><!-- /@w --> (<i>s</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] == <tt>NULL</tt><!-- /@w -->)
+      <b>break</b><!-- /@w -->;
+
+    <i>r</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+  }
+<i>p</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w --> = <i>s</i><!-- /@w -->-&gt;<i>avl_data</i><!-- /@w -->;
+<i>r</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[0] = <i>s</i><!-- /@w -->-&gt;<i>avl_link</i><!-- /@w -->[1];
+<i>p</i><!-- /@w --> = <i>s</i><!-- /@w -->;
+</pre>
+   <p><a name="5_002d5_002d2_00232"></a> <b>2.</b>
+We could, if we use the standard libavl code for deletion case 3. 
+The alternate version in Exercise 1 modifies item
+data, which would cause the wrong value to be returned later.
+
+<h4 class="subheading">Section 5.5.4</h4>
+
+<p><a name="5_002d5_002d4_00231"></a> <b>1.</b>
+Tree <i>y</i><!-- /@w --> started out with a + balance factor, meaning that its right
+subtree is taller than its left.  So, even if <i>y</i><!-- /@w -->'s left subtree had
+height 0, its right subtree has at least height 1, meaning that <i>y</i><!-- /@w -->
+must have at least one right child.
+
+   <p><a name="5_002d5_002d4_00232"></a> <b>2.</b>
+Rebalancing is required at each level if, at every level of the tree,
+the deletion causes a +2 or -2 balance factor at a node <i>p</i><!-- /@w --> while
+there is a +1 or -1 balance factor at <i>p</i><!-- /@w -->'s child opposite the
+deletion.
+
+   <p>For example, consider the AVL tree below:
+
+<div align="center"><a href="avlmuchbal.txt"><img border=0 src="avlmuchbal.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Deletion of node 32 in this tree leads to a -2 balance factor on the
+left side of node 31, causing a right rotation at node 31.  This
+shortens the right subtree of node 28, causing it to have a -2
+balance factor, leading to a right rotation there.  This shortens the
+right subtree of node 20, causing it to have a -2 balance factor,
+forcing a right rotation there, too.  Here is the final tree:
+
+<div align="center"><a href="avlmuchbal2.txt"><img border=0 src="avlmuchbal2.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p>Incidentally, our original tree was an example of a &ldquo;Fibonacci
+tree&rdquo;, a kind of binary tree whose form is defined recursively, as
+follows.  A Fibonacci tree of order 0 is an empty tree and a Fibonacci
+tree of order 1 is a single node.  A Fibonacci tree of order <i>n</i><!-- /@w --> &gt;= 2
+is a node whose left subtree is a Fibonacci tree of order <i>n</i><!-- /@w --> - 1 and
+whose right subtree is a Fibonacci tree of order <i>n</i><!-- /@w --> - 2.  Our example
+is a Fibonacci tree of order 7.  Any big-enough Fibonacci tree will
+exhibit this pathological behavior upon AVL deletion of its maximum
+node.
+
+<h4 class="subheading">Section 5.6</h4>
+
+<p><a name="5_002d6_00231"></a> <b>1.</b>
+At this point in the code, <i>p</i><!-- /@w --> points to the <i>avl_data</i><!-- /@w --> member of an
+<b>struct</b><!-- /@w --> <b>avl_node</b>.  We want a pointer to the <b>struct</b><!-- /@w --> <b>avl_node</b> itself. 
+To do this, we just subtract the offset of the <i>avl_data</i><!-- /@w --> member within
+the structure.  A cast to <b>char</b><!-- /@w --> * is necessary before the subtraction,
+because <i>offsetof</i><!-- /@w --> returns a count of bytes, and a cast to <b>struct</b><!-- /@w --> <b>avl_node</b> * afterward, to make the result the right type.
+
+   </body></html>
+

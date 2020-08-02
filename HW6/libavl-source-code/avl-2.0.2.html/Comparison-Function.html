@@ -1,0 +1,212 @@
+<html lang="en">
+<head>
+<title>Comparison Function - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Identifiers.html" title="2.2 Identifiers">
+<link rel=Next href="Item-and-Copy-Functions.html" title="2.4 Item and Copy Functions">
+<link rel=Parent href="The-Table-ADT.html" title="2 The Table ADT">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Comparison-Function">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>2.3 Comparison Function</b></big></td>
+<td align=right>
+<a href="index.html#Comparison-Function.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Identifiers.html" title="Skip Back: 2.2 Identifiers"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Item-and-Copy-Functions.html" title="Skip Forward: 2.4 Item and Copy Functions"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Identifiers.html" title="Prev: 2.2 Identifiers"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="The-Table-ADT.html" title="Up: 2 The Table ADT"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Item-and-Copy-Functions.html" title="Next: 2.4 Item and Copy Functions"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The C language provides the <b>void</b><!-- /@w --> * generic pointer for dealing with
+data of unknown type.  We will use this type to allow our tables to
+contain a wide range of data types.  This flexibility does keep the
+table from working directly with its data.  Instead, the table's user
+must provide means to operate on data items.  This section describes
+the user-provided functions for comparing items, and the next section
+describes two other kinds of user-provided functions.
+
+   <p>There is more than one kind of generic algorithm for searching.  We can
+search by comparison of keys, by digital properties of the keys, or by
+computing a function of the keys.  In this book, we are only interested
+in the first possibility, so we need a way to compare data items.  This
+is done with a user-provided function compatible with
+<i>tbl_comparison_func</i><!-- /@w -->, declared as follows:
+
+   <p><a name="index-table-function-types-2"></a>
+<pre class="format"><a href="Table_function_types.c.txt">2</a>. &lt;<a name="2" href="Table_function_types.c.txt">Table function types 2</a>&gt; =
+/* Function types. */
+<b>typedef</b><!-- /@w --> <b>int</b><!-- /@w --> <i>tbl_comparison_func</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>tbl_a</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>tbl_b</i><!-- /@w -->, <a name="index-_0040b_007btbl_005fcomparison_005ffunc_007d-type-3"></a><br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>void</b><!-- /@w --> *<i>tbl_param</i><!-- /@w -->);
+</pre>
+   <p class="noindent"><small>See also <a href="Item-and-Copy-Functions.html#4">4</a>.</small><br>
+<div style="margin-left: 1em;"><small>This code is included in <a href="Table-Headers.html#14">14</a>.</small></div>
+
+   <p>A comparison function takes two pointers to data items, here called <i>a</i><!-- /@w -->
+and <i>b</i><!-- /@w -->, and compares their keys.  It returns a negative value if <i>a</i><!-- /@w --> &lt; <i>b</i><!-- /@w -->, zero if <i>a</i><!-- /@w --> == <i>b</i><!-- /@w -->, or a positive value if <i>a</i><!-- /@w --> &gt; <i>b</i><!-- /@w -->.  It takes a third
+parameter, here called <i>param</i><!-- /@w -->, which is user-provided.
+
+   <p>A comparison function must work more or less like an arithmetic
+comparison within the domain of the data.  This could be alphabetical
+ordering for strings, a set of nested sort orders (e.g., sort first by
+last name, with duplicates by first name), or any other comparison
+function that behaves in a &ldquo;natural&rdquo; way.  A comparison function in
+the exact class of those acceptable is called a <dfn>strict weak
+ordering</dfn>, for which the exact rules are explained in
+Exercise 5.
+
+   <p>Here's a function that can be used as a comparison function for the case
+that the <b>void</b><!-- /@w -->&nbsp;*<!-- /@w --> pointers point to single <b>int</b><!-- /@w -->s:
+
+   <p><a name="index-comparison-function-for-_0040w_007b_0040b_007bint_007d_007ds-4"></a>
+<pre class="format"><a href="Comparison_function_for__7cint_7cs.c.txt">3</a>. &lt;<a name="3" href="Comparison_function_for__7cint_7cs.c.txt">Comparison function for <b>int</b><!-- /@w -->s 3</a>&gt; =
+/* Comparison function for pointers to <b>int</b><!-- /@w -->s. <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>param</i><!-- /@w --> is not used. */
+<b>int</b><!-- /@w --> <br><i>compare_ints</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pa</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pb</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+  <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>a</i><!-- /@w --> = <i>pa</i><!-- /@w -->;
+  <b>const</b><!-- /@w --> <b>int</b><!-- /@w --> *<i>b</i><!-- /@w --> = <i>pb</i><!-- /@w -->;
+
+  <b>if</b><!-- /@w --> (*<i>a</i><!-- /@w --> &lt; *<i>b</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> -1;
+  <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (*<i>a</i><!-- /@w --> &gt; *<i>b</i><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> +1;
+  <b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>return</b><!-- /@w --> 0;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Utility-Functions.html#134">134</a>.</small>
+
+   <p>Here's another comparison function for data items that point to ordinary
+C strings:
+
+<!-- tested 2001/6/27 -->
+<pre class="format">/* Comparison function for strings. <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>param</i><!-- /@w --> is not used. */
+<b>int</b><!-- /@w --> <br><i>compare_strings</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pa</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pb</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+  <b>return</b><!-- /@w --> <i>strcmp</i><!-- /@w --> (<i>pa</i><!-- /@w -->, <i>pb</i><!-- /@w -->);
+}
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#FSF%201999">FSF 1999</a>], node &ldquo;Defining the Comparison Function&rdquo;;
+[<a href="References.html#ISO%201998">ISO 1998</a>], section 25.3, &ldquo;Sorting and related operations&rdquo;;
+[<a href="References.html#SGI%201993">SGI 1993</a>], section &ldquo;Strict Weak Ordering&rdquo;.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->In C, integers may be cast to pointers, including <b>void</b><!-- /@w --> *, and vice
+versa.  Explain why it is not a good idea to use an integer cast to
+<b>void</b><!-- /@w --> * as a data item.  When would such a technique would be
+acceptable? 
+[<a href="Answers-for-Chapter-2.html#2%2d3%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->When would the following be an acceptable alternate definition for
+<i>compare_ints</i><!-- /@w -->()?
+
+<!-- tested 2000/7/8 -->
+<pre class="format"><b>int</b><!-- /@w --> <br><i>compare_ints</i><!-- /@w --> (<b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pa</i><!-- /@w -->, <b>const</b><!-- /@w --> <b>void</b><!-- /@w --> *<i>pb</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bcompare_005fints_007d-function-5"></a>  <b>return</b><!-- /@w --> *((<b>int</b><!-- /@w --> *) <i>pa</i><!-- /@w -->) - *((<b>int</b><!-- /@w --> *) <i>pb</i><!-- /@w -->);
+}
+</pre>
+   <p>[<a href="Answers-for-Chapter-2.html#2%2d3%232">answer</a>]
+
+<p class="noindent"><b>3.</b>&nbsp;<!-- /@w -->Could <i>strcmp</i><!-- /@w -->(), suitably cast, be used in place of
+<i>compare_strings</i><!-- /@w -->()? 
+[<a href="Answers-for-Chapter-2.html#2%2d3%233">answer</a>]
+
+<p class="noindent"><b>4.</b>&nbsp;<!-- /@w -->Write a comparison function for data items that, in any particular
+table, are character arrays of fixed length.  Among different tables,
+the length may differ, so the third parameter to the function points to
+a <b>size_t</b><!-- /@w --> specifying the length for a given table. 
+[<a href="Answers-for-Chapter-2.html#2%2d3%234">answer</a>]
+
+<p class="noindent"><b>*5.</b><a name="strictweakordering"></a>&nbsp;<!-- /@w -->For a comparison function <i>f</i><!-- /@w -->() to be a strict weak ordering, the
+following must hold for all possible data items <i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->, and <i>c</i><!-- /@w -->:
+
+     <ul>
+<li><em>Irreflexivity:</em> For every <i>a</i><!-- /@w -->, <i>f</i><!-- /@w -->(<i>a</i><!-- /@w -->, <i>a</i><!-- /@w -->) == 0.
+
+     <li><em>Antisymmetry</em>: If <i>f</i><!-- /@w -->(<i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->) &gt; 0, then <i>f</i><!-- /@w -->(<i>b</i><!-- /@w -->, <i>a</i><!-- /@w -->) &lt; 0.
+
+     <li><em>Transitivity</em>: If <i>f</i><!-- /@w -->(<i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->) &gt; 0 and <i>f</i><!-- /@w -->(<i>b</i><!-- /@w -->, <i>c</i><!-- /@w -->) &gt; 0, then <i>f</i><!-- /@w -->(<i>a</i><!-- /@w -->, <i>c</i><!-- /@w -->) &gt; 0.
+
+     <li><em>Transitivity of equivalence</em>: If <i>f</i><!-- /@w -->(<i>a</i><!-- /@w -->, <i>b</i><!-- /@w -->) == 0 and <i>f</i><!-- /@w -->(<i>b</i><!-- /@w -->, <i>c</i><!-- /@w -->) == 0, then <i>f</i><!-- /@w -->(<i>a</i><!-- /@w -->, <i>c</i><!-- /@w -->) == 0. 
+</ul>
+
+<p class="noindent">Consider the following questions that explore the definition of a strict
+weak ordering.
+
+     <ol type=a start=1>
+<li>Explain how <i>compare_ints</i><!-- /@w -->() above satisfies each point of the
+definition.
+
+     <li>Can the standard C library function <i>strcmp</i><!-- /@w -->() be used for a strict weak
+ordering?
+
+     <li>Propose an irreflexive, antisymmetric, transitive function that lacks
+transitivity of equivalence.
+        </ol>
+[<a href="Answers-for-Chapter-2.html#2%2d3%235">answer</a>]
+
+<p class="noindent"><b>*6.</b><a name="ternarycompare"></a>&nbsp;<!-- /@w -->libavl uses a ternary comparison function that returns a negative
+value for &lt;, zero for ==, positive for &gt;.  Other libraries use
+binary comparison functions that return nonzero for &lt; or zero for
+&gt;=.  Consider these questions about the differences:
+
+     <ol type=a start=1>
+<li>Write a C expression, in terms of a binary comparison function <i>f</i><!-- /@w -->() and
+two items <i>a</i><!-- /@w --> and <i>b</i><!-- /@w -->, that is nonzero if and only if <i>a</i><!-- /@w --> == <i>b</i><!-- /@w --> as
+defined by <i>f</i><!-- /@w -->().  Write a similar expression for <i>a</i><!-- /@w --> &gt; <i>b</i><!-- /@w -->.
+
+     <li>Write a binary comparison function &ldquo;wrapper&rdquo; for a libavl
+comparison function.
+
+     <li>Rewrite <i>bst_find</i><!-- /@w -->() based on a binary comparison function.  (You can
+use the wrapper from above to simulate a binary comparison function.)
+        </ol>
+[<a href="Answers-for-Chapter-2.html#2%2d3%236">answer</a>]
+
+   </body></html>
+

@@ -1,0 +1,27 @@
+/* Table functions. */
+struct tbl_table *tbl_create (tbl_comparison_func *, void *,
+                              struct libavl_allocator *);
+struct tbl_table *tbl_copy (const struct tbl_table *, tbl_copy_func *,
+                            tbl_item_func *, struct libavl_allocator *);
+void tbl_destroy (struct tbl_table *, tbl_item_func *);
+void **tbl_probe (struct tbl_table *, void *);
+void *tbl_insert (struct tbl_table *, void *);
+void *tbl_replace (struct tbl_table *, void *);
+void *tbl_delete (struct tbl_table *, const void *);
+void *tbl_find (const struct tbl_table *, const void *);
+void tbl_assert_insert (struct tbl_table *, void *);
+void *tbl_assert_delete (struct tbl_table *, void *);
+
+#define tbl_count(table) ((size_t) (table)->tbl_count)
+
+/* Table traverser functions. */
+void tbl_t_init (struct tbl_traverser *, struct tbl_table *);
+void *tbl_t_first (struct tbl_traverser *, struct tbl_table *);
+void *tbl_t_last (struct tbl_traverser *, struct tbl_table *);
+void *tbl_t_find (struct tbl_traverser *, struct tbl_table *, void *);
+void *tbl_t_insert (struct tbl_traverser *, struct tbl_table *, void *);
+void *tbl_t_copy (struct tbl_traverser *, const struct tbl_traverser *);
+void *tbl_t_next (struct tbl_traverser *);
+void *tbl_t_prev (struct tbl_traverser *);
+void *tbl_t_cur (struct tbl_traverser *);
+void *tbl_t_replace (struct tbl_traverser *, void *);

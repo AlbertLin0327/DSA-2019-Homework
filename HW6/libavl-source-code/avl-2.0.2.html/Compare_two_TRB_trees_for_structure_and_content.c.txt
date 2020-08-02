@@ -1,0 +1,57 @@
+/* Compares binary trees rooted at |a| and |b|,
+   making sure that they are identical. */
+static int
+compare_trees (struct trb_node *a, struct trb_node *b)
+{
+  int okay;
+
+  if (a == NULL || b == NULL)
+    {
+      if (a != NULL || b != NULL)
+        {
+          printf (" a=%d b=%d\n",
+                  a ? *(int *) a->trb_data : -1,
+                  b ? *(int *) b->trb_data : -1);
+          assert (0);
+        }
+      return 1;
+    }
+  assert (a != b);
+
+  if (*(int *) a->trb_data != *(int *) b->trb_data
+      || a->trb_tag[0] != b->trb_tag[0]
+      || a->trb_tag[1] != b->trb_tag[1]
+      || a->trb_color != b->trb_color)
+    {
+      printf (" Copied nodes differ: a=%d%c b=%d%c a:",
+              *(int *) a->trb_data, a->trb_color == TRB_RED ? 'r' : 'b',
+              *(int *) b->trb_data, b->trb_color == TRB_RED ? 'r' : 'b');
+
+      if (a->trb_tag[0] == TRB_CHILD)
+        printf ("l");
+      if (a->trb_tag[1] == TRB_CHILD)
+        printf ("r");
+
+      printf (" b:");
+      if (b->trb_tag[0] == TRB_CHILD)
+        printf ("l");
+      if (b->trb_tag[1] == TRB_CHILD)
+        printf ("r");
+
+      printf ("\n");
+      return 0;
+    }
+
+  if (a->trb_tag[0] == TRB_THREAD)
+    assert ((a->trb_link[0] == NULL) != (a->trb_link[0] != b->trb_link[0]));
+  if (a->trb_tag[1] == TRB_THREAD)
+    assert ((a->trb_link[1] == NULL) != (a->trb_link[1] != b->trb_link[1]));
+
+  okay = 1;
+  if (a->trb_tag[0] == TRB_CHILD)
+    okay &= compare_trees (a->trb_link[0], b->trb_link[0]);
+  if (a->trb_tag[1] == TRB_CHILD)
+    okay &= compare_trees (a->trb_link[1], b->trb_link[1]);
+  return okay;
+}
+

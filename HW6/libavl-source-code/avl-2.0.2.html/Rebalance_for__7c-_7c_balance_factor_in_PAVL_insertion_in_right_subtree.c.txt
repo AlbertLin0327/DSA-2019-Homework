@@ -1,0 +1,19 @@
+assert (x->pavl_balance == -1);
+w = x->pavl_link[0];
+x->pavl_link[0] = w->pavl_link[1];
+w->pavl_link[1] = x;
+y->pavl_link[1] = w->pavl_link[0];
+w->pavl_link[0] = y;
+if (w->pavl_balance == +1)
+  x->pavl_balance = 0, y->pavl_balance = -1;
+else if (w->pavl_balance == 0)
+  x->pavl_balance = y->pavl_balance = 0;
+else /* |w->pavl_balance == -1| */
+  x->pavl_balance = +1, y->pavl_balance = 0;
+w->pavl_balance = 0;
+w->pavl_parent = y->pavl_parent;
+x->pavl_parent = y->pavl_parent = w;
+if (x->pavl_link[0] != NULL)
+  x->pavl_link[0]->pavl_parent = x;
+if (y->pavl_link[1] != NULL)
+  y->pavl_link[1]->pavl_parent = y;

@@ -1,0 +1,164 @@
+<html lang="en">
+<head>
+<title>Memory Allocation - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Item-and-Copy-Functions.html" title="2.4 Item and Copy Functions">
+<link rel=Next href="Creation-and-Destruction.html" title="2.6 Creation and Destruction">
+<link rel=Parent href="The-Table-ADT.html" title="2 The Table ADT">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Memory-Allocation">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>2.5 Memory Allocation</b></big></td>
+<td align=right>
+<a href="index.html#Memory-Allocation.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Item-and-Copy-Functions.html" title="Skip Back: 2.4 Item and Copy Functions"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Creation-and-Destruction.html" title="Skip Forward: 2.6 Creation and Destruction"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Item-and-Copy-Functions.html" title="Prev: 2.4 Item and Copy Functions"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="The-Table-ADT.html" title="Up: 2 The Table ADT"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Creation-and-Destruction.html" title="Next: 2.6 Creation and Destruction"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The standard C library functions <i>malloc</i><!-- /@w -->() and <i>free</i><!-- /@w -->() are the usual
+way to obtain and release memory for dynamic data structures like
+tables.  Most users will be satisfied if libavl uses these routines
+for memory management.  On the other hand, some users will want to
+supply their own methods for allocating and freeing memory, perhaps even
+different methods from table to table.  For these users' benefit, each
+table is associated with a memory allocator, which provides functions
+for memory allocation and deallocation.  This allocator has the same
+form in each table implementation.  It looks like this:
+
+   <p><a name="index-memory-allocator-9"></a>
+<pre class="format"><a href="Memory_allocator.c.txt">5</a>. &lt;<a name="5" href="Memory_allocator.c.txt">Memory allocator 5</a>&gt; =
+#<b>ifndef</b> <tt>LIBAVL_ALLOCATOR</tt><!-- /@w -->
+#<b>define</b> <a name="index-_0040w_007b_0040t_007bLIBAVL_005fALLOCATOR_007d_007d-macro_0040c-10"></a><tt>LIBAVL_ALLOCATOR</tt><!-- /@w -->
+/* Memory allocator. */
+<b>struct</b><!-- /@w --> <b>libavl_allocator</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007blibavl_005fallocator_007d-structure-11"></a>    <b>void</b><!-- /@w --> *(*<i>libavl_malloc</i><!-- /@w -->) (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *, <b>size_t</b><!-- /@w --> <i>libavl_size</i><!-- /@w -->);
+    <b>void</b><!-- /@w --> (*<i>libavl_free</i><!-- /@w -->) (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *, <b>void</b><!-- /@w --> *<i>libavl_block</i><!-- /@w -->);
+  };
+#<b>endif</b>
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Table-Headers.html#14">14</a>, <a href="Testing-BST-Functions.html#99">99</a>, and <a href="Answers-for-Chapter-4.html#649">649</a>.</small>
+
+   <p>Members of <b>struct</b><!-- /@w --> <b>libavl_allocator</b> have the same interfaces as the
+like-named standard C library functions, except that they are each
+additionally passed a pointer to the <b>struct</b><!-- /@w --> <b>libavl_allocator</b> * itself
+as their first argument.  The table implementations never call
+<i>tbl_malloc</i><!-- /@w -->() with a zero size or <i>tbl_free</i><!-- /@w -->() with a null pointer
+block.
+
+   <p>The <b>struct</b><!-- /@w --> <b>libavl_allocator</b> type is shared between all of libavl's
+modules, so its name begins with <i>libavl_</i><!-- /@w -->, not with the specific module
+prefix that we've been representing generically here as <i>tbl_</i><!-- /@w -->.  This
+makes it possible for a program to use a single allocator with multiple
+libavl table modules, without the need to declare instances of
+different structures.
+
+   <p>The default allocator is just a wrapper around <i>malloc</i><!-- /@w -->() and <i>free</i><!-- /@w -->(). 
+Here it is:
+
+   <p><a name="index-default-memory-allocation-functions-12"></a>
+<pre class="format"><a href="Default_memory_allocation_functions.c.txt">6</a>. &lt;<a name="6" href="Default_memory_allocation_functions.c.txt">Default memory allocation functions 6</a>&gt; =
+/* Allocates <i>size</i><!-- /@w --> bytes of space using <i>malloc</i><!-- /@w -->(). <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->Returns a null pointer if allocation fails. */
+<b>void</b><!-- /@w --> *<br><i>tbl_malloc</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->, <b>size_t</b><!-- /@w --> <i>size</i><!-- /@w -->) <br>{
+  <i>assert</i><!-- /@w --> (<i>allocator</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>size</i><!-- /@w --> &gt; 0);
+  <b>return</b><!-- /@w --> <i>malloc</i><!-- /@w --> (<i>size</i><!-- /@w -->);
+}
+
+/* Frees <i>block</i><!-- /@w -->. */
+<b>void</b><!-- /@w --> <br><i>tbl_free</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>block</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbl_005ffree_007d-function-13"></a>  <i>assert</i><!-- /@w --> (<i>allocator</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>block</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>free</i><!-- /@w --> (<i>block</i><!-- /@w -->);
+}
+
+/* Default memory allocator that uses <i>malloc</i><!-- /@w -->() and <i>free</i><!-- /@w -->(). */
+<b>struct</b><!-- /@w --> <b>libavl_allocator</b> <i>tbl_allocator_default</i><!-- /@w --> = <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{<br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tbl_malloc</i><!-- /@w -->, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>tbl_free</i><!-- /@w --><br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->};
+</pre>
+   <p class="noindent"><small>This code is included in <a href="BST-Operations.html#29">29</a>, <a href="AVL-Operations.html#145">145</a>, <a href="Operations-in-an-RB-Tree.html#196">196</a>, <a href="TBST-Operations.html#251">251</a>, <a href="TAVL-Operations.html#300">300</a>, <a href="TRB-Operations.html#336">336</a>, <a href="RTBST-Operations.html#375">375</a>, <a href="RTAVL-Operations.html#418">418</a>, <a href="RTRB-Operations.html#455">455</a>, <a href="PBST-Operations.html#489">489</a>, <a href="PAVL-Operations.html#522">522</a>, <a href="PRB-Operations.html#554">554</a>, and <a href="Answers-for-Chapter-4.html#649">649</a>.</small>
+
+   <p>The default allocator comes along with header file declarations:
+
+   <p><a name="index-default-memory-allocator-header-14"></a>
+<pre class="format"><a href="Default_memory_allocator_header.c.txt">7</a>. &lt;<a name="7" href="Default_memory_allocator_header.c.txt">Default memory allocator header 7</a>&gt; =
+/* Default memory allocator. */
+<a name="index-_0040i_007btbl_005fallocator_005fdefault_007d-variable-15"></a><b>extern</b><!-- /@w --> <b>struct</b><!-- /@w --> <b>libavl_allocator</b> <i>tbl_allocator_default</i><!-- /@w -->;
+<b>void</b><!-- /@w --> *<i>tbl_malloc</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *, <b>size_t</b><!-- /@w -->);
+<b>void</b><!-- /@w --> <i>tbl_free</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>libavl_allocator</b> *, <b>void</b><!-- /@w --> *);
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Table-Headers.html#14">14</a> and <a href="Answers-for-Chapter-4.html#649">649</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#FSF%201999">FSF 1999</a>], nodes &ldquo;Malloc Examples&rdquo; and &ldquo;Changing Block
+Size&rdquo;.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b><a name="libavlallocator"></a>&nbsp;<!-- /@w -->This structure is named with a <i>libavl_</i><!-- /@w --> prefix because it is shared
+among all of libavl's module.  Other types are shared among libavl
+modules, too, such as <b>tbl_item_func</b><!-- /@w -->.  Why don't the names of these
+other types also begin with <i>libavl_</i><!-- /@w -->? 
+[<a href="Answers-for-Chapter-2.html#2%2d5%231">answer</a>]
+
+<p class="noindent"><b>2.</b><a name="tblallocatorabort"></a>&nbsp;<!-- /@w -->Supply an alternate allocator, still using <i>malloc</i><!-- /@w -->() and <i>free</i><!-- /@w -->(), that
+prints an error message to <i>stderr</i><!-- /@w --> and aborts program execution when
+memory allocation fails. 
+[<a href="Answers-for-Chapter-2.html#2%2d5%232">answer</a>]
+
+<p class="noindent"><b>*3.</b><a name="moreargs"></a>&nbsp;<!-- /@w -->Some kinds of allocators may need additional arguments.  For instance,
+if memory for each table is taken from a separate Apache-style &ldquo;memory
+pool&rdquo;, then a pointer to the pool structure is needed.  Show how this
+can be done without modifying existing types. 
+[<a href="Answers-for-Chapter-2.html#2%2d5%233">answer</a>]
+
+   </body></html>
+

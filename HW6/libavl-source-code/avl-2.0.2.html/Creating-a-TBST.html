@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Creating a TBST - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="TBST-Operations.html" title="7.3 Operations">
+<link rel=Next href="Searching-a-TBST.html" title="7.5 Search">
+<link rel=Parent href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Creating-a-TBST">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>7.4 Creation</b></big></td>
+<td align=right>
+<a href="index.html#Creating-a-TBST.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="TBST-Operations.html" title="Skip Back: 7.3 Operations"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Searching-a-TBST.html" title="Skip Forward: 7.5 Search"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="TBST-Operations.html" title="Prev: 7.3 Operations"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Threaded-Binary-Search-Trees.html" title="Up: 7 Threaded Binary Search Trees"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Searching-a-TBST.html" title="Next: 7.5 Search"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Function <i>tbst_create</i><!-- /@w -->() is the same as <i>bst_create</i><!-- /@w -->() except that a
+<b>struct</b><!-- /@w --> <b>tbst_table</b> has no generation number to fill in.
+
+   <p><a name="catalogue_002dentry_002dtbst_002d0"></a>
+<a name="index-TBST-creation-function-360"></a>
+<pre class="format"><a href="TBST_creation_function.c.txt">252</a>. &lt;<a name="252" href="TBST_creation_function.c.txt">TBST creation function 252</a>&gt; =
+<b>struct</b><!-- /@w --> <b>tbst_table</b> *<br><i>tbst_create</i><!-- /@w --> (<b>tbst_comparison_func</b><!-- /@w --> *<i>compare</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->,
+            <b>struct</b><!-- /@w --> <b>libavl_allocator</b> *<i>allocator</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btbst_005fcreate_007d-function-361"></a>  <b>struct</b><!-- /@w --> <b>tbst_table</b> *<i>tree</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>compare</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (<i>allocator</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <i>allocator</i><!-- /@w --> = &amp;<i>tbst_allocator_default</i><!-- /@w -->;
+
+  <i>tree</i><!-- /@w --> = <i>allocator</i><!-- /@w -->-&gt;<i>libavl_malloc</i><!-- /@w --> (<i>allocator</i><!-- /@w -->, <b>sizeof</b><!-- /@w --> *<i>tree</i><!-- /@w -->);
+  <b>if</b><!-- /@w --> (<i>tree</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  <i>tree</i><!-- /@w -->-&gt;<i>tbst_root</i><!-- /@w --> = <tt>NULL</tt><!-- /@w -->;
+  <i>tree</i><!-- /@w -->-&gt;<i>tbst_compare</i><!-- /@w --> = <i>compare</i><!-- /@w -->;
+  <i>tree</i><!-- /@w -->-&gt;<i>tbst_param</i><!-- /@w --> = <i>param</i><!-- /@w -->;
+  <i>tree</i><!-- /@w -->-&gt;<i>tbst_alloc</i><!-- /@w --> = <i>allocator</i><!-- /@w -->;
+  <i>tree</i><!-- /@w -->-&gt;<i>tbst_count</i><!-- /@w --> = 0;
+
+  <b>return</b><!-- /@w --> <i>tree</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="TBST-Operations.html#251">251</a>, <a href="TAVL-Operations.html#300">300</a>, <a href="TRB-Operations.html#336">336</a>, <a href="RTBST-Operations.html#375">375</a>, <a href="RTAVL-Operations.html#418">418</a>, <a href="RTRB-Operations.html#455">455</a>, <a href="PBST-Operations.html#489">489</a>, <a href="PAVL-Operations.html#522">522</a>, and <a href="PRB-Operations.html#554">554</a>.</small>
+
+   </body></html>
+

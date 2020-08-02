@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>PBST Traverser Advancing - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="PBST-Traverser-Insert-Initialization.html" title="13.5.4 Starting at an Inserted Node">
+<link rel=Next href="PBST-Traverser-Retreating.html" title="13.5.6 Backing Up to the Previous Node">
+<link rel=Parent href="Traversing-a-PBST.html" title="13.5 Traversal">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="PBST-Traverser-Advancing">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>13.5.5 Advancing to the Next Node</b></big></td>
+<td align=right>
+<a href="index.html#PBST-Traverser-Advancing.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="PBST-Traverser-Insert-Initialization.html" title="Skip Back: 13.5.4 Starting at an Inserted Node"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="PBST-Traverser-Retreating.html" title="Skip Forward: 13.5.6 Backing Up to the Previous Node"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="PBST-Traverser-Insert-Initialization.html" title="Prev: 13.5.4 Starting at an Inserted Node"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Traversing-a-PBST.html" title="Up: 13.5 Traversal"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="PBST-Traverser-Retreating.html" title="Next: 13.5.6 Backing Up to the Previous Node"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>There are the same three cases for advancing a traverser as the other
+types of binary trees that we've already looked at.  Two of the cases,
+the ones where we're starting from the null item or a node that has a
+right child, are unchanged.
+
+   <p>The third case, where the node that we're starting from has no right
+child, is the case that must be revised.  We can use the same
+algorithm that we did for ordinary BSTs without threads or parent
+pointers, described earlier (see <a href="Better-Iterative-Traversal.html">Better Iterative Traversal</a>). 
+Simply put, we move upward in the tree until we move up to the right
+(or until we move off the top of the tree).
+
+   <p>The code uses <i>q</i><!-- /@w --> to move up the tree and <i>p</i><!-- /@w --> as <i>q</i><!-- /@w -->'s child, so the
+termination condition is when <i>p</i><!-- /@w --> is <i>q</i><!-- /@w -->'s left child or <i>q</i><!-- /@w --> becomes a
+null pointer.  There is a non-null successor in the former case, where
+the situation looks like this:
+
+<div align="center"><a href="pbstsucc.txt"><img border=0 src="pbstsucc.png" alt="[Click here for plain-text rendering]"></a></div>
+
+   <p><a name="catalogue_002dentry_002dpbst_002d6"></a>
+<a name="index-PBST-traverser-advance-function-703"></a>
+<pre class="format"><a href="PBST_traverser_advance_function.c.txt">507</a>. &lt;<a name="507" href="PBST_traverser_advance_function.c.txt">PBST traverser advance function 507</a>&gt; =
+<b>void</b><!-- /@w --> *<br><i>pbst_t_next</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>pbst_traverser</b> *<i>trav</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bpbst_005ft_005fnext_007d-function-704"></a>  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+
+  <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w --> <i>pbst_t_first</i><!-- /@w --> (<i>trav</i><!-- /@w -->, <i>trav</i><!-- /@w -->-&gt;<i>pbst_table</i><!-- /@w -->);
+  <b>else</b><!-- /@w --> <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1] == <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>struct</b><!-- /@w --> <b>pbst_node</b> *<i>q</i><!-- /@w -->, *<i>p</i><!-- /@w -->; /* Current node and its child. */
+      <b>for</b><!-- /@w --> (<i>p</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w -->, <i>q</i><!-- /@w --> = <i>p</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->; ; <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><i>p</i><!-- /@w --> = <i>q</i><!-- /@w -->, <i>q</i><!-- /@w --> = <i>q</i><!-- /@w -->-&gt;<i>pbst_parent</i><!-- /@w -->) 
+        <b>if</b><!-- /@w --> (<i>q</i><!-- /@w --> == <tt>NULL</tt><!-- /@w --> || <i>p</i><!-- /@w --> == <i>q</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0]) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+            <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w --> = <i>q</i><!-- /@w -->;
+            <b>return</b><!-- /@w --> <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> ? <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w -->-&gt;<i>pbst_data</i><!-- /@w --> : <tt>NULL</tt><!-- /@w -->;
+          }
+    } <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w --><b>else</b><!-- /@w --> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[1];
+      <b>while</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0] != <tt>NULL</tt><!-- /@w -->)
+        <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w -->-&gt;<i>pbst_link</i><!-- /@w -->[0];
+      <b>return</b><!-- /@w --> <i>trav</i><!-- /@w -->-&gt;<i>pbst_node</i><!-- /@w -->-&gt;<i>pbst_data</i><!-- /@w -->;
+    }
+}
+</pre>
+   <p class="noindent"><small>This code is included in <a href="Traversing-a-PBST.html#502">502</a> and <a href="Traversing-a-PAVL-Tree.html#546">546</a>.</small>
+
+<p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Cormen%201990">Cormen 1990</a>], section 13.2.
+
+   </body></html>
+

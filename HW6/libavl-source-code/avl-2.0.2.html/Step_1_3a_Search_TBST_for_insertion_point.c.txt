@@ -1,0 +1,17 @@
+if (tree->tbst_root != NULL)
+  for (p = tree->tbst_root; ; p = p->tbst_link[dir])
+    {
+      int cmp = tree->tbst_compare (item, p->tbst_data, tree->tbst_param);
+      if (cmp == 0)
+        return &p->tbst_data;
+      dir = cmp > 0;
+
+      if (p->tbst_tag[dir] == TBST_THREAD)
+        break;
+    }
+else
+  {
+    p = (struct tbst_node *) &tree->tbst_root;
+    dir = 0;
+  }
+

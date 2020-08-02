@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+<title>Destroying a BST Recursively - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Destroying-a-BST-by-Rotation.html" title="4.11.1 Destruction by Rotation">
+<link rel=Next href="Destroying-a-BST-Iteratively.html" title="4.11.3 Aside: Iterative Destruction">
+<link rel=Parent href="Destroying-a-BST.html" title="4.11 Destruction">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Destroying-a-BST-Recursively">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.11.2 Aside: Recursive Destruction</b></big></td>
+<td align=right>
+<a href="index.html#Destroying-a-BST-Recursively.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Destroying-a-BST-by-Rotation.html" title="Skip Back: 4.11.1 Destruction by Rotation"><img src="skipback.png" border=0 alt="[Skip Back]"></a>
+<a href="Destroying-a-BST-Iteratively.html" title="Skip Forward: 4.11.3 Aside: Iterative Destruction"><img src="skipfwd.png" border=0 alt="[Skip Fwd]"></a>
+&nbsp;&nbsp;&nbsp;
+<a href="Destroying-a-BST-by-Rotation.html" title="Prev: 4.11.1 Destruction by Rotation"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Destroying-a-BST.html" title="Up: 4.11 Destruction"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Destroying-a-BST-Iteratively.html" title="Next: 4.11.3 Aside: Iterative Destruction"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>The algorithm used in the previous section is easy and fast, but it is
+not the most common method for destroying a tree.  The usual way is to
+perform a traversal of the tree, in much the same way we did for tree
+traversal and copying.  Once again, we'll start from a recursive
+implementation, because these are so easy to write.  The only tricky
+part is that subtrees have to be freed <em>before</em> the root.  This
+code is hard-wired to use <i>free</i><!-- /@w -->() for simplicity:
+
+   <p><a name="catalogue_002dentry_002dbst_002d25"></a>
+<!-- tested 2000/7/8 -->
+<a name="index-destroy-a-BST-recursively-133"></a>
+<pre class="format"><a href="Destroy_a_BST_recursively.c.txt">85</a>. &lt;<a name="85" href="Destroy_a_BST_recursively.c.txt">Destroy a BST recursively 85</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>bst_destroy_recursive</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bbst_005fdestroy_005frecursive_007d-function-134"></a>  <b>if</b><!-- /@w --> (<i>node</i><!-- /@w --> == <tt>NULL</tt><!-- /@w -->)
+    <b>return</b><!-- /@w -->;
+
+  <i>bst_destroy_recursive</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0]);
+  <i>bst_destroy_recursive</i><!-- /@w --> (<i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1]);
+  <i>free</i><!-- /@w --> (<i>node</i><!-- /@w -->);
+}
+</pre>
+   </body></html>
+

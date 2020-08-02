@@ -1,0 +1,209 @@
+<html lang="en">
+<head>
+<title>Improving Convenience - GNU libavl 2.0.2</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=author content="Ben Pfaff">
+<meta name=generator content="makeinfo --html augmented by htmlpp">
+<link rel=Start href="index.html" title="Table of Contents">
+<link rel=Contents href="index.html" title="Table of Contents">
+<link rel=Index href="Index.html" title="Index">
+<link rel=Glossary href="Glossary.html" title="Glossary">
+<link rel=Copyright href="http://www.gnu.org/copyleft/gpl.html" title="License">
+<link rel=Chapter href="index.html" title="GNU libavl 2.0.2">
+<link rel=Chapter href="Preface.html" title="Preface">
+<link rel=Chapter href="Introduction.html" title="1 Introduction">
+<link rel=Chapter href="The-Table-ADT.html" title="2 The Table ADT">
+<link rel=Chapter href="Search-Algorithms.html" title="3 Search Algorithms">
+<link rel=Chapter href="Binary-Search-Trees.html" title="4 Binary Search Trees">
+<link rel=Chapter href="AVL-Trees.html" title="5 AVL Trees">
+<link rel=Chapter href="Red_002dBlack-Trees.html" title="6 Red-Black Trees">
+<link rel=Chapter href="Threaded-Binary-Search-Trees.html" title="7 Threaded Binary Search Trees">
+<link rel=Chapter href="Threaded-AVL-Trees.html" title="8 Threaded AVL Trees">
+<link rel=Chapter href="Threaded-Red_002dBlack-Trees.html" title="9 Threaded Red-Black Trees">
+<link rel=Chapter href="Right_002dThreaded-Binary-Search-Trees.html" title="10 Right-Threaded Binary Search Trees">
+<link rel=Chapter href="Right_002dThreaded-AVL-Trees.html" title="11 Right-Threaded AVL Trees">
+<link rel=Chapter href="Right_002dThreaded-Red_002dBlack-Trees.html" title="12 Right-Threaded Red-Black Trees">
+<link rel=Chapter href="BSTs-with-Parent-Pointers.html" title="13 BSTs with Parent Pointers">
+<link rel=Chapter href="AVL-Trees-with-Parent-Pointers.html" title="14 AVL Trees with Parent Pointers">
+<link rel=Chapter href="Red_002dBlack-Trees-with-Parent-Pointers.html" title="15 Red-Black Trees with Parent Pointers">
+<link rel=Appendix href="References.html" title="A References">
+<link rel=Appendix href="Supplementary-Code.html" title="B Supplementary Code">
+<link rel=Appendix href="Glossary.html" title="C Glossary">
+<link rel=Appendix href="Answers-to-All-the-Exercises.html" title="D Answers to All the Exercises">
+<link rel=Appendix href="Catalogue-of-Algorithms.html" title="E Catalogue of Algorithms">
+<link rel=Appendix href="Index.html" title="F Index">
+<link rel=Prev href="Iterative-Traversal-of-a-BST.html" title="4.9.2 Traversal by Iteration">
+<link rel=Next href="Better-Iterative-Traversal.html" title="4.9.3 Better Iterative Traversal">
+<link rel=Parent href="Iterative-Traversal-of-a-BST.html" title="4.9.2 Traversal by Iteration">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc { font-variant:small-caps }
+  span.roman { font-family: serif; font-weight: normal; } 
+--></style>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#1f00ff" alink="#ff0000" vlink="#9900dd">
+<div class="node">
+<p>
+<a name="Improving-Convenience">
+</div>
+
+<table bgcolor="#d0d0d0" cellpadding=0 width="100%"><tr>
+<td align=left><big><b>4.9.2.1 Improving Convenience</b></big></td>
+<td align=right>
+<a href="index.html#Improving-Convenience.html" title="Table of Contents"><img src="toc.png" border=0 alt="[ToC]"></a>
+<a href="Index.html" title="Index"><img src="index.png" border=0 alt="[Index]"></a>
+&nbsp;&nbsp;&nbsp;
+<img src="padding.png">
+<img src="padding.png">
+&nbsp;&nbsp;&nbsp;
+<a href="Iterative-Traversal-of-a-BST.html" title="Prev: 4.9.2 Traversal by Iteration"><img src="prev.png" border=0 alt="[Prev]"></a>
+<a href="Iterative-Traversal-of-a-BST.html" title="Up: 4.9.2 Traversal by Iteration"><img src="up.png" border=0 alt="[Up]"></a>
+<a href="Better-Iterative-Traversal.html" title="Next: 4.9.3 Better Iterative Traversal"><img src="next.png" border=0 alt="[Next]"></a>
+</td></tr></table>
+
+<p>Now we can work on improving the convenience of our traversal function. 
+But, first, perhaps it's worthwhile to demonstrate how inconvenient it
+really can be to use <i>walk</i><!-- /@w -->(), regardless of how it's implemented
+internally.
+
+   <p>Suppose that we have a BST of character strings and, for whatever
+reason, want to know the total length of all the strings in it.  We
+could do it like this using <i>walk</i><!-- /@w -->():
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-summing-string-lengths-with-_0040w_007b_0040i_007bwalk_007d_007d_0028_0029-82"></a>
+<pre class="format"><a href="Summing_string_lengths_with__7cwalk_28_29_7c.c.txt">56</a>. &lt;<a name="56" href="Summing_string_lengths_with__7cwalk_28_29_7c.c.txt">Summing string lengths with <i>walk</i><!-- /@w -->() 56</a>&gt; =
+<b>static</b><!-- /@w --> <b>void</b><!-- /@w --> <br><i>process_node</i><!-- /@w --> (<b>void</b><!-- /@w --> *<i>data</i><!-- /@w -->, <b>void</b><!-- /@w --> *<i>param</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bprocess_005fnode_007d-function-83"></a>  <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>string</i><!-- /@w --> = <i>data</i><!-- /@w -->;
+  <b>size_t</b><!-- /@w --> *<i>total</i><!-- /@w --> = <i>param</i><!-- /@w -->;
+
+  *<i>total</i><!-- /@w --> += <i>strlen</i><!-- /@w --> (<i>string</i><!-- /@w -->);
+}
+
+<b>size_t</b><!-- /@w --> <br><i>total_length</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btotal_005flength_007d-function-84"></a>  <b>size_t</b><!-- /@w --> <i>total</i><!-- /@w --> = 0;
+  <i>walk</i><!-- /@w --> (<i>tree</i><!-- /@w -->, <i>process_node</i><!-- /@w -->, &amp;<i>total</i><!-- /@w -->);
+  <b>return</b><!-- /@w --> <i>total</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent">With the functions <i>first_item</i><!-- /@w -->() and <i>next_item</i><!-- /@w -->() that we'll write in
+this section, we can rewrite these functions as the single function
+below:
+
+<!-- tested 2001/6/27 -->
+<p><a name="index-summing-string-lengths-with-_0040w_007b_0040i_007bnext_005fitem_007d_007d_0028_0029-85"></a>
+<pre class="format"><a href="Summing_string_lengths_with__7cnext_item_28_29_7c.c.txt">57</a>. &lt;<a name="57" href="Summing_string_lengths_with__7cnext_item_28_29_7c.c.txt">Summing string lengths with <i>next_item</i><!-- /@w -->() 57</a>&gt; =
+<b>size_t</b><!-- /@w --> <br><i>total_length</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007btotal_005flength_007d-function-86"></a>  <b>struct</b><!-- /@w --> <b>traverser</b> <i>t</i><!-- /@w -->;
+  <b>const</b><!-- /@w --> <b>char</b><!-- /@w --> *<i>string</i><!-- /@w -->;
+  <b>size_t</b><!-- /@w --> <i>total</i><!-- /@w --> = 0;
+
+  <b>for</b><!-- /@w --> (<i>string</i><!-- /@w --> = <i>first_item</i><!-- /@w --> (<i>tree</i><!-- /@w -->, &amp;<i>t</i><!-- /@w -->); <i>string</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->; <i>string</i><!-- /@w --> = <i>next_item</i><!-- /@w --> (&amp;<i>t</i><!-- /@w -->))
+    <i>total</i><!-- /@w --> += <i>strlen</i><!-- /@w --> (<i>string</i><!-- /@w -->);
+  <b>return</b><!-- /@w --> <i>total</i><!-- /@w -->;
+}
+</pre>
+   <p>You're free to make your own assessment, of course, but many programmers
+prefer the latter because of its greater brevity and fewer &ldquo;unsafe&rdquo;
+conversions to and from <b>void</b><!-- /@w --> pointers.
+
+   <p>Now to actually write the code.  Our task is to modify
+<i>traverse_iterative</i><!-- /@w -->() so that, instead of calling <i>action</i><!-- /@w -->, it returns
+<i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->.  But first, some infrastructure.  We define a structure to
+contain the state of the traversal, equivalent to the relevant argument
+and local variables in <i>traverse_iterative</i><!-- /@w -->().  To emphasize that this
+is not our final version of this structure or the related code, we will call it
+<b>struct</b><!-- /@w --> <b>traverser</b>, without any name prefix:
+
+   <p><a name="catalogue_002dentry_002dbst_002d8"></a>
+<!-- tested 2001/6/27 -->
+<a name="index-iterative-traversal-of-BST_002c-take-6-87"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_take_6.c.txt">58</a>. &lt;<a name="58" href="Iterative_traversal_of_BST,_take_6.c.txt">Iterative traversal of BST, take 6 58</a>&gt; =
+<b>struct</b><!-- /@w --> <b>traverser</b> <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+<a name="index-_0040i_007btraverser_007d-structure-88"></a>    <b>struct</b><!-- /@w --> <b>bst_table</b> *<i>table</i><!-- /@w -->;                  /* Tree being traversed. */
+    <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->;                    /* Current node in tree. */
+    <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>stack</i><!-- /@w -->[<tt>BST_MAX_HEIGHT</tt><!-- /@w -->];   /* Parent nodes to revisit. */
+    <b>size_t</b><!-- /@w --> <i>height</i><!-- /@w -->;                            /* Number of nodes in <i>stack</i><!-- /@w -->. */
+  };
+</pre>
+   <p class="noindent"><small>See also <a href="Improving-Convenience.html#59">59</a> and <a href="Improving-Convenience.html#60">60</a>.</small>
+
+   <p>Function <i>first_item</i><!-- /@w -->() just initializes a <b>struct</b><!-- /@w --> <b>traverser</b> and
+returns the first item in the tree, deferring most of its work to
+<i>next_item</i><!-- /@w -->():
+
+   <p><a name="index-iterative-traversal-of-BST_002c-take-6-89"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_take_6.c.txt">59</a>. &lt;<a name="59" href="Iterative_traversal_of_BST,_take_6.c.txt">Iterative traversal of BST, take 6 58</a>&gt; +=
+/* Initializes <i>trav</i><!-- /@w --> for <i>tree</i><!-- /@w -->.
+   Returns data item in <i>tree</i><!-- /@w --> with the smallest value, <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->or <tt>NULL</tt><!-- /@w --> if <i>tree</i><!-- /@w --> is empty.
+   In the former case, <i>next_item</i><!-- /@w -->() may be called with <i>trav</i><!-- /@w -->
+   to retrieve additional data items. */
+<b>void</b><!-- /@w --> *<br><i>first_item</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>bst_table</b> *<i>tree</i><!-- /@w -->, <b>struct</b><!-- /@w --> <b>traverser</b> *<i>trav</i><!-- /@w -->) <br>{
+<a name="index-_0040i_007bfirst_005fitem_007d-function-90"></a>  <i>assert</i><!-- /@w --> (<i>tree</i><!-- /@w --> != <tt>NULL</tt><!-- /@w --> &amp;&amp; <i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>trav</i><!-- /@w -->-&gt;<i>table</i><!-- /@w --> = <i>tree</i><!-- /@w -->;
+  <i>trav</i><!-- /@w -->-&gt;<i>node</i><!-- /@w --> = <i>tree</i><!-- /@w -->-&gt;<i>bst_root</i><!-- /@w -->;
+  <i>trav</i><!-- /@w -->-&gt;<i>height</i><!-- /@w --> = 0;
+  <b>return</b><!-- /@w --> <i>next_item</i><!-- /@w --> (<i>trav</i><!-- /@w -->);
+}
+</pre>
+   <p>Function <i>next_item</i><!-- /@w -->() is, for the most part, a simple modification of
+<i>traverse_iterative</i><!-- /@w -->():
+
+   <p><a name="index-iterative-traversal-of-BST_002c-take-6-91"></a>
+<pre class="format"><a href="Iterative_traversal_of_BST,_take_6.c.txt">60</a>. &lt;<a name="60" href="Iterative_traversal_of_BST,_take_6.c.txt">Iterative traversal of BST, take 6 58</a>&gt; +=
+/* Returns the next data item in inorder <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->within the tree being traversed with <i>trav</i><!-- /@w -->,
+   or if there are no more data items returns <tt>NULL</tt><!-- /@w -->. 
+   In the former case <i>next_item</i><!-- /@w -->() may be called again <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->to retrieve the next item. */
+<b>void</b><!-- /@w --> *<br><i>next_item</i><!-- /@w --> (<b>struct</b><!-- /@w --> <b>traverser</b> *<i>trav</i><!-- /@w -->) <br>{
+  <b>struct</b><!-- /@w --> <b>bst_node</b> *<i>node</i><!-- /@w -->;
+
+  <i>assert</i><!-- /@w --> (<i>trav</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->);
+  <i>node</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>node</i><!-- /@w -->;
+  <b>while</b><!-- /@w --> (<i>node</i><!-- /@w --> != <tt>NULL</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+      <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>height</i><!-- /@w --> &gt;= <tt>BST_MAX_HEIGHT</tt><!-- /@w -->) <br>&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->&nbsp;<!-- /@w -->{
+          <i>fprintf</i><!-- /@w --> (<i>stderr</i><!-- /@w -->, <tt>"tree too deep\n"</tt>);
+          <i>exit</i><!-- /@w --> (<tt>EXIT_FAILURE</tt><!-- /@w -->);
+        }
+
+      <i>trav</i><!-- /@w -->-&gt;<i>stack</i><!-- /@w -->[<i>trav</i><!-- /@w -->-&gt;<i>height</i><!-- /@w -->++] = <i>node</i><!-- /@w -->;
+      <i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[0];
+    }
+
+  <b>if</b><!-- /@w --> (<i>trav</i><!-- /@w -->-&gt;<i>height</i><!-- /@w --> == 0)
+    <b>return</b><!-- /@w --> <tt>NULL</tt><!-- /@w -->;
+
+  <i>node</i><!-- /@w --> = <i>trav</i><!-- /@w -->-&gt;<i>stack</i><!-- /@w -->[&ndash;<i>trav</i><!-- /@w -->-&gt;<i>height</i><!-- /@w -->];
+  <i>trav</i><!-- /@w -->-&gt;<i>node</i><!-- /@w --> = <i>node</i><!-- /@w -->-&gt;<i>bst_link</i><!-- /@w -->[1];
+  <b>return</b><!-- /@w --> <i>node</i><!-- /@w -->-&gt;<i>bst_data</i><!-- /@w -->;
+}
+</pre>
+   <p class="noindent"><strong>See also:</strong>&nbsp;<!-- /@w -->
+[<a href="References.html#Knuth%201997">Knuth 1997</a>], algorithm 2.3.1T;
+[<a href="References.html#Knuth%201992">Knuth 1992</a>], p. 50&ndash;54, section &ldquo;Recursion Elimination&rdquo; within
+article &ldquo;Structured Programming with <b>go to</b> statements&rdquo;.
+
+<p class="noindent"><b>Exercises:</b>
+
+<p class="noindent"><b>1.</b>&nbsp;<!-- /@w -->Make <i>next_item</i><!-- /@w -->() reliable by providing alternate code to execute on
+stack overflow.  This code will work by calling <i>bst_balance</i><!-- /@w -->() to
+&ldquo;balance&rdquo; the tree, reducing its height such that it can be
+traversed with the small stack that we use.  We will develop
+<i>bst_balance</i><!-- /@w -->() later.  For now, consider it a &ldquo;black box&rdquo; that
+simply needs to be invoked with the tree to balance as an argument. 
+Don't forget to adjust the traverser structure so that later calls
+will work properly, too. 
+[<a href="Answers-for-Chapter-4.html#4%2d9%2d2%2d1%231">answer</a>]
+
+<p class="noindent"><b>2.</b>&nbsp;<!-- /@w -->Without modifying <i>next_item</i><!-- /@w -->() or <i>first_item</i><!-- /@w -->(), can a function
+<i>prev_item</i><!-- /@w -->() be written that will move to and return the previous item
+in the tree in inorder? 
+[<a href="Answers-for-Chapter-4.html#4%2d9%2d2%2d1%232">answer</a>]
+
+   </body></html>
+

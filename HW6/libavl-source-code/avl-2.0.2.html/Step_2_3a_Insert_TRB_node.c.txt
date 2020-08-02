@@ -1,0 +1,18 @@
+n = tree->trb_alloc->libavl_malloc (tree->trb_alloc, sizeof *n);
+if (n == NULL)
+  return NULL;
+
+tree->trb_count++;
+n->trb_data = item;
+n->trb_tag[0] = n->trb_tag[1] = TRB_THREAD;
+n->trb_link[dir] = p->trb_link[dir];
+if (tree->trb_root != NULL)
+  {
+    p->trb_tag[dir] = TRB_CHILD;
+    n->trb_link[!dir] = p;
+  }
+else
+  n->trb_link[1] = NULL;
+p->trb_link[dir] = n;
+n->trb_color = TRB_RED;
+
